@@ -1,0 +1,4 @@
+bower_components
+build/js/*
+build/css/*
+node_modules
