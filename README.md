@@ -65,21 +65,34 @@ The available options for configuration of the viewer are as follows:
 ```javascript
     var options = {
       /** REQUIRED OPTIONS **/
-      container: document.getElementById('peaks-container'), // Containing element
-      audioElement: document.getElementById('audio'), // HTML5 Audio element for audio track
-      dataUri: '../test_data/sample.dat', // URI to waveform data file in binary or JSON
+      // Containing element
+      container: document.getElementById('peaks-container'),
+      // HTML5 Audio element for audio track
+      audioElement: document.getElementById('audio'),
+      // URI to waveform data file in binary or JSON
+      dataUri: '../test_data/sample.dat',
 
       /** Optional config with defaults **/
-      height: 200, // height of the waveform canvases in pixels
-      zoomLevels: [512, 1024, 2048, 4096], // Array of zoom levels in samples per pixel (big >> small)
-      keyboard: false, // Bind keyboard controls
-      nudgeIncrement: 0.01, // Keyboard nudge increment in seconds (left arrow/right arrow)
-      inMarkerColor: '#a0a0a0', // Colour for the in marker of segments
-      outMarkerColor: '#a0a0a0', // Colour for the out marker of segments
-      zoomWaveformColor: 'rgba(0, 225, 128, 1)', // Colour for the zoomed in waveform
-      overviewWaveformColor: 'rgba(0,0,0,0.2)', // Colour for the overview waveform
-      segmentColor: 'rgba(255, 161, 39, 1)', // Colour for segments on the waveform
-      randomizeSegmentColor: true, // Random colour per segment (overrides segmentColor)
+      // height of the waveform canvases in pixels
+      height: 200,
+      // Array of zoom levels in samples per pixel (big >> small)
+      zoomLevels: [512, 1024, 2048, 4096],
+      // Bind keyboard controls
+      keyboard: false,
+      // Keyboard nudge increment in seconds (left arrow/right arrow)
+      nudgeIncrement: 0.01,
+      // Colour for the in marker of segments
+      inMarkerColor: '#a0a0a0',
+      // Colour for the out marker of segments
+      outMarkerColor: '#a0a0a0',
+      // Colour for the zoomed in waveform
+      zoomWaveformColor: 'rgba(0, 225, 128, 1)',
+      // Colour for the overview waveform
+      overviewWaveformColor: 'rgba(0,0,0,0.2)',
+      // Colour for segments on the waveform
+      segmentColor: 'rgba(255, 161, 39, 1)',
+      // Random colour per segment (overrides segmentColor)
+      randomizeSegmentColor: true,
 
       // Array of initial segment objects with startTime and endTime in seconds and a boolean for editable
       segments: [{
@@ -130,48 +143,16 @@ The marker and label Kinetic.js objects may be overridden to give the segment ma
 
 The top level peaks object exposes the following API for interaction with the widget:
 
-<table>
 
-  <tr>
-    <th>Method</th>
-    <th>Description</th>
-  </tr>
-
-  <tr>
-    <td>`peaks.init(options)`</td>
-    <td>Start a instance of peaks with the assigned options.</td>
-  </tr>
-
-  <tr>
-    <td>`peaks.time.getCurrentTime()`</td>
-    <td>Returns currently selected time in seconds (convenience method interchangeable with audioElement.currentTime).</td>
-  </tr>
-
-  <tr>
-    <td>`peaks.zoom.zoomIn()`</td>
-    <td>Zoom in the waveform zoom view by one level.</td>
-  </tr>
-
-  <tr>
-    <td>`peaks.zoom.setZoom(indexInZoomArray)`</td>
-    <td>Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.</td>
-  </tr>
-
-  <tr>
-    <td>`peaks.zoom.getZoom()`</td>
-    <td>Return the current zoom level.</td>
-  </tr>
-
-  <tr>
-    <td>`peaks.segments.addSegment(startTime, endTime, editable, labelText)`</td>
-    <td>Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds) and set whether the segment is user editable with `editable` (boolean, defaults to `false`). Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.</td>
-  </tr>
-
-  <tr>
-    <td>`peaks.segments.getSegments()`</td>
-    <td>Returns an array of objects representing all displayed segments present on the timeline in the format:
-
-```javascript
+    Method | Description
+    --- | ---
+    `peaks.init(options)` | Start a instance of peaks with the assigned options.
+    `peaks.time.getCurrentTime()` | Returns currently selected time in seconds (convenience method interchangeable with audioElement.currentTime).
+    `peaks.zoom.zoomIn()` | Zoom in the waveform zoom view by one level.
+    `peaks.zoom.setZoom(indexInZoomArray)` | Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
+    `peaks.zoom.getZoom()` | Return the current zoom level.
+    `peaks.segments.addSegment(startTime, endTime, editable, labelText)` | Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds) and set whether the segment is user editable with `editable` (boolean, defaults to `false`). Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
+    `peaks.segments.getSegments()` | Returns an array of objects representing all displayed segments present on the timeline in the format:```javascript
         [{
           color: "rgba(123, 2, 61, 1)", // Assigned colour of the segment
           editable: true, // Editable state of the segment
@@ -182,10 +163,6 @@ The top level peaks object exposes the following API for interaction with the wi
           zoom: Kinetic.Group // Kinetics.js Element group of segment canvas objects for overview waveform
         }]
 ```
-
-    </td>
-  </tr>
-</table>
 
 # Development
 
