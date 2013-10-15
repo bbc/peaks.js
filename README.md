@@ -94,7 +94,8 @@ The available options for configuration of the viewer are as follows:
       // Random colour per segment (overrides segmentColor)
       randomizeSegmentColor: true,
 
-      // Array of initial segment objects with startTime and endTime in seconds and a boolean for editable
+      // Array of initial segment objects with startTime and
+      // endTime in seconds and a boolean for editable
       segments: [{
         startTime: 120,
         endTime: 140,
@@ -152,17 +153,29 @@ The top level peaks object exposes the following API for interaction with the wi
     `peaks.zoom.setZoom(indexInZoomArray)` | Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
     `peaks.zoom.getZoom()` | Return the current zoom level.
     `peaks.segments.addSegment(startTime, endTime, editable, labelText)` | Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds) and set whether the segment is user editable with `editable` (boolean, defaults to `false`). Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
-    `peaks.segments.getSegments()` | Returns an array of objects representing all displayed segments present on the timeline in the format:```javascript
-        [{
-          color: "rgba(123, 2, 61, 1)", // Assigned colour of the segment
-          editable: true, // Editable state of the segment
-          endTime: 588.986667, // End time in seconds of the segment
-          id: "segment0", // Unique ID of the segment
-          overview: Kinetic.Group, // Kinetics.js Element group of segment canvas objects for overview waveform
-          startTime: 578.986667, // End time in seconds of the segment
-          zoom: Kinetic.Group // Kinetics.js Element group of segment canvas objects for overview waveform
-        }]
-```
+    `peaks.segments.getSegments()` | Returns an array of objects representing all displayed segments present on the timeline in the segment format.
+
+### Segment Format
+
+Segments provided from peaks.js use the following format:
+
+```javascript
+[{
+   // Assigned colour of the segment
+  color: "rgba(123, 2, 61, 1)",
+   // Editable state of the segment
+  editable: true,
+   // End time in seconds of the segment
+  endTime: 588.986667,
+   // Unique ID of the segment
+  id: "segment0",
+   // Kinetics.js Element group of segment canvas objects for overview waveform
+  overview: Kinetic.Group,
+   // End time in seconds of the segment
+  startTime: 578.986667,
+   // Kinetics.js Element group of segment canvas objects for overview waveform
+  zoom: Kinetic.Group
+}] ```
 
 # Development
 
