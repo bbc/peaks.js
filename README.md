@@ -160,22 +160,23 @@ The top level peaks object exposes the following API for interaction with the wi
 Segments provided from peaks.js use the following format:
 
 ```javascript
-[{
-   // Assigned colour of the segment
-  color: "rgba(123, 2, 61, 1)",
-   // Editable state of the segment
-  editable: true,
-   // End time in seconds of the segment
-  endTime: 588.986667,
-   // Unique ID of the segment
-  id: "segment0",
-   // Kinetics.js Element group of segment canvas objects for overview waveform
-  overview: Kinetic.Group,
-   // End time in seconds of the segment
-  startTime: 578.986667,
-   // Kinetics.js Element group of segment canvas objects for overview waveform
-  zoom: Kinetic.Group
-}] ```
+    [{
+       // Assigned colour of the segment
+      color: "rgba(123, 2, 61, 1)",
+       // Editable state of the segment
+      editable: true,
+       // End time in seconds of the segment
+      endTime: 588.986667,
+       // Unique ID of the segment
+      id: "segment0",
+       // Kinetics.js Element group of segment canvas objects for overview waveform
+      overview: Kinetic.Group,
+       // End time in seconds of the segment
+      startTime: 578.986667,
+       // Kinetics.js Element group of segment canvas objects for overview waveform
+      zoom: Kinetic.Group
+    }]
+```
 
 # Development
 
