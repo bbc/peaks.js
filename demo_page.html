@@ -1,9 +1,11 @@
+<!DOCTYPE html>
+
 <!--
 
   THIS FILE USED AS DEMO/TEST PAGE FOR BUILD PROJECT
 
 -->
-<!DOCTYPE html>
+
 <html>
   <head>
     <title>Peaks.js Demo Page</title>
@@ -28,7 +30,7 @@
         var options = {
           container: document.getElementById('waveform-visualiser-container'),
           audioElement: document.getElementById('audio'),
-          dataUri: '../test_data/TOL_6min_720p_download.dat',
+          dataUri: '/test_data/TOL_6min_720p_download.dat',
           keyboard: true,
           height: 240
         };
@@ -106,7 +108,11 @@
       </div>
 
       <div id="demo-controls">
-        <audio id="audio" src="test_data/TOL_6min_720p_download.mp3" controls></audio>
+        <audio id="audio" controls=controls>
+          <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
+          <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
 
         <ul id="controls">
           <li><button data-namespace="zoom" data-method="zoomIn">zoom in</button></li>

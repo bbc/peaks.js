@@ -1,9 +1,11 @@
+<!DOCTYPE html>
+
 <!--
 
   THIS FILE USED AS PLACEHOLDER HTML FOR DEVELOPMENT PURPOSES
 
 -->
-<!DOCTYPE html>
+
 <html>
   <head>
     <title>Peaks.js Demo Page</title>
@@ -28,8 +30,8 @@
           baseUrl: "lib/js/",
           paths: {
             "WaveformData": "/bower_components/waveform-data/dist/waveform-data.min",
-            'EventEmitter': '../../bower_components/eventEmitter/EventEmitter',
-            'jquery': '../../bower_components/jquery/jquery'
+            "EventEmitter": "/bower_components/eventEmitter/EventEmitter",
+            "jquery": "/bower_components/jquery/jquery"
           }
         };
     </script>
@@ -47,7 +49,7 @@
           peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
             audioElement: document.getElementById('audio'),
-            dataUri: '../test_data/TOL_6min_720p_download.dat',
+            dataUri: '/test_data/TOL_6min_720p_download.dat',
             keyboard: true,
             height: 240,
             segments: [{
@@ -145,7 +147,11 @@
       </div>
 
       <div id="demo-controls">
-        <audio id="audio" src="../test_data/TOL_6min_720p_download.ogg" controls></audio>
+        <audio id="audio" controls=controls>
+          <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
+          <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
 
         <ul id="controls">
           <li><button data-namespace="zoom" data-method="zoomIn">zoom in</button></li>
