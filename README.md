@@ -202,7 +202,7 @@ Authors
 
 ### British Broadcasting Corporation
 
-- [Chris Finch](http://github.com/chrisfinch)
+- [Chris Finch](http://github.com/chrisfinch) / [@chrisfinchy](https://twitter.com/chrisfinchy)
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](http://github.com/chrisn)
 
