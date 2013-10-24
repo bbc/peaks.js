@@ -153,13 +153,15 @@ define([
       }
 
       if (zoom_level != that.current_zoom_level) {
+        that.oldZoomLevel = that.current_zoom_level;
         that.current_zoom_level = zoom_level;
         that.data = that.rootData.resample({
           scale: zoom_level
         });
 
         that.pixelsPerSecond = that.data.pixels_per_second;
-        that.seekFrame(that.data.at_time(that.options.mediaElement.currentTime));
+        //that.seekFrame(that.data.at_time(that.currentTime));
+        that.startZoomAnimation(that.data.at_time(that.currentTime));
       }
     });
 
@@ -320,7 +322,7 @@ define([
     }
   };
 
-  WaveformZoomView.prototype.seekFrame = function (pixelIndex) {
+  WaveformZoomView.prototype.seekFrame = function (pixelIndex, zoom_level) {
     var that = this;
     var upperLimit = that.data.adapter.length - that.width;
 
@@ -336,6 +338,49 @@ define([
 
     that.syncPlayhead(pixelIndex);
     that.updateZoomWaveform(that.frameOffset);
+  };
+
+  WaveformZoomView.prototype.startZoomAnimation = function (pixelIndex) {
+    var that = this;
+
+    console.log("Current Zoom: ", that.current_zoom_level, "pixelIndex: ", pixelIndex, "data.length :", that.data.adapter.data.length);
+
+    // Determine wether zooming in or out
+    //
+    // Determin the timeframe for the zoom animation (start and end of dataset for zooming animation)
+    //
+    // Create array with resampled data for each animation frame (need to know duration, resample points per frame)
+
+    var frameData = [];
+    for (var i = 0; i < 60; i++) {
+      var z = // Work out interpolated resample scale using that.current_zoom_level and that.oldZoomLevel and wether you are zooming in or out
+      frameData.push(
+        that.rootData.resample({ // rootData should be swapped for your resampled dataset
+          scale: z
+        })
+      );
+    }
+
+    // Start an animation that displays the data on the frame
+    that.zoomAnimation = new Kinetic.Animation(function (frame) {
+      var time = frame.time,
+          timeDiff = frame.timeDiff,
+          frameRate = frame.frameRate;
+      var seconds = time / 1000;
+
+      // Send correct data from frameData to drawFunc for waveform and draw it
+      that.zoomWaveformShape.setDrawFunc(function(canvas) {
+        that.data.offset(pixelOffset, pixelOffset + that.width);
+
+        mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
+      });
+
+      that.zoomWaveformLayer.draw();
+
+    }, that.uiLayer);
+
+    that.zoomAnimation.start();
+
   };
 
   return WaveformZoomView;
