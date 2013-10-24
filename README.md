@@ -22,7 +22,7 @@ Peaks was developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make
 
 Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
-See the Project overview here: [http://waveform.prototype0.net/](http://waveform.prototype0.net/)
+See the Project overview here: [http://waveform.prototype0.net/](http://waveform.prototyping.bbc.co.uk/)
 
 # Installation
 
