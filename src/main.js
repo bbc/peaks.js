@@ -453,6 +453,10 @@ define('peaks', [
             self.emit("waveform_zoom_level_changed", self.options.zoomLevels[zoomLevelIndex]);
           },
 
+          stop: function(){
+            self.emit("stop_zoom_animation");
+          },
+
           /**
            * Returns the current zoom level
            *
