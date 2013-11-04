@@ -450,7 +450,7 @@ define('peaks', [
             }
 
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit("waveform_zoom_level_changed", self.options.zoomLevels[zoomLevelIndex]);
+            self.emit("waveform_zoom_level_changed", zoomLevelIndex);
           },
 
           stop: function(){
