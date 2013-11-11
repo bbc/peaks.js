@@ -31,7 +31,7 @@ define([
         labelText: labelText || ""
       };
 
-      var segmentZoomGroup = new Kinetic.Group();
+      var segmentZoomGroup = new Kinetic.Group({opacity:1});
       var segmentOverviewGroup = new Kinetic.Group();
 
       var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
@@ -56,6 +56,7 @@ define([
           strokeWidth: 0
         });
 
+        //console.log(segmentGroup);
         segmentGroup.waveformShape.on("mouseenter", menter);
         segmentGroup.waveformShape.on("mouseleave", mleave);
 

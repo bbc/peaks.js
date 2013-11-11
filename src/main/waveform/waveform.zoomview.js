@@ -108,12 +108,6 @@ define([
       }
     };
 
-    that.peaks.on("stop_zoom_animation", function() {
-      if (that.zoomAnimation) {
-        that.zoomAnimation.stop();
-      }
-    });
-
     that.peaks.on("player_time_update", function (time) {
       if (!that.seeking && !that.playing) {
         that.seekFrame(that.data.at_time(time));
@@ -361,6 +355,18 @@ define([
 
     //console.log("Current Sample Rate: ", that.current_sample_rate, "Old Sample Rate: ", that.old_sample_rate, "pixelIndex: ", pixelIndex, "data.length :", that.data.adapter.data.length);
 
+    //fade out the time axis and the segments
+    //that.axis.axisTween.play();
+    this.axis.axisShape.setAttr('opacity', 0);
+    //fade out segments
+    var segmentChildren = that.segmentLayer.getChildren();
+      segmentChildren.each(function(segmentChild) {
+      var segmentShapes = segmentChild.getChildren();
+      segmentShapes.each(function(segmentObject) {
+        segmentObject.setAttr('opacity', 0);
+      });
+    });
+
     // Determine whether zooming in or out
     if (that.oldZoomLevel > that.current_zoom_level) {
       console.log("Zooming In");
@@ -382,6 +388,8 @@ define([
         })
       );
     }
+
+    //that.axis.axisTween.pause();
 
     // Start an animation that displays the data on the frame
     that.zoomAnimation = new Kinetic.Animation(function (frame) {
@@ -417,13 +425,28 @@ define([
 
         //need to syncplayhead?
 
-        that.axis.drawAxis(that.data.time(that.frameOffset));
+        //display the time axis
+        //that.axis.drawAxis(that.data.time(that.frameOffset));
 
         //that.peaks.emit("waveform_zoom_displaying");
 
       }
       else {
         that.zoomAnimation.stop();
+        //fade in the segments
+        segmentChildren.each(function(segmentChild) {
+          var segmentShapes = segmentChild.getChildren();
+          segmentShapes.each(function(segmentObject) {
+            new Kinetic.Tween({
+              node: segmentObject,
+              duration: 1.5,
+              opacity: 1
+            }).play();
+          });
+        });
+        //fade in axis
+        that.axis.axisTween.play();
+        //that.axis.axisTween.reverse();
       }
     }, that.uiLayer);
 
