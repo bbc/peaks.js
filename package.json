@@ -2,7 +2,7 @@
   "name": "Peaks.js",
   "version": "0.0.1",
   "description": "Frontend app for displaying audio waveforms",
-  "main": "index.js",
+  "main": "./lib/js/main.js",
   "author": "Chris Finch <chris.finch@bbc.co.uk> (http://github.com/chrisfinch)",
   "repository" : {
     "type" : "git",
