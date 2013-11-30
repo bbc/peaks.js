@@ -32,7 +32,7 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
         },
         fill: 'rgba(38, 255, 161, 1)',
         strokeWidth: 0,
-        opacity: 1
+        opacity: 0
       });
       this.view.uiLayer.add(this.axisShape);
       this.view.uiLayer.draw();

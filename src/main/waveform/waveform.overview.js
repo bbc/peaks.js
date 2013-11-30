@@ -40,6 +40,7 @@ define([
     that.createWaveform();
     that.createRefWaveform();
     that.axis.drawAxis(0);
+    that.axis.axisTween.play();
     that.createUi();
 
     // INTERACTION ===============================================

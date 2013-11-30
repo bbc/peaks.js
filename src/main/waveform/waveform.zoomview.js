@@ -21,6 +21,8 @@ define([
     that.playing = false;
     that.seeking = false;
 
+    that.scale = 1;
+
     that.current_zoom_level = 0;
     that.current_sample_rate = that.options.zoomLevels[that.current_zoom_level];
     that.currentTime = 0;
@@ -60,6 +62,7 @@ define([
 
     that.createZoomWaveform();
     that.axis.drawAxis(0);
+    that.axis.axisTween.play();
     that.createUi();
 
     // INTERACTION ===============================================
@@ -163,13 +166,11 @@ define([
         that.old_sample_rate = that.current_sample_rate;
         that.current_sample_rate = that.options.zoomLevels[zoom_level];
 
-        that.data = that.rootData.resample({
-          scale: that.current_sample_rate
-        });
-
+        //that.data = that.rootData.resample({
+          //scale: that.current_sample_rate
+        //});
         that.pixelsPerSecond = that.data.pixels_per_second;
         that.startZoomAnimation();
-        that.seekFrame(that.data.at_time(that.currentTime));
       }
     });
 
@@ -267,6 +268,8 @@ define([
     that.zoomWaveformLayer.draw();
 
     that.axis.drawAxis(that.data.time(pixelOffset));
+    //Fade In Axis
+    that.axis.axisTween.play();
 
     // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
 
@@ -351,104 +354,122 @@ define([
 
   WaveformZoomView.prototype.startZoomAnimation = function () {
     var that = this;
+    console.log(that);
     var direction;
-
+    var input_index = 0;
+    var output_index = 0;
+    var endPixel = 0;
     //console.log("Current Sample Rate: ", that.current_sample_rate, "Old Sample Rate: ", that.old_sample_rate, "pixelIndex: ", pixelIndex, "data.length :", that.data.adapter.data.length);
 
-    //fade out the time axis and the segments
-    //that.axis.axisTween.play();
-    this.axis.axisShape.setAttr('opacity', 0);
-    //fade out segments
-    var segmentChildren = that.segmentLayer.getChildren();
+    //Fade out the time axis and the segments
+    that.axis.axisShape.setAttr('opacity', 0);
+    //Fade out segments
+    if (that.segmentLayer) {
+      var segmentChildren = that.segmentLayer.getChildren();
       segmentChildren.each(function(segmentChild) {
-      var segmentShapes = segmentChild.getChildren();
-      segmentShapes.each(function(segmentObject) {
-        segmentObject.setAttr('opacity', 0);
+        var segmentShapes = segmentChild.getChildren();
+        segmentShapes.each(function(segmentObject) {
+          console.log('opacity 0');
+          segmentObject.setAttr('opacity', 0);
+        });
       });
-    });
+    }
+
 
     // Determine whether zooming in or out
+    //Start time = time of frame offset pixel for current scale; End time = time of frame offset pixel for current scale + width of frame
     if (that.oldZoomLevel > that.current_zoom_level) {
-      console.log("Zooming In");
       direction = "In";
+      /*var startInTime = that.rootData.time(that.frameOffset);
+      startPixel = that.frameOffset; //that.data.at_time(startInTime);
+      var endInTime = that.rootData.time(that.frameOffset + that.width);
+      endPixel = that.frameOffset + that.width; //that.data.at_time(endInTime);
+      console.log("startPixel", startPixel, "endPixel", endPixel);*/
     } else {
-      console.log("Zooming Out");
       direction = "Out";
+      //not sure?
     }
-    // Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
-    //
+
     // Create array with resampled data for each animation frame (need to know duration, resample points per frame)
     var frameData = [];
-    for (var i = 0; i < 60; i++) {
-      var frame_sample_rate = Math.round(that.old_sample_rate + ((i+1)*(that.current_sample_rate - that.old_sample_rate)/60)); // Work out interpolated resample scale using that.current_zoom_level and that.oldZoomLevel and wether you are zooming in or out
-      //console.log("Loop Number: ", i, "New Scale: ", frame_sample_rate);
+    for (var i = 0; i < 30; i++) {
+      // Work out interpolated resample scale using that.current_zoom_level and that.oldZoomLevel and wether you are zooming in or out
+      var frame_sample_rate = Math.round(that.old_sample_rate + ((i+1)*(that.current_sample_rate - that.old_sample_rate)/30));
+      var currPixelIndex = that.rootData.at_time(that.currentTime); //As this is the raw data whether zooming or zooming out the data needed will always be within thses values?
+      input_index = currPixelIndex - (that.width/2);
+      endPixel = currPixelIndex + (that.width/2); //not enough data?
+      var newPixelIndex = Math.floor(((that.currentTime * 44100) / frame_sample_rate));
+      output_index = newPixelIndex - (that.width/2);
       frameData.push(
         that.rootData.resample({ // rootData should be swapped for your resampled dataset
-          scale: frame_sample_rate
+          scale: frame_sample_rate,
+          start_time: output_index,
+          end_time: endPixel,
+          //output_index: input_index,
+          length: that.width
         })
       );
     }
 
-    //that.axis.axisTween.pause();
-
     // Start an animation that displays the data on the frame
     that.zoomAnimation = new Kinetic.Animation(function (frame) {
       if (frameData.length > 0) {
-        var intermediate_data = frameData.shift();
-        //that.data = intermediate_data;
         var time = frame.time,
           timeDiff = frame.timeDiff,
           frameRate = frame.frameRate;
         var seconds = time / 1000;
-
         //console.log("Time: ", time, "TimeDiff: ", timeDiff, "frameRate: ", frameRate, "Seconds: ", seconds);
-        var upperLimit = intermediate_data.adapter.length - that.width; //what does adpater.length refer to? I assumed it was the number of data points in the resampled data
-        console.log("Adpater Length", that.data.adapter.length);
-        var pixelIndex = intermediate_data.at_time(that.currentTime);
-        if (pixelIndex > that.width && pixelIndex < upperLimit) {
+
+        // Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
+        var intermediate_data = frameData.shift();
+        console.log(intermediate_data);
+
+        //Calculate the frame offset pixel value  - SHOUDLDN'T NEED TO DO THIS ANYMORE AS YOU ARE NOT SETTING THE OFFSET OF INTERMEDIATE DATA
+        //var upperLimit = intermediate_data.adapter.length - that.width; //what does adpater.length refer to? I assumed it was the number of data points in the resampled data
+        //console.log("Adpater Length", that.data.adapter.length);
+
+        //var pixelIndex = intermediate_data.at_time(that.currentTime);
+        //var upperLimit = pixelIndex + Math.round(that.width / 2);
+
+        /*if (pixelIndex > that.width && pixelIndex < upperLimit) {
           that.frameOffset = pixelIndex - Math.round(that.width / 2);
         } else if (pixelIndex >= upperLimit) {
           that.frameOffset = upperLimit;
         } else {
           that.frameOffset = 0;
-        }
+        }*/
 
-        console.log("Pixel Index", pixelIndex, "Frame Offset", that.frameOffset, "Upper Limit", upperLimit);
-        // Send correct data from frameData to drawFunc for waveform and draw it
+        console.log("Start Time", intermediate_data.time(that.frameOffset));
+        //Send correct resampled waveform data object to drawFunc and draw it
         that.zoomWaveformShape.setDrawFunc(function(canvas) {
-          intermediate_data.offset(that.frameOffset, that.frameOffset + that.width);
+          //intermediate_data.offset(that.frameOffset, that.frameOffset + that.width);
 
           mixins.waveformDrawFunction.call(this, intermediate_data, canvas, mixins.interpolateHeight(that.height));
         });
 
-        that.zoomWaveformLayer.draw();
-
-        //need to syncplayhead?
-
-        //display the time axis
+        //Display the time axis
         //that.axis.drawAxis(that.data.time(that.frameOffset));
-
-        //that.peaks.emit("waveform_zoom_displaying");
-
       }
       else {
+        //Once all intermediate frames have been drawn
         that.zoomAnimation.stop();
-        //fade in the segments
-        segmentChildren.each(function(segmentChild) {
-          var segmentShapes = segmentChild.getChildren();
-          segmentShapes.each(function(segmentObject) {
-            new Kinetic.Tween({
-              node: segmentObject,
-              duration: 1.5,
-              opacity: 1
-            }).play();
+        //Fade in the segments
+        if (that.segmentLayer) {
+          var segmentChildren = that.segmentLayer.getChildren();
+          segmentChildren.each(function(segmentChild) {
+            var segmentShapes = segmentChild.getChildren();
+            segmentShapes.each(function(segmentObject) {
+              new Kinetic.Tween({
+                node: segmentObject,
+                duration: 0.5,
+                opacity: 1
+              }).play();
+            });
           });
-        });
-        //fade in axis
-        that.axis.axisTween.play();
-        //that.axis.axisTween.reverse();
+        }
+        //that.seekFrame(that.data.at_time(that.currentTime));
       }
-    }, that.uiLayer);
+    }, that.zoomWaveformLayer);
 
     that.zoomAnimation.start();
   };
