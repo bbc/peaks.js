@@ -17,6 +17,6 @@
     "KineticJS": "http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.5.5.min.js",
     "eventEmitter": "~4.2.1",
     "handlebars": "~1.0.0",
-    "waveform-data": "git@github.com:bbcrd/waveform-data.js.git"
+    "waveform-data": "~1.1.1"
   }
 }
