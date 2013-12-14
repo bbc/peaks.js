@@ -1,5 +1,5 @@
 {
-  "name": "Peaks.js",
+  "name": "peaks.js",
   "version": "0.0.1",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./lib/js/main.js",
