@@ -11,7 +11,7 @@ define([
     that.data = waveformData;
     that.container = container;
     that.width = that.container.clientWidth;
-    that.height = that.options.height;
+    that.height = that.options.overviewHeight;
     that.frameOffset = 0;
     that.seeking = false;
 
@@ -37,10 +37,11 @@ define([
 
     that.axis = new WaveformAxis(that);
 
-    that.createWaveform();
+    //that.createWaveform();
+    that.stage.add(that.waveformLayer);
+
     that.createRefWaveform();
     that.axis.drawAxis(0);
-    that.axis.axisTween.play();
     that.createUi();
 
     // INTERACTION ===============================================
@@ -56,7 +57,7 @@ define([
         if (event.type == "mousedown") {
           that.seeking = true;
 
-          var width = that.refWaveformShape.getWidth();
+          var width = that.refWaveformRect.getWidth();
 
           that.updateRefWaveform(
             that.data.time(event.layerX),
@@ -105,7 +106,7 @@ define([
       that.width = width;
       that.data = newWaveformData;
       that.stage.setWidth(that.width);
-      that.updateWaveform();
+      //that.updateWaveform();
       peaks.emit("overview_resized");
     });
   }
@@ -123,18 +124,29 @@ define([
     this.stage.add(this.waveformLayer);
   };
 
+  //Green Reference Waveform to inform users where they are in overview waveform based on current zoom level
   WaveformOverview.prototype.createRefWaveform = function () {
     var that = this;
 
-    this.refWaveformShape = new Kinetic.Shape({
+    /*this.refWaveformShape = new Kinetic.Shape({
       drawFunc: function(canvas) {
         mixins.waveformOffsetDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
       },
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0
+    });*/
+
+    this.refWaveformRect = new Kinetic.Rect({
+      x:0,
+      y:11,
+      width: 0,
+      stroke: "grey",
+      strokeWidth: 1.8,
+      height: 28,
+      lineJoin: 'round'
     });
 
-    this.refLayer.add(this.refWaveformShape);
+    this.refLayer.add(this.refWaveformRect);
     this.stage.add(this.refLayer);
   };
 
@@ -149,15 +161,7 @@ define([
     this.stage.add(this.uiLayer);
   };
 
-  WaveformOverview.prototype.updateWaveform = function () {
-    var that = this;
-    that.waveformShape.setDrawFunc(function(canvas) {
-      mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
-    });
-    that.waveformLayer.draw();
-  };
-
-  WaveformOverview.prototype.updateWaveform = function () {
+  /*WaveformOverview.prototype.updateWaveform = function () {
     var that = this;
     that.waveformShape.setDrawFunc(function(canvas) {
       mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
@@ -178,6 +182,19 @@ define([
     });
 
     that.refWaveformShape.setWidth(that.data.at_time(time_out) - that.data.at_time(time_in));
+    that.refLayer.draw();
+  };*/
+
+  WaveformOverview.prototype.updateRefWaveform = function (time_in, time_out) {
+    var that = this;
+
+    var offset_in = that.data.at_time(time_in);
+    var offset_out = that.data.at_time(time_out);
+
+    that.data.set_segment(offset_in, offset_out, "zoom");
+    mixins.waveformRectDrawFunction.call(this, that.data);
+
+    that.refWaveformRect.setWidth(that.data.at_time(time_out) - that.data.at_time(time_in));
     that.refLayer.draw();
   };
 

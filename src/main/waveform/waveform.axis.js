@@ -32,7 +32,7 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
         },
         fill: 'rgba(38, 255, 161, 1)',
         strokeWidth: 0,
-        opacity: 0
+        opacity: 1
       });
       this.view.uiLayer.add(this.axisShape);
       this.view.uiLayer.draw();
@@ -43,12 +43,6 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
       });
       this.view.uiLayer.draw();
     }
-    //tween to fade axis in and out when zooming
-    this.axisTween = new Kinetic.Tween({
-        node: this.axisShape, 
-        duration: 1.5,
-        opacity: 1
-    });
   };
 
   /*

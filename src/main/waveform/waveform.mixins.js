@@ -256,6 +256,19 @@ define(function () {
       canvas.fillStroke(this);
     },
 
+    waveformOverviewSegmentDrawFunction: function(waveform, id, overview) {
+      if (waveform.segments[id] === undefined){
+        return;
+      }
+      var segment = waveform.segments[id],
+        offset_length = segment.offset_length,
+        offset_start = segment.offset_start - waveform.offset_start;
+      overview.waveformShape.setAttrs({
+        x: offset_start,
+        width: offset_length
+      });
+    },
+
     waveformOffsetDrawFunction: function(waveform, canvas, y){
       if (waveform.segments.zoom === undefined){
         return;
@@ -265,6 +278,17 @@ define(function () {
           ctx = canvas.getContext();
       drawWaveform(ctx, waveform.segments.zoom.min, waveform.segments.zoom.max, offset_start, offset_length, y);
       canvas.fillStroke(this);
+    },
+
+    waveformRectDrawFunction: function(waveform) {
+      if (waveform.segments.zoom === undefined){
+        return;
+      }
+
+      this.refWaveformRect.setAttrs({
+        x: waveform.segments.zoom.offset_start - waveform.offset_start,
+        width: waveform.segments.zoom.offset_length
+      });
     },
 
     /**

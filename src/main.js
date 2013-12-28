@@ -92,6 +92,10 @@ define('peaks', [
        */
       height:                200,
       /**
+       * Overview height
+       */
+      overviewHeight:        50,
+      /**
        * Colour for segments on the waveform
        */
       segmentColor:          'rgba(255, 161, 39, 1)',

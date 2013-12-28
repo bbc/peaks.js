@@ -31,7 +31,7 @@ define([
         labelText: labelText || ""
       };
 
-      var segmentZoomGroup = new Kinetic.Group({opacity:1});
+      var segmentZoomGroup = new Kinetic.Group();
       var segmentOverviewGroup = new Kinetic.Group();
 
       var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
@@ -51,12 +51,24 @@ define([
       segmentGroups.forEach(function(segmentGroup, i){
         var view = self.views[i];
 
-        segmentGroup.waveformShape = new Kinetic.Shape({
-          fill: color,
-          strokeWidth: 0
-        });
+        if (segmentGroup == segmentOverviewGroup) {
+          segmentGroup.waveformShape = new Kinetic.Rect({
+            fill: color,
+            strokeWidth: 0,
+            y:11,
+            x:0,
+            width: 0,
+            height: 28,
+            opacity:0.4
+          });
+        } else {
+          segmentGroup.waveformShape = new Kinetic.Shape({
+            fill: color,
+            strokeWidth: 0,
+            opacity: 1
+          });
+        }
 
-        //console.log(segmentGroup);
         segmentGroup.waveformShape.on("mouseenter", menter);
         segmentGroup.waveformShape.on("mouseleave", mleave);
 
@@ -95,9 +107,11 @@ define([
       var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
       var overviewEndOffset = peaks.waveform.waveformOverview.data.at_time(segment.endTime);
 
-      segment.overview.waveformShape.setDrawFunc(function(canvas) {
+      /*segment.overview.waveformShape.setDrawFunc(function(canvas) {
         mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformOverview.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformOverview.height));
-      });
+      });*/
+
+      mixins.waveformOverviewSegmentDrawFunction(peaks.waveform.waveformOverview.data, segment.id, segment.overview);
 
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
