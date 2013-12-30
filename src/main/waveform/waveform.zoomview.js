@@ -16,7 +16,7 @@ define([
     var that = this;
 
     that.ticking = false;
-    that.cur_scale = undefined;
+    that.cur_scale = 0;
 
     that.peaks = peaks;
     that.options = peaks.options;
@@ -117,13 +117,6 @@ define([
     that.peaks.on("player_time_update", function (time) {
       if (!that.seeking && !that.playing) {
         that.seekFrame(that.data.at_time(time));
-      }
-    });
-
-
-    that.peaks.on("player_time_update", function (time) {
-      if (!that.seeking && that.playing && !that.data.in_offset(that.data.at_time(time))) {
-        that.newFrame(that.frameOffset);
       }
     });
 
@@ -464,6 +457,7 @@ define([
       else {
         //Once all intermediate frames have been drawn
         that.zoomAnimation.stop();
+        //$("body").css("cursor", "pointer");
         //Fade in the segments
         if (that.segmentLayer) {
           that.segmentLayer.setVisible(true);
@@ -473,6 +467,7 @@ define([
       }
     }, that.zoomWaveformLayer);
 
+    //$("body").css("cursor", "wait");
     that.zoomAnimation.start();
   };
 

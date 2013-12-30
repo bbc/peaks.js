@@ -13,6 +13,7 @@ define([
     var self = this;
 
     self.segments = [];
+    self.currentInMarker = [];
     self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
       if (!view.segmentLayer) {
         view.segmentLayer = new Kinetic.Layer();
@@ -62,11 +63,20 @@ define([
             opacity:0.4
           });
         } else {
-          segmentGroup.waveformShape = new Kinetic.Shape({
+          segmentGroup.waveformShape = new Kinetic.Rect({
+            fill: color,
+            strokeWidth: 0,
+            y:3,
+            x:0,
+            width: 0,
+            height: view.height,
+            opacity:0.4
+          });
+          /*segmentGroup.waveformShape = new Kinetic.Shape({
             fill: color,
             strokeWidth: 0,
             opacity: 1
-          });
+          });*/
         }
 
         segmentGroup.waveformShape.on("mouseenter", menter);
@@ -78,10 +88,14 @@ define([
         segmentGroup.add(segmentGroup.label.hide());
 
         if (editable) {
-          segmentGroup.inMarker = new peaks.options.segmentInMarker(true, segmentGroup, segment, segmentHandleDrag);
+          var draggable = true;
+          if (segmentGroup === segmentOverviewGroup) {
+            draggable = false;
+          }
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.inMarker);
 
-          segmentGroup.outMarker = new peaks.options.segmentOutMarker(true, segmentGroup, segment, segmentHandleDrag);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.outMarker);
         }
 
@@ -143,9 +157,10 @@ define([
         var endPixel = zoomEndOffset - frameStartOffset;
 
         segment.zoom.show();
-        segment.zoom.waveformShape.setDrawFunc(function(canvas) {
+        /*segment.zoom.waveformShape.setDrawFunc(function(canvas) {
           mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
-        });
+        });*/
+        mixins.waveformZoomviewSegmentDrawFunction(peaks.waveform.waveformZoomView.data, segment.id, segment.zoom);
 
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
@@ -177,7 +192,7 @@ define([
       }
 
       updateSegmentWaveform(segment);
-      self.render();
+      self.currentInMarker.pop();
     };
 
     var getSegmentColor = function () {
@@ -205,8 +220,14 @@ define([
      * @api
      */
     this.updateSegments = function () {
-      self.segments.forEach(updateSegmentWaveform);
+      this.segments.getSegments().forEach(updateSegmentWaveform);
       self.render();
+      /*if (that.currentInMarker.length == 1) {
+        updateMarkers(that.currentInMarker[0]);
+      }
+      if (that.currentOutMarker.length == 1) {
+        updateMarkers(that.currentOutMarker[0]);
+      }*/
     };
 
     /**
@@ -275,5 +296,120 @@ define([
         view.segmentLayer.draw();
       });
     };
+
+    /*var updateMarkers = function(marker) {
+      // Overview pixel index
+      var overviewStartX = waveformView.waveformOverview.data.at_time(marker.Time);
+
+      mixins.waveformOverviewMarkerDrawFunction(overviewStartX, marker.overview, marker.overview.view);
+
+      marker.overview.view.segmentLayer.draw();
+
+      var zoomStartX = waveformView.waveformZoomView.data.at_time(marker.Time);
+
+      var frameStartOffset = waveformView.waveformZoomView.frameOffset;
+
+      if (zoomStartX < frameStartOffset) {
+        marker.zoom.hide();
+      }
+      else {
+        marker.zoom.show();
+        var startPixel = zoomStartX - frameStartOffset;
+        mixins.waveformOverviewMarkerDrawFunction(startPixel, marker.zoom, marker.zoom.view);
+      }
+    };
+
+    //Should be same process for in and out marker
+    var setSegmentInMarker = function(startTime, markerType) {
+      var marker = {
+        Time: startTime
+      };
+
+      //Create Marker Line
+      var markerZoomGroup = new Kinetic.Group();
+      var markerOverviewGroup = new Kinetic.Group();
+
+      var markerGroups = [markerZoomGroup, markerOverviewGroup];
+
+      for (var i = 0; i < markerGroups.length; i++) {
+        var view = views[i];
+        var markerGroup = markerGroups[i];
+
+        if (!view.segmentLayer) {
+          view.segmentLayer = new Kinetic.Layer();
+          view.stage.add(view.segmentLayer);
+          view.segmentLayer.moveToTop();
+        }
+
+        markerGroup.waveformShape = new Kinetic.Line({
+          points: [0, 0, 0, view.height],
+          stroke: "a0a0a0",
+          strokeWidth: 1
+        });
+
+        markerGroup.add(markerGroup.waveformShape);
+
+        view.segmentLayer.add(markerGroup);
+        view.segmentLayer.draw();
+      }
+
+      marker.zoom = markerZoomGroup;
+      marker.zoom.view = waveformView.waveformZoomView;
+      marker.overview = markerOverviewGroup;
+      marker.overview.view = waveformView.waveformOverview;
+
+      console.log("In Marker", marker, "startTime", startTime);
+
+      return marker;
+    };
+
+    this.setSegmentOutMarker = function(endTime) {
+
+    };*/
+
+    // EVENTS ====================================================
+
+    peaks.on("setting_in_marker", function(startTime) {
+      /*var marker = setSegmentInMarker(startTime, markerType);
+      if (markerType == "in") {
+        var oldMarker = that.currentInMarker.pop();
+        if (oldMarker != undefined) {
+          oldMarker.zoom.waveformShape.destroy();
+          oldMarker.overview.waveformShape.destroy();
+        }
+        that.currentInMarker.push(marker);
+      } else {
+        that.currentOutMarker.pop();
+        that.currentOutMarker.push(marker);
+      }
+      //Join in and out markers when both have been set
+      /*if ((that.currentInMarker.length == 1) && (that.currentOutMarker.length == 1)) {
+        //Create a segment using the in and out marker start and end time (returns a segment)
+        //updateSegmentwaveform(segment)
+        //Empty arrays and remove lines
+      }*/
+
+      //Update Markers to draw
+      //updateMarkers(marker);
+
+      var segment = self.createSegment(startTime, startTime, true);
+      var oldMarker = self.currentInMarker.pop();
+      if (oldMarker !== undefined) {
+        oldMarker.zoom.destroy();
+        oldMarker.overview.destroy();
+      }
+
+      self.currentInMarker.push(segment);
+      segment.zoom.inMarker.attrs.draggable = false;
+      self.peaks.emit("segment_created", segment);
+    });
+
+    peaks.on("setting_out_marker", function(startTime, segment) {
+      segment.endTime = startTime;
+      segment.zoom.inMarker.attrs.draggable = true;
+
+      updateSegmentWaveform(segment);
+      self.currentInMarker.pop();
+    });
   };
 });

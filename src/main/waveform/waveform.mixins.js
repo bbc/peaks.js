@@ -256,6 +256,19 @@ define(function () {
       canvas.fillStroke(this);
     },
 
+    waveformZoomviewSegmentDrawFunction: function(waveform, id, zoomview) {
+      if (waveform.segments[id] === undefined){
+        return;
+      }
+      var segment = waveform.segments[id],
+        offset_length = segment.offset_length,
+        offset_start = segment.offset_start - waveform.offset_start;
+        zoomview.waveformShape.setAttrs({
+          x: offset_start,
+          width: offset_length
+      });
+    },
+
     waveformOverviewSegmentDrawFunction: function(waveform, id, overview) {
       if (waveform.segments[id] === undefined){
         return;
@@ -263,10 +276,14 @@ define(function () {
       var segment = waveform.segments[id],
         offset_length = segment.offset_length,
         offset_start = segment.offset_start - waveform.offset_start;
-      overview.waveformShape.setAttrs({
-        x: offset_start,
-        width: offset_length
+        overview.waveformShape.setAttrs({
+          x: offset_start,
+          width: offset_length
       });
+    },
+
+    waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
+      viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);
     },
 
     waveformOffsetDrawFunction: function(waveform, canvas, y){
@@ -367,6 +384,9 @@ define(function () {
           textAlign: "center"
         });
       };
+    },
+
+    customInMarker: function() {
     }
   };
 });
