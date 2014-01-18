@@ -174,10 +174,6 @@ define([
       } else {
         segment.zoom.hide();
       }
-
-      // Label
-      // segment.zoom.label.setX(0);
-      // segment.zoom.label.setY(12);
     };
 
     var segmentHandleDrag = function (thisSeg, segment) {
@@ -296,77 +292,5 @@ define([
         view.segmentLayer.draw();
       });
     };
-
-    /*var updateMarkers = function(marker) {
-      // Overview pixel index
-      var overviewStartX = waveformView.waveformOverview.data.at_time(marker.Time);
-
-      mixins.waveformOverviewMarkerDrawFunction(overviewStartX, marker.overview, marker.overview.view);
-
-      marker.overview.view.segmentLayer.draw();
-
-      var zoomStartX = waveformView.waveformZoomView.data.at_time(marker.Time);
-
-      var frameStartOffset = waveformView.waveformZoomView.frameOffset;
-
-      if (zoomStartX < frameStartOffset) {
-        marker.zoom.hide();
-      }
-      else {
-        marker.zoom.show();
-        var startPixel = zoomStartX - frameStartOffset;
-        mixins.waveformOverviewMarkerDrawFunction(startPixel, marker.zoom, marker.zoom.view);
-      }
-    };
-
-    //Should be same process for in and out marker
-    var setSegmentInMarker = function(startTime, markerType) {
-      var marker = {
-        Time: startTime
-      };
-
-      //Create Marker Line
-      var markerZoomGroup = new Kinetic.Group();
-      var markerOverviewGroup = new Kinetic.Group();
-
-      var markerGroups = [markerZoomGroup, markerOverviewGroup];
-
-      for (var i = 0; i < markerGroups.length; i++) {
-        var view = views[i];
-        var markerGroup = markerGroups[i];
-
-        if (!view.segmentLayer) {
-          view.segmentLayer = new Kinetic.Layer();
-          view.stage.add(view.segmentLayer);
-          view.segmentLayer.moveToTop();
-        }
-
-        markerGroup.waveformShape = new Kinetic.Line({
-          points: [0, 0, 0, view.height],
-          stroke: "a0a0a0",
-          strokeWidth: 1
-        });
-
-        markerGroup.add(markerGroup.waveformShape);
-
-        view.segmentLayer.add(markerGroup);
-        view.segmentLayer.draw();
-      }
-
-      marker.zoom = markerZoomGroup;
-      marker.zoom.view = waveformView.waveformZoomView;
-      marker.overview = markerOverviewGroup;
-      marker.overview.view = waveformView.waveformOverview;
-
-      console.log("In Marker", marker, "startTime", startTime);
-
-      return marker;
-    };
-
-    this.setSegmentOutMarker = function(endTime) {
-
-    };*/
-
-    // EVENTS ====================================================
   };
 });
