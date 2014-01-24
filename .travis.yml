@@ -18,6 +18,7 @@ before_install:
   - rvm install ruby-2.0.0-p353 && rvm use 2.0.0
   - gem install bundle
   - bundle install
+  - bower install
 
 before_script:
   - grunt build

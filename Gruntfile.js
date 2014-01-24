@@ -171,5 +171,6 @@ module.exports = function(grunt) {
 
   // Build the project by default
   grunt.registerTask('default', ['build']);
+  grunt.registerTask('')
 
 };
