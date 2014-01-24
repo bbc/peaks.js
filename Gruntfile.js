@@ -126,22 +126,6 @@ module.exports = function(grunt) {
       options: {
         logConcurrentOutput: true
       }
-    },
-
-    karma: {
-      options: {
-        configFile: 'karma.conf.js'
-      },
-      unit: {
-        //background: false,
-        singleRun: true,
-        browsers: ['Chrome']
-      },
-      ci: {
-        singleRun: true,
-        browsers: ['Chrome'] // Chrome rather than Phantom due to https://github.com/ariya/phantomjs/wiki/Supported-Web-Standards
-      }
-
     }
 
   });
@@ -158,8 +142,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bower-install');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-concurrent');
-
-  grunt.loadNpmTasks('grunt-karma');
 
 
   // Reqister task names
@@ -189,8 +171,5 @@ module.exports = function(grunt) {
 
   // Build the project by default
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('')
-
-  grunt.registerTask('test', ['karma:ci']);
 
 };
