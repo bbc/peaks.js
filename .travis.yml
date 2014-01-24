@@ -15,5 +15,6 @@ cache:
 
 before_script:
   - npm install -g grunt-cli bower
+  - bundle install
   - bower install
   - grunt build
