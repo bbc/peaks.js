@@ -72,8 +72,8 @@ module.exports = function (config) {
       'SauceChrome': {
         base: 'SauceLabs',
         browserName: 'chrome',
-        platform: 'Windows 7',
-        version: '26'
+        platform: 'OS X 10.6',
+        version: '27'
       },
       'SauceFirefox': {
         base: 'SauceLabs',
