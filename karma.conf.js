@@ -5,15 +5,6 @@ module.exports = function (config) {
     // base path, that will be used to resolve files and exclude
     basePath : '',
 
-    plugins: [
-      'karma-jasmine',
-      'karma-requirejs',
-      'karma-html2js-preprocessor',
-      'karma-phantomjs-launcher',
-      'karma-chrome-launcher',
-      'karma-firefox-launcher'
-    ],
-
     frameworks : ['jasmine', 'requirejs'],
 
     // list of files / patterns to load in the browser

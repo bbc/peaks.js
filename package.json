@@ -4,11 +4,14 @@
   "description": "Frontend app for displaying audio waveforms",
   "main": "./lib/js/main.js",
   "author": "Chris Finch <chris.finch@bbc.co.uk> (http://github.com/chrisfinch)",
-  "repository" : {
-    "type" : "git",
-    "url" : "http://github.com/bbcrd/peaks.js.git"
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/bbcrd/peaks.js.git"
   },
   "license": "LGPL 3",
+  "scripts": {
+    "test-watch": "karma start --auto-watch --no-single-run"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-connect": "~0.3.0",
@@ -31,6 +34,7 @@
     "karma-coffee-preprocessor": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma": "~0.10.1",
-    "karma-browserify": "0.0.4"
+    "karma-browserify": "0.0.4",
+    "karma-safari-launcher": "~0.1.1"
   }
 }
