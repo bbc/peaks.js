@@ -29,7 +29,7 @@
         var require = {
           baseUrl: "lib/js/",
           paths: {
-            "WaveformData": "/bower_components/waveform-data/dist/waveform-data.min",
+            "waveform-data": "/bower_components/waveform-data/dist/waveform-data.min",
             "EventEmitter": "/bower_components/eventEmitter/EventEmitter",
             "jquery": "/bower_components/jquery/jquery"
           }
@@ -43,8 +43,6 @@
       $(function () {
 
         require(['main'], function (peaks) {
-
-          peaks = peaks;
 
           peaks.init({
             container: document.getElementById('waveform-visualiser-container'),

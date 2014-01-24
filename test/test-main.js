@@ -13,7 +13,7 @@ requirejs.config({
 
     paths: {
         'm': 'waveform_viewer',
-        'waveform-data': '../../bower_components/waveform-data/dist/waveform-data.all',
+        'waveform-data': '../../bower_components/waveform-data/dist/waveform-data',
         'EventEmitter': '../../bower_components/eventEmitter/EventEmitter.min',
         'jquery': '../../bower_components/jquery/jquery',
         'underscore': '../../bower_components/lodash/dist/lodash.compat',
@@ -23,9 +23,6 @@ requirejs.config({
     shim: {
         'underscore': {
             exports: '_'
-        },
-        "waveform-data": {
-          exports: "WaveformData"
         }
     },
 

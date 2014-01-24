@@ -56,7 +56,7 @@ module.exports = function(grunt) {
           out: "build/js/peaks.min.js",
           optimize: "none",
           paths: {
-            "WaveformData": "../../bower_components/waveform-data/dist/waveform-data.min",
+            "waveform-data": "../../bower_components/waveform-data/dist/waveform-data.min",
             "EventEmitter": "../../bower_components/eventEmitter/EventEmitter",
             "jquery": "../../bower_components/jquery/jquery",
             "m": "waveform_viewer"

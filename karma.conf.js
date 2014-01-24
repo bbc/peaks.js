@@ -23,7 +23,7 @@ module.exports = function (config) {
       { pattern: 'bower_components/jquery/jquery.js', included: true },
       { pattern: 'test/lib/jasmine-jquery.js', included: true },
       { pattern: 'bower_components/eventEmitter/EventEmitter.min.js', included: false },
-      { pattern: 'bower_components/waveform-data/dist/waveform-data.all.js', included: false },
+      { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
       { pattern: 'bower_components/lodash/dist/lodash.compat.js', included: false },
       { pattern: 'bower_components/KineticJS/index.js', included: false },
       //'build/js/peaks.min.js',
