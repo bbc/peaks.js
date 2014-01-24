@@ -60,12 +60,71 @@ module.exports = function (config) {
     // - IE (only Windows)
     browsers : ['Chrome', 'Safari', 'Firefox'],
 
+    sauceLabs: {
+      username: process.env.SAUCE_USERNAME,
+      accessKey: process.env.SAUCE_ACCESS_KEY,
+      build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',
+      testName: 'peaks.js (by R&D IRFS)',
+      startConnect: true
+    },
+
+    customLaunchers: {
+      'SauceChrome': {
+        base: 'SauceLabs',
+        browserName: 'chrome',
+        platform: 'Windows 7',
+        version: '26'
+      },
+      'SauceFirefox': {
+        base: 'SauceLabs',
+        browserName: 'firefox',
+        platform: 'Windows 7',
+        version: '21'
+      },
+      'SauceFirefoxLinux': {
+        base: 'SauceLabs',
+        browserName: 'firefox',
+        platform: 'Linux',
+        version: '26'
+      },
+      'SauceSafari6': {
+        base: 'SauceLabs',
+        browserName: 'safari',
+        platform: 'OS X 10.8',
+        version: '6'
+      },
+      'SauceSafari7': {
+        base: 'SauceLabs',
+        browserName: 'safari',
+        platform: 'OS X 10.9',
+        version: '7'
+      },
+      'SauceIE9': {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 7',
+        version: '9'
+      },
+      'SauceIE10': {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 8',
+        version: '10'
+      },
+      'SauceIE11': {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 8.1',
+        version: '11'
+      }
+    },
+
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout : 5000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun : false,
+    singleRun : false
 
   });
 };

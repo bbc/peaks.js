@@ -14,9 +14,11 @@
   },
   "license": "LGPL 3",
   "scripts": {
-    "test-watch": "karma start --auto-watch --no-single-run --browsers Chrome",
-    "test-all": "karma start --single-run",
-    "test": "karma start --single-run --browsers Firefox"
+    "test": "npm run test-pre && npm run test-remote",
+    "test-pre": "grunt jshint",
+    "test-remote": "karma start --single-run --browsers SauceChrome,SauceFirefox,SauceFirefoxLinux,SauceSafari6,SauceSafari7,SauceIE9,SauceIE10,SauceIE11",
+    "test-local": "karma start --single-run",
+    "test-watch": "karma start --auto-watch --no-single-run --browsers Chrome"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -40,8 +42,9 @@
     "karma-coffee-preprocessor": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma": "~0.10.1",
+    "grunt-karma": "~0.6.1",
     "karma-browserify": "0.0.4",
-    "karma-safari-launcher": "~0.1.1",
-    "karma-sinon": "~1.0.0"
+    "karma-sauce-launcher": "~0.1.8",
+    "karma-safari-launcher": "~0.1.1"
   }
 }
