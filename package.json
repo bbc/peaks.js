@@ -10,7 +10,8 @@
   },
   "license": "LGPL 3",
   "scripts": {
-    "test-watch": "karma start --auto-watch --no-single-run"
+    "test-watch": "karma start --auto-watch --no-single-run --browsers Chrome",
+    "test-all": "karma start --single-run"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
