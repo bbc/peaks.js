@@ -91,10 +91,10 @@ module.exports = function(grunt) {
     // Install bower dependencies where necessary and automagically include script tags
     'bower-install': {
       dev: {
-        html: 'demo_page_dev.html', // Only allows one file so DEV page is currently copy-pasted from demo page..
+        src: 'demo_page_dev.html' // Only allows one file so DEV page is currently copy-pasted from demo page..
       },
       demo: {
-        html: 'demo_page.html', // Only allows one file so DEV page is currently copy-pasted from demo page..
+        src: 'demo_page.html' // Only allows one file so DEV page is currently copy-pasted from demo page..
       }
     },
 
@@ -189,6 +189,7 @@ module.exports = function(grunt) {
 
   // Build the project by default
   grunt.registerTask('default', ['build']);
+  grunt.registerTask('')
 
   grunt.registerTask('test', ['karma:ci']);
 
