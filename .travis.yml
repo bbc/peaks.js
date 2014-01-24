@@ -13,8 +13,11 @@ cache:
     - node_modules
     - bower_components
 
-before_script:
+before_install:
   - npm install -g grunt-cli bower
+  - rvm install ruby-2.0.0-p353 && rvm use 2.0.0
+  - gem install bundle
   - bundle install
-  - bower install
+
+before_script:
   - grunt build
