@@ -36,6 +36,7 @@
     "karma-phantomjs-launcher": "~0.1.0",
     "karma": "~0.10.1",
     "karma-browserify": "0.0.4",
-    "karma-safari-launcher": "~0.1.1"
+    "karma-safari-launcher": "~0.1.1",
+    "karma-sinon": "~1.0.0"
   }
 }
