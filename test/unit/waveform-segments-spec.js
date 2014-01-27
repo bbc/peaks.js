@@ -60,19 +60,26 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(peaks, $,  _, Kinet
       });
 
       it("should accept an array of Segment objects", function(){
-        var stub = sandbox.stub(peaks.waveform.segments, 'createSegment');
+        var spy = sandbox.spy(peaks.waveform.segments, 'createSegment');
 
         peaks.segments.addSegment([
           { startTime: 0, endTime: 10, editable: false },
           { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'}
         ]);
 
-        expect(stub.calledTwice).toBe(true);
-        expect(stub.args[1]).toEqual([10, 20, true, 'rgba(255, 161, 39, 1)', 'dummy text']);
+        expect(spy.calledTwice).toBe(true);
+        expect(spy.args[1]).toEqual([10, 20, true, 'rgba(255, 161, 39, 1)', 'dummy text']);
       });
 
       it("should paint once, and not after each segment addition", function(){
-        // stub/spy the drawing element
+        var spy = sandbox.spy(peaks.waveform.segments.views[0].segmentLayer, 'draw');
+
+        peaks.segments.addSegment([
+          { startTime: 0, endTime: 10, editable: false },
+          { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'}
+        ]);
+
+        expect(spy.calledOnce).toBe(true);    // currently called as many times as we have segments
       });
     });
   });
