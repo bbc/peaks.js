@@ -211,3 +211,5 @@ Copyright
 =========
 
 Copyright 2013 British Broadcasting Corporation
+
+The [test data sample](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac) is distributed under the Creative Commons 3.0 Unported License.

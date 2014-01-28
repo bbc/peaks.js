@@ -18,7 +18,7 @@ define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(boot
 
       runs(function () {
         fixtures.load('audioElement.html.js');
-        $("#audioElement")[0].src = 'base/test_data/sample.mp3';
+        $("#audioElement")[0].src = 'base/test_data/sample.wav';
       });
 
       waitsFor(function () {
