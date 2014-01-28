@@ -2,11 +2,7 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
 
   describe("Peaks API interface", function () {
 
-    var Peaks;
-
-    var fixtures = jasmine.getFixtures();
-    fixtures.fixturesPath = 'base/test/';
-    fixtures.preload('audioElement.html.js');
+    var Peaks, fixtures;
 
     /**
      * SETUP =========================================================
@@ -16,16 +12,11 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
 
       var ready = false, audioEl;
 
-      runs(function () {
-        fixtures.load('audioElement.html.js');
-        $("#audioElement")[0].src = 'base/test_data/sample.wav';
-      });
+        fixtures = document.createElement('div');
+        fixtures.id = 'karma-fixtures';
+        fixtures.innerHTML = window.__html__['test/audioElement.html'];
+        document.body.appendChild(fixtures);
 
-      waitsFor(function () {
-        return $("#audioElement")[0].readyState == 4;
-      }, "Audio Element should have loaded", 60000);
-
-      runs(function () {
 
         Peaks = $.extend({}, originalPeaks);
 
@@ -37,23 +28,6 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
                   height: 240
                 });
 
-        setTimeout(function () { // Should be reworked so that Peaks emits a ready event
-          ready = true;
-        }, 3000);
-      });
-
-      waitsFor(function () {
-        return ready;
-      }, "Peaks should initialise", 4000);
-
-      runs(function () {
-        $("#audioElement")[0].play();
-      });
-
-      waitsFor(function () {
-        return $("#audioElement")[0].currentTime > 0;
-      }, "AudioElement should play for a bit", 1000);
-
     });
 
     /**
@@ -62,8 +36,7 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
 
     afterEach(function () {
       Peaks = null;
-      $("#audioElement")[0].pause();
-      $("#audioElement")[0].src = '';
+      document.body.removeChild(fixtures);
     });
 
     /**
@@ -75,19 +48,9 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
     });
 
     it("should return the correct time for time.getCurrentTime()", function () {
-      expect(Peaks.time.getCurrentTime()).toBeGreaterThan(0);
+      Peaks.player.player.currentTime = 6;
 
-      runs(function () {
-        $('#audioElement')[0].play();
-      });
-
-      waitsFor(function () {
-        return $("#audioElement")[0].currentTime > 1;
-      }, "Audio Element should have played", 60000);
-
-      runs(function () {
-        expect(Peaks.time.getCurrentTime()).toBeGreaterThan(1);
-      });
+      expect(Peaks.time.getCurrentTime()).toEqual(6);
     });
 
     it("should be able to set and return the zoom level", function () {

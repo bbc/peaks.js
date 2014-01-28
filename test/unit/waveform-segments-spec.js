@@ -2,24 +2,23 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(peaks, $,  _, Kinet
 
   describe("player/waveform/waveform.segments", function () {
 
-    var fixtures = jasmine.getFixtures();
-    fixtures.fixturesPath = 'base/test/';
-    fixtures.preload('audioElement.html.js');
-
-    var sandbox;
+    var fixtures, sandbox;
 
     beforeEach(function(){
       var ready = false;
+
       sandbox = sinon.sandbox.create();
 
       runs(function () {
-        fixtures.load('audioElement.html.js');
-        $("#audioElement")[0].src = 'base/test_data/sample.wav';
+        fixtures = document.createElement('div');
+        fixtures.id = 'karma-fixtures';
+        fixtures.innerHTML = window.__html__['test/audioElement.html'];
+        document.body.appendChild(fixtures);
       });
 
       waitsFor(function () {
-        return $("#audioElement")[0].readyState == 4;
-      }, "Audio Element should have loaded", 5000);
+        return document.getElementById('audioElement').readyState === 4;
+      }, "Audio Element should have loaded", 2000);
 
       runs(function () {
         peaks.init({
@@ -41,11 +40,7 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(peaks, $,  _, Kinet
     });
 
     afterEach(function(){
-      var audioElement = document.getElementById("audioElement");
-
-      audioElement.pause();
-      audioElement.src = '';
-
+      document.body.removeChild(fixtures);
       sandbox.restore();
     });
 

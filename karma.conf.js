@@ -12,7 +12,6 @@ module.exports = function (config) {
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'bower_components/jquery/jquery.js', included: true },
-      { pattern: 'test/lib/jasmine-jquery.js', included: true },
       { pattern: 'bower_components/eventEmitter/EventEmitter.min.js', included: false },
       { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
       { pattern: 'bower_components/lodash/dist/lodash.compat.js', included: false },
@@ -21,11 +20,16 @@ module.exports = function (config) {
       //'lib/js/almond.js',
       //'lib/vendor/require.js',
       //'test/fixtures.js',
+      { pattern: 'test/audioElement.html' },
       { pattern: 'lib/js/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
-      { pattern: 'test/audioElement.html', included: false },
+      { pattern: 'test_data/sample.wav', included: false, served: true },
       'test/test-main.js'
     ],
+
+    preprocessors: {
+      'test/audioElement.html': ['html2js']
+    },
 
     // list of files to exclude
     //exclude : ['lib/js/main.js'],

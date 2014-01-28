@@ -2,11 +2,7 @@ define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(boot
 
   describe("m/player/player", function () {
 
-    var Peaks, sandbox;
-
-    var fixtures = jasmine.getFixtures();
-    fixtures.fixturesPath = 'base/test/';
-    fixtures.preload('audioElement.html.js');
+    var Peaks, sandbox, fixtures;
 
     /**
      * SETUP =========================================================
@@ -17,13 +13,15 @@ define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(boot
       var ready = false;
 
       runs(function () {
-        fixtures.load('audioElement.html.js');
-        $("#audioElement")[0].src = 'base/test_data/sample.wav';
+        fixtures = document.createElement('div');
+        fixtures.id = 'karma-fixtures';
+        fixtures.innerHTML = window.__html__['test/audioElement.html'];
+        document.body.appendChild(fixtures);
       });
 
       waitsFor(function () {
-        return $("#audioElement")[0].readyState == 4;
-      }, "Audio Element should have loaded", 60000);
+        return document.getElementById('audioElement').readyState === 4;
+      }, "Audio Element should have loaded", 2000);
 
       runs(function () {
 
@@ -54,8 +52,8 @@ define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(boot
 
     afterEach(function () {
       Peaks = null;
-      $("#audioElement")[0].src = '';
 
+      document.body.removeChild(fixtures);
       sandbox.restore();
     });
 
