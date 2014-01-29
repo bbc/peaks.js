@@ -5,7 +5,7 @@ module.exports = function (config) {
     // base path, that will be used to resolve files and exclude
     basePath : '',
 
-    frameworks : ['jasmine', 'requirejs', 'sinon'],
+    frameworks : ['mocha', 'requirejs', 'chai', 'sinon'],
 
     // list of files / patterns to load in the browser
     files : [
@@ -16,19 +16,16 @@ module.exports = function (config) {
       { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
       { pattern: 'bower_components/lodash/dist/lodash.compat.js', included: false },
       { pattern: 'bower_components/KineticJS/index.js', included: false },
-      //'build/js/peaks.min.js',
-      //'lib/js/almond.js',
-      //'lib/vendor/require.js',
-      //'test/fixtures.js',
-      { pattern: 'test/audioElement.html' },
+      { pattern: 'test/*.html' },
       { pattern: 'lib/js/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
-      { pattern: 'test_data/sample.wav', included: false, served: true },
+      { pattern: 'test_data/sample.ogg', included: false, served: true },
+      { pattern: 'test_data/sample.mp3', included: false, served: true },
       'test/test-main.js'
     ],
 
     preprocessors: {
-      'test/audioElement.html': ['html2js']
+      'test/*.html': ['html2js']
     },
 
     // list of files to exclude
