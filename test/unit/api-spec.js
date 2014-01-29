@@ -1,7 +1,7 @@
-define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _, Kinetic){
+define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
   describe("Peaks API interface", function () {
 
-    var Peaks, fixtures;
+    var fixtures;
 
     /**
      * SETUP =========================================================
@@ -9,7 +9,6 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
 
     beforeEach(function (done) {
       fixtures = loadFixtures('waveformContainer');
-      Peaks = $.extend({}, originalPeaks);
 
       Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
@@ -27,9 +26,7 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
      */
 
     afterEach(function (done) {
-      Peaks = null;
       document.body.removeChild(fixtures);
-
       setTimeout(done, 200);
     });
 
