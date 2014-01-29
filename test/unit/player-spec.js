@@ -1,12 +1,11 @@
-define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(bootstrap, originalPeaks, $, _, Kinetic){
+define(['m/bootstrap', 'main', 'underscore', 'Kinetic'], function(bootstrap, Peaks, _, Kinetic){
 
   describe("m/player/player", function () {
 
-    var Peaks, sandbox, fixtures;
+    var sandbox, fixtures;
 
     beforeEach(function (done) {
       fixtures = loadFixtures('waveformContainer');
-      Peaks = $.extend({}, originalPeaks);
       sandbox = sinon.sandbox.create();
 
       Peaks.init({
@@ -21,8 +20,6 @@ define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(boot
     });
 
     afterEach(function () {
-      Peaks = null;
-
       document.body.removeChild(fixtures);
       sandbox.restore();
     });

@@ -1,4 +1,4 @@
-define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $,  _, Kinetic){
+define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
   describe("player/waveform/waveform.segments", function () {
 
@@ -6,7 +6,6 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $,  
 
     beforeEach(function (done) {
       fixtures = loadFixtures('waveformContainer');
-      Peaks = $.extend({}, originalPeaks);
       sandbox = sinon.sandbox.create();
 
       Peaks.init({
@@ -21,7 +20,6 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $,  
     });
 
     afterEach(function(){
-      Peaks = null;
       document.body.removeChild(fixtures);
       sandbox.restore();
     });

@@ -26,7 +26,6 @@ requirejs.config({
         'm': 'waveform_viewer',
         'waveform-data': '../../bower_components/waveform-data/dist/waveform-data',
         'EventEmitter': '../../bower_components/eventEmitter/EventEmitter.min',
-        'jquery': '../../bower_components/jquery/jquery',
         'underscore': '../../bower_components/lodash/dist/lodash.compat',
         'Kinetic': '../../bower_components/KineticJS/index'
     },
