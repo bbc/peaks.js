@@ -1,0 +1,25 @@
+language: node_js
+node_js: "0.10"
+
+addons:
+  sauce_connect:
+    username:
+      secure: "jZ0zV+LtAjGOHTib16F4Rmz/3BLApcp3PW6nnLLC/acAJxOnPkDAOV7Kp7MIPa10OxUPIqfH1kvRPt5jx8z596SgliOx3V25e3Oo7nZWSv9nZxy6aj/DSU441FFrdt/vl1E+KP2olxLJvuICBF7enxTWXZkOj1LrYlDWH91o/4o="
+    access_key:
+      secure: "F5mZrwGkDaw+02CLvem5x3nDON07XvxWq+n+t2a6+9odjGeyNiE+N56mTn5xLToWDbSGEZ/HlSwfa5l/0zgJL7ZvVfz2kQQQ+tI8+9GkWWKwgT8XnOSEObXOF+LFVhG+xPmmlfv7evcxJhZjUnE8n2TlUO8b2slfbXLTstqlLYc="
+
+cache:
+  bundler: true
+  directories:
+    - node_modules
+    - bower_components
+
+before_install:
+  - npm install -g grunt-cli bower
+  - rvm install ruby-2.0.0-p353 && rvm use 2.0.0
+  - gem install bundle
+  - bundle install
+  - bower install
+
+before_script:
+  - grunt build

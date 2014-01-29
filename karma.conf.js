@@ -5,27 +5,28 @@ module.exports = function (config) {
     // base path, that will be used to resolve files and exclude
     basePath : '',
 
-    frameworks : ['jasmine', 'requirejs', 'sinon'],
+    frameworks : ['mocha', 'requirejs', 'chai', 'sinon'],
 
     // list of files / patterns to load in the browser
     files : [
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'bower_components/jquery/jquery.js', included: true },
-      { pattern: 'test/lib/jasmine-jquery.js', included: true },
       { pattern: 'bower_components/eventEmitter/EventEmitter.min.js', included: false },
       { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
       { pattern: 'bower_components/lodash/dist/lodash.compat.js', included: false },
       { pattern: 'bower_components/KineticJS/index.js', included: false },
-      //'build/js/peaks.min.js',
-      //'lib/js/almond.js',
-      //'lib/vendor/require.js',
-      //'test/fixtures.js',
+      { pattern: 'test/*.html' },
       { pattern: 'lib/js/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
-      { pattern: 'test/audioElement.html', included: false },
+      { pattern: 'test_data/sample.ogg', included: false, served: true },
+      { pattern: 'test_data/sample.mp3', included: false, served: true },
       'test/test-main.js'
     ],
+
+    preprocessors: {
+      'test/*.html': ['html2js']
+    },
 
     // list of files to exclude
     //exclude : ['lib/js/main.js'],
@@ -60,12 +61,71 @@ module.exports = function (config) {
     // - IE (only Windows)
     browsers : ['Chrome', 'Safari', 'Firefox'],
 
+    sauceLabs: {
+      username: process.env.SAUCE_USERNAME,
+      accessKey: process.env.SAUCE_ACCESS_KEY,
+      build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',
+      testName: 'peaks.js (by R&D IRFS)',
+      startConnect: true
+    },
+
+    customLaunchers: {
+      'SauceChrome': {
+        base: 'SauceLabs',
+        browserName: 'chrome',
+        platform: 'OS X 10.6',
+        version: '27'
+      },
+      'SauceFirefox': {
+        base: 'SauceLabs',
+        browserName: 'firefox',
+        platform: 'Windows 7',
+        version: '21'
+      },
+      'SauceFirefoxLinux': {
+        base: 'SauceLabs',
+        browserName: 'firefox',
+        platform: 'Linux',
+        version: '26'
+      },
+      'SauceSafari6': {
+        base: 'SauceLabs',
+        browserName: 'safari',
+        platform: 'OS X 10.8',
+        version: '6'
+      },
+      'SauceSafari7': {
+        base: 'SauceLabs',
+        browserName: 'safari',
+        platform: 'OS X 10.9',
+        version: '7'
+      },
+      'SauceIE9': {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 7',
+        version: '9'
+      },
+      'SauceIE10': {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 8',
+        version: '10'
+      },
+      'SauceIE11': {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 8.1',
+        version: '11'
+      }
+    },
+
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout : 5000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun : false,
+    singleRun : false
 
   });
 };

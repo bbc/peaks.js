@@ -1,69 +1,36 @@
 define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _, Kinetic){
-
   describe("Peaks API interface", function () {
 
-    var Peaks;
-
-    var fixtures = jasmine.getFixtures();
-    fixtures.fixturesPath = 'base/test/';
-    fixtures.preload('audioElement.html.js');
+    var Peaks, fixtures;
 
     /**
      * SETUP =========================================================
      */
 
-    beforeEach(function () {
+    beforeEach(function (done) {
+      fixtures = loadFixtures('waveformContainer');
+      Peaks = $.extend({}, originalPeaks);
 
-      var ready = false, audioEl;
-
-      runs(function () {
-        fixtures.load('audioElement.html.js');
-        $("#audioElement")[0].src = 'base/test_data/sample.mp3';
+      Peaks.init({
+        container: document.getElementById('waveform-visualiser-container'),
+        audioElement: document.querySelector('audio'),
+        dataUri: 'base/test_data/sample.dat',
+        keyboard: true,
+        height: 240
       });
 
-      waitsFor(function () {
-        return $("#audioElement")[0].readyState == 4;
-      }, "Audio Element should have loaded", 60000);
-
-      runs(function () {
-
-        Peaks = $.extend({}, originalPeaks);
-
-        Peaks.init({
-                  container: document.getElementById('waveform-visualiser-container'),
-                  audioElement: $('#audioElement')[0],
-                  dataUri: 'base/test_data/sample.dat',
-                  keyboard: true,
-                  height: 240
-                });
-
-        setTimeout(function () { // Should be reworked so that Peaks emits a ready event
-          ready = true;
-        }, 3000);
-      });
-
-      waitsFor(function () {
-        return ready;
-      }, "Peaks should initialise", 4000);
-
-      runs(function () {
-        $("#audioElement")[0].play();
-      });
-
-      waitsFor(function () {
-        return $("#audioElement")[0].currentTime > 0;
-      }, "AudioElement should play for a bit", 1000);
-
+      setTimeout(done, 500);
     });
 
     /**
      * TEARDOWN ======================================================
      */
 
-    afterEach(function () {
+    afterEach(function (done) {
       Peaks = null;
-      $("#audioElement")[0].pause();
-      $("#audioElement")[0].src = '';
+      document.body.removeChild(fixtures);
+
+      setTimeout(done, 200);
     });
 
     /**
@@ -71,53 +38,29 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
      */
 
     it("should load the API", function () {
-      expect(typeof Peaks).toEqual("object");
+      expect(Peaks).to.be.an("object");
     });
 
-    it("should return the correct time for time.getCurrentTime()", function () {
-      expect(Peaks.time.getCurrentTime()).toBeGreaterThan(0);
+    //@see https://github.com/bbcrd/peaks.js/issues/9
+    xit("should return the correct time for time.getCurrentTime()", function (done) {
+      //Peaks.player.player.currentTime = 6;
+      document.querySelector('audio').currentTime = 6;
 
-      runs(function () {
-        $('#audioElement')[0].play();
-      });
-
-      waitsFor(function () {
-        return $("#audioElement")[0].currentTime > 1;
-      }, "Audio Element should have played", 60000);
-
-      runs(function () {
-        expect(Peaks.time.getCurrentTime()).toBeGreaterThan(1);
-      });
+      setTimeout(function(){
+        expect(Peaks.time.getCurrentTime()).to.equal(6);
+        done();
+      }, 500);
     });
 
     it("should be able to set and return the zoom level", function () {
+      expect(Peaks.zoom.getZoom()).to.equal(0);
 
-      /**
-       * TODO: Image test zooming functionality
-       */
+      Peaks.zoom.setZoom(1);
 
-      expect(Peaks.zoom.getZoom()).toEqual(0);
-
-      var zoomed = false;
-
-      runs(function () {
-        Peaks.zoom.setZoom(3);
-        setTimeout(function () {
-          zoomed = true;
-        }, 1000);
-      });
-
-      waitsFor(function () {
-        return zoomed;
-      }, "Should have time to emit async zoom event", 20000);
-
-      runs(function () {
-        expect(Peaks.zoom.getZoom()).toEqual(3);
-      });
-
+      expect(Peaks.zoom.getZoom()).to.equal(1);
     });
 
-    it("should be able to add and return segments", function () {
+    it("should be able to add and return segments", function (done) {
 
       var testSeg = {
         startTime: 10,
@@ -125,24 +68,20 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
         editable: false
       };
 
-      runs(function () {
-        Peaks.segments.addSegment(testSeg.startTime, testSeg.endTime, testSeg.editable);
-      });
+      Peaks.segments.addSegment([testSeg]);
 
-      waitsFor(function () {
-        return Peaks.segments.getSegments().length > 0;
-      }, "wait for segments to be returned", 3000);
-
-      runs(function () {
+      setTimeout(function(){
         var segments = Peaks.segments.getSegments();
-        expect(segments.length).toEqual(1);
-        expect(segments[0].startTime).toEqual(testSeg.startTime);
-        expect(segments[0].endTime).toEqual(testSeg.endTime);
-      });
 
+        expect(segments).to.have.length.of(1);
+        expect(segments[0].startTime).to.equal(testSeg.startTime);
+        expect(segments[0].endTime).to.equal(testSeg.endTime);
+
+        done();
+      }, 300);
     });
 
-    it("should display the correct waveform for the test data", function () {
+    xit("should display the correct waveform for the test data", function () {
 
       var zoomCanvas, sourceImageData, testImgOne, testImgTwo;
 
