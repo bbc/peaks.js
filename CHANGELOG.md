@@ -1,6 +1,15 @@
 # Peaks.js Changelog
 
 
+## 0.0.3
+
+Delivering a fix for playhead sync within the zoom view and an improved Internet Explorer compatibility.
+
+Continuous Integration is now performed with [TravisCI](https://travis-ci.org/bbcrd/peaks.js) and [SauceLabs](http://saucelabs.com/).
+
+- [#16](https://github.com/bbcrd/peaks.js/issue/16): IE9: Unable to get value of the property 'createSegment': object is null or undefined
+- [#17](https://github.com/bbcrd/peaks.js/issue/17): Moving the playhead in views should update the audio element currentTime
+
 ## 0.0.2
 
 You can now manage hundreds of segments without encountering a performance hit in your interface!

@@ -8,13 +8,9 @@
         \/_/    \/___/  \/_/\/_/\/_/\/_/ \/_____/\/_/\/___/  \/_____/
 ```
 
-# PEAKS.JS
+# PEAKS.JS [![Build Status](https://travis-ci.org/bbcrd/peaks.js.png?branch=master)](https://travis-ci.org/bbcrd/peaks.js)
 
-## A browser based audio waveform visualisation frontend component from BBC R&D
-
-### By Chris Finch, Thomas Parisot and Chris Needham.
-
----------------------------------------
+> A browser based audio waveform visualisation frontend component from BBC R&D
 
 Peaks is a modular frontend component designed for the display of and interaction with audio waveform material in the browser.
 
@@ -54,78 +50,78 @@ Make sure you have [node.js](http://nodejs.org/) with [npm](https://npmjs.org/) 
 
 * Add a containing element to your page:
 
-      <div id="peaks-container">
-
-      </div>
+```html
+<div id="peaks-container"></div>
+```
 
 ### Configuration
 
 The available options for configuration of the viewer are as follows:
 
 ```javascript
-    var options = {
-      /** REQUIRED OPTIONS **/
-      // Containing element
-      container: document.getElementById('peaks-container'),
-      // HTML5 Audio element for audio track
-      audioElement: document.getElementById('audio'),
-      // URI to waveform data file in binary or JSON
-      dataUri: '../test_data/sample.dat',
+var options = {
+  /** REQUIRED OPTIONS **/
+  // Containing element
+  container: document.getElementById('peaks-container'),
+  // HTML5 Audio element for audio track
+  audioElement: document.getElementById('audio'),
+  // URI to waveform data file in binary or JSON
+  dataUri: '../test_data/sample.dat',
 
-      /** Optional config with defaults **/
-      // height of the waveform canvases in pixels
-      height: 200,
-      // Array of zoom levels in samples per pixel (big >> small)
-      zoomLevels: [512, 1024, 2048, 4096],
-      // Bind keyboard controls
-      keyboard: false,
-      // Keyboard nudge increment in seconds (left arrow/right arrow)
-      nudgeIncrement: 0.01,
-      // Colour for the in marker of segments
-      inMarkerColor: '#a0a0a0',
-      // Colour for the out marker of segments
-      outMarkerColor: '#a0a0a0',
-      // Colour for the zoomed in waveform
-      zoomWaveformColor: 'rgba(0, 225, 128, 1)',
-      // Colour for the overview waveform
-      overviewWaveformColor: 'rgba(0,0,0,0.2)',
-      // Colour for segments on the waveform
-      segmentColor: 'rgba(255, 161, 39, 1)',
-      // Random colour per segment (overrides segmentColor)
-      randomizeSegmentColor: true,
+  /** Optional config with defaults **/
+  // height of the waveform canvases in pixels
+  height: 200,
+  // Array of zoom levels in samples per pixel (big >> small)
+  zoomLevels: [512, 1024, 2048, 4096],
+  // Bind keyboard controls
+  keyboard: false,
+  // Keyboard nudge increment in seconds (left arrow/right arrow)
+  nudgeIncrement: 0.01,
+  // Colour for the in marker of segments
+  inMarkerColor: '#a0a0a0',
+  // Colour for the out marker of segments
+  outMarkerColor: '#a0a0a0',
+  // Colour for the zoomed in waveform
+  zoomWaveformColor: 'rgba(0, 225, 128, 1)',
+  // Colour for the overview waveform
+  overviewWaveformColor: 'rgba(0,0,0,0.2)',
+  // Colour for segments on the waveform
+  segmentColor: 'rgba(255, 161, 39, 1)',
+  // Random colour per segment (overrides segmentColor)
+  randomizeSegmentColor: true,
 
-      // Array of initial segment objects with startTime and
-      // endTime in seconds and a boolean for editable
-      segments: [{
-        startTime: 120,
-        endTime: 140,
-        editable: true,
-        color: "#ff0000",
-        labelText: "My label"
-      },
-      {
-        startTime: 220,
-        endTime: 240,
-        editable: false,
-        color: "#00ff00",
-        labelText: "My Second label"
-      }]
-    }
+  // Array of initial segment objects with startTime and
+  // endTime in seconds and a boolean for editable
+  segments: [{
+    startTime: 120,
+    endTime: 140,
+    editable: true,
+    color: "#ff0000",
+    labelText: "My label"
+  },
+  {
+    startTime: 220,
+    endTime: 240,
+    editable: false,
+    color: "#00ff00",
+    labelText: "My Second label"
+  }]
+}
 ```
 
 ### Start using require.js
 
 ```javascript
-    require(['path/to/peaks.min'], function (peaks) {
-      peaks.init(options);
-    });
+require(['path/to/peaks.min'], function (peaks) {
+  peaks.init(options);
+});
 ```
 
 ### Start using vanilla JavaScript
 
 ```javascript
-    // On document ready
-    window.peaks.init(options);
+// On document ready
+window.peaks.init(options);
 ```
 
 #### Advanced configuration
@@ -133,11 +129,11 @@ The available options for configuration of the viewer are as follows:
 The marker and label Kinetic.js objects may be overridden to give the segment markers or label your own custom appearance (see main.js / waveform.mixins.js, [Kinetic Polygon Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-polygon-tutorial/) and [Kinetic Text Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-text-tutorial/)) :
 
 ```javascript
-    {
-      segmentInMarker: mixins.defaultInMarker(api.options),
-      segmentOutMarker: mixins.defaultOutMarker(api.options),
-      segmentLabelDraw: mixins.defaultSegmentLabelDraw(api.options)
-    }
+{
+  segmentInMarker: mixins.defaultInMarker(api.options),
+  segmentOutMarker: mixins.defaultOutMarker(api.options),
+  segmentLabelDraw: mixins.defaultSegmentLabelDraw(api.options)
+}
 ```
 
 # API
@@ -160,22 +156,22 @@ The top level peaks object exposes the following API for interaction with the wi
 Segments provided from peaks.js use the following format:
 
 ```javascript
-    [{
-       // Assigned colour of the segment
-      color: "rgba(123, 2, 61, 1)",
-       // Editable state of the segment
-      editable: true,
-       // End time in seconds of the segment
-      endTime: 588.986667,
-       // Unique ID of the segment
-      id: "segment0",
-       // Kinetics.js Element group of segment canvas objects for overview waveform
-      overview: Kinetic.Group,
-       // End time in seconds of the segment
-      startTime: 578.986667,
-       // Kinetics.js Element group of segment canvas objects for overview waveform
-      zoom: Kinetic.Group
-    }]
+[{
+   // Assigned colour of the segment
+  color: "rgba(123, 2, 61, 1)",
+   // Editable state of the segment
+  editable: true,
+   // End time in seconds of the segment
+  endTime: 588.986667,
+   // Unique ID of the segment
+  id: "segment0",
+   // Kinetics.js Element group of segment canvas objects for overview waveform
+  overview: Kinetic.Group,
+   // End time in seconds of the segment
+  startTime: 578.986667,
+   // Kinetics.js Element group of segment canvas objects for overview waveform
+  zoom: Kinetic.Group
+}]
 ```
 
 # Development
@@ -210,6 +206,6 @@ Authors
 Copyright
 =========
 
-Copyright 2013 British Broadcasting Corporation
+Copyright 2014 British Broadcasting Corporation
 
 The [test data sample](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac) is distributed under the Creative Commons 3.0 Unported License.
