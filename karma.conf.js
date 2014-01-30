@@ -19,8 +19,7 @@ module.exports = function (config) {
       { pattern: 'test/*.html' },
       { pattern: 'lib/js/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
-      { pattern: 'test_data/sample.ogg', included: false, served: true },
-      { pattern: 'test_data/sample.mp3', included: false, served: true },
+      { pattern: 'test_data/sample.*', included: false, served: true },
       'test/test-main.js'
     ],
 
