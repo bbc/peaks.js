@@ -42,7 +42,7 @@ define(['main', 'jquery', 'underscore', 'Kinetic'], function(originalPeaks, $, _
     });
 
     //@see https://github.com/bbcrd/peaks.js/issues/9
-    xit("should return the correct time for time.getCurrentTime()", function (done) {
+    it("should return the correct time for time.getCurrentTime()", function (done) {
       //Peaks.player.player.currentTime = 6;
       document.querySelector('audio').currentTime = 6;
 

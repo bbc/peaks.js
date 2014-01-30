@@ -31,9 +31,8 @@ define(['m/bootstrap', 'main', 'jquery', 'underscore', 'Kinetic'], function(boot
       //@see https://github.com/bbcrd/peaks.js/issues/9
       //@see https://github.com/bbcrd/peaks.js/issues/12
       //for some reason, the event is not emitted during the tests
-      xit("should trigger any `waveform_seek` event when changing audio element `currentTime`", function(done){
+      it("should trigger any `waveform_seek` event when changing audio element `currentTime`", function(done){
         var emitterSpy = sandbox.spy(bootstrap.pubsub, 'emit');
-        var syncPlayheadSpy = sandbox.spy(Peaks.waveform.waveformZoomView, 'syncPlayhead');
 
         Peaks.player.player.currentTime = 6;
 
