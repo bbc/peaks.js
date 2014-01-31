@@ -1,7 +1,7 @@
-define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
+define(['main', 'EventEmitter', 'underscore', 'Kinetic'], function(Peaks, EventEmitter, _, Kinetic){
   describe("Peaks API interface", function () {
 
-    var fixtures;
+    var fixtures, p;
 
     /**
      * SETUP =========================================================
@@ -10,7 +10,7 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
     beforeEach(function (done) {
       fixtures = loadFixtures('waveformContainer');
 
-      Peaks.init({
+      p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         audioElement: document.querySelector('audio'),
         dataUri: 'base/test_data/sample.dat',
@@ -34,8 +34,10 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
      * TESTS =========================================================
      */
 
-    it("should load the API", function () {
-      expect(Peaks).to.be.an("object");
+    it("should be a prototyped object inheriting from EventEmitter", function () {
+      expect(Peaks).to.be.a("function");
+      expect(p).to.be.an.instanceOf(Peaks);
+      expect(p).to.be.an.instanceOf(EventEmitter);
     });
 
     //@see https://github.com/bbcrd/peaks.js/issues/9
@@ -44,17 +46,17 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
       document.querySelector('audio').currentTime = 6;
 
       setTimeout(function(){
-        expect(Peaks.time.getCurrentTime()).to.equal(6);
+        expect(p.time.getCurrentTime()).to.equal(6);
         done();
       }, 500);
     });
 
     it("should be able to set and return the zoom level", function () {
-      expect(Peaks.zoom.getZoom()).to.equal(0);
+      expect(p.zoom.getZoom()).to.equal(0);
 
-      Peaks.zoom.setZoom(1);
+      p.zoom.setZoom(1);
 
-      expect(Peaks.zoom.getZoom()).to.equal(1);
+      expect(p.zoom.getZoom()).to.equal(1);
     });
 
     it("should be able to add and return segments", function (done) {
@@ -65,10 +67,10 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
         editable: false
       };
 
-      Peaks.segments.addSegment([testSeg]);
+      p.segments.addSegment([testSeg]);
 
       setTimeout(function(){
-        var segments = Peaks.segments.getSegments();
+        var segments = p.segments.getSegments();
 
         expect(segments).to.have.length.of(1);
         expect(segments[0].startTime).to.equal(testSeg.startTime);

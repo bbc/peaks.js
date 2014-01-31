@@ -2,13 +2,13 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
   describe("player/waveform/waveform.segments", function () {
 
-    var fixtures, sandbox;
+    var fixtures, sandbox, p;
 
     beforeEach(function (done) {
       fixtures = loadFixtures('waveformContainer');
       sandbox = sinon.sandbox.create();
 
-      Peaks.init({
+      p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         audioElement: document.querySelector('audio'),
         dataUri: 'base/test_data/sample.dat',
@@ -26,18 +26,18 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
     describe("addSegment", function(){
       it("should accept spreaded arguments (soon deprecated)", function(){
-        var stub = sandbox.stub(peaks.waveform.segments, 'createSegment');
+        var stub = sandbox.stub(p.waveform.segments, 'createSegment');
 
-        peaks.segments.addSegment(0, 10, false);
+        p.segments.addSegment(0, 10, false);
 
         expect(stub.callCount).to.equal(1);
         expect(stub.args[0]).to.deep.equal([0, 10, false, undefined, undefined]);
       });
 
       it("should accept an array of Segment objects", function(){
-        var spy = sandbox.spy(peaks.waveform.segments, 'createSegment');
+        var spy = sandbox.spy(p.waveform.segments, 'createSegment');
 
-        peaks.segments.addSegment([
+        p.segments.addSegment([
           { startTime: 0, endTime: 10, editable: false },
           { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'}
         ]);
@@ -47,9 +47,9 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
       });
 
       it("should paint once, and not after each segment addition", function(){
-        var spy = sandbox.spy(peaks.waveform.segments.views[0].segmentLayer, 'draw');
+        var spy = sandbox.spy(p.waveform.segments.views[0].segmentLayer, 'draw');
 
-        peaks.segments.addSegment([
+        p.segments.addSegment([
           { startTime: 0, endTime: 10, editable: false },
           { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'}
         ]);
