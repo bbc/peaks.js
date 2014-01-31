@@ -34,24 +34,24 @@
           height: 240
         };
 
-        window.peaks.init(options);
+        var peaksInstance = Peaks.init(options);
 
-        document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaks.zoom.zoomIn.bind(peaks));
-        document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaks.zoom.zoomOut.bind(peaks));
+        document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
+        document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
         document.querySelector("#segment").addEventListener("click", function () {
-          var currentTime = peaks.time.getCurrentTime();
+          var currentTime = peaksInstance.time.getCurrentTime();
           var segment = {
             startTime: currentTime,
             endTime: currentTime + 10,
             segmentEditable: true
           }
 
-          peaks.segments.addSegment([segment]);
+          peaksInstance.segments.addSegment([segment]);
         });
 
         document.querySelector('#segs').addEventListener("click", function (event) {
-          console.log(peaks.segments.getSegments());
+          console.log(peaksInstance.segments.getSegments());
         });
       });
 
