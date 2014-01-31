@@ -27,14 +27,24 @@
 
       document.addEventListener('DOMContentLoaded', function () {
         var options = {
-          container: document.getElementById('waveform-visualiser-container'),
+          container: document.getElementById('first-waveform-visualiser-container'),
           audioElement: document.getElementById('audio'),
           dataUri: '/test_data/sample.dat',
           keyboard: true,
           height: 240
         };
 
-        var peaksInstance = Peaks.init(options);
+        var peaksInstance = peaks.init(options);
+
+        peaks.init({
+          container: document.getElementById('second-waveform-visualiser-container'),
+          audioElement: document.getElementById('audio'),
+          dataUri: '/test_data/sample.dat',
+          keyboard: false,
+          height: 120,
+          zoomWaveformColor: '#AAAAAA',
+          overviewWaveformColor: '#333333'
+        });
 
         document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
         document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
@@ -79,11 +89,15 @@
         width: 1000px;
       }
 
-      [id*="waveform-visualiser"] > div > div {
+      [id*="waveform-visualiser"] [class*="-container"] {
         margin: 0 0 24px 0;
         -moz-box-shadow: 3px 3px 20px #919191;
         -webkit-box-shadow: 3px 3px 20px #919191;
         box-shadow: 3px 3px 20px #919191;
+      }
+
+      #second-waveform-visualiser-container [class*="-container"] {
+        background: #111;
       }
 
       #demo-controls {
@@ -112,7 +126,8 @@
         <p>Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference eg: distinguishing music from speech or identifying different music tracks.</p>
       </div>
 
-      <div id="waveform-visualiser-container"></div>
+      <div id="first-waveform-visualiser-container"></div>
+      <div id="second-waveform-visualiser-container"></div>
 
       <div id="demo-controls">
         <audio id="audio" controls=controls>

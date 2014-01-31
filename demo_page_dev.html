@@ -71,12 +71,14 @@
             }]
           });
 
-          var peaksInstance = Peaks.init({
+          Peaks.init({
             container: document.getElementById('second-waveform-visualiser-container'),
             audioElement: document.getElementById('audio'),
             dataUri: '/test_data/sample.dat',
             keyboard: false,
-            height: 120
+            height: 120,
+            zoomWaveformColor: '#AAAAAA',
+            overviewWaveformColor: '#333333'
           });
 
           document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
@@ -114,13 +116,18 @@
         width: 1000px;
       }
 
-      [id*="waveform-visualiser"] > div > div {
+      [id*="waveform-visualiser"] [class*="-container"] {
         margin: 0 0 24px 0;
         height: 140px;
         -moz-box-shadow: 3px 3px 20px #919191;
         -webkit-box-shadow: 3px 3px 20px #919191;
         box-shadow: 3px 3px 20px #919191;
       }
+
+      #second-waveform-visualiser-container [class*="-container"] {
+        background: #111;
+      }
+
 
       #demo-controls {
         margin: 0 auto 24px auto;
