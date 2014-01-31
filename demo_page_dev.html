@@ -40,9 +40,9 @@
 
       document.addEventListener('DOMContentLoaded', function () {
 
-        require(['main'], function (peaks) {
+        require(['main'], function (Peaks) {
 
-          peaks.init({
+          var peaksInstance = Peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
             audioElement: document.getElementById('audio'),
             dataUri: '/test_data/sample.dat',
@@ -71,22 +71,22 @@
             }]
           });
 
-          document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaks.zoom.zoomIn.bind(peaks));
-          document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaks.zoom.zoomOut.bind(peaks));
+          document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
+          document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
           document.querySelector("#segment").addEventListener("click", function () {
-            var currentTime = peaks.time.getCurrentTime();
+            var currentTime = peaksInstance.time.getCurrentTime();
             var segment = {
               startTime: currentTime,
               endTime: currentTime + 10,
               segmentEditable: true
             }
 
-            peaks.segments.addSegment([segment]);
+            peaksInstance.segments.addSegment([segment]);
           });
 
           document.querySelector('#segs').addEventListener("click", function (event) {
-            console.log(peaks.segments.getSegments());
+            console.log(peaksInstance.segments.getSegments());
           });
 
         });
