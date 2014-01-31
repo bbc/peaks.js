@@ -33,14 +33,7 @@ requirejs.config({
         'm': 'waveform_viewer',
         'waveform-data': '../../bower_components/waveform-data/dist/waveform-data',
         'EventEmitter': '../../bower_components/eventEmitter/EventEmitter.min',
-        'underscore': '../../bower_components/lodash/dist/lodash.compat',
         'Kinetic': '../../bower_components/KineticJS/index'
-    },
-
-    shim: {
-        'underscore': {
-            exports: '_'
-        }
     },
 
     // ask Require.js to load these files (all our tests)
