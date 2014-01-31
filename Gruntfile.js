@@ -13,7 +13,12 @@ module.exports = function(grunt) {
 
     // JS Lint on all non-vendor files
     jshint: {
-      all: ['lib/js/main.js', 'lib/js/waveform_viewer/bootstrap.js', 'lib/js/waveform_viewer/player/**/*.js']
+      all: [
+        'lib/js/**/*.js',
+        '!lib/js/almond.js',
+        '!lib/js/templates/*.js',
+        '!lib/js/vendor/*.js'
+      ]
       // lib_test: {
       //   src: ['lib/**/*.js', 'test/**/*.js']
       // }
