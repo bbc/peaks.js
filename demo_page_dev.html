@@ -43,7 +43,7 @@
         require(['main'], function (Peaks) {
 
           var peaksInstance = Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
+            container: document.getElementById('first-waveform-visualiser-container'),
             audioElement: document.getElementById('audio'),
             dataUri: '/test_data/sample.dat',
             keyboard: true,
@@ -69,6 +69,14 @@
               color: "#0000ff",
               labelText: "My Third Segment"
             }]
+          });
+
+          var peaksInstance = Peaks.init({
+            container: document.getElementById('second-waveform-visualiser-container'),
+            audioElement: document.getElementById('audio'),
+            dataUri: '/test_data/sample.dat',
+            keyboard: false,
+            height: 120
           });
 
           document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
@@ -101,12 +109,12 @@
         font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
       }
 
-      #titles, #waveform-visualiser-container {
+      #titles, [id*="waveform-visualiser"] {
         margin: 24px auto;
         width: 1000px;
       }
 
-      #waveform-visualiser-container > div > div {
+      [id*="waveform-visualiser"] > div > div {
         margin: 0 0 24px 0;
         height: 240px;
         -moz-box-shadow: 3px 3px 20px #919191;
@@ -140,7 +148,8 @@
         <p>Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference eg: distinguishing music from speech or identifying different music tracks.</p>
       </div>
 
-      <div id="waveform-visualiser-container"></div>
+      <div id="first-waveform-visualiser-container"></div>
+      <div id="second-waveform-visualiser-container"></div>
 
       <div id="demo-controls">
         <audio id="audio" controls=controls>
