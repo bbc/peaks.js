@@ -16,28 +16,11 @@ module.exports = function(grunt) {
       all: [
         'lib/js/**/*.js',
         '!lib/js/almond.js',
-        '!lib/js/templates/*.js',
         '!lib/js/vendor/*.js'
       ]
       // lib_test: {
       //   src: ['lib/**/*.js', 'test/**/*.js']
       // }
-    },
-
-    // Compile HTML files in to JST require-able object for concatenation with the main js files
-    jst: {
-      compile: {
-        options: {
-          amd: true,
-          processName: function(filename) {
-            var f = filename.split("/");
-            return f[f.length-1].split(".")[0];
-          }
-        },
-        files: {
-          "lib/js/templates/main.js": "lib/templates/main.html"
-        }
-      }
     },
 
     // r.js concatenation and minification of javascript
@@ -104,10 +87,6 @@ module.exports = function(grunt) {
       js: {
         files: ['lib/**/*.js']
       },
-      jst: {
-        files: ['lib/templates/**/*.html'],
-        tasks: ['jst']
-      },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
         tasks: ['jshint:lib_test', 'build', 'karma:unit:run']
@@ -128,7 +107,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
@@ -144,7 +122,6 @@ module.exports = function(grunt) {
     'bower-install:demo',
     'sass',
     'jshint:all',
-    'jst',
     'requirejs'
   ]);
 
@@ -153,7 +130,6 @@ module.exports = function(grunt) {
     'bower-install:dev',
     'sass',
     'jshint:all',
-    'jst',
     'concurrent:server'
   ]);
 

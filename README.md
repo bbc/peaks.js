@@ -113,15 +113,22 @@ var options = {
 
 ```javascript
 require(['path/to/peaks.min'], function (peaks) {
-  peaks.init(options);
+  var p = peaks.init(options);
+
+  p.on('waveformOverviewReady', function(){
+    // do something when the waveform overview is ready
+  });
 });
 ```
 
 ### Start using vanilla JavaScript
 
 ```javascript
-// On document ready
-window.peaks.init(options);
+var p = peaks.init(options);
+
+p.on('waveformOverviewReady', function(){
+  // do something when the waveform overview is ready
+});
 ```
 
 #### Advanced configuration
@@ -177,21 +184,22 @@ Segments provided from peaks.js use the following format:
 # Development
 
 * Run the development server: `grunt server-dev`
-
-* Edit files in `lib/js/`, `lib/sass` and `lib/templates/handlebars` as required.
-
+* Edit files in `lib/js/` and `lib/sass` as required.
 * The development page will recompile and refresh on save of any file.
 
 # Testing
 
-`grunt test` should work for simple one time testing. If you are developing and want to repeatedly run tests in a browser on your machine first launch the test server with `grunt karma:unit` and then run the tests with `grunt karma:unit:run` in a separate terminal tab.
+`npm run test-local` should work for simple one time testing.
+
+If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
+
 
 License
 =======
 
 See [COPYING](COPYING)
 
-This project includes audio from the [Wellcome Trust's Tree of Life video](http://www.wellcometreeoflife.org/), used under the terms of the [Creative Commons Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales license](http://creativecommons.org/licenses/by-nc-sa/2.0/uk/).
+This project includes sample audio from the [radio show Desert Island](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
 Authors
 =======
@@ -207,5 +215,3 @@ Copyright
 =========
 
 Copyright 2014 British Broadcasting Corporation
-
-The [test data sample](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac) is distributed under the Creative Commons 3.0 Unported License.

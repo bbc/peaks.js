@@ -27,7 +27,6 @@
     "grunt-contrib-jshint": "~0.6.1",
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-bower-install": "~0.8.0",
-    "grunt-contrib-jst": "~0.5.1",
     "grunt-contrib-watch": "~0.5.1",
     "grunt-open": "~0.2.1",
     "grunt-devserver": "~0.4.1",
