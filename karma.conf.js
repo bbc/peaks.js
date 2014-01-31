@@ -11,7 +11,6 @@ module.exports = function (config) {
     files : [
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'bower_components/jquery/jquery.js', included: true },
       { pattern: 'bower_components/eventEmitter/EventEmitter.min.js', included: false },
       { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
       { pattern: 'bower_components/lodash/dist/lodash.compat.js', included: false },

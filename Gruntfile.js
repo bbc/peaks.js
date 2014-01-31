@@ -51,14 +51,12 @@ module.exports = function(grunt) {
           name: "almond",
           baseUrl: "lib/js/",
           include: ['main'],
-          exclude: ['jquery'],
           mainConfigFile: "lib/js/main.js",
           out: "build/js/peaks.min.js",
           optimize: "none",
           paths: {
             "waveform-data": "../../bower_components/waveform-data/dist/waveform-data.min",
             "EventEmitter": "../../bower_components/eventEmitter/EventEmitter",
-            "jquery": "../../bower_components/jquery/jquery",
             "m": "waveform_viewer"
           },
           wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
