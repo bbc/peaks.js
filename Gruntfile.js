@@ -13,19 +13,15 @@ module.exports = function(grunt) {
 
     // JS Lint on all non-vendor files
     jshint: {
-      all: ['lib/js/main.js', 'lib/js/waveform_viewer/bootstrap.js', 'lib/js/waveform_viewer/player/**/*.js']
+      all: [
+        'lib/js/**/*.js',
+        '!lib/js/almond.js',
+        '!lib/js/templates/*.js',
+        '!lib/js/vendor/*.js'
+      ]
       // lib_test: {
       //   src: ['lib/**/*.js', 'test/**/*.js']
       // }
-    },
-
-    // Compile handlebars templates to HTML
-    'compile-handlebars': {
-      compile: {
-        template: "lib/templates/handlebars/*.hbs",
-        templateData: {},
-        output: "lib/templates/main.html"
-      }
     },
 
     // Compile HTML files in to JST require-able object for concatenation with the main js files
@@ -109,8 +105,8 @@ module.exports = function(grunt) {
         files: ['lib/**/*.js']
       },
       jst: {
-        files: ['lib/templates/**/*.hbs'],
-        tasks: ['compile-handlebars', 'jst']
+        files: ['lib/templates/**/*.html'],
+        tasks: ['jst']
       },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
@@ -132,7 +128,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-compile-handlebars');
   grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -149,7 +144,6 @@ module.exports = function(grunt) {
     'bower-install:demo',
     'sass',
     'jshint:all',
-    'compile-handlebars',
     'jst',
     'requirejs'
   ]);
@@ -159,7 +153,6 @@ module.exports = function(grunt) {
     'bower-install:dev',
     'sass',
     'jshint:all',
-    'compile-handlebars',
     'jst',
     'concurrent:server'
   ]);

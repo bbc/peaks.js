@@ -40,10 +40,10 @@
 
       document.addEventListener('DOMContentLoaded', function () {
 
-        require(['main'], function (peaks) {
+        require(['main'], function (Peaks) {
 
-          peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
+          var peaksInstance = Peaks.init({
+            container: document.getElementById('first-waveform-visualiser-container'),
             audioElement: document.getElementById('audio'),
             dataUri: '/test_data/sample.dat',
             keyboard: true,
@@ -71,22 +71,32 @@
             }]
           });
 
-          document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaks.zoom.zoomIn.bind(peaks));
-          document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaks.zoom.zoomOut.bind(peaks));
+          Peaks.init({
+            container: document.getElementById('second-waveform-visualiser-container'),
+            audioElement: document.getElementById('audio'),
+            dataUri: '/test_data/sample.dat',
+            keyboard: false,
+            height: 120,
+            zoomWaveformColor: '#AAAAAA',
+            overviewWaveformColor: '#333333'
+          });
+
+          document.querySelector('[data-action="zoomIn"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
+          document.querySelector('[data-action="zoomOut"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
           document.querySelector("#segment").addEventListener("click", function () {
-            var currentTime = peaks.time.getCurrentTime();
+            var currentTime = peaksInstance.time.getCurrentTime();
             var segment = {
               startTime: currentTime,
               endTime: currentTime + 10,
               segmentEditable: true
             }
 
-            peaks.segments.addSegment([segment]);
+            peaksInstance.segments.addSegment([segment]);
           });
 
           document.querySelector('#segs').addEventListener("click", function (event) {
-            console.log(peaks.segments.getSegments());
+            console.log(peaksInstance.segments.getSegments());
           });
 
         });
@@ -101,18 +111,22 @@
         font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
       }
 
-      #titles, #waveform-visualiser-container {
+      #titles, [id*="waveform-visualiser"] {
         margin: 24px auto;
         width: 1000px;
       }
 
-      #waveform-visualiser-container > div > div {
+      [id*="waveform-visualiser"] [class*="-container"] {
         margin: 0 0 24px 0;
-        height: 240px;
         -moz-box-shadow: 3px 3px 20px #919191;
         -webkit-box-shadow: 3px 3px 20px #919191;
         box-shadow: 3px 3px 20px #919191;
       }
+
+      #second-waveform-visualiser-container [class*="-container"] {
+        background: #111;
+      }
+
 
       #demo-controls {
         margin: 0 auto 24px auto;
@@ -140,7 +154,8 @@
         <p>Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference eg: distinguishing music from speech or identifying different music tracks.</p>
       </div>
 
-      <div id="waveform-visualiser-container"></div>
+      <div id="first-waveform-visualiser-container"></div>
+      <div id="second-waveform-visualiser-container"></div>
 
       <div id="demo-controls">
         <audio id="audio" controls=controls>

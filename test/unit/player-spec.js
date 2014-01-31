@@ -1,14 +1,14 @@
-define(['m/bootstrap', 'main', 'underscore', 'Kinetic'], function(bootstrap, Peaks, _, Kinetic){
+define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
   describe("m/player/player", function () {
 
-    var sandbox, fixtures;
+    var sandbox, fixtures, p;
 
     beforeEach(function (done) {
       fixtures = loadFixtures('waveformContainer');
       sandbox = sinon.sandbox.create();
 
-      Peaks.init({
+      p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         audioElement: document.querySelector('audio'),
         dataUri: 'base/test_data/sample.dat',
@@ -29,10 +29,10 @@ define(['m/bootstrap', 'main', 'underscore', 'Kinetic'], function(bootstrap, Pea
       //@see https://github.com/bbcrd/peaks.js/issues/12
       //for some reason, the event is not emitted during the tests
       xit("should trigger any `waveform_seek` event when changing audio element `currentTime`", function(done){
-        var emitterSpy = sandbox.spy(bootstrap.pubsub, 'emit');
-        var syncPlayheadSpy = sandbox.spy(Peaks.waveform.waveformZoomView, 'syncPlayhead');
+        var emitterSpy = sandbox.spy(p, 'emit');
+        var syncPlayheadSpy = sandbox.spy(p.waveform.waveformZoomView, 'syncPlayhead');
 
-        Peaks.player.player.currentTime = 6;
+        p.player.player.currentTime = 6;
 
         setTimeout(function(){
           expect(emitterSpy.calledWith('waveform_seek')).to.equal(true);
