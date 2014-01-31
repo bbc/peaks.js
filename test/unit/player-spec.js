@@ -1,4 +1,4 @@
-define(['main', 'underscore', 'Kinetic'], function(bootstrap, Peaks, _, Kinetic){
+define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
   describe("m/player/player", function () {
 
