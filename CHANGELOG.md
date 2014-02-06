@@ -1,5 +1,13 @@
 # Peaks.js Changelog
 
+## 0.0.4
+
+Fixing regressions introduced since `0.0.1`, related to inaccuracies between audio playback, user interactions
+and rendering: what you could hear was not what you clicked on and vice-versa.
+
+- [#22](https://github.com/bbcrd/peaks.js/issue/22): Seeking not working
+- [#21](https://github.com/bbcrd/peaks.js/issue/21): Beats don't match anymore if you try to seek
+- [#9](https://github.com/bbcrd/peaks.js/issue/9): Skipping in audio via JS doesn't move zoomed-in view
 
 ## 0.0.3
 
