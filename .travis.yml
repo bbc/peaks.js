@@ -1,5 +1,6 @@
 language: node_js
 node_js: "0.10"
+rvm: "2.0.0"
 
 addons:
   sauce_connect:
@@ -16,8 +17,6 @@ cache:
 
 before_install:
   - npm install -g grunt-cli bower
-  - rvm install ruby-2.0.0-p353 && rvm use 2.0.0
-  - gem install bundle
   - bundle install
   - bower install
 
