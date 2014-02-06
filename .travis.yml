@@ -16,7 +16,7 @@ cache:
     - bower_components
 
 before_install:
-  - npm install -g grunt-cli bower
+  - npm install -g grunt-cli bower --production
   - bundle install
   - bower install
 
