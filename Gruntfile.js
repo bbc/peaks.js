@@ -2,15 +2,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
-    // Compilation of scss files to css
-    sass: {
-      dev: {
-        files: {
-          'build/css/peaks.css': 'lib/sass/waveform_viewer.scss'
-        }
-      }
-    },
-
     // JS Lint on all non-vendor files
     jshint: {
       all: [
@@ -80,10 +71,6 @@ module.exports = function(grunt) {
       options: {
         livereload: 1337
       },
-      css: {
-        files: ['lib/sass/*.scss'],
-        tasks: ['sass']
-      },
       js: {
         files: ['lib/**/*.js']
       },
@@ -104,7 +91,6 @@ module.exports = function(grunt) {
   });
 
   // Load NPM tasks
-  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
@@ -120,7 +106,6 @@ module.exports = function(grunt) {
   // Build the project for production
   grunt.registerTask('build', [
     'bower-install:demo',
-    'sass',
     'jshint:all',
     'requirejs'
   ]);
@@ -128,7 +113,6 @@ module.exports = function(grunt) {
   // Start a dev server for working on the precomiled files
   grunt.registerTask('server-dev', [
     'bower-install:dev',
-    'sass',
     'jshint:all',
     'concurrent:server'
   ]);
