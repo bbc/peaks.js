@@ -2,10 +2,10 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
   describe("m/player/player", function () {
 
-    var sandbox, fixtures, p;
+    var sandbox, p;
 
     beforeEach(function (done) {
-      fixtures = loadFixtures('waveformContainer');
+      loadAllFixtures();
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -20,7 +20,7 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
     });
 
     afterEach(function () {
-      document.body.removeChild(fixtures);
+      removeAllFixtures();
       sandbox.restore();
     });
 
@@ -28,16 +28,17 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
       //@see https://github.com/bbcrd/peaks.js/issues/9
       //@see https://github.com/bbcrd/peaks.js/issues/12
       //for some reason, the event is not emitted during the tests
-      xit("should trigger any `waveform_seek` event when changing audio element `currentTime`", function(done){
+      it("should trigger any `waveform_seek` event when changing audio element `currentTime`", function(done){
         var emitterSpy = sandbox.spy(p, 'emit');
-        var syncPlayheadSpy = sandbox.spy(p.waveform.waveformZoomView, 'syncPlayhead');
 
-        p.player.player.currentTime = 6;
+        document.querySelector('audio').currentTime = 6.0;
 
         setTimeout(function(){
-          expect(emitterSpy.calledWith('waveform_seek')).to.equal(true);
+          console.log(p.time.getCurrentTime());
+          console.log(emitterSpy.args);
+          //expect(emitterSpy.calledWith('waveform_seek')).to.equal(true);
           done();
-        }, 50);
+        }, 1000);
       });
     });
   });

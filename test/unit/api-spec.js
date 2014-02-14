@@ -1,14 +1,14 @@
 define(['main', 'EventEmitter', 'underscore', 'Kinetic'], function(Peaks, EventEmitter, _, Kinetic){
   describe("Peaks API interface", function () {
 
-    var fixtures, p;
+    var p;
 
     /**
      * SETUP =========================================================
      */
 
     beforeEach(function (done) {
-      fixtures = loadFixtures('waveformContainer');
+      loadAllFixtures();
 
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
@@ -26,7 +26,7 @@ define(['main', 'EventEmitter', 'underscore', 'Kinetic'], function(Peaks, EventE
      */
 
     afterEach(function (done) {
-      document.body.removeChild(fixtures);
+      removeAllFixtures();
       setTimeout(done, 200);
     });
 

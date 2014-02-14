@@ -2,10 +2,10 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
 
   describe("player/waveform/waveform.segments", function () {
 
-    var fixtures, sandbox, p;
+    var sandbox, p;
 
     beforeEach(function (done) {
-      fixtures = loadFixtures('waveformContainer');
+      loadAllFixtures();
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -20,7 +20,7 @@ define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
     });
 
     afterEach(function(){
-      document.body.removeChild(fixtures);
+      removeAllFixtures();
       sandbox.restore();
     });
 
