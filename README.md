@@ -28,8 +28,6 @@ Make sure you have [node.js](http://nodejs.org/) with [npm](https://npmjs.org/) 
 
 * Install [grunt-cli](https://github.com/gruntjs/grunt-cli): `npm install -g grunt-cli`
 
-* Install [sass](http://rubygems.org/gems/sass): `gem install sass` (requires Ruby)
-
 * Clone the project and `cd peaks`
 
 * Install the project dependencies: `npm install`
@@ -184,7 +182,7 @@ Segments provided from peaks.js use the following format:
 # Development
 
 * Run the development server: `grunt server-dev`
-* Edit files in `lib/js/` and `lib/sass` as required.
+* Edit files in `lib/js/` and `build/css` as required.
 * The development page will recompile and refresh on save of any file.
 
 # Testing
