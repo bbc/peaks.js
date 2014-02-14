@@ -24,31 +24,21 @@ See the Project overview here: [http://waveform.prototyping.bbc.co.uk/](http://w
 
 Make sure you have [node.js](http://nodejs.org/) with [npm](https://npmjs.org/) installed on your system (I recommend using [node version manager](https://github.com/creationix/nvm)).
 
-* Install [bower](https://github.com/bower/bower): `npm install -g bower`
-
-* Install [grunt-cli](https://github.com/gruntjs/grunt-cli): `npm install -g grunt-cli`
-
-* Install [sass](http://rubygems.org/gems/sass): `gem install sass` (requires Ruby)
-
-* Clone the project and `cd peaks`
-
-* Install the project dependencies: `npm install`
-
-* Install the frontend dependencies: `bower install`
-
-* Run a development server: `grunt server-dev`
-
-* Run a demo server: `grunt server-demo`
-
-* Build the project for production: `grunt build && cd build`
+- Install [bower](https://github.com/bower/bower): `npm install -g bower`
+- Install [grunt-cli](https://github.com/gruntjs/grunt-cli): `npm install -g grunt-cli`
+- Install [sass](http://rubygems.org/gems/sass): `gem install sass` (requires Ruby)
+- Clone the project and `cd peaks`
+- Install the project dependencies: `npm install`
+- Install the frontend dependencies: `bower install`
+- Run a development server: `grunt server-dev`
+- Run a demo server: `grunt server-demo`
+- Build the project for production: `grunt build && cd build`
 
 # Using Peaks.js in your own project
 
-* Build the project: `grunt build`
-
-* Include `build/css/peaks.min.css` and `build/css/peaks.min.js` in your page.
-
-* Add a containing element to your page:
+- Build the project: `grunt build`
+- Include `build/css/peaks.min.css` and `build/css/peaks.min.js` in your page.
+- Add a containing element to your page:
 
 ```html
 <div id="peaks-container"></div>
@@ -152,6 +142,7 @@ The top level peaks object exposes the following API for interaction with the wi
     --- | ---
     `peaks.init(options)` | Start a instance of peaks with the assigned options.
     `peaks.time.getCurrentTime()` | Returns currently selected time in seconds (convenience method interchangeable with audioElement.currentTime).
+    `peaks.time.setCurrentTime(timeInSeconds)` | Sets the media element selected time in seconds.
     `peaks.zoom.zoomIn()` | Zoom in the waveform zoom view by one level.
     `peaks.zoom.setZoom(indexInZoomArray)` | Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
     `peaks.zoom.getZoom()` | Return the current zoom level.
@@ -183,9 +174,9 @@ Segments provided from peaks.js use the following format:
 
 # Development
 
-* Run the development server: `grunt server-dev`
-* Edit files in `lib/js/` and `lib/sass` as required.
-* The development page will recompile and refresh on save of any file.
+- Run the development server: `grunt server-dev`
+- Edit files in `lib/js/` and `lib/sass` as required.
+- The development page will recompile and refresh on save of any file.
 
 # Testing
 
