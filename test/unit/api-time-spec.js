@@ -1,4 +1,4 @@
-define(['main', 'underscore', 'Kinetic'], function(Peaks, _, Kinetic){
+define(['main', 'Kinetic'], function(Peaks, Kinetic){
 
   describe("Peaks.time", function () {
 
