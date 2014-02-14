@@ -1,4 +1,4 @@
-define(['main', 'EventEmitter', 'underscore', 'Kinetic'], function(Peaks, EventEmitter, _, Kinetic){
+define(['main', 'Kinetic'], function(Peaks, Kinetic){
   describe("Peaks.zoom", function () {
 
     var p, sandbox;
