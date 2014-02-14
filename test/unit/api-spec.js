@@ -1,5 +1,5 @@
 define(['main', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
-  describe("Peaks API interface", function () {
+  describe("Peaks", function () {
 
     var p;
 
@@ -40,25 +40,53 @@ define(['main', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kineti
       expect(p).to.be.an.instanceOf(EventEmitter);
     });
 
-    it("should be able to add and return segments", function (done) {
+    describe("create", function(){
+      it("should throw an exception if no audioElement is provided", function(){
+        expect(function(){
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            dataUri: 'base/test_data/sample.dat'
+          });
+        }).to.throw(/provide an audio element/);
+      });
 
-      var testSeg = {
-        startTime: 10,
-        endTime: 20,
-        editable: false
-      };
+      it("should throw an exception if audioElement is not an HTMLMediaElement", function(){
+        expect(function(){
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            audioElement: document.createElement('div'),
+            dataUri: 'base/test_data/sample.dat'
+          });
+        }).to.throw(/HTMLMediaElement/);
+      });
 
-      p.segments.addSegment([testSeg]);
+      it("should throw an exception if no dataUri is provided", function(){
+        expect(function(){
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            audioElement: document.querySelector('audio')
+          });
+        }).to.throw(/dataUri/);
+      });
 
-      setTimeout(function(){
-        var segments = p.segments.getSegments();
+      it("should thrown an exception if no container is provided", function(){
+        expect(function(){
+          Peaks.init({
+            audioElement: document.querySelector('audio'),
+            dataUri: 'base/test_data/sample.dat'
+          });
+        }).to.throw(/provide a container/);
+      });
 
-        expect(segments).to.have.length.of(1);
-        expect(segments[0].startTime).to.equal(testSeg.startTime);
-        expect(segments[0].endTime).to.equal(testSeg.endTime);
-
-        done();
-      }, 300);
+      it("should thrown an exception if the container has no layout", function(){
+        expect(function(){
+          Peaks.init({
+            audioElement: document.querySelector('audio'),
+            container: document.createElement('div'),
+            dataUri: 'base/test_data/sample.dat'
+          });
+        }).to.throw(/width/);
+      });
     });
 
   });
