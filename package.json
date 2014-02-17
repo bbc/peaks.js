@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./lib/js/main.js",
   "contributors": [

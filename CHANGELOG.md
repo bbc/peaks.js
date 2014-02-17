@@ -1,5 +1,12 @@
 # Peaks.js Changelog
 
+## 0.0.5
+
+Fixing zoom view behaviours: you can now drag during playback without losing your position!
+
+- [#24](https://github.com/bbcrd/peaks.js/issue/24): Out of Range bug
+- [#25](https://github.com/bbcrd/peaks.js/issue/25): Dragging zoomview is not convenient
+
 ## 0.0.4
 
 Fixing regressions introduced since `0.0.1`, related to inaccuracies between audio playback, user interactions
