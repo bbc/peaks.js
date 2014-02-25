@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./lib/js/main.js",
   "contributors": [
@@ -18,7 +18,8 @@
     "test-pre": "grunt jshint",
     "test-remote": "karma start --single-run --browsers SauceChrome,SauceFirefox,SauceFirefoxLinux,SauceSafari6,SauceSafari7,SauceIE9,SauceIE10,SauceIE11",
     "test-local": "karma start --single-run",
-    "test-watch": "karma start --auto-watch --no-single-run --browsers Chrome"
+    "test-watch": "karma start --auto-watch --no-single-run --browsers Chrome",
+    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -45,6 +46,7 @@
     "karma-sinon": "~1.0.0",
     "mocha": "~1.17.1",
     "karma-mocha": "~0.1.1",
-    "karma-chai": "~0.0.2"
+    "karma-chai": "~0.0.2",
+    "github-changes": "0.0.5"
   }
 }
