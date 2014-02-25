@@ -50,10 +50,6 @@ Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
 1. include a media element and its waveform data file
 1. initialise Peaks
 
-- Build the project: `grunt build`
-- Include `build/css/peaks.min.css` and `build/css/peaks.min.js` in your page.
-- Add a containing element to your page:
-
 ```html
 <div id="peaks-container"></div>
 <audio>
