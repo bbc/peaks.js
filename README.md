@@ -14,6 +14,8 @@
 
 Peaks is a modular frontend component designed for the display of and interaction with audio waveform material in the browser.
 
+![](peaks.png)
+
 Peaks was developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
 
 Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
