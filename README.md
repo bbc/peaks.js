@@ -22,19 +22,31 @@ See the Project overview here: [http://waveform.prototyping.bbc.co.uk/](http://w
 
 # Installation
 
-Make sure you have [node.js](http://nodejs.org/) with [npm](https://npmjs.org/) installed on your system (I recommend using [node version manager](https://github.com/creationix/nvm)).
+<table>
+  <thead>
+    <tr>
+      <th><a href="https://npmjs.org/">npm</a></th>
+      <th><a href="https://github.com/bower/bower">bower</a></th>
+      <th>old school</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>npm install --save peaks.js</code></td>
+      <td><code>bower install --save peaks.js</code></td>
+      <td><a href="https://github.com/bbcrd/peaks.js/archive/master.zip">download zip file</a></td>
+    </tr>
+  </tbody>
+</table>
 
-- Install [bower](https://github.com/bower/bower): `npm install -g bower`
-- Install [grunt-cli](https://github.com/gruntjs/grunt-cli): `npm install -g grunt-cli`
-- Install [sass](http://rubygems.org/gems/sass): `gem install sass` (requires Ruby)
-- Clone the project and `cd peaks`
-- Install the project dependencies: `npm install`
-- Install the frontend dependencies: `bower install`
-- Run a development server: `grunt server-dev`
-- Run a demo server: `grunt server-demo`
-- Build the project for production: `grunt build && cd build`
 
 # Using Peaks.js in your own project
+
+Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
+
+1. include it your web page
+1. include a media element and its waveform data file
+1. initialise Peaks
 
 - Build the project: `grunt build`
 - Include `build/css/peaks.min.css` and `build/css/peaks.min.js` in your page.
@@ -42,9 +54,43 @@ Make sure you have [node.js](http://nodejs.org/) with [npm](https://npmjs.org/) 
 
 ```html
 <div id="peaks-container"></div>
+<audio>
+  <source src="test_data/sample.mp3" type="audio/mpeg">
+  <source src="test_data/sample.ogg" type="audio/ogg">
+</audio>
 ```
 
-### Configuration
+## Start using require.js
+
+```javascript
+require(['path/to/peaks.min'], function (peaks) {
+  var p = peaks.init({
+    container: document.querySelector('#peaks-container'),
+    audioElement: document.querySelector('audio'),
+    dataUri: 'test_data/sample.dat'
+  });
+
+  p.on('waveformOverviewReady', function(){
+    // do something when the waveform overview is ready
+  });
+});
+```
+
+## Start using vanilla JavaScript
+
+```javascript
+var p = peaks.init({
+  container: document.querySelector('#peaks-container'),
+  audioElement: document.querySelector('audio'),
+  dataUri: 'test_data/sample.dat'
+});
+
+p.on('waveformOverviewReady', function(){
+  // do something when the waveform overview is ready
+});
+```
+
+## Configuration
 
 The available options for configuration of the viewer are as follows:
 
@@ -81,7 +127,8 @@ var options = {
   randomizeSegmentColor: true,
 
   // Array of initial segment objects with startTime and
-  // endTime in seconds and a boolean for editable
+  // endTime in seconds and a boolean for editable.
+  // See below.
   segments: [{
     startTime: 120,
     endTime: 140,
@@ -99,57 +146,7 @@ var options = {
 }
 ```
 
-### Start using require.js
-
-```javascript
-require(['path/to/peaks.min'], function (peaks) {
-  var p = peaks.init(options);
-
-  p.on('waveformOverviewReady', function(){
-    // do something when the waveform overview is ready
-  });
-});
-```
-
-### Start using vanilla JavaScript
-
-```javascript
-var p = peaks.init(options);
-
-p.on('waveformOverviewReady', function(){
-  // do something when the waveform overview is ready
-});
-```
-
-#### Advanced configuration
-
-The marker and label Kinetic.js objects may be overridden to give the segment markers or label your own custom appearance (see main.js / waveform.mixins.js, [Kinetic Polygon Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-polygon-tutorial/) and [Kinetic Text Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-text-tutorial/)) :
-
-```javascript
-{
-  segmentInMarker: mixins.defaultInMarker(api.options),
-  segmentOutMarker: mixins.defaultOutMarker(api.options),
-  segmentLabelDraw: mixins.defaultSegmentLabelDraw(api.options)
-}
-```
-
-# API
-
-The top level peaks object exposes the following API for interaction with the widget:
-
-
-    Method | Description
-    --- | ---
-    `peaks.init(options)` | Start a instance of peaks with the assigned options.
-    `peaks.time.getCurrentTime()` | Returns currently selected time in seconds (convenience method interchangeable with audioElement.currentTime).
-    `peaks.time.setCurrentTime(timeInSeconds)` | Sets the media element selected time in seconds.
-    `peaks.zoom.zoomIn()` | Zoom in the waveform zoom view by one level.
-    `peaks.zoom.setZoom(indexInZoomArray)` | Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
-    `peaks.zoom.getZoom()` | Return the current zoom level.
-    `peaks.segments.addSegment(startTime, endTime, editable, labelText)` | Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds) and set whether the segment is user editable with `editable` (boolean, defaults to `false`). Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
-    `peaks.segments.getSegments()` | Returns an array of objects representing all displayed segments present on the timeline in the segment format.
-
-### Segment Format
+## Segment Format
 
 Segments provided from peaks.js use the following format:
 
@@ -172,11 +169,149 @@ Segments provided from peaks.js use the following format:
 }]
 ```
 
+## Advanced configuration
+
+The marker and label Kinetic.js objects may be overridden to give the segment markers or label your own custom appearance (see main.js / waveform.mixins.js, [Kinetic Polygon Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-polygon-tutorial/) and [Kinetic Text Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-text-tutorial/)) :
+
+```javascript
+{
+  segmentInMarker: mixins.defaultInMarker(p.options),
+  segmentOutMarker: mixins.defaultOutMarker(p.options),
+  segmentLabelDraw: mixins.defaultSegmentLabelDraw(p.options)
+}
+```
+
+# API
+
+The top level `peaks` object exposes a factory to create new `peaks` instances.
+
+## `peaks.init(options)`
+
+Start a instance of peaks with the [assigned options](#Configuration). It enables you do deal with several instances
+of Peaks within a single page with one or several configurations.
+
+```js
+var peaksInstance = peaks.init({ … });
+var secondPeaksInstance = peaks.init({ … });
+```
+
+## `instance.time.getCurrentTime()`
+
+Returns currently selected time in seconds (convenience method interchangeable with `audioElement.currentTime`).
+
+```js
+var instance = peaks.init({ … });
+
+console.log(instance.time.getCurrentTime()); // -> 0
+```
+
+## `instance.time.setCurrentTime(timeInSeconds)`
+
+Sets the media element selected time in seconds.
+
+```js
+var instance = peaks.init({ … });
+
+instance.time.setCurrentTime(5.85);
+console.log(instance.time.getCurrentTime()); // -> 5.85
+```
+
+## `instance.zoom.zoomOut()`
+
+Zoom in the waveform zoom view by one level.
+
+```js
+var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+
+instance.zoom.zoomOut(); // zoom level is now 1024
+```
+
+## `instance.zoom.zoomIn()`
+
+Zoom in the waveform zoom view by one level.
+
+```js
+var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+
+instance.zoom.zoomIn(); // zoom level is still 512
+
+instance.zoom.zoomOut(); // zoom level is now 1024
+instance.zoom.zoomIn(); // zoom level is now 512 again
+```
+
+## `instance.zoom.setZoom(indexInZoomArray)`
+
+Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
+
+```js
+var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+
+instance.zoom.setZoom(3); // zoom level is now 4096
+```
+
+## `instance.zoom.getZoom()`
+
+Return the current zoom level.
+
+```js
+var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+
+instance.zoom.zoomOut();
+console.log(instance.zoom.getZoom()); // -> 1
+```
+
+
+## `instance.segments.addSegment(startTime, endTime, editable, color, labelText)`
+## `instance.segments.addSegment(segment[])`
+
+Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds)
+and set whether the segment is user editable with `editable` (boolean, defaults to `false`).
+
+```js
+var instance = peaks.init({ … });
+
+instance.segments.addSegment(0, 10.5); //adds a 0 to 10.5 seconds non-editable segment with a random color
+```
+
+Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
+
+```js
+var instance = peaks.init({ … });
+
+instance.segments.addSegment([
+  {
+    startTime: 0,
+    endTime: 10.5,
+    labelText: '0 to 10 seconds non-editable demo segment'
+  },
+  {
+    startTime: 3.14,
+    endTime: 4.2,
+    color: '#666'
+  }
+]);
+```
+
+## `instance.segments.getSegments()`
+
+Returns an array of objects representing all displayed segments present on the timeline in the segment format.
+
+
 # Development
 
-- Run the development server: `grunt server-dev`
-- Edit files in `lib/js/` and `lib/sass` as required.
-- The development page will recompile and refresh on save of any file.
+To join the project, bake your own features or debug more easily, the best is to clone the project and develop against it:
+
+```bash
+git clone https://github.com/bbcrd/peaks.js.git
+cd peaks.js
+npm install -g grunt-cli bower
+npm install
+bower install
+
+grunt server-dev
+```
+
+This will launch a livereload instance of peaks, refreshing the page every time you make a change to the sourcecode.
 
 # Testing
 
@@ -185,24 +320,21 @@ Segments provided from peaks.js use the following format:
 If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
 
 
-License
-=======
+# License
 
 See [COPYING](COPYING)
 
 This project includes sample audio from the [radio show Desert Island](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
-Authors
-=======
+# Authors
 
-### British Broadcasting Corporation
+>  British Broadcasting Corporation
 
-- [Chris Finch](http://github.com/chrisfinch) / [@chrisfinchy](https://twitter.com/chrisfinchy)
+- [Chris Finch](http://github.com/chrisfinch)
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](http://github.com/chrisn)
 
 
-Copyright
-=========
+# Copyright
 
 Copyright 2014 British Broadcasting Corporation
