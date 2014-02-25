@@ -32,7 +32,7 @@ define(['main', 'Kinetic'], function(Peaks, Kinetic){
       //@see https://github.com/bbcrd/peaks.js/issues/9
       //@see https://github.com/bbcrd/peaks.js/issues/12
       //for some reason, the event is not emitted during the tests
-      it("should return an updated time if it has been modified through the audio element", function(done){
+      xit("should return an updated time if it has been modified through the audio element", function(done){
         var newTime = 6.0;
 
         p.on('waveform_seek', function(currentTime){
@@ -46,7 +46,7 @@ define(['main', 'Kinetic'], function(Peaks, Kinetic){
     });
 
     describe("setCurrentTime", function(){
-      it("should alter the currentTime value of the audio element", function(){
+      xit("should alter the currentTime value of the audio element", function(){
         var newTime = 6.0;
         this.timeout(3000);
 
