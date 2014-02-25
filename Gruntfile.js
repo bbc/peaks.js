@@ -41,6 +41,10 @@ module.exports = function(grunt) {
           wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
             startFile: 'lib/js/frag/start.frag',
             endFile: 'lib/js/frag/end.frag'
+          },
+          optimize: "uglify2",
+          uglify2: {
+            mangle: true
           }
         }
       }

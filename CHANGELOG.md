@@ -1,5 +1,14 @@
 ## Change Log
 
+### 0.1.0 (2014/02/25 16:03 +00:00)
+- [#26](https://github.com/bbcrd/peaks.js/pull/26) Remove Sass dependency (@oncletom)
+- [#20](https://github.com/bbcrd/peaks.js/pull/20) Remove JST/Underscore dependency (@oncletom)
+- [#19](https://github.com/bbcrd/peaks.js/pull/19) Testing each element of the public API (@oncletom)
+- [#15](https://github.com/bbcrd/peaks.js/pull/15) Removing jQuery Dependency (@oncletom)
+- [#14](https://github.com/bbcrd/peaks.js/pull/14) {zoom,over}view mouseup is not releasing document.addEventListener("mouseup") (@oncletom)
+- [#11](https://github.com/bbcrd/peaks.js/pull/11) Handling multiple instances of peaks (@oncletom)
+- [#10](https://github.com/bbcrd/peaks.js/pull/10) Adding peaks.time.setCurrentTime() (@oncletom)
+
 ### 0.0.6 (2014/02/19 22:31 +00:00)
 - [#30](https://github.com/bbcrd/peaks.js/pull/30) Clicking in the zoomview should just change the playhead position (@oncletom)
 
