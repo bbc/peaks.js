@@ -58,14 +58,14 @@
         });
 
         document.querySelector("#segment").addEventListener("click", function () {
-          var currentTime = peaks.time.getCurrentTime();
+          var currentTime = peaksInstance.time.getCurrentTime();
           var segment = {
             startTime: currentTime,
             endTime: currentTime + 10,
             segmentEditable: true
           }
 
-          peaks.segments.addSegment([segment]);
+          peaksInstance.segments.addSegment([segment]);
         });
 
         document.querySelector('#segs').addEventListener("click", function (event) {

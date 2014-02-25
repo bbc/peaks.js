@@ -13,7 +13,6 @@ module.exports = function (config) {
       { pattern: 'test_data/*', included: false },
       { pattern: 'bower_components/eventEmitter/EventEmitter.min.js', included: false },
       { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
-      { pattern: 'bower_components/lodash/dist/lodash.compat.js', included: false },
       { pattern: 'bower_components/KineticJS/index.js', included: false },
       { pattern: 'test/*.html' },
       { pattern: 'lib/js/**/*.js', included: false },
