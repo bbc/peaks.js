@@ -72,10 +72,10 @@ define(['main', 'Kinetic'], function(Peaks, Kinetic){
         expect(p.zoom.getZoom()).to.equal(1);
       });
 
-      it("should throw a RangeError if an existing zoom level does not have sufficient data", function (){
+      it("should not throw an exception if an existing zoom level does not have sufficient data", function (){
         expect(function(){
-          p.zoom.setZoom(2);
-        }).to.throw(RangeError);
+          p.zoom.setZoom(3);
+        }).not.to.throw();
       });
     });
 
