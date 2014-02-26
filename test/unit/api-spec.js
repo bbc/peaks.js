@@ -1,5 +1,5 @@
 define(['main', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
-  describe("Peaks", function () {
+  describe("Peaks API interface", function () {
 
     var p;
 

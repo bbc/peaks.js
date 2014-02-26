@@ -41,7 +41,6 @@ See the Project overview here: [http://waveform.prototyping.bbc.co.uk/](http://w
   </tbody>
 </table>
 
-
 # Using Peaks.js in your own project
 
 Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
