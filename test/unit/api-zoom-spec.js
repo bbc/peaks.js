@@ -1,4 +1,4 @@
-define(['main', 'Kinetic'], function(Peaks, Kinetic){
+define(['peaks/main', 'Kinetic'], function(Peaks, Kinetic){
   describe("Peaks.zoom", function () {
 
     var p, sandbox;

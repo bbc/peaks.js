@@ -1,4 +1,4 @@
-define(['main', 'Kinetic'], function(Peaks, Kinetic){
+define(['peaks/main', 'Kinetic'], function(Peaks, Kinetic){
 
   describe("player/waveform/waveform.segments", function () {
 
