@@ -1,4 +1,4 @@
-define(['peaks/main', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
+define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
   describe("Peaks API interface", function () {
 
     var p;

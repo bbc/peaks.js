@@ -1,4 +1,4 @@
-define([
+define('peaks', [
   'EventEmitter',
   'peaks/player/player',
   'peaks/waveform/waveform.core',

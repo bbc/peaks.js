@@ -1,4 +1,4 @@
-define(['peaks/main', 'Kinetic'], function(Peaks, Kinetic){
+define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
   describe("Peaks.segments", function () {
 
     var p, sandbox;
