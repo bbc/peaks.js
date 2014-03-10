@@ -37,9 +37,9 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
 
     return {
 
-      init: function (audioElement) {
+      init: function (mediaElement) {
         var that = this;
-        this.player = audioElement;
+        this.player = mediaElement;
         this.duration = this.player.duration;
 
         if (this.player.readyState === 4) {

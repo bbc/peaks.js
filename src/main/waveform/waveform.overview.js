@@ -93,7 +93,7 @@ define([
       that.playheadPixel = frame;
       that.updateUi(that.playheadPixel);
 
-      that.options.audioElement.currentTime = time;
+      that.options.mediaElement.currentTime = time;
     });
 
     peaks.on("waveform_zoom_displaying", function (start, end) {

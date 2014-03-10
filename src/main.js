@@ -92,12 +92,20 @@ define('peaks', [
   Peaks.init = function init (opts) {
     opts = opts || {};
 
-    if (!opts.audioElement) {
+    if (opts.audioElement) {
+      opts.mediaElement = opts.audioElement;
+
+      if (console && typeof console.log === 'function') {
+        console.log('`audioElement` option is deprecated. Please use `mediaElement` instead.');
+      }
+    }
+
+    if (!opts.mediaElement) {
       throw new Error("Please provide an audio element.");
     }
 
-    if (!(opts.audioElement instanceof HTMLMediaElement)){
-      throw new TypeError("[Peaks.init] The audioElement option should be an HTMLMediaElement.");
+    if (!(opts.mediaElement instanceof HTMLMediaElement)){
+      throw new TypeError("[Peaks.init] The mediaElement option should be an HTMLMediaElement.");
     }
 
     if (!opts.dataUri) {
@@ -134,7 +142,7 @@ define('peaks', [
     if (instance.options.keyboard) keyboard.init(instance);
 
     instance.player = new AudioPlayer(instance);
-    instance.player.init(instance.options.audioElement);
+    instance.player.init(instance.options.mediaElement);
 
     instance.waveform = new Waveform(instance);
     instance.waveform.init(buildUi(instance.container));

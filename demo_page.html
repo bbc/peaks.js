@@ -25,7 +25,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         var options = {
           container: document.getElementById('first-waveform-visualiser-container'),
-          audioElement: document.getElementById('audio'),
+          mediaElement: document.getElementById('audio'),
           dataUri: '/test_data/sample.dat',
           keyboard: true,
           height: 240
@@ -35,7 +35,7 @@
 
         peaks.init({
           container: document.getElementById('second-waveform-visualiser-container'),
-          audioElement: document.getElementById('audio'),
+          mediaElement: document.getElementById('audio'),
           dataUri: '/test_data/sample.dat',
           keyboard: false,
           height: 120,

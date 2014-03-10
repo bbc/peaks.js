@@ -13,7 +13,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
 
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
-        audioElement: document.querySelector('audio'),
+        mediaElement: document.querySelector('audio'),
         dataUri: 'base/test_data/sample.dat',
         keyboard: true,
         height: 240
