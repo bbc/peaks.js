@@ -5,33 +5,27 @@ module.exports = function(grunt) {
     // JS Lint on all non-vendor files
     jshint: {
       all: [
-        'lib/js/**/*.js',
-        '!lib/js/almond.js',
-        '!lib/js/vendor/*.js'
+        'src/**/*.js',
+        '!src/almond.js'
       ]
-      // lib_test: {
-      //   src: ['lib/**/*.js', 'test/**/*.js']
-      // }
     },
 
     // r.js concatenation and minification of javascript
     requirejs: {
       compile: {
         options: {
-          name: "almond",
-          baseUrl: "lib/js/",
-          include: ['main'],
-          mainConfigFile: "lib/js/main.js",
+          name: "bower_components/almond/almond",
+          baseUrl: '.',
+          include: ['peaks'],
           out: "build/js/peaks.min.js",
-          optimize: "none",
           paths: {
-            "waveform-data": "../../bower_components/waveform-data/dist/waveform-data.min",
-            "EventEmitter": "../../bower_components/eventEmitter/EventEmitter",
-            "m": "waveform_viewer"
+            "peaks": "src/main",
+            "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
+            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
           },
           wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
-            startFile: 'lib/js/frag/start.frag',
-            endFile: 'lib/js/frag/end.frag'
+            startFile: 'src/frag/start.frag',
+            endFile: 'src/frag/end.frag'
           },
           optimize: "uglify2",
           uglify2: {
@@ -76,7 +70,7 @@ module.exports = function(grunt) {
         livereload: 1337
       },
       js: {
-        files: ['lib/**/*.js']
+        files: ['src/*.js']
       },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',

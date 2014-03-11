@@ -27,13 +27,13 @@ var removeAllFixtures = fixtureFiles.forEach.bind(fixtureFiles, removeFixtures);
 
 requirejs.config({
     // Karma serves files from '/base'
-    baseUrl: '/base/lib/js',
+    baseUrl: '/base',
 
     paths: {
-        'm': 'waveform_viewer',
-        'waveform-data': '../../bower_components/waveform-data/dist/waveform-data',
-        'EventEmitter': '../../bower_components/eventEmitter/EventEmitter.min',
-        'Kinetic': '../../bower_components/KineticJS/index'
+        'peaks': 'src/main',
+        'waveform-data': 'bower_components/waveform-data/dist/waveform-data',
+        'EventEmitter': 'bower_components/eventEmitter/EventEmitter.min',
+        'Kinetic': 'bower_components/KineticJS/index'
     },
 
     // ask Require.js to load these files (all our tests)

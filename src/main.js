@@ -1,15 +1,9 @@
-require.config({
-  paths: {
-    'm': "waveform_viewer"
-  }
-});
-
-define([
+define('peaks', [
   'EventEmitter',
-  'm/player/player',
-  'm/player/waveform/waveform.core',
-  'm/player/waveform/waveform.mixins',
-  'm/player/player.keyboard'
+  'peaks/player/player',
+  'peaks/waveform/waveform.core',
+  'peaks/waveform/waveform.mixins',
+  'peaks/player/player.keyboard'
 ], function (EventEmitter, AudioPlayer, Waveform, mixins, keyboard) {
   'use strict';
 

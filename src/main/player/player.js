@@ -24,7 +24,7 @@
  * player.setVolume
  */
 
-define(["m/player/waveform/waveform.mixins"], function (mixins) {
+define(["peaks/waveform/waveform.mixins"], function (mixins) {
   'use strict';
 
   var radio = function (peaks) {

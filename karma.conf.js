@@ -11,11 +11,11 @@ module.exports = function (config) {
     files : [
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'bower_components/eventEmitter/EventEmitter.min.js', included: false },
-      { pattern: 'bower_components/waveform-data/dist/waveform-data.js', included: false },
-      { pattern: 'bower_components/KineticJS/index.js', included: false },
+      { pattern: 'bower_components/eventEmitter/*.js', included: false },
+      { pattern: 'bower_components/waveform-data/dist/*.js', included: false },
+      { pattern: 'bower_components/KineticJS/*.js', included: false },
       { pattern: 'test/*.html' },
-      { pattern: 'lib/js/**/*.js', included: false },
+      { pattern: 'src/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
       { pattern: 'test_data/sample.*', included: false, served: true },
       'test/test-main.js'

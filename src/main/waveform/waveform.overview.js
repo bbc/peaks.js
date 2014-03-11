@@ -1,6 +1,6 @@
 define([
-  "m/player/waveform/waveform.axis",
-  "m/player/waveform/waveform.mixins"
+  "peaks/waveform/waveform.axis",
+  "peaks/waveform/waveform.mixins"
   ], function (WaveformAxis, mixins) {
   'use strict';
 
