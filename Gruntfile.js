@@ -10,30 +10,29 @@ module.exports = function(grunt) {
       ]
     },
 
-    // r.js concatenation and minification of javascript
-    requirejs: {
-      compile: {
-        options: {
-          name: "bower_components/almond/almond",
-          baseUrl: '.',
-          include: ['peaks'],
-          out: "build/js/peaks.min.js",
-          paths: {
-            "peaks": "src/main",
-            "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
-            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
-          },
-          wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
-            startFile: 'src/frag/start.frag',
-            endFile: 'src/frag/end.frag'
-          },
-          optimize: "uglify2",
-          uglify2: {
-            mangle: true
-          }
-        }
-      }
-    },
+//    requirejs: {
+//      compile: {
+//        options: {
+//          name: "bower_components/almond/almond",
+//          baseUrl: '.',
+//          include: ['peaks'],
+//          out: "build/js/peaks.min.js",
+//          paths: {
+//            "peaks": "src/main",
+//            "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
+//            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
+//          },
+//          wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
+//            startFile: 'src/frag/start.frag',
+//            endFile: 'src/frag/end.frag'
+//          },
+//          optimize: "uglify2",
+//          uglify2: {
+//            mangle: true
+//          }
+//        }
+//      }
+//    },
 
     // Quick server for demo'ing / testing purposes using nodes connect
     connect: {
@@ -91,7 +90,6 @@ module.exports = function(grunt) {
   // Load NPM tasks
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.loadNpmTasks('grunt-bower-install');
@@ -102,23 +100,15 @@ module.exports = function(grunt) {
   // Reqister task names
 
   // Build the project for production
-  grunt.registerTask('build', [
-    'bower-install:demo',
-    'jshint:all',
-    'requirejs'
-  ]);
+  grunt.registerTask('build', ['bower-install', 'jshint:all']);
 
   // Start a dev server for working on the precomiled files
-  grunt.registerTask('server-dev', [
-    'bower-install:dev',
-    'jshint:all',
-    'concurrent:server'
-  ]);
+  grunt.registerTask('server-dev', ['build', 'concurrent:server']);
 
   // Start a demo server for displaying the functionality of the fully built component
   grunt.registerTask('server-demo', ['build', 'open:demo', 'connect']);
 
   // Build the project by default
-  grunt.registerTask('default', ['build']);
+  grunt.registerTask('default', ['server-dev']);
 
 };
