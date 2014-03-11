@@ -178,6 +178,8 @@ define([
 
     this.init = function () {
       peaks.on("waveform_zoom_displaying", self.updateSegments);
+
+      peaks.emit("segments.ready");
     };
 
     /**
