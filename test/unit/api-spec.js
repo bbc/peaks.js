@@ -7,7 +7,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
      * SETUP =========================================================
      */
 
-    beforeEach(function (done) {
+    beforeEach(function beforeEach(done) {
       loadAllFixtures();
 
       p = Peaks.init({
@@ -18,7 +18,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
         height: 240
       });
 
-      setTimeout(done, 500);
+      p.on('segments.ready', done);
     });
 
     /**

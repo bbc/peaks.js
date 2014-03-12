@@ -7,7 +7,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
      * SETUP =========================================================
      */
 
-    beforeEach(function (done) {
+    beforeEach(function beforeEach(done) {
       loadAllFixtures();
       sandbox = sinon.sandbox.create();
 
@@ -19,7 +19,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
         height: 240
       });
 
-      setTimeout(done, 500);
+      p.on('segments.ready', done);
     });
 
     /**
