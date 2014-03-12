@@ -27,7 +27,7 @@ define([
       scale: that.options.zoomLevels[that.current_zoom_level]
     });
 
-    that.playheadPixel = that.data.at_time(that.options.audioElement.currentTime);
+    that.playheadPixel = that.data.at_time(that.options.mediaElement.currentTime);
     that.pixelLength = that.data.adapter.length;
     that.pixelsPerSecond = that.data.pixels_per_second;
     that.frameOffset = 0; // the pixel offset of the current frame being displayed
@@ -120,7 +120,7 @@ define([
     });
 
     that.peaks.on("zoomview_user_seek", function (time, frameIndex) {
-      that.options.audioElement.currentTime = time;
+      that.options.mediaElement.currentTime = time;
 
       that.syncPlayhead(frameIndex);
 
@@ -159,7 +159,7 @@ define([
         });
 
         that.pixelsPerSecond = that.data.pixels_per_second;
-        that.seekFrame(that.data.at_time(that.options.audioElement.currentTime));
+        that.seekFrame(that.data.at_time(that.options.mediaElement.currentTime));
       }
     });
 
@@ -173,7 +173,7 @@ define([
 
     // KEYBOARD EVENTS =========================================
     var nudgeFrame = function nudgeFrame(step){
-      var time = that.options.audioElement.currentTime;
+      var time = that.options.mediaElement.currentTime;
 
       time += (that.options.nudgeIncrement * step);
       that.seekFrame(that.data.at_time(time));

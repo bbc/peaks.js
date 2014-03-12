@@ -7,18 +7,18 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
      * SETUP =========================================================
      */
 
-    beforeEach(function (done) {
+    beforeEach(function beforeEach(done) {
       loadAllFixtures();
 
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
-        audioElement: document.querySelector('audio'),
-        dataUri: 'base/test_data/sample.dat',
+        mediaElement: document.querySelector('audio'),
+        dataUri: 'base/test_data/sample.json',
         keyboard: true,
         height: 240
       });
 
-      setTimeout(done, 500);
+      p.on('segments.ready', done);
     });
 
     /**
@@ -41,7 +41,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
     });
 
     describe("create", function(){
-      it("should throw an exception if no audioElement is provided", function(){
+      it("should throw an exception if no mediaElement is provided", function(){
         expect(function(){
           Peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
@@ -50,11 +50,11 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
         }).to.throw(/provide an audio element/);
       });
 
-      it("should throw an exception if audioElement is not an HTMLMediaElement", function(){
+      it("should throw an exception if mediaElement is not an HTMLMediaElement", function(){
         expect(function(){
           Peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
-            audioElement: document.createElement('div'),
+            mediaElement: document.createElement('div'),
             dataUri: 'base/test_data/sample.dat'
           });
         }).to.throw(/HTMLMediaElement/);
@@ -64,7 +64,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
         expect(function(){
           Peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
-            audioElement: document.querySelector('audio')
+            mediaElement: document.querySelector('audio')
           });
         }).to.throw(/dataUri/);
       });
@@ -72,7 +72,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
       it("should thrown an exception if no container is provided", function(){
         expect(function(){
           Peaks.init({
-            audioElement: document.querySelector('audio'),
+            mediaElement: document.querySelector('audio'),
             dataUri: 'base/test_data/sample.dat'
           });
         }).to.throw(/provide a container/);
@@ -81,7 +81,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
       it("should thrown an exception if the container has no layout", function(){
         expect(function(){
           Peaks.init({
-            audioElement: document.querySelector('audio'),
+            mediaElement: document.querySelector('audio'),
             container: document.createElement('div'),
             dataUri: 'base/test_data/sample.dat'
           });

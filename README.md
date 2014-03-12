@@ -63,7 +63,7 @@ Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
 require(['path/to/peaks.min'], function (peaks) {
   var p = peaks.init({
     container: document.querySelector('#peaks-container'),
-    audioElement: document.querySelector('audio'),
+    mediaElement: document.querySelector('audio'),
     dataUri: 'test_data/sample.dat'
   });
 
@@ -78,7 +78,7 @@ require(['path/to/peaks.min'], function (peaks) {
 ```javascript
 var p = peaks.init({
   container: document.querySelector('#peaks-container'),
-  audioElement: document.querySelector('audio'),
+  mediaElement: document.querySelector('audio'),
   dataUri: 'test_data/sample.dat'
 });
 
@@ -96,8 +96,8 @@ var options = {
   /** REQUIRED OPTIONS **/
   // Containing element
   container: document.getElementById('peaks-container'),
-  // HTML5 Audio element for audio track
-  audioElement: document.getElementById('audio'),
+  // HTML5 Media element containing an audio track
+  mediaElement: document.getElementById('media'),
   // URI to waveform data file in binary or JSON
   dataUri: '../test_data/sample.dat',
 
@@ -194,7 +194,7 @@ var secondPeaksInstance = peaks.init({ … });
 
 ## `instance.time.getCurrentTime()`
 
-Returns currently selected time in seconds (convenience method interchangeable with `audioElement.currentTime`).
+Returns currently selected time in seconds (convenience method interchangeable with `mediaElement.currentTime`).
 
 ```js
 var instance = peaks.init({ … });

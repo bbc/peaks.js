@@ -38,7 +38,7 @@
 
           var peaksInstance = Peaks.init({
             container: document.getElementById('first-waveform-visualiser-container'),
-            audioElement: document.getElementById('audio'),
+            mediaElement: document.getElementById('audio'),
             dataUri: '/test_data/sample.dat',
             keyboard: true,
             height: 140,
@@ -69,7 +69,7 @@
 
           Peaks.init({
             container: document.getElementById('second-waveform-visualiser-container'),
-            audioElement: document.getElementById('audio'),
+            mediaElement: document.getElementById('audio'),
             dataUri: '/test_data/sample.dat',
             keyboard: false,
             height: 120,

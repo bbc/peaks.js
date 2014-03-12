@@ -4,19 +4,19 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
 
     var sandbox, p;
 
-    beforeEach(function (done) {
+    beforeEach(function beforeEach(done) {
       loadAllFixtures();
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
-        audioElement: document.querySelector('audio'),
-        dataUri: 'base/test_data/sample.dat',
+        mediaElement: document.querySelector('audio'),
+        dataUri: 'base/test_data/sample.json',
         keyboard: true,
         height: 240
       });
 
-      setTimeout(done, 500);
+      p.on('segments.ready', done);
     });
 
     afterEach(function(){
