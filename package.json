@@ -16,9 +16,9 @@
   "scripts": {
     "test": "npm run test-pre && npm run test-remote",
     "test-pre": "grunt jshint",
-    "test-remote": "karma start --single-run --browsers SauceChrome,SauceFirefox,SauceFirefoxLinux,SauceSafari6,SauceSafari7,SauceIE9,SauceIE10,SauceIE11",
-    "test-local": "karma start --single-run",
-    "test-watch": "karma start --auto-watch --no-single-run --browsers Chrome",
+    "test-remote": "./node_modules/karma/bin/karma start --single-run --browsers SauceChrome,SauceFirefox,SauceFirefoxLinux,SauceSafari6,SauceSafari7,SauceIE9,SauceIE10,SauceIE11",
+    "test-local": "./node_modules/karma/bin/karma start --single-run",
+    "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run --browsers Chrome",
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a"
   },
   "devDependencies": {
