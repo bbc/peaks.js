@@ -13,7 +13,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
-        dataUri: 'base/test_data/sample.dat',
+        dataUri: 'base/test_data/sample.json',
         keyboard: true,
         height: 240
       });
