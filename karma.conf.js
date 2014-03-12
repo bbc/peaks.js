@@ -58,6 +58,8 @@ module.exports = function (config) {
     // - IE (only Windows)
     browsers : ['Chrome', 'Safari', 'Firefox'],
 
+    browserNoActivityTimeout: 30000,
+
     sauceLabs: {
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
