@@ -43,10 +43,10 @@ See the Project overview here: [http://waveform.prototyping.bbc.co.uk/](http://w
 
 # Using Peaks.js in your own project
 
-Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
+Peaks can be included in any web page by following these steps:
 
 1. include it your web page
-1. include a media element and its waveform data file
+1. include a media element and its [waveform data file](https://github.com/bbcrd/audiowaveform)
 1. initialise Peaks
 
 ```html
@@ -55,6 +55,7 @@ Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
   <source src="test_data/sample.mp3" type="audio/mpeg">
   <source src="test_data/sample.ogg" type="audio/ogg">
 </audio>
+<script src="bower_components/requirejs/require.js" data-main="app.js"></script>
 ```
 
 ## Start using [require.js](http://requirejs.org/)
@@ -62,6 +63,7 @@ Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
 AMD modules are working out of the box without any optimiser.
 
 ```javascript
+// in app.js
 // configure peaks path
 requirejs.config({
   paths: {
