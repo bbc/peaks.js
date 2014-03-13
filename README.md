@@ -57,35 +57,50 @@ Peaks is provided as a ready to consume file located in `build/js/peaks.min.js`:
 </audio>
 ```
 
-## Start using require.js
+## Start using [require.js](http://requirejs.org/)
+
+AMD modules are working out of the box without any optimiser.
 
 ```javascript
-require(['path/to/peaks.min'], function (peaks) {
-  var p = peaks.init({
+// configure peaks path
+requirejs.config({
+  paths: {
+    peaks: 'bower_components/peaks.js/src/main',
+    EventEmitter: 'bower_components/eventEmitter/EventEmitter',
+    'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
+  }
+});
+
+// requires it
+require(['peaks'], function (Peaks) {
+  var p = Peaks.init({
     container: document.querySelector('#peaks-container'),
     mediaElement: document.querySelector('audio'),
     dataUri: 'test_data/sample.dat'
   });
 
-  p.on('waveformOverviewReady', function(){
-    // do something when the waveform overview is ready
+  p.on('segments.ready', function(){
+    // do something when segments are ready to be displayed
   });
 });
 ```
 
+Working examples are provided in [`demo_page.html`](demo_page.html) and [`demo_page_dev.html`](demo_page_dev.html).
+
 ## Start using vanilla JavaScript
 
-```javascript
-var p = peaks.init({
-  container: document.querySelector('#peaks-container'),
-  mediaElement: document.querySelector('audio'),
-  dataUri: 'test_data/sample.dat'
-});
+As of `peaks@0.2.0`, the vanilla JavaScript build is not shipped anymore.
 
-p.on('waveformOverviewReady', function(){
-  // do something when the waveform overview is ready
-});
-```
+Here are several ways to build it your own way:
+
+- UMD conversion using [grunt-contrib-requirejs](https://www.npmjs.org/package/grunt-contrib-requirejs) and
+[almond](https://www.npmjs.org/package/almond)
+- transform to whatever you want using [browserify](https://www.npmjs.org/package/browserify) and
+[deamdify](https://www.npmjs.org/package/deamdify)
+
+[Read this blog post](http://dontkry.com/posts/code/browserify-and-the-universal-module-definition.html) or
+[have a glance](https://github.com/bbcrd/peaks.js/blob/e6e9579736fdd47ea213bd65332268709a61392a/Gruntfile.js#L13-35)
+at our ancient `r.js` build configuration.
 
 ## Configuration
 
