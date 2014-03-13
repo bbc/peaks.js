@@ -18,11 +18,19 @@
     <script src="bower_components/waveform-data/dist/waveform-data.min.js"></script>
     <!-- endbower -->
 
-    <script src="/build/js/peaks.min.js"></script>
-
+    <script src="bower_components/requirejs/require.js"></script>
+    <script src="src/main.js"></script>
     <script>
+      requirejs.config({
+        baseUrl: 'bower_components/',
+        paths: {
+          peaks: '../src/main',
+          'waveform-data': 'waveform-data/dist/waveform-data.min',
+          EventEmitter: 'eventEmitter/EventEmitter'
+        }
+      });
 
-      document.addEventListener('DOMContentLoaded', function () {
+      require(['peaks'], function(peaks){
         var options = {
           container: document.getElementById('first-waveform-visualiser-container'),
           mediaElement: document.getElementById('audio'),
@@ -52,7 +60,7 @@
             startTime: currentTime,
             endTime: currentTime + 10,
             segmentEditable: true
-          }
+          };
 
           peaksInstance.segments.addSegment([segment]);
         });
@@ -63,7 +71,7 @@
             startTime: currentTime,
             endTime: currentTime + 10,
             segmentEditable: true
-          }
+          };
 
           peaksInstance.segments.addSegment([segment]);
         });

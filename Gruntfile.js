@@ -5,8 +5,7 @@ module.exports = function(grunt) {
     // JS Lint on all non-vendor files
     jshint: {
       all: [
-        'src/**/*.js',
-        '!src/almond.js'
+        'src/**/*.js'
       ]
     },
 

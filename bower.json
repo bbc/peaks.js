@@ -17,7 +17,6 @@
     "waveform-data": "~1.1.1"
   },
   "devDependencies": {
-    "requirejs": "~2.1.11",
-    "almond": "~0.2.9"
+    "requirejs": "~2.1.11"
   }
 }
