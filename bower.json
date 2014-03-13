@@ -1,7 +1,7 @@
 {
   "name": "peaks.js",
-  "version": "0.1.0",
-  "main": "/build/css/main.css",
+  "version": "0.2.0",
+  "main": "src/main.js",
   "ignore": [
     ".jshintrc",
     "**/*.txt",

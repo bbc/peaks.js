@@ -58,6 +58,7 @@ module.exports = function (config) {
     // - IE (only Windows)
     browsers : ['Chrome', 'Safari', 'Firefox'],
 
+    browserDisconnectTolerance: 2,
     browserNoActivityTimeout: 30000,
 
     sauceLabs: {
