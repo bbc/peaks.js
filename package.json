@@ -19,7 +19,7 @@
     "test-remote": "./node_modules/karma/bin/karma start --single-run --browsers SauceChrome,SauceFirefox,SauceFirefoxLinux,SauceSafari6,SauceSafari7,SauceIE9,SauceIE10,SauceIE11",
     "test-local": "./node_modules/karma/bin/karma start --single-run",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run --browsers Chrome",
-    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a"
+    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -43,6 +43,6 @@
     "mocha": "~1.17.1",
     "karma-mocha": "~0.1.1",
     "karma-chai": "~0.0.2",
-    "github-changes": "0.0.5"
+    "github-changes": "0.0.10"
   }
 }
