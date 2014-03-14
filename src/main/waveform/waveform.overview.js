@@ -38,7 +38,8 @@ define([
     that.axis = new WaveformAxis(that);
 
     that.createWaveform();
-    that.createRefWaveform();
+    if (that.options.zoomView)
+      that.createRefWaveform();
     that.axis.drawAxis(0);
     that.createUi();
 
@@ -55,20 +56,24 @@ define([
         if (event.type == "mousedown") {
           that.seeking = true;
 
-          var width = that.refWaveformShape.getWidth();
-
-          that.updateRefWaveform(
-            that.data.time(event.layerX),
-            that.data.time(event.layerX + width)
-          );
-
-          peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
-
-          that.stage.on("mousemove", function (event) {
+          var width;
+          if (peaks.options.zoomView){
+            width = that.refWaveformShape.getWidth();
             that.updateRefWaveform(
               that.data.time(event.layerX),
               that.data.time(event.layerX + width)
             );
+          }
+
+          peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
+
+          that.stage.on("mousemove", function (event) {
+            if (peaks.options.zoomView){
+              that.updateRefWaveform(
+                that.data.time(event.layerX),
+                that.data.time(event.layerX + width)
+              );
+            }
 
             peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
           });
@@ -96,9 +101,11 @@ define([
       that.options.mediaElement.currentTime = time;
     });
 
-    peaks.on("waveform_zoom_displaying", function (start, end) {
-      that.updateRefWaveform(start, end);
-    });
+    if (peaks.options.zoomView){
+      peaks.on("waveform_zoom_displaying", function (start, end) {
+        that.updateRefWaveform(start, end);
+      });
+    }
 
     peaks.on("resizeEndOverview", function (width, newWaveformData) {
       that.width = width;
@@ -141,7 +148,7 @@ define([
     var that = this;
     this.playheadLine = new Kinetic.Line({
       points: that._getPlayheadPoints(0),
-      stroke: 'rgba(0,0,0,1)',
+      stroke: that.options.playheadColor,
       strokeWidth: 1
     });
     this.uiLayer.add(this.playheadLine);

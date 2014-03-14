@@ -70,6 +70,11 @@ define([
 
         peaks.emit("waveform_zoom_start");
 
+        that.initSegments();
+      },
+
+      initSegments: function () {
+        var that = this;
         that.segments = new WaveformSegments(peaks);
         that.segments.init();
       },
@@ -82,14 +87,18 @@ define([
 
         window.addEventListener("resize", function () {
           that.ui.overview.hidden = true;
-          that.ui.zoom.hidden = true;
+          if (peaks.options.zoomView)
+            that.ui.zoom.hidden = true;
 
           if (that.resizeTimeoutId) clearTimeout(that.resizeTimeoutId);
           that.resizeTimeoutId = setTimeout(function(){
             var w = that.ui.player.clientWidth;
             var overviewWaveformData = that.origWaveformData.resample(w);
             peaks.emit("resizeEndOverview", w, overviewWaveformData);
-            peaks.emit("window_resized", w, that.origWaveformData);
+            peaks.emit("player_time_update", peaks.player.getTime());
+            peaks.emit("waveform_zoom_displaying");
+            if (peaks.options.zoomView)
+              peaks.emit("window_resized", w, that.origWaveformData);
           }, 500);
         });
 
@@ -97,9 +106,11 @@ define([
           that.ui.overview.removeAttribute('hidden');
         });
 
-        peaks.on("zoomview_resized", function () {
-          that.ui.zoom.removeAttribute('hidden');
-        });
+        if (peaks.options.zoomView){
+          peaks.on("zoomview_resized", function () {
+            that.ui.zoom.removeAttribute('hidden');
+          });
+        }
       }
     };
   };
