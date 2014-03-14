@@ -66,6 +66,10 @@ define('peaks', [
        */
       segmentColor: 'rgba(255, 161, 39, 1)',
       /**
+       * Colour of the play head
+       */
+      playheadColor: 'rgba(0, 0, 0, 1)',
+      /**
        *
        */
       template: [
