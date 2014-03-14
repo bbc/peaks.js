@@ -54,6 +54,10 @@ define('peaks', [
        */
       overviewWaveformColor: 'rgba(0,0,0,0.2)',
       /**
+       * Colour for the play head
+       */
+      playheadColor: 'rgba(0,0,0,1)',
+      /**
        * Random colour per segment (overrides segmentColor)
        */
       randomizeSegmentColor: true,
@@ -65,6 +69,10 @@ define('peaks', [
        * Colour for segments on the waveform
        */
       segmentColor: 'rgba(255, 161, 39, 1)',
+      /**
+       * Enable/Disable zoomView, enabled by default
+       */
+      zoomView: true,
       /**
        *
        */
@@ -148,7 +156,10 @@ define('peaks', [
     instance.waveform.init(buildUi(instance.container));
 
     instance.on("waveformOverviewReady", function () {
-      instance.waveform.openZoomView();
+      if (instance.options.zoomView)
+        instance.waveform.openZoomView();
+      else
+        instance.waveform.initSegments();
 
       if (instance.options.segments) { // Any initial segments to be displayed?
         instance.segments.addSegment(instance.options.segments);

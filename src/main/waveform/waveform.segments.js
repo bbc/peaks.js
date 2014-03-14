@@ -13,7 +13,12 @@ define([
     var self = this;
 
     self.segments = [];
-    self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
+    var arrayViews = [peaks.waveform.waveformOverview];
+
+    if (peaks.options.zoomView)
+      arrayViews.push(peaks.waveform.waveformZoomView);
+
+    self.views = arrayViews.map(function(view){
       if (!view.segmentLayer) {
         view.segmentLayer = new Kinetic.Layer();
         view.stage.add(view.segmentLayer);
@@ -31,10 +36,14 @@ define([
         labelText: labelText || ""
       };
 
-      var segmentZoomGroup = new Kinetic.Group();
       var segmentOverviewGroup = new Kinetic.Group();
-
-      var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
+      var segmentGroups = [segmentOverviewGroup];
+      var segmentZoomGroup;
+      
+      if (peaks.options.zoomView){
+        segmentZoomGroup = new Kinetic.Group();
+        segmentGroups.push(segmentZoomGroup);
+      }
 
       color = color || getSegmentColor();
 
@@ -75,8 +84,10 @@ define([
         view.segmentLayer.add(segmentGroup);
       });
 
-      segment.zoom = segmentZoomGroup;
-      segment.zoom.view = peaks.waveform.waveformZoomView;
+      if (peaks.options.zoomView){
+        segment.zoom = segmentZoomGroup;
+        segment.zoom.view = peaks.waveform.waveformZoomView;
+      }
       segment.overview = segmentOverviewGroup;
       segment.overview.view = peaks.waveform.waveformOverview;
       segment.color = color;
@@ -88,7 +99,9 @@ define([
     var updateSegmentWaveform = function (segment) {
       // Binding with data
       peaks.waveform.waveformOverview.data.set_segment(peaks.waveform.waveformOverview.data.at_time(segment.startTime), peaks.waveform.waveformOverview.data.at_time(segment.endTime), segment.id);
-      peaks.waveform.waveformZoomView.data.set_segment(peaks.waveform.waveformZoomView.data.at_time(segment.startTime), peaks.waveform.waveformZoomView.data.at_time(segment.endTime), segment.id);
+      if (peaks.options.zoomView){
+        peaks.waveform.waveformZoomView.data.set_segment(peaks.waveform.waveformZoomView.data.at_time(segment.startTime), peaks.waveform.waveformZoomView.data.at_time(segment.endTime), segment.id);
+      }
 
       // Overview
       var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
@@ -114,35 +127,37 @@ define([
 
 
       // Zoom
-      var zoomStartOffset = peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
-      var zoomEndOffset = peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
+      if (peaks.options.zoomView){
+        var zoomStartOffset = peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
+        var zoomEndOffset = peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
 
-      var frameStartOffset = peaks.waveform.waveformZoomView.frameOffset;
-      var frameEndOffset = peaks.waveform.waveformZoomView.frameOffset + peaks.waveform.waveformZoomView.width;
+        var frameStartOffset = peaks.waveform.waveformZoomView.frameOffset;
+        var frameEndOffset = peaks.waveform.waveformZoomView.frameOffset + peaks.waveform.waveformZoomView.width;
 
-      if (zoomStartOffset < frameStartOffset) zoomStartOffset = frameStartOffset;
-      if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
+        if (zoomStartOffset < frameStartOffset) zoomStartOffset = frameStartOffset;
+        if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
 
-      if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
-        var startPixel = zoomStartOffset - frameStartOffset;
-        var endPixel = zoomEndOffset - frameStartOffset;
+        if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
+          var startPixel = zoomStartOffset - frameStartOffset;
+          var endPixel = zoomEndOffset - frameStartOffset;
 
-        segment.zoom.show();
-        segment.zoom.waveformShape.setDrawFunc(function(canvas) {
-          mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
-        });
+          segment.zoom.show();
+          segment.zoom.waveformShape.setDrawFunc(function(canvas) {
+            mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
+          });
 
-        if (segment.editable) {
-          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
-          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
+          if (segment.editable) {
+            if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
+            if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
 
-          // Change Text
-          segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
-          segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
+            // Change Text
+            segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
+            segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
+          }
+
+        } else {
+          segment.zoom.hide();
         }
-
-      } else {
-        segment.zoom.hide();
       }
 
       // Label
@@ -226,6 +241,10 @@ define([
       self.segments.push(segment);
 
       return segment;
+    };
+
+    this.clearSegments = function () {
+      self.segments.length = 0;
     };
 
     /**
