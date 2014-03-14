@@ -207,7 +207,7 @@ define([
 
     that.zoomPlayheadLine = new Kinetic.Line({
       points: [{x: 0, y: 0},{x: 0, y: that.height}],
-      stroke: that.options.playheadColor,
+      stroke: 'rgba(0,0,0,1)',
       strokeWidth: 1
     });
 
