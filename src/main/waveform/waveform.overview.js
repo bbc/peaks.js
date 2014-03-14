@@ -141,7 +141,7 @@ define([
     var that = this;
     this.playheadLine = new Kinetic.Line({
       points: that._getPlayheadPoints(0),
-      stroke: 'rgba(0,0,0,1)',
+      stroke: that.options.playheadColor,
       strokeWidth: 1
     });
     this.uiLayer.add(this.playheadLine);
