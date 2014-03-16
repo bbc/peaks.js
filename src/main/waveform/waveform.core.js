@@ -90,7 +90,6 @@ define([
             var overviewWaveformData = that.origWaveformData.resample(w);
             peaks.emit("resizeEndOverview", w, overviewWaveformData);
             peaks.emit("window_resized", w, that.origWaveformData);
-            peaks.emit("player_time_update", peaks.player.getTime());
           }, 500);
         });
 
