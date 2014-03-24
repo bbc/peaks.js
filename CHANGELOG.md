@@ -1,6 +1,10 @@
 ## Change Log
 
-### 0.2.0 (2014/03/13 14:43 +00:00)
+### 0.2.1 (2014/03/24 17:47 +00:00)
+- [#28](https://github.com/bbcrd/peaks.js/pull/28) Segment improvement (@oncletom)
+- [#43](https://github.com/bbcrd/peaks.js/pull/43) Fixing `SYNTAX_ERR: DOM Exception 12` in Safari (@oncletom)
+
+### 0.2.0 (2014/03/13 17:58 +00:00)
 - [#33](https://github.com/bbcrd/peaks.js/pull/33) Enforcing strict mode (@oncletom)
 - [#32](https://github.com/bbcrd/peaks.js/pull/32) Resize event is assigned to window and not the Peaks instance (@oncletom)
 - [#35](https://github.com/bbcrd/peaks.js/pull/35) Simplifying the AMD tree (@oncletom)
