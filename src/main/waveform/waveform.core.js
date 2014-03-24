@@ -22,7 +22,6 @@ define([
         var that = this;
         var xhr = new XMLHttpRequest();
         var isXhr2 = ('withCredentials' in xhr);
-        var supportJSONResponseType = typeof xhr.responseType === 'string';
 
         if (!isXhr2) {
           if (console && console.info) console.info("Changing request type to .json as browser does not support ArrayBuffer");
@@ -33,8 +32,13 @@ define([
         xhr.open('GET', options.dataUri, true);
 
         if (options.dataUri.match(/\.json$/i)) {
-          if (isXhr2 && supportJSONResponseType){
-            xhr.responseType = 'json';
+          if (isXhr2){
+            try {
+              xhr.responseType = 'json';
+            }
+            // some browsers like Safari 6 do handle XHR2 but not the json response type
+            // doing only a try/catch fails in IE9
+            catch (e){}
           }
         }
         else {
