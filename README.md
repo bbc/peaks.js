@@ -137,6 +137,8 @@ var options = {
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
+  // Colour of the play head
+  playheadColor: 'rgba(0, 0, 0, 1)',
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
