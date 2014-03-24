@@ -183,6 +183,7 @@ define([
   WaveformOverview.prototype.updateUi = function (pixel) {
     var that = this;
     that.playheadLine.setAttr("points", that._getPlayheadPoints(pixel));
+    that.uiLayer.setZIndex(100);
     that.uiLayer.draw();
   };
 
