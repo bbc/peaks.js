@@ -22,6 +22,7 @@ define([
         var that = this;
         var xhr = new XMLHttpRequest();
         var isXhr2 = ('withCredentials' in xhr);
+        var supportJSONResponseType = typeof xhr.responseType === 'string';
 
         if (!isXhr2) {
           if (console && console.info) console.info("Changing request type to .json as browser does not support ArrayBuffer");
@@ -32,7 +33,7 @@ define([
         xhr.open('GET', options.dataUri, true);
 
         if (options.dataUri.match(/\.json$/i)) {
-          if (isXhr2){
+          if (isXhr2 && supportJSONResponseType){
             xhr.responseType = 'json';
           }
         }
