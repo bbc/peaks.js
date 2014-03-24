@@ -244,6 +244,7 @@ define([
       that.zoomPlayheadGroup.hide();
     }
 
+    that.uiLayer.setZIndex(100);
     that.uiLayer.draw();
 
     that.zoomWaveformShape.setDrawFunc(function(canvas) {
