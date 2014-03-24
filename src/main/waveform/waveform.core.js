@@ -33,7 +33,12 @@ define([
 
         if (options.dataUri.match(/\.json$/i)) {
           if (isXhr2){
-            xhr.responseType = 'json';
+            try {
+              xhr.responseType = 'json';
+            }
+            // some browsers like Safari 6 do handle XHR2 but not the json response type
+            // doing only a try/catch fails in IE9
+            catch (e){}
           }
         }
         else {
