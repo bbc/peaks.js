@@ -141,6 +141,16 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
         this.play();
       },
 
+      playNextSegment: function playNextSegment(time){
+        time = time >= 0 ? time : this.getTime();
+
+        var nextSegment = peaks.segments.getNextSegment(time);
+
+        if (nextSegment) {
+          this.playFrom(nextSegment.startTime, nextSegment.endTime);
+        }
+      },
+
       pause: function () {
         this.player.pause();
         peaks.emit("radio_pause", this.getTime());
