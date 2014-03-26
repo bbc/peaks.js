@@ -151,6 +151,25 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
         }
       },
 
+      playSegments: function playSegments(){
+        var that = this;
+
+        peaks.on('player_playfrom_end', function(endTime, preventDefault){
+          var nextSegment = peaks.segments.getNextSegment(endTime);
+
+          if (nextSegment === null){
+            return;
+          }
+
+          // if segments are overlapping this will start at the beginning of the segment
+          // we rather want to call something like postponeTo(nextSegment.endTime) to address the issue.
+          that.playNextSegment(nextSegment.startTime);
+        });
+
+
+        this.playNextSegment(0);
+      },
+
       pause: function () {
         this.player.pause();
         peaks.emit("radio_pause", this.getTime());
