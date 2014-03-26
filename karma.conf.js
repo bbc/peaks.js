@@ -5,7 +5,7 @@ module.exports = function (config) {
     // base path, that will be used to resolve files and exclude
     basePath : '',
 
-    frameworks : ['mocha', 'requirejs', 'chai', 'sinon'],
+    frameworks : ['mocha', 'requirejs', 'sinon-chai'],
 
     // list of files / patterns to load in the browser
     files : [
@@ -40,10 +40,6 @@ module.exports = function (config) {
 
     // enable / disable colors in the output (reporters and logs)
     colors : true,
-
-    // level of logging
-    // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-    logLevel : config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch : false,
