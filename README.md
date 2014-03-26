@@ -277,7 +277,7 @@ console.log(instance.zoom.getZoom()); // -> 1
 ```
 
 
-## `instance.segments.addSegment(startTime, endTime, editable, color, labelText)`
+## `instance.segments.addSegment(startTime, endTime, editable, color, labelText, id)`
 ## `instance.segments.addSegment(segment[])`
 
 Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds)

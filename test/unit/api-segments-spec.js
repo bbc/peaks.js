@@ -88,6 +88,38 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       });
     });
 
+    describe("getNextSegment", function(){
+      beforeEach(function(){
+        p.segments.addSegment([
+          { startTime: 10, endTime: 15, id: "first" },
+          { startTime: 20, endTime: 25, id: "sparse" },
+          { startTime: 12, endTime: 14, id: "contained" },
+          { startTime: 30, endTime: 35, id: "sparse_last" },
+          { startTime: 12, endTime: 18, id: "overlapping" }
+        ]);
+      });
+
+      it('should return the first segment if the reference time is 0', function(){
+        expect(p.segments.getNextSegment(0)).to.have.property('id', 'first');
+      });
+
+      it('should return the overlapping segment if the reference time is 15', function(){
+        expect(p.segments.getNextSegment(15)).to.have.property('id', 'overlapping');
+      });
+
+      it('should return the sparse segment if the reference time is 18', function(){
+        expect(p.segments.getNextSegment(18)).to.have.property('id', 'sparse');
+      });
+
+      it('should return the sparse_last segment if the reference time is 28', function(){
+        expect(p.segments.getNextSegment(28)).to.have.property('id', 'sparse_last');
+      });
+
+      it('should return no segment if the reference time is 35', function(){
+        expect(p.segments.getNextSegment(35)).to.equal(null);
+      });
+    });
+
     describe("removeSegment", function(){
 
     });

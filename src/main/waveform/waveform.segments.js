@@ -26,8 +26,8 @@ define([
     var createSegmentWaveform = function (segmentId, startTime, endTime, editable, color, labelText) {
       var segment = {
         id: segmentId,
-        startTime: startTime,
-        endTime: endTime,
+        startTime: parseFloat(startTime, 10),
+        endTime: parseFloat(endTime, 10),
         labelText: labelText || ""
       };
 
@@ -203,10 +203,11 @@ define([
      * @param {Boolean} editable
      * @param {String=} color
      * @param {String=} labelText
+     * @param {String=} segmentId
      * @return {Object}
      */
-    this.createSegment = function (startTime, endTime, editable, color, labelText) {
-      var segmentId = "segment" + self.segments.length;
+    this.createSegment = function (startTime, endTime, editable, color, labelText, segmentId) {
+      segmentId = segmentId || "segment" + self.segments.length;
 
       if ((startTime >= 0) === false){
         throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");
