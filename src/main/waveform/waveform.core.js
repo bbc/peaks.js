@@ -22,6 +22,7 @@ define([
         var that = this;
         var xhr = new XMLHttpRequest();
         var isXhr2 = ('withCredentials' in xhr);
+        var isAudioFile = false;
 
         if (!isXhr2) {
           if (console && console.info) console.info("Changing request type to .json as browser does not support ArrayBuffer");
@@ -31,6 +32,8 @@ define([
         // open an XHR request to the data soure file
         xhr.open('GET', options.dataUri, true);
 
+        xhr.responseType = 'arraybuffer';
+        
         if (options.dataUri.match(/\.json$/i)) {
           if (isXhr2){
             try {
@@ -41,15 +44,26 @@ define([
             catch (e){}
           }
         }
-        else {
-          xhr.responseType = 'arraybuffer';
+        else if (options.dataUri.match(/\.mp3$/i)){
+            isAudioFile = true;
+            xhr.addEventListener("load", function onResponse(progressEvent) {
+                WaveformData.adapters.arraybuffer.fromAudioObject(progressEvent.target.response, function onProcessed(waveform) {
+
+                    console.log("Waveform Data Loaded!");
+                    console.log("Duration: " + waveform.duration);
+                    handleData(waveform);
+                });
+            });
+        }
+        
+        if(!isAudioFile){
+            xhr.onload = function (response) {
+                if (this.readyState === 4 && this.status === 200) {
+                    handleData(WaveformData.create(response.target));
+                }
+            };
         }
 
-        xhr.onload = function(response) {
-          if (this.readyState === 4 && this.status === 200){
-            handleData(WaveformData.create(response.target));
-          }
-        };
         xhr.send(); // Look at it go!
 
         /**
