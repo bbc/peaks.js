@@ -14,6 +14,9 @@ define([
   'use strict';
 
   return function (peaks) {
+
+
+
     return {
       init: function (ui) {
         var options = peaks.options;
@@ -21,28 +24,47 @@ define([
 
         var that = this;
         var xhr = new XMLHttpRequest();
-        var isXhr2 = ('withCredentials' in xhr);
 
-        if (!isXhr2) {
-          if (console && console.info) console.info("Changing request type to .json as browser does not support ArrayBuffer");
-          options.dataUri = options.dataUri.replace(/\.dat$/i, ".json");
+        var uri = null,
+            requestType = null;
+
+        // try to use arraybuffer first, then fallback to json
+        if(options.dataUri.arraybuffer) {
+          uri =  options.dataUri.arraybuffer;
+          requestType =  "arraybuffer";
+        } else if(options.dataUri.json) {
+          uri =  options.dataUri.json;
+          requestType = "json";
+        }
+
+        if(!uri && !requestType) {
+          if(console && console.error) {
+            console.error("Please provide json or arraybuffer uri to dataUri");
+          }          
+          return;
+        }
+
+        // If we have arraybuffer and this is not xhr2 fallback to json
+        var isXhr2 = ('withCredentials' in xhr);
+        if (!isXhr2 && requestType == "arraybuffer") {
+          if (console && console.info && !isXhr2) {
+            console.info("Changing request type to .json as browser does not support ArrayBuffer");
+          }
+
+          uri = options.dataUri.json;
+          requestType = 'json';
         }
 
         // open an XHR request to the data soure file
-        xhr.open('GET', options.dataUri, true);
+        xhr.open('GET', uri, true);
 
-        if (options.dataUri.match(/\.json$/i)) {
-          if (isXhr2){
-            try {
-              xhr.responseType = 'json';
-            }
-            // some browsers like Safari 6 do handle XHR2 but not the json response type
-            // doing only a try/catch fails in IE9
-            catch (e){}
+        if(isXhr2) {
+          try {
+            xhr.responseType = requestType;
           }
-        }
-        else {
-          xhr.responseType = 'arraybuffer';
+          // some browsers like Safari 6 do handle XHR2 but not the json response type
+          // doing only a try/catch fails in IE9
+          catch (e){}          
         }
 
         xhr.onload = function(response) {

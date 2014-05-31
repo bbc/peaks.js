@@ -39,7 +39,10 @@
           var peaksInstance = Peaks.init({
             container: document.getElementById('first-waveform-visualiser-container'),
             mediaElement: document.getElementById('audio'),
-            dataUri: '/test_data/sample.dat',
+            dataUri: {
+              arraybuffer: '/test_data/sample.dat',
+              json: '/test_data/sample.json'
+            },
             keyboard: true,
             height: 140,
             segments: [{
@@ -70,7 +73,10 @@
           Peaks.init({
             container: document.getElementById('second-waveform-visualiser-container'),
             mediaElement: document.getElementById('audio'),
-            dataUri: '/test_data/sample.dat',
+            dataUri: {
+              arraybuffer: '/test_data/sample.dat',
+              json: '/test_data/sample.json'
+            },
             keyboard: false,
             height: 120,
             zoomWaveformColor: '#AAAAAA',
