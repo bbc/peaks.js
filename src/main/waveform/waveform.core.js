@@ -31,9 +31,7 @@ define([
 
         // open an XHR request to the data soure file
         xhr.open('GET', options.dataUri, true);
-
-        xhr.responseType = 'arraybuffer';
-        
+               
         if (options.dataUri.match(/\.json$/i)) {
           if (isXhr2){
             try {
@@ -46,6 +44,7 @@ define([
         }
         else if (options.dataUri.match(/\.mp3$/i)){
             isAudioFile = true;
+            xhr.responseType = 'arraybuffer';
             xhr.addEventListener("load", function onResponse(progressEvent) {
                 WaveformData.adapters.arraybuffer.fromAudioObject(progressEvent.target.response, function onProcessed(waveform) {
 
@@ -54,6 +53,9 @@ define([
                     handleData(waveform);
                 });
             });
+        }
+        else {
+          xhr.responseType = 'arraybuffer';
         }
         
         if(!isAudioFile){
