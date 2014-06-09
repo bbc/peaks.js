@@ -77,6 +77,99 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
         peaks.emit("radio_play", this.getTime());
       },
 
+      /**
+       * Plays from a start time to an end time.
+       * Precision can be improved as timeupdate events are not sent frequently enough.
+       *
+       * @since 0.3.0
+       * @param {Number} startTime
+       * @param {Number=} endTime
+       */
+      playFrom: function playFrom(startTime, endTime) {
+        var that = this;
+        endTime = endTime || this.getDuration();
+
+        if ((startTime >= 0) === false) {
+          throw new TypeError('playerplayFrom startTime should be a valid HTMLMediaElement time value.');
+        }
+
+        if (startTime >= this.getDuration()) {
+          throw new RangeError('player.playFrom startTime value should be lower than its duration.');
+        }
+
+        if (endTime <= startTime) {
+          throw new RangeError('player.playFrom endTime should be further in time that the startTime value.');
+        }
+
+
+        var stopPlayback = (function(){
+          var isPrevented = false;
+
+          var stopPlayback = function stopPlayback(callback){
+            if (isPrevented === false) {
+              callback.apply(null);
+            }
+          };
+
+          stopPlayback.preventDefault = function preventDefaultPlayback(){
+            isPrevented = true;
+          };
+
+          stopPlayback.isPrevented = function (){
+            return isPrevented;
+          };
+
+          return stopPlayback;
+        })();
+
+        this.seekBySeconds(startTime);
+
+        /*
+         When we reach the end of the playback, we hook
+         */
+        peaks.once('player_playfrom_end', stopPlayback.bind(null, that.pause.bind(that)));
+
+        peaks.on('player_time_update', function playFromTimeWatcher(currentTime){
+          if (currentTime >= endTime) {
+            peaks.emit('player_playfrom_end', endTime, stopPlayback.preventDefault);
+
+            // cancels the listener once its done
+            return true;
+          }
+        });
+
+        this.play();
+      },
+
+      playNextSegment: function playNextSegment(time){
+        time = time >= 0 ? time : this.getTime();
+
+        var nextSegment = peaks.segments.getNextSegment(time);
+
+        if (nextSegment) {
+          this.playFrom(nextSegment.startTime, nextSegment.endTime);
+        }
+      },
+
+      playSegments: function playSegments(){
+        var that = this;
+
+        peaks.on('player_playfrom_end', function(endTime, preventDefault){
+          var nextSegment = peaks.segments.getNextSegment(endTime);
+
+          if (nextSegment === null){
+            return;
+          }
+
+          // if segments are overlapping this will start at the beginning of the segment
+          // we rather want to call something like postponeTo(nextSegment.endTime) to address the issue.
+          that.playNextSegment(nextSegment.startTime);
+        });
+
+
+        this.playNextSegment(0);
+      },
+
       pause: function () {
         this.player.pause();
         peaks.emit("radio_pause", this.getTime());

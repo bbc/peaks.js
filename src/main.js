@@ -169,7 +169,7 @@ define('peaks', [
         var self = this;
 
         return {
-          addSegment: function (startTime, endTime, editable, color, labelText) {
+          addSegment: function (startTime, endTime, editable, color, labelText, id) {
             var segments = arguments[0];
 
             if (typeof segments === "number") {
@@ -178,13 +178,14 @@ define('peaks', [
                 endTime: endTime,
                 editable: editable,
                 color: color,
-                labelText: labelText
+                labelText: labelText,
+                id: id
               }];
             }
 
             if (Array.isArray(segments)){
               segments.forEach(function(segment){
-                self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
+                self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText, segment.id);
               });
 
               self.waveform.segments.render();
@@ -201,6 +202,18 @@ define('peaks', [
           // clearSegments : function () { // Remove all segments
 
           // },
+
+          getNextSegment: function getNextSegment(time) {
+            var segments = this.getSegments().filter(function keepIncludedSegments(segment){
+              return segment.startTime >= time || segment.endTime > time;
+            })
+            .sort(function ascByStartTimeAndLength(a, b){
+              return a.startTime - b.startTime && b.endTime - a.endTime ? -1 : 0;
+            })
+            .sort(function(a, b){ return a.startTime - b.startTime });
+
+            return segments[0] || null;
+          },
 
           getSegments: function () {
             return self.waveform.segments.segments;

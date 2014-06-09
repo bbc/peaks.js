@@ -43,6 +43,7 @@
     "mocha": "~1.17.1",
     "karma-mocha": "~0.1.1",
     "karma-chai": "~0.0.2",
-    "github-changes": "0.0.10"
+    "github-changes": "0.0.10",
+    "karma-sinon-chai": "^0.1.5"
   }
 }
