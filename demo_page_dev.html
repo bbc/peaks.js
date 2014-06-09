@@ -26,7 +26,6 @@
           paths: {
             "peaks": "src/main",
             "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
-            "web-audio-builder": "bower_components/waveform-data/lib/builders/webaudio",
             "EventEmitter": "bower_components/eventEmitter/EventEmitter"
           }
         };
@@ -35,7 +34,7 @@
     <script src="bower_components/requirejs/require.js"></script>
 
     <script>
-        require(['web-audio-builder', 'peaks'], function (WebAudioBuilder, Peaks) {
+        require(['peaks'], function (Peaks) {
 
           var peaksInstance = Peaks.init({
             container: document.getElementById('first-waveform-visualiser-container'),
@@ -71,7 +70,7 @@
           Peaks.init({
             container: document.getElementById('second-waveform-visualiser-container'),
             mediaElement: document.getElementById('audio'),
-            dataUri: '/test_data/sample.mp3',
+            dataUri: '/test_data/sample.dat',
             keyboard: false,
             height: 120,
             zoomWaveformColor: '#AAAAAA',

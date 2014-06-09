@@ -46,7 +46,7 @@ define([
             isAudioFile = true;
             xhr.responseType = 'arraybuffer';
             xhr.addEventListener("load", function onResponse(progressEvent) {
-                WaveformData.adapters.arraybuffer.fromAudioObject(progressEvent.target.response, function onProcessed(waveform) {
+                WaveformData.builders.webaudio(progressEvent.target.response, function onProcessed(waveform) {
 
                     console.log("Waveform Data Loaded!");
                     console.log("Duration: " + waveform.duration);
