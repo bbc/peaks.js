@@ -94,6 +94,19 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       });
     });
 
+    describe('playNextSegment', function(){
+      beforeEach(function(){
+        p.addSegment([
+          { startTime: 10, endTime: 15, id: "first" },
+          { startTime: 12, endTime: 18, id: "overlapping" },
+          { startTime: 12, endTime: 14, id: "contained" },
+          { startTime: 20, endTime: 25, id: "sparse" }
+        ]);
+      });
+
+      it('should return the first segment if ')
+    });
+
   });
 
 });
