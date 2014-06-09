@@ -14,7 +14,7 @@
   "dependencies": {
     "KineticJS": "http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.5.5.min.js",
     "eventEmitter": "~4.2.1",
-    "waveform-data": "~1.2.0"
+    "waveform-data": "~1.3.0"
   },
   "devDependencies": {
     "requirejs": "~2.1.11"
