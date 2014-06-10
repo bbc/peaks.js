@@ -5,19 +5,13 @@
 
     <script src="http://localhost:1337/livereload.js"></script>
 
-    <!-- bower:js -->
-    <script src="bower_components/KineticJS/index.js"></script>
-    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
-    <script src="bower_components/waveform-data/dist/waveform-data.min.js"></script>
-    <!-- endbower -->
-
-
     <script type="text/javascript">
         var require = {
           paths: {
             "peaks": "src/main",
             "waveform-data": "bower_components/waveform-data/dist/waveform-data",
-            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
+            "EventEmitter": "bower_components/eventEmitter/EventEmitter",
+            "Kinetic": "bower_components/KineticJS/index"
           }
         };
     </script>
@@ -103,7 +97,7 @@
             };
 
             peaksInstance.points.add([point]);
-          });
+        });
 
           document.querySelector("#points").addEventListener("click", function () {
             console.log(peaksInstance.points.getPoints());

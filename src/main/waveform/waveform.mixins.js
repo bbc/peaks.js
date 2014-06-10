@@ -4,7 +4,7 @@
  * Common functions used in multiple modules are
  * collected here for DRY purposes.
  */
-define(function () {
+define(['Kinetic'], function (Kinetic) {
   'use strict';
 
   // Private methods

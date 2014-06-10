@@ -12,7 +12,8 @@ module.exports = function(grunt) {
           paths: {
             "peaks": "src/main",
             "waveform-data": "bower_components/waveform-data/dist/waveform-data",
-            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
+            "EventEmitter": "bower_components/eventEmitter/EventEmitter",
+            "Kinetic": "bower_components/KineticJS/index"
           },
           wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
             startFile: 'src/frag/start.frag',
@@ -38,8 +39,8 @@ module.exports = function(grunt) {
       demo: {
         options: {
           open: 'http://0.0.0.0:8000/demo_page.html'
-        }
-      },
+      }
+    },
       options: {
         keepalive: true,
         port: 8000,

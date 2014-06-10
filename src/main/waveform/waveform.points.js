@@ -5,8 +5,9 @@
  * removing and manipulation of points. A point in a segment of zero length
  */
 define([
-  "peaks/waveform/waveform.mixins"
-], function (mixins) {
+  "peaks/waveform/waveform.mixins",
+  "Kinetic"
+], function (mixins, Kinetic) {
 
   return function (peaks) {
     var self = this;
