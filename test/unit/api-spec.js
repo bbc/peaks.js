@@ -1,7 +1,7 @@
 define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
   describe("Peaks API interface", function () {
 
-    var p;
+    var sandbox;
 
     /**
      * SETUP =========================================================
@@ -9,18 +9,8 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
 
     beforeEach(function beforeEach(done) {
       loadAllFixtures();
-
-      p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
-        dataUri: {
-          json: 'base/test_data/sample.json'
-        },
-        keyboard: true,
-        height: 240
-      });
-
-      p.on('segments.ready', done);
+      sandbox = sinon.sandbox.create();
+      setTimeout(done, 100);
     });
 
     /**
@@ -29,19 +19,13 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
 
     afterEach(function (done) {
       removeAllFixtures();
-      setTimeout(done, 200);
+      sandbox.restore();
+      setTimeout(done, 100);
     });
 
     /**
      * TESTS =========================================================
      */
-
-    it("should be a prototyped object inheriting from EventEmitter", function () {
-      expect(Peaks).to.be.a("function");
-      expect(p).to.be.an.instanceOf(Peaks);
-      expect(p).to.be.an.instanceOf(EventEmitter);
-    });
-
     describe("create", function(){
       it("should throw an exception if no mediaElement is provided", function(){
         expect(function(){
@@ -88,6 +72,84 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/width/);
+      });
+    });
+
+    describe('core#getRemoteData', function(){
+      it("should use the defaultDataUriFormat as a hint if dataUri is provided as string", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json'
+        });
+        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+
+        p.on('segments.ready', function(){
+          var xhr = spy.getCall(0).args[1];
+
+          expect(xhr.responseType).to.equal('json');
+
+          done();
+        });
+      });
+
+      it("should use the JSON dataUri connector", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        });
+        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+
+        p.on('segments.ready', function(){
+          var xhr = spy.getCall(0).args[1];
+
+          expect(xhr.responseType).to.equal('json');
+
+          done();
+        });
+      });
+
+      it("should use the arraybuffer dataUri connector or fail if not available", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
+          }
+        });
+
+        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+
+        p.on('segments.ready', function(){
+          var xhr = spy.getCall(0).args[1];
+
+          expect(xhr.responseType).to.equal('arraybuffer');
+
+          done();
+        });
+      });
+
+      it("should pick the arraybuffer format over the JSON one", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat',
+            json: 'base/test_data/sample.json'
+          }
+        });
+        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+
+        p.on('segments.ready', function(){
+          var xhr = spy.getCall(0).args[1];
+
+          expect(xhr.responseType).to.equal('arraybuffer');
+
+          done();
+        });
       });
     });
 
