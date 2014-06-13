@@ -13,7 +13,9 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
-        dataUri: 'base/test_data/sample.json',
+        dataUri: {
+          json: 'base/test_data/sample.json'
+        },
         keyboard: true,
         height: 240
       });
@@ -45,7 +47,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
         expect(function(){
           Peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
-            dataUri: 'base/test_data/sample.dat'
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/provide an audio element/);
       });
@@ -55,7 +57,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
           Peaks.init({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.createElement('div'),
-            dataUri: 'base/test_data/sample.dat'
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/HTMLMediaElement/);
       });
@@ -73,7 +75,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
         expect(function(){
           Peaks.init({
             mediaElement: document.querySelector('audio'),
-            dataUri: 'base/test_data/sample.dat'
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/provide a container/);
       });
@@ -83,7 +85,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
           Peaks.init({
             mediaElement: document.querySelector('audio'),
             container: document.createElement('div'),
-            dataUri: 'base/test_data/sample.dat'
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/width/);
       });
