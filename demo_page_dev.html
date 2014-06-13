@@ -1,24 +1,14 @@
 <!DOCTYPE html>
-
-<!--
-
-  THIS FILE USED AS PLACEHOLDER HTML FOR DEVELOPMENT PURPOSES
-
--->
-
 <html>
   <head>
-    <title>Peaks.js Demo Page</title>
+    <title>Peaks.js Development Page</title>
 
     <script src="http://localhost:1337/livereload.js"></script>
-
-    <link rel='stylesheet' href='/build/css/peaks.css' />
 
     <!-- bower:js -->
     <script src="bower_components/KineticJS/index.js"></script>
     <script src="bower_components/eventEmitter/EventEmitter.js"></script>
     <script src="bower_components/waveform-data/dist/waveform-data.min.js"></script>
-    <script src="bower_components/almond/almond.js"></script>
     <!-- endbower -->
 
 
@@ -87,7 +77,7 @@
               startTime: currentTime,
               endTime: currentTime + 10,
               segmentEditable: true
-            }
+            };
 
             peaksInstance.segments.addSegment([segment]);
           });

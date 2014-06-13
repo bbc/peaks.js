@@ -1,37 +1,13 @@
 <!DOCTYPE html>
-
-<!--
-
-  THIS FILE USED AS DEMO/TEST PAGE FOR BUILD PROJECT
-
--->
-
 <html>
   <head>
     <title>Peaks.js Demo Page</title>
-
-    <link rel='stylesheet' href='/build/css/peaks.css' />
-
     <!-- bower:js -->
     <script src="bower_components/KineticJS/index.js"></script>
-    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
-    <script src="bower_components/waveform-data/dist/waveform-data.min.js"></script>
-    <script src="bower_components/almond/almond.js"></script>
     <!-- endbower -->
-
-    <script src="bower_components/requirejs/require.js"></script>
-    <script src="src/main.js"></script>
+    <script src="build/js/peaks.min.js"></script>
     <script>
-      requirejs.config({
-        baseUrl: 'bower_components/',
-        paths: {
-          peaks: '../src/main',
-          'waveform-data': 'waveform-data/dist/waveform-data.min',
-          EventEmitter: 'eventEmitter/EventEmitter'
-        }
-      });
-
-      require(['peaks'], function(peaks){
+      document.addEventListener('DOMContentLoaded', function(){
         var options = {
           container: document.getElementById('first-waveform-visualiser-container'),
           mediaElement: document.getElementById('audio'),
@@ -81,7 +57,6 @@
           console.log(peaksInstance.segments.getSegments());
         });
       });
-
     </script>
 
     <style>
