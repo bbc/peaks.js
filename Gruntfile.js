@@ -9,29 +9,29 @@ module.exports = function(grunt) {
       ]
     },
 
-//    requirejs: {
-//      compile: {
-//        options: {
-//          name: "bower_components/almond/almond",
-//          baseUrl: '.',
-//          include: ['peaks'],
-//          out: "build/js/peaks.min.js",
-//          paths: {
-//            "peaks": "src/main",
-//            "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
-//            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
-//          },
-//          wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
-//            startFile: 'src/frag/start.frag',
-//            endFile: 'src/frag/end.frag'
-//          },
-//          optimize: "uglify2",
-//          uglify2: {
-//            mangle: true
-//          }
-//        }
-//      }
-//    },
+    requirejs: {
+      compile: {
+        options: {
+          name: "bower_components/almond/almond",
+          baseUrl: '.',
+          include: ['peaks'],
+          out: "build/js/peaks.min.js",
+          paths: {
+            "peaks": "src/main",
+            "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
+            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
+          },
+          wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
+            startFile: 'src/frag/start.frag',
+            endFile: 'src/frag/end.frag'
+          },
+          optimize: "uglify2",
+          uglify2: {
+            mangle: true
+          }
+        }
+      }
+    },
 
     // Quick server for demo'ing / testing purposes using nodes connect
     connect: {
@@ -53,7 +53,7 @@ module.exports = function(grunt) {
     },
 
     // Install bower dependencies where necessary and automagically include script tags
-    'bower-install': {
+    wiredep: {
       dev: {
         src: 'demo_page_dev.html' // Only allows one file so DEV page is currently copy-pasted from demo page..
       },
@@ -90,8 +90,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-  grunt.loadNpmTasks('grunt-bower-install');
+  grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-concurrent');
 
@@ -99,7 +100,7 @@ module.exports = function(grunt) {
   // Reqister task names
 
   // Build the project for production
-  grunt.registerTask('build', ['bower-install', 'jshint:all']);
+  grunt.registerTask('build', ['wiredep', 'jshint:all', 'requirejs']);
 
   // Start a dev server for working on the precomiled files
   grunt.registerTask('server-dev', ['build', 'concurrent:server']);
