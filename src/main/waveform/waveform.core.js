@@ -36,37 +36,32 @@ define([
 
         // Backward compatibility
         if (typeof options.dataUri === 'string') {
-          uri = options.dataUri;
-          requestType = options.dataUriDefaultFormat;
+          var dataUri = {};
+
+          dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
+          options.dataUri = dataUri;
         }
 
-        // try to use arraybuffer first, then fallback to json
-        if(options.dataUri.arraybuffer) {
-          uri =  options.dataUri.arraybuffer;
-          requestType =  "arraybuffer";
-        } else if(options.dataUri.json) {
-          uri =  options.dataUri.json;
-          requestType = "json";
+        if(typeof options.dataUri === 'object'){
+          ['ArrayBuffer', 'JSON'].some(function(connector){
+            if (typeof window[connector]){
+              requestType = connector.toLowerCase();
+              uri = options.dataUri[requestType];
+
+              return Boolean(uri);
+            }
+          });
         }
 
         if(!uri && !requestType) {
           if(console && console.error) {
             console.error("Please provide json or arraybuffer uri to dataUri");
           }
+
           return;
         }
 
-        // If we have arraybuffer and this is not xhr2 fallback to json
-        if (!isXhr2 && requestType == "arraybuffer") {
-          if (console && console.info && !isXhr2) {
-            console.info("Changing request type to .json as browser does not support ArrayBuffer");
-          }
-
-          uri = options.dataUri.json;
-          requestType = 'json';
-        }
-
-        // open an XHR request to the data soure file
+        // open an XHR request to the data source file
         xhr.open('GET', uri, true);
 
         if(isXhr2) {
@@ -84,7 +79,7 @@ define([
           }
         };
 
-        xhr.send(); // Look at it go!
+        xhr.send();
       },
 
       handleRemoteData: function (remoteData, xhr) {
