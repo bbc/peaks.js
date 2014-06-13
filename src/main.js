@@ -30,6 +30,36 @@ define('peaks', [
        */
       zoomLevels: [512, 1024, 2048, 4096],
       /**
+       * Data URI where to get the waveform data.
+       *
+       * If a string, we assume that `this.dataUriDefaultFormat` is the default `xhr.responseType` value.
+       *
+       * @since 0.0.1
+       *
+       * ```js
+       * dataUri: 'url/to/data.json?waveformId=1337'
+       * ```
+       *
+       * If an object, each key is an `xhr.responseType` which will contain its associated source URI.
+       *
+       * @since 0.3.0
+       *
+       * ```js
+       * dataUri: {
+       *   arraybuffer: 'url/to/data.dat',
+       *   json: 'url/to/data.json'
+       * }
+       * ```
+       */
+      dataUri: null,
+      /**
+       * Will be used as a `xhr.responseType` if `dataUri` is a string, and not an object.
+       * Here for backward compatibility purpose only.
+       *
+       * @since 0.3.0
+       */
+      dataUriDefaultFormat: 'json',
+      /**
        * Bind keyboard controls
        */
       keyboard: false,
