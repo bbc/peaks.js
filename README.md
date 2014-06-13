@@ -91,18 +91,16 @@ Working examples are provided in [`demo_page.html`](demo_page.html) and [`demo_p
 
 ## Start using vanilla JavaScript
 
-As of `peaks@0.2.0`, the vanilla JavaScript build is not shipped anymore.
+```html
+<script src="path/to/build/js/peaks.min.js"></script>
+<script>
+var p = peaks.init({
+});
+</script>
+```
 
-Here are several ways to build it your own way:
-
-- UMD conversion using [grunt-contrib-requirejs](https://www.npmjs.org/package/grunt-contrib-requirejs) and
-[almond](https://www.npmjs.org/package/almond)
-- transform to whatever you want using [browserify](https://www.npmjs.org/package/browserify) and
-[deamdify](https://www.npmjs.org/package/deamdify)
-
-[Read this blog post](http://dontkry.com/posts/code/browserify-and-the-universal-module-definition.html) or
-[have a glance](https://github.com/bbcrd/peaks.js/blob/e6e9579736fdd47ea213bd65332268709a61392a/Gruntfile.js#L13-35)
-at our ancient `r.js` build configuration.
+**Notice**: as of `peaks@0.2.0`, the vanilla JavaScript build is not shipped anymore.
+Please [see below](#building-peaks) to learn more about how to build Peaks for development or production purpose.
 
 ## Configuration
 
@@ -312,10 +310,12 @@ instance.segments.addSegment([
 
 Returns an array of objects representing all displayed segments present on the timeline in the segment format.
 
+# Building Peaks
 
-# Development
+You might want to build a minified standalone version of Peaks, to test a contribution or to run additional tests.
+The project *bundles* everything you need to do so.
 
-To join the project, bake your own features or debug more easily, the best is to clone the project and develop against it:
+## Prerequisite
 
 ```bash
 git clone https://github.com/bbcrd/peaks.js.git
@@ -323,11 +323,34 @@ cd peaks.js
 npm install -g grunt-cli bower
 npm install
 bower install
+```
 
+## Building
+
+This command will produce a minified standalone version of Peaks.
+It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as Vanilla JavaScript. 
+
+```bash
+grunt build
+```
+
+The output of the build will be located in the `build/js` folder, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+
+## Development Instance
+
+This command will open a livereload demo page of Peaks to reflect every source code change.
+
+```bash
 grunt server-dev
 ```
 
-This will launch a livereload instance of peaks, refreshing the page every time you make a change to the sourcecode.
+## Demo Instance
+
+This command will build Peaks and open a demo using the minified standalone version.
+
+```bash
+grunt server-demo
+```
 
 # Testing
 

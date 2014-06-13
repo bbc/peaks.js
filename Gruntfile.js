@@ -9,56 +9,60 @@ module.exports = function(grunt) {
       ]
     },
 
-//    requirejs: {
-//      compile: {
-//        options: {
-//          name: "bower_components/almond/almond",
-//          baseUrl: '.',
-//          include: ['peaks'],
-//          out: "build/js/peaks.min.js",
-//          paths: {
-//            "peaks": "src/main",
-//            "waveform-data": "bower_components/waveform-data/dist/waveform-data.min",
-//            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
-//          },
-//          wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
-//            startFile: 'src/frag/start.frag',
-//            endFile: 'src/frag/end.frag'
-//          },
-//          optimize: "uglify2",
-//          uglify2: {
-//            mangle: true
-//          }
-//        }
-//      }
-//    },
-
-    // Quick server for demo'ing / testing purposes using nodes connect
-    connect: {
-      server: {
+    requirejs: {
+      compile: {
         options: {
-          keepalive: true
+          name: "bower_components/almond/almond",
+          baseUrl: '.',
+          include: ['peaks'],
+          out: "build/js/peaks.min.js",
+          paths: {
+            "peaks": "src/main",
+            "waveform-data": "bower_components/waveform-data/dist/waveform-data",
+            "EventEmitter": "bower_components/eventEmitter/EventEmitter"
+          },
+          wrap: { // https://github.com/jrburke/almond#exporting-a-public-api
+            startFile: 'src/frag/start.frag',
+            endFile: 'src/frag/end.frag'
+          },
+          preserveLicenseComments: false,
+          generateSourceMaps: true,
+          optimize: "uglify2",
+          uglify2: {
+            mangle: true
+          }
         }
       }
     },
 
-    // Open a browser at the correct page for demo or development
-    open : {
-      dev : {
-        path: 'http://0.0.0.0:8000/demo_page_dev.html'
+    // Quick server for demo'ing / testing purposes using nodes connect
+    connect: {
+      dev: {
+        options: {
+          open: 'http://0.0.0.0:8000/demo_page_dev.html'
+        }
       },
       demo: {
-        path: 'http://0.0.0.0:8000/demo_page.html'
+        options: {
+          open: 'http://0.0.0.0:8000/demo_page.html'
+        }
+      },
+      options: {
+        keepalive: true,
+        port: 8000,
+        hostname: '*'
       }
     },
 
     // Install bower dependencies where necessary and automagically include script tags
-    'bower-install': {
+    wiredep: {
       dev: {
-        src: 'demo_page_dev.html' // Only allows one file so DEV page is currently copy-pasted from demo page..
+        src: 'demo_page_dev.html',
+        exclude: ['almond']
       },
       demo: {
-        src: 'demo_page.html' // Only allows one file so DEV page is currently copy-pasted from demo page..
+        src: 'demo_page.html',
+        exclude: ['almond', 'eventEmitter', 'waveform-data']
       }
     },
 
@@ -72,13 +76,13 @@ module.exports = function(grunt) {
       },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'build', 'karma:unit:run']
+        tasks: ['jshint:lib_test', 'build']
       }
     },
 
     // Allow blocking tasks such as watch and connect server to be run at the same time
     concurrent: {
-      server: ['watch', 'connect', 'open:dev'],
+      dev: ['watch', 'connect:dev'],
       options: {
         logConcurrentOutput: true
       }
@@ -90,22 +94,20 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-  grunt.loadNpmTasks('grunt-bower-install');
-  grunt.loadNpmTasks('grunt-open');
+  grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-concurrent');
 
 
-  // Reqister task names
-
   // Build the project for production
-  grunt.registerTask('build', ['bower-install', 'jshint:all']);
+  grunt.registerTask('build', ['wiredep', 'jshint:all', 'requirejs']);
 
-  // Start a dev server for working on the precomiled files
-  grunt.registerTask('server-dev', ['build', 'concurrent:server']);
+  // Start a dev server for working on the precompiled files
+  grunt.registerTask('server-dev', ['build', 'concurrent:dev']);
 
   // Start a demo server for displaying the functionality of the fully built component
-  grunt.registerTask('server-demo', ['build', 'open:demo', 'connect']);
+  grunt.registerTask('server-demo', ['build', 'connect:demo']);
 
   // Build the project by default
   grunt.registerTask('default', ['server-dev']);
