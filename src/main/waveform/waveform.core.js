@@ -54,11 +54,7 @@ define([
         }
 
         if(!uri && !requestType) {
-          if(console && console.error) {
-            console.error("Please provide json or arraybuffer uri to dataUri");
-          }
-
-          return;
+          throw new Error("Unable to determine a compatible dataUri format for this browser.");
         }
 
         // open an XHR request to the data source file

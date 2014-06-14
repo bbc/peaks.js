@@ -82,12 +82,13 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/sample.json'
         });
+
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
 
         p.on('segments.ready', function(){
           var xhr = spy.getCall(0).args[1];
 
-          expect(xhr.responseType).to.equal('json');
+          expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
 
           done();
         });
@@ -101,12 +102,13 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
             json: 'base/test_data/sample.json'
           }
         });
+
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
 
         p.on('segments.ready', function(){
           var xhr = spy.getCall(0).args[1];
 
-          expect(xhr.responseType).to.equal('json');
+          expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
 
           done();
         });
@@ -126,7 +128,7 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
         p.on('segments.ready', function(){
           var xhr = spy.getCall(0).args[1];
 
-          expect(xhr.responseType).to.equal('arraybuffer');
+          expect(xhr.getResponseHeader('content-type')).to.equal('text/plain');
 
           done();
         });
@@ -141,12 +143,14 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
             json: 'base/test_data/sample.json'
           }
         });
+
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+        var expectedContentType = Boolean(window['ArrayBuffer']) ? 'text/plain' : 'application/json';
 
         p.on('segments.ready', function(){
           var xhr = spy.getCall(0).args[1];
 
-          expect(xhr.responseType).to.equal('arraybuffer');
+          expect(xhr.getResponseHeader('content-type')).to.equal(expectedContentType);
 
           done();
         });
