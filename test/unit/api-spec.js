@@ -1,4 +1,4 @@
-define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
+define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kinetic){
   describe("Peaks API interface", function () {
 
     var sandbox;
@@ -44,15 +44,6 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/HTMLMediaElement/);
-      });
-
-      it("should throw an exception if no dataUri is provided", function(){
-        expect(function(){
-          Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio')
-          });
-        }).to.throw(/dataUri/);
       });
 
       it("should thrown an exception if no container is provided", function(){
@@ -151,6 +142,23 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
           var xhr = spy.getCall(0).args[1];
 
           expect(xhr.getResponseHeader('content-type')).to.equal(expectedContentType);
+
+          done();
+        });
+      });
+
+      xit("should build using WebAudio if the API is available and no dataUri is provided", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio')
+        });
+
+        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+
+        p.on('segments.ready', function(){
+          var remoteData = spy.getCall(0).args[0];
+
+          expect(remoteData instanceof WaveformData).to.be.true;
 
           done();
         });

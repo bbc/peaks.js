@@ -142,10 +142,6 @@ define('peaks', [
       throw new TypeError("[Peaks.init] The mediaElement option should be an HTMLMediaElement.");
     }
 
-    if (!opts.dataUri) {
-      throw new TypeError("[Peaks.init] The dataUri option is mandatory.");
-    }
-
     if (!opts.container) {
       throw new Error("Please provide a container object.");
     }
