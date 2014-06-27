@@ -33,24 +33,34 @@ define([
         var xhr = new XMLHttpRequest();
         var uri = null;
         var requestType = null;
+        var builder = null;
 
         // Backward compatibility
-        if (typeof options.dataUri === 'string') {
-          var dataUri = {};
+        if (options.dataUri) {
+          if (typeof options.dataUri === 'string') {
+            var dataUri = {};
 
-          dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
-          options.dataUri = dataUri;
+            dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
+            options.dataUri = dataUri;
+          }
+
+          if(typeof options.dataUri === 'object'){
+            ['ArrayBuffer', 'JSON'].some(function(connector){
+              if (window[connector]){
+                requestType = connector.toLowerCase();
+                uri = options.dataUri[requestType];
+
+                return Boolean(uri);
+              }
+            });
+          }
         }
 
-        if(typeof options.dataUri === 'object'){
-          ['ArrayBuffer', 'JSON'].some(function(connector){
-            if (typeof window[connector]){
-              requestType = connector.toLowerCase();
-              uri = options.dataUri[requestType];
-
-              return Boolean(uri);
-            }
-          });
+        // WebAudio Builder
+        if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
+          requestType = 'arraybuffer';
+          uri = options.mediaElement.currentSrc || options.mediaElement.src;
+          builder = 'webaudio';
         }
 
         if(!uri && !requestType) {
@@ -70,16 +80,26 @@ define([
         }
 
         xhr.onload = function(response) {
-          if (this.readyState === 4 && this.status === 200){
-            that.handleRemoteData(response.target, xhr);
+          if (this.readyState === 4 && this.status === 200) {
+            if (builder){
+              WaveformData.builders[builder](response.target.response, that.handleRemoteData.bind(that));
+            }
+            else {
+              that.handleRemoteData(response.target, xhr);
+            }
           }
         };
 
         xhr.send();
       },
 
+      /**
+       *
+       * @param remoteData {WaveformData|ProgressEvent}
+       * @param xhr {XMLHttpRequest}
+       */
       handleRemoteData: function (remoteData, xhr) {
-        this.origWaveformData = WaveformData.create(remoteData);
+        this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
         var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
 
         this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
