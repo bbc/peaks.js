@@ -1,4 +1,4 @@
-define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinetic){
+define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kinetic){
   describe("Peaks API interface", function () {
 
     var sandbox;
@@ -154,6 +154,23 @@ define(['peaks', 'EventEmitter', 'Kinetic'], function(Peaks, EventEmitter, Kinet
 
           done();
         });
+      });
+
+      xit("should build using WebAudio if the API is available and no dataUri is provided", function(done){
+	var p = Peaks.init({
+	  container: document.getElementById('waveform-visualiser-container'),
+	  mediaElement: document.querySelector('audio')
+	});
+
+	var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+
+	p.on('segments.ready', function(){
+	  var remoteData = spy.getCall(0).args[0];
+
+	  expect(remoteData instanceof WaveformData).to.be.true;
+
+	  done();
+	});
       });
     });
 
