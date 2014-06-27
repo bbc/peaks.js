@@ -102,7 +102,27 @@ var p = peaks.init({
 **Notice**: as of `peaks@0.2.0`, the vanilla JavaScript build is not shipped anymore.
 Please [see below](#building-peaks) to learn more about how to build Peaks for development or production purpose.
 
-## Configuration
+## Web Audio based waveforms
+
+Since `0.3.0`, Peaks can rely on Web Audio to generate waveforms.
+Which means you would not have to pre-generate a `dat` or `json` beforehand.
+
+To do so, skip the `dataUri` option and make sure [your browser is compatible with Web Audio](http://caniuse.com/#feat=audio-api).
+
+```js
+var p = Peaks.init({
+  container: document.querySelector('#peaks-container'),
+  mediaElement: document.querySelector('audio')
+});
+
+p.on('segments.ready', function(){
+  // do something when segments are ready to be displayed
+});
+```
+
+**Notice**: be aware **it can be CPU intensive** if your audio file has a long duration.
+
+# Configuration
 
 The available options for configuration of the viewer are as follows:
 
@@ -328,7 +348,7 @@ bower install
 ## Building
 
 This command will produce a minified standalone version of Peaks.
-It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as Vanilla JavaScript. 
+It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as Vanilla JavaScript.
 
 ```bash
 grunt build
