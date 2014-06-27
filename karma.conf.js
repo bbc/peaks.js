@@ -1,4 +1,8 @@
 module.exports = function (config) {
+
+  var isCI = Boolean(process.env.CI);
+  var isFast = Boolean(process.env.FAST);
+
   config.set({
     // Karma configuration
 
@@ -49,14 +53,9 @@ module.exports = function (config) {
     autoWatch : false,
 
     // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera
-    // - Safari (only Mac)
-    // - PhantomJS
-    // - IE (only Windows)
-    browsers : ['Chrome', 'Safari', 'Firefox'],
+    browsers : isCI
+      ? ['SauceChrome', 'SauceFirefox', 'SauceFirefoxLinux', 'SauceSafari6', 'SauceSafari7', 'SauceIE9', 'SauceIE10', 'SauceIE11']
+      : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox']),
 
     browserDisconnectTolerance: 2,
     browserNoActivityTimeout: 30000,
@@ -121,11 +120,11 @@ module.exports = function (config) {
     },
 
     // If browser does not capture in given timeout [ms], kill it
-    captureTimeout : 5000,
+    captureTimeout : 10000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun : false
+    singleRun : true
 
   });
 };

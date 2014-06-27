@@ -2,13 +2,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
-    // JS Lint on all non-vendor files
-    jshint: {
-      all: [
-        'src/**/*.js'
-      ]
-    },
-
     requirejs: {
       compile: {
         options: {
@@ -76,7 +69,7 @@ module.exports = function(grunt) {
       },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'build']
+        tasks: ['build']
       }
     },
 
@@ -92,7 +85,6 @@ module.exports = function(grunt) {
 
   // Load NPM tasks
   grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
 
@@ -101,7 +93,7 @@ module.exports = function(grunt) {
 
 
   // Build the project for production
-  grunt.registerTask('build', ['wiredep', 'jshint:all', 'requirejs']);
+  grunt.registerTask('build', ['wiredep', 'requirejs']);
 
   // Start a dev server for working on the precompiled files
   grunt.registerTask('server-dev', ['build', 'concurrent:dev']);
