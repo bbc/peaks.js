@@ -229,7 +229,9 @@ var peaksInstance = peaks.init({ … });
 var secondPeaksInstance = peaks.init({ … });
 ```
 
-## `instance.time.getCurrentTime()`
+## Time API
+
+### `instance.time.getCurrentTime()`
 
 Returns currently selected time in seconds (convenience method interchangeable with `mediaElement.currentTime`).
 
@@ -239,7 +241,7 @@ var instance = peaks.init({ … });
 console.log(instance.time.getCurrentTime()); // -> 0
 ```
 
-## `instance.time.setCurrentTime(timeInSeconds)`
+### `instance.time.setCurrentTime(timeInSeconds)`
 
 Sets the media element selected time in seconds.
 
@@ -250,7 +252,9 @@ instance.time.setCurrentTime(5.85);
 console.log(instance.time.getCurrentTime()); // -> 5.85
 ```
 
-## `instance.zoom.zoomOut()`
+## Zoom API
+
+### `instance.zoom.zoomOut()`
 
 Zoom in the waveform zoom view by one level.
 
@@ -260,7 +264,7 @@ var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
 instance.zoom.zoomOut(); // zoom level is now 1024
 ```
 
-## `instance.zoom.zoomIn()`
+### `instance.zoom.zoomIn()`
 
 Zoom in the waveform zoom view by one level.
 
@@ -273,7 +277,7 @@ instance.zoom.zoomOut(); // zoom level is now 1024
 instance.zoom.zoomIn(); // zoom level is now 512 again
 ```
 
-## `instance.zoom.setZoom(indexInZoomArray)`
+### `instance.zoom.setZoom(indexInZoomArray)`
 
 Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
 
@@ -283,7 +287,7 @@ var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
 instance.zoom.setZoom(3); // zoom level is now 4096
 ```
 
-## `instance.zoom.getZoom()`
+### `instance.zoom.getZoom()`
 
 Return the current zoom level.
 
@@ -294,9 +298,13 @@ instance.zoom.zoomOut();
 console.log(instance.zoom.getZoom()); // -> 1
 ```
 
+## Segments API
 
-## `instance.segments.add(startTime, endTime, editable, color, labelText)`
-## `instance.segments.add(segment[])`
+**Segments** give the ability to visually tag timed portions of a media object.
+This is a great way to provide visual cues to your users.
+
+### `instance.segments.add(startTime, endTime, editable, color, labelText)`
+### `instance.segments.add(segment[])`
 
 Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds)
 and set whether the segment is user editable with `editable` (boolean, defaults to `false`).
@@ -326,9 +334,38 @@ instance.segments.add([
 ]);
 ```
 
-## `instance.segments.getSegments()`
+## #`instance.segments.getSegments()`
 
 Returns an array of objects representing all displayed segments present on the timeline in the segment format.
+
+### `instance.segments.removeByTime(timeStart, timeEnd)`
+
+Remove any segment which start at `timeStart`, and which optionally finish at `timeEnd`.
+
+The returned value corresponds to the number of deleted segments.
+
+```js
+var instance = peaks.init({ … });
+
+instance.segments.add([{ startTime: 10, endTime: 12 }, { startTime: 10, endTime: 20 }]);
+
+// remove both segments as they start at `10`
+instance.segments.removeByTime(10);
+
+// remove only the first segment
+instance.segments.removeByTime(10, 12);
+
+```
+
+### `instance.segments.removeAll()`
+
+Remove all the segments from the waveforms.
+
+```js
+var instance = peaks.init({ … });
+
+instance.segments.removeAll();
+```
 
 # Building Peaks
 
