@@ -52,7 +52,13 @@
               editable: true,
               color: "#0000ff",
               labelText: "My Third Segment"
-            }]
+            }],
+            pointDblClickHandler: function (point) {
+              console.log("point double click", point);
+            },
+            pointDragEndHandler: function (point) {
+              console.log("point drag end", point);
+            }
           });
 
           window['peaksInstance'] = peaksInstance;
@@ -84,10 +90,24 @@
             peaksInstance.segments.addSegment([segment]);
           });
 
-          document.querySelector('#segs').addEventListener("click", function (event) {
+          document.querySelector('#segs').addEventListener("click", function () {
             console.log(peaksInstance.segments.getSegments());
           });
 
+          document.querySelector("#point").addEventListener("click", function () {
+            console.log("peaksInstance", peaksInstance);
+
+            var point = {
+              timestamp: peaksInstance.time.getCurrentTime(),
+              editable: true
+            };
+
+            peaksInstance.points.add([point]);
+          });
+
+          document.querySelector("#points").addEventListener("click", function () {
+            console.log(peaksInstance.points.getPoints());
+          });
         });
     </script>
 
@@ -157,6 +177,8 @@
         </ul>
         <button id="segment">10 second segment</button>
         <button id="segs">Log Segments</button>
+        <button id="point">Add Point At Current Time</button>
+        <button id="points">Log Points</button>
       </div>
 
   </body>

@@ -9,8 +9,10 @@ define([
   "waveform-data",
   "peaks/waveform/waveform.overview",
   "peaks/waveform/waveform.zoomview",
-  "peaks/waveform/waveform.segments"
-  ], function (WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments) {
+  "peaks/waveform/waveform.segments",
+  "peaks/waveform/waveform.points"
+  ], function (WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
+
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
@@ -117,6 +119,9 @@ define([
 
         that.segments = new WaveformSegments(peaks);
         that.segments.init();
+
+        that.points = new WaveformPoints(peaks);
+        that.points.init();
       },
 
       /**
