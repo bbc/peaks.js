@@ -42,67 +42,65 @@ define(['peaks', 'Kinetic'], function (Peaks, Kinetic) {
       });
 
       it("should return any added point", function () {
-        p.points.addPoint(10, true, "#ff0000", "A point");
-        p.points.addPoint(12, true, "#ff0000", "Another point");
+        p.points.add(10, true, "#ff0000", "A point");
+        p.points.add(12, true, "#ff0000", "Another point");
         expect(p.points.getPoints()).to.have.length.of(2);
       });
     });
 
 
-    describe("addPoint", function () {
+    describe("add", function () {
       it("should create a segment with the mandatory values as arguments", function () {
-        p.points.addPoint(10, true, "#ff0000", "A point");
+        p.points.add(10, true, "#ff0000", "A point");
+
         var point = p.points.getPoints()[0];
 
-        expect(point.timeStamp).to.equal(10);
-        expect(point.editable).to.equal(true);
-        expect(point.id).to.equal('point0');
-        expect(point.labelText).to.equal('A point');
+        expect(p.points.getPoints()).to.have.a.lengthOf(1).and.to.have.deep.property('[0].timestamp', 10);
       });
 
       it("should accept an array of point objects", function () {
         var points = [
-          { timeStamp: 10, editable: true, color: "#ff0000", labelText: "A point"},
-          { timeStamp: 12, editable: true, color: "#ff0000", labelText: "Another point"}
+          { timestamp: 10, editable: true, color: "#ff0000", labelText: "A point"},
+          { timestamp: 12, editable: true, color: "#ff0000", labelText: "Another point"}
         ];
 
-        p.points.addPoint(points);
+        p.points.add(points);
 
         expect(p.points.getPoints()).to.have.length.of(2);
-        expect(p.points.getPoints()[1]).to.include.keys('timeStamp', 'labelText');
+        expect(p.points.getPoints()[1]).to.include.keys('timestamp', 'labelText');
       });
 
       it("should throw an exception if argument is an object", function () {
         expect(function () {
-          p.points.addPoint({ timeStamp: 10, editable: true, color: "#ff0000", labelText: "A point"});
+          p.points.add({ timestamp: 10, editable: true, color: "#ff0000", labelText: "A point"});
         }).to.throw(TypeError);
       });
 
       it("should throw an exception if arguments are empty", function () {
         expect(function () {
-          p.points.addPoint();
+          p.points.add();
         }).to.throw(TypeError);
       });
 
-      it("should throw an exception if timeStamp argument is undefined", function () {
+      it("should throw an exception if timestamp argument is undefined", function () {
         expect(function () {
-          p.points.addPoint(undefined);
+          p.points.add(undefined);
         }).to.throw(TypeError);
       });
 
-      it("should throw an exception if timeStamp argument is null", function () {
+      it("should throw an exception if timestamp argument is null", function () {
         expect(function () {
-          p.points.addPoint(null);
+          p.points.add(null);
         }).to.throw(TypeError);
       });
 
-      it("should throw an exception if the timeStamp argument is missing", function () {
+      it("should throw an exception if the timestamp argument is missing", function () {
         expect(function () {
-          p.points.addPoint(NaN);
+          p.points.add(NaN);
         }).to.throw(RangeError);
 
         expect(function () {
-          p.points.addPoint([
+          p.points.add([
             {editable: true }
           ]);
         }).to.throw(RangeError);
@@ -110,19 +108,22 @@ define(['peaks', 'Kinetic'], function (Peaks, Kinetic) {
 
     });
 
-    describe("removePoint", function () {
-      it("should remove a point identified by id and reassign ids", function () {
-        p.points.addPoint(10, true, "#ff0000", "A point");
-        p.points.addPoint(12, false, "#ff0000", "Another point");
-        expect(p.points.getPoints()).to.have.length.of(2);
-        p.points.removePoint("point0");
-        expect(p.points.getPoints()).to.have.length.of(1);
+    describe("removeByTime", function () {
+      beforeEach(function(){
+        p.points.add(10, true, "#ff0000", "A point");
+        p.points.add(12, false, "#ff0000", "Another point");
+      });
 
-        var point = p.points.getPoints()[0];
-        expect(point.timeStamp).to.equal(12);
-        expect(point.editable).to.equal(false);
-        expect(point.id).to.equal('point0');
-        expect(point.labelText).to.equal('Another point');
+      it("should remove one of the point", function () {
+        p.points.removeByTime(10);
+
+        expect(p.points.getPoints()).to.have.length.of(1);
+      });
+
+      it("should let the other point intact", function(){
+        p.points.removeByTime(10);
+
+        expect(p.points.getPoints()).to.have.deep.property('[0].id', 'point1');
       });
     });
 

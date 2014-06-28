@@ -52,7 +52,7 @@
               editable: true,
               color: "#0000ff",
               labelText: "My Third Segment"
-            }],            
+            }],
             pointDblClickHandler: function (point) {
               console.log("point double click", point);
             },
@@ -90,19 +90,22 @@
             peaksInstance.segments.addSegment([segment]);
           });
 
-          document.querySelector('#segs').addEventListener("click", function (event) {
+          document.querySelector('#segs').addEventListener("click", function () {
             console.log(peaksInstance.segments.getSegments());
           });
 
-          document.querySelector("#point").addEventListener("click", function (event) {
+          document.querySelector("#point").addEventListener("click", function () {
             console.log("peaksInstance", peaksInstance);
 
-              var startTime = peaksInstance.time.getCurrentTime();
-              var segmentEditable = true;
-              peaksInstance.points.addPoint(startTime, segmentEditable);
-            });
+            var point = {
+              timestamp: peaksInstance.time.getCurrentTime(),
+              editable: true
+            };
 
-          document.querySelector("#points").addEventListener("click", function (event) {
+            peaksInstance.points.add([point]);
+          });
+
+          document.querySelector("#points").addEventListener("click", function () {
             console.log(peaksInstance.points.getPoints());
           });
         });

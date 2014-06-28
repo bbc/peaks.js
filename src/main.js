@@ -303,41 +303,80 @@ define('peaks', [
         };
       }
     },
+    /**
+     * Points API
+     */
     points:   {
       get: function () {
         var self = this;
         return {
-          addPoint:    function (timeStamp, editable, color, labelText) {
+          /**
+           *
+           * @param timeStamp
+           * @param editable
+           * @param color
+           * @param labelText
+           */
+          add: function (timestamp, editable, color, labelText) {
             var points = arguments[0];
 
-            if (typeof points == "number") {
-              points = [
-                {
-                  timeStamp: timeStamp,
-                  editable:  editable,
-                  color:     color,
-                  labelText: labelText
-                }
-              ];
+            if (typeof points === "number") {
+              points = [{
+                timestamp: timestamp,
+                editable:  editable,
+                color:     color,
+                labelText: labelText
+              }];
             }
 
             if (Array.isArray(points)) {
-              points.forEach(function (point) {
-                self.waveform.points.createPoint(point.timeStamp, point.editable, point.color, point.labelText);
-              });
-            } else {
+              points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
+              self.waveform.points.render();
+            }
+            else {
               throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
             }
           },
-          getPoints:   function () {
+          /**
+           *
+           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
+           */
+          getPoints: function () {
             return self.waveform.points.points;
           },
-          removePoint: function (id) {
-            self.waveform.points.removePoint(id);
+          /**
+           *
+           * @param id
+           */
+          removeByTime: function (timestamp) {
+            var indexes = self.waveform.points.points
+              .filter(function(point){
+                return point.timestamp === timestamp;
+              })
+              .map(function (point, i) {
+                self.waveform.points.remove(point);
+
+                return i;
+              })
+              .sort(function (a, b) {
+                return b - a;
+              })
+              .map(function (index) {
+                self.waveform.points.points.splice(index, 1);
+
+                return index;
+              });
+
+            self.waveform.points.render();
+
+            return indexes.length;
           }
         };
       }
     },
+    /**
+     * Time API
+     */
     time:     {
       get: function () {
         var self = this;
@@ -374,10 +413,13 @@ define('peaks', [
         };
       }
     },
+    /**
+     * Zoom API
+     */
     zoom:     {
       get: function () {
         var self = this;
-        return { // namepsace for zooming related methods
+        return {
 
           /**
            * Zoom in one level
