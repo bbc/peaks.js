@@ -107,7 +107,15 @@ define('peaks', [
         '<div class="zoom-container"></div>',
         '<div class="overview-container"></div>',
         '</div>'
-      ].join('')
+      ].join(''),
+
+      /**
+       * Related to points
+      */
+      pointMarkerColor: '#FF0000', //Color for the point marker
+      pointDblClickHandler: null, //Handler called when point handle double clicked.
+      pointDragEndHandler: null // Called when the point handle has finished dragging
+
     };
 
     /**
@@ -156,7 +164,8 @@ define('peaks', [
     extend(instance.options, {
       segmentInMarker: mixins.defaultInMarker(instance.options),
       segmentOutMarker: mixins.defaultOutMarker(instance.options),
-      segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options)
+      segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
+      pointMarker: mixins.defaultPointMarker(instance.options)
     });
 
     if (typeof instance.options.template === 'string') {
@@ -183,6 +192,11 @@ define('peaks', [
       if (instance.options.segments) { // Any initial segments to be displayed?
         instance.segments.addSegment(instance.options.segments);
       }
+
+      if(instance.options.points) { //Any initial points to be displayed?
+        instance.points.addPoint(instance.options.points);
+      }
+
     });
 
     return instance;
@@ -283,6 +297,39 @@ define('peaks', [
 
           getSegments: function () {
             return self.waveform.segments.segments;
+          }
+        };
+      }
+    },
+    points: {
+      get: function(){
+        var self = this;
+        return {
+          addPoint: function(timeStamp, editable, color, labelText) {
+            var points = arguments[0];
+
+            if (typeof points == "number") {
+                points = [{
+                    timeStamp: timeStamp,
+                    editable: editable,
+                    color: color,
+                    labelText: labelText
+                }];
+            }
+
+            if (Array.isArray(points)){
+                points.forEach(function(point){
+                    self.waveform.points.createPoint(point.timeStamp, point.editable, point.color, point.labelText);
+                });
+            } else {
+                throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
+            }
+          },
+          getPoints: function () {
+            return self.waveform.points.points;
+          },
+          removePoint: function(id) {
+            self.waveform.points.removePoint(id);
           }
         };
       }
