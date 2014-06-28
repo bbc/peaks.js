@@ -9,8 +9,8 @@ define('peaks', [
 
   var buildUi = function (container) {
     return {
-      'player': container.querySelector(".waveform"),
-      'zoom': container.querySelector(".zoom-container"),
+      'player':   container.querySelector(".waveform"),
+      'zoom':     container.querySelector(".zoom-container"),
       'overview': container.querySelector(".overview-container")
     };
   };
@@ -28,7 +28,7 @@ define('peaks', [
       /**
        * Array of scale factors (samples per pixel) for the zoom levels (big >> small)
        */
-      zoomLevels: [512, 1024, 2048, 4096],
+      zoomLevels:            [512, 1024, 2048, 4096],
       /**
        * Data URI where to get the waveform data.
        *
@@ -51,34 +51,34 @@ define('peaks', [
        * }
        * ```
        */
-      dataUri: null,
+      dataUri:               null,
       /**
        * Will be used as a `xhr.responseType` if `dataUri` is a string, and not an object.
        * Here for backward compatibility purpose only.
        *
        * @since 0.3.0
        */
-      dataUriDefaultFormat: 'json',
+      dataUriDefaultFormat:  'json',
       /**
        * Bind keyboard controls
        */
-      keyboard: false,
+      keyboard:              false,
       /**
        * Keyboard nudge increment in seconds (left arrow/right arrow)
        */
-      nudgeIncrement: 0.01,
+      nudgeIncrement:        0.01,
       /**
        * Colour for the in marker of segments
        */
-      inMarkerColor: '#a0a0a0',
+      inMarkerColor:         '#a0a0a0',
       /**
        * Colour for the out marker of segments
        */
-      outMarkerColor: '#a0a0a0',
+      outMarkerColor:        '#a0a0a0',
       /**
        * Colour for the zoomed in waveform
        */
-      zoomWaveformColor: 'rgba(0, 225, 128, 1)',
+      zoomWaveformColor:     'rgba(0, 225, 128, 1)',
       /**
        * Colour for the overview waveform
        */
@@ -90,31 +90,31 @@ define('peaks', [
       /**
        * Height of the waveform canvases in pixels
        */
-      height: 200,
+      height:                200,
       /**
        * Colour for segments on the waveform
        */
-      segmentColor: 'rgba(255, 161, 39, 1)',
+      segmentColor:          'rgba(255, 161, 39, 1)',
       /**
        * Colour of the play head
        */
-      playheadColor: 'rgba(0, 0, 0, 1)',
+      playheadColor:         'rgba(0, 0, 0, 1)',
       /**
        *
        */
-      template: [
-        '<div class="waveform">',
-        '<div class="zoom-container"></div>',
-        '<div class="overview-container"></div>',
-        '</div>'
-      ].join(''),
+      template:              [
+                               '<div class="waveform">',
+                               '<div class="zoom-container"></div>',
+                               '<div class="overview-container"></div>',
+                               '</div>'
+                             ].join(''),
 
       /**
        * Related to points
-      */
-      pointMarkerColor: '#FF0000', //Color for the point marker
+       */
+      pointMarkerColor:     '#FF0000', //Color for the point marker
       pointDblClickHandler: null, //Handler called when point handle double clicked.
-      pointDragEndHandler: null // Called when the point handle has finished dragging
+      pointDragEndHandler:  null // Called when the point handle has finished dragging
 
     };
 
@@ -146,7 +146,7 @@ define('peaks', [
       throw new Error("Please provide an audio element.");
     }
 
-    if (!(opts.mediaElement instanceof HTMLMediaElement)){
+    if (!(opts.mediaElement instanceof HTMLMediaElement)) {
       throw new TypeError("[Peaks.init] The mediaElement option should be an HTMLMediaElement.");
     }
 
@@ -162,10 +162,10 @@ define('peaks', [
 
     extend(instance.options, opts);
     extend(instance.options, {
-      segmentInMarker: mixins.defaultInMarker(instance.options),
+      segmentInMarker:  mixins.defaultInMarker(instance.options),
       segmentOutMarker: mixins.defaultOutMarker(instance.options),
       segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
-      pointMarker: mixins.defaultPointMarker(instance.options)
+      pointMarker:      mixins.defaultPointMarker(instance.options)
     });
 
     if (typeof instance.options.template === 'string') {
@@ -193,7 +193,7 @@ define('peaks', [
         instance.segments.addSegment(instance.options.segments);
       }
 
-      if(instance.options.points) { //Any initial points to be displayed?
+      if (instance.options.points) { //Any initial points to be displayed?
         instance.points.addPoint(instance.options.points);
       }
 
@@ -208,21 +208,23 @@ define('peaks', [
       get: function () {
         var self = this;
 
-        function addSegment(startTime, endTime, editable, color, labelText) {
+        function addSegment (startTime, endTime, editable, color, labelText) {
           var segments = arguments[0];
 
           if (typeof segments === "number") {
-            segments = [{
-              startTime: startTime,
-              endTime: endTime,
-              editable: editable,
-              color: color,
-              labelText: labelText
-            }];
+            segments = [
+              {
+                startTime: startTime,
+                endTime:   endTime,
+                editable:  editable,
+                color:     color,
+                labelText: labelText
+              }
+            ];
           }
 
-          if (Array.isArray(segments)){
-            segments.forEach(function(segment){
+          if (Array.isArray(segments)) {
+            segments.forEach(function (segment) {
               self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
             });
 
@@ -235,12 +237,12 @@ define('peaks', [
 
         return {
           addSegment: addSegment,
-          add: addSegment,
+          add:        addSegment,
 
-          remove: function(segment){
+          remove: function (segment) {
             var index = self.waveform.segments.remove(segment);
 
-            if (index === null){
+            if (index === null) {
               throw new RangeError('Unable to find the requested segment' + String(segment));
             }
 
@@ -254,27 +256,27 @@ define('peaks', [
             var fnFilter;
 
             if (endTime > 0) {
-              fnFilter = function(segment){
-                return segment.startTime === startTime && segment.endTime === endTime ;
+              fnFilter = function (segment) {
+                return segment.startTime === startTime && segment.endTime === endTime;
               };
             }
             else {
-              fnFilter = function(segment){
+              fnFilter = function (segment) {
                 return segment.startTime === startTime;
               };
             }
 
             var indexes = self.waveform.segments.segments
               .filter(fnFilter)
-              .map(function(segment, i){
+              .map(function (segment, i) {
                 self.waveform.segments.remove(segment);
 
                 return i;
               })
-              .sort(function(a, b){
+              .sort(function (a, b) {
                 return b - a;
               })
-              .map(function(index){
+              .map(function (index) {
                 self.waveform.segments.segments.splice(index, 1);
 
                 return index;
@@ -285,8 +287,8 @@ define('peaks', [
             return indexes.length;
           },
 
-          removeAll : function () {
-            self.waveform.segments.segments.forEach(function(segment){
+          removeAll: function () {
+            self.waveform.segments.segments.forEach(function (segment) {
               self.waveform.segments.remove(segment);
             });
 
@@ -301,40 +303,42 @@ define('peaks', [
         };
       }
     },
-    points: {
-      get: function(){
+    points:   {
+      get: function () {
         var self = this;
         return {
-          addPoint: function(timeStamp, editable, color, labelText) {
+          addPoint:    function (timeStamp, editable, color, labelText) {
             var points = arguments[0];
 
             if (typeof points == "number") {
-                points = [{
-                    timeStamp: timeStamp,
-                    editable: editable,
-                    color: color,
-                    labelText: labelText
-                }];
+              points = [
+                {
+                  timeStamp: timeStamp,
+                  editable:  editable,
+                  color:     color,
+                  labelText: labelText
+                }
+              ];
             }
 
-            if (Array.isArray(points)){
-                points.forEach(function(point){
-                    self.waveform.points.createPoint(point.timeStamp, point.editable, point.color, point.labelText);
-                });
+            if (Array.isArray(points)) {
+              points.forEach(function (point) {
+                self.waveform.points.createPoint(point.timeStamp, point.editable, point.color, point.labelText);
+              });
             } else {
-                throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
+              throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
             }
           },
-          getPoints: function () {
+          getPoints:   function () {
             return self.waveform.points.points;
           },
-          removePoint: function(id) {
+          removePoint: function (id) {
             self.waveform.points.removePoint(id);
           }
         };
       }
     },
-    time: {
+    time:     {
       get: function () {
         var self = this;
 
@@ -370,7 +374,7 @@ define('peaks', [
         };
       }
     },
-    zoom: {
+    zoom:     {
       get: function () {
         var self = this;
         return { // namepsace for zooming related methods
