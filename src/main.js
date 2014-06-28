@@ -194,19 +194,34 @@ define('peaks', [
       get: function () {
         var self = this;
 
-        return {
-          addSegment: function (startTime, endTime, editable, color, labelText) {
-            var segments = arguments[0];
+	function addSegment(startTime, endTime, editable, color, labelText) {
+	  var segments = arguments[0];
 
-            if (typeof segments === "number") {
-              segments = [{
-                startTime: startTime,
-                endTime: endTime,
-                editable: editable,
-                color: color,
-                labelText: labelText
-              }];
-            }
+	  if (typeof segments === "number") {
+	    segments = [{
+	      startTime: startTime,
+	      endTime: endTime,
+	      editable: editable,
+	      color: color,
+	      labelText: labelText
+	    }];
+	  }
+
+	  if (Array.isArray(segments)){
+	    segments.forEach(function(segment){
+	      self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
+	    });
+
+	    self.waveform.segments.render();
+	  }
+	  else {
+	    throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
+	  }
+	}
+
+        return {
+	  addSegment: addSegment,
+	  add: addSegment,
 
             if (Array.isArray(segments)){
               segments.forEach(function(segment){
