@@ -1,5 +1,11 @@
 ## Change Log
 
+### 0.3.0-beta.2 (2014/06/28 16:29 +00:00)
+- [#51](https://github.com/bbcrd/peaks.js/pull/51) Delete segments (@oncletom)
+
+### 0.3.0-beta.1 (2014/06/27 19:26 +00:00)
+- [#50](https://github.com/bbcrd/peaks.js/pull/50) Peaks build system. (@oncletom)
+
 ### 0.2.1 (2014/03/24 17:47 +00:00)
 - [#28](https://github.com/bbcrd/peaks.js/pull/28) Segment improvement (@oncletom)
 - [#43](https://github.com/bbcrd/peaks.js/pull/43) Fixing `SYNTAX_ERR: DOM Exception 12` in Safari (@oncletom)
