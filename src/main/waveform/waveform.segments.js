@@ -228,6 +228,26 @@ define([
       return segment;
     };
 
+    this.remove = function removeSegment(segment){
+      var index = null;
+
+      this.segments.some(function(s, i){
+        if (s === segment){
+          index = i;
+          return true;
+        }
+      });
+
+      if (typeof index === 'number'){
+        segment = this.segments[index];
+
+        segment.overview.destroy();
+        segment.zoom.destroy();
+      }
+
+      return index;
+    };
+
     /**
      * Performs the rendering of the segments on screen
      *

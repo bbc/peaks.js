@@ -194,39 +194,92 @@ define('peaks', [
       get: function () {
         var self = this;
 
+        function addSegment(startTime, endTime, editable, color, labelText) {
+          var segments = arguments[0];
+
+          if (typeof segments === "number") {
+            segments = [{
+              startTime: startTime,
+              endTime: endTime,
+              editable: editable,
+              color: color,
+              labelText: labelText
+            }];
+          }
+
+          if (Array.isArray(segments)){
+            segments.forEach(function(segment){
+              self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
+            });
+
+            self.waveform.segments.render();
+          }
+          else {
+            throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
+          }
+        }
+
         return {
-          addSegment: function (startTime, endTime, editable, color, labelText) {
-            var segments = arguments[0];
+          addSegment: addSegment,
+          add: addSegment,
 
-            if (typeof segments === "number") {
-              segments = [{
-                startTime: startTime,
-                endTime: endTime,
-                editable: editable,
-                color: color,
-                labelText: labelText
-              }];
+          remove: function(segment){
+            var index = self.waveform.segments.remove(segment);
+
+            if (index === null){
+              throw new RangeError('Unable to find the requested segment' + String(segment));
             }
 
-            if (Array.isArray(segments)){
-              segments.forEach(function(segment){
-                self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
-              });
+            self.waveform.segments.updateSegments();
 
-              self.waveform.segments.render();
-            }
-            else {
-              throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
-            }
+            return self.waveform.segments.segments.splice(index, 1).pop();
           },
 
-          // removeSegment: function (segment) {
+          removeByTime: function (startTime, endTime) {
+            endTime = (typeof endTime === 'number') ? endTime : 0;
+            var fnFilter;
 
-          // },
+            if (endTime > 0) {
+              fnFilter = function(segment){
+                return segment.startTime === startTime && segment.endTime === endTime ;
+              };
+            }
+            else {
+              fnFilter = function(segment){
+                return segment.startTime === startTime;
+              };
+            }
 
-          // clearSegments : function () { // Remove all segments
+            var indexes = self.waveform.segments.segments
+              .filter(fnFilter)
+              .map(function(segment, i){
+                self.waveform.segments.remove(segment);
 
-          // },
+                return i;
+              })
+              .sort(function(a, b){
+                return b - a;
+              })
+              .map(function(index){
+                self.waveform.segments.segments.splice(index, 1);
+
+                return index;
+              });
+
+            self.waveform.segments.updateSegments();
+
+            return indexes.length;
+          },
+
+          removeAll : function () {
+            self.waveform.segments.segments.forEach(function(segment){
+              self.waveform.segments.remove(segment);
+            });
+
+            self.waveform.segments.segments = [];
+
+            self.waveform.segments.updateSegments();
+          },
 
           getSegments: function () {
             return self.waveform.segments.segments;
