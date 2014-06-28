@@ -31,7 +31,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
     afterEach(function (done) {
       sandbox.restore();
       removeAllFixtures();
-      setTimeout(done, 200);
+      done();
     });
 
     /**
@@ -90,12 +90,97 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       });
     });
 
-    describe("removeSegment", function(){
+    describe("remove", function(){
+      beforeEach(function(){
+        p.segments.add(10, 12);
+      });
 
+      it("should throw an exception if you remove a segment which does not exist", function(){
+        expect(function(){ p.segments.remove({}) }).to.throw();
+      });
+
+      it("should return the deleted segment object if properly deleted", function(){
+        var segment = p.segments.getSegments()[0];
+
+        expect(p.segments.remove(segment)).to.equal(segment);
+      });
+
+      it("should remove the segment from the segments array", function(){
+        var segment = p.segments.getSegments()[0];
+
+        p.segments.remove(segment);
+
+        expect(p.segments.getSegments()).to.not.include(segment);
+      });
+
+      it("should remove the segment from both view layers", function(){
+        var segment = p.segments.getSegments()[0];
+
+        p.segments.remove(segment);
+
+        expect(p.waveform.waveformOverview.segmentLayer.children).to.not.include(segment.overview);
+        expect(p.waveform.waveformZoomView.segmentLayer.children).to.not.include(segment.zoom);
+      });
     });
 
-    xdescribe("removeAllSegments", function(){
+    describe("removeByTime", function(){
+      beforeEach(function(){
+        p.segments.addSegment(10, 12);
+        p.segments.addSegment(5, 12);
 
+        p.segments.addSegment(3, 6);
+        p.segments.addSegment(3, 10);
+      });
+
+      it("should not remove any segment if the startTime does not match with any segment", function(){
+        p.segments.removeByTime(6);
+
+        expect(p.segments.getSegments()).to.have.a.lengthOf(4);
+      });
+
+      it("should not remove any segment if the endTime does match the end of a segment", function(){
+        p.segments.removeByTime(6, 12);
+
+        expect(p.segments.getSegments()).to.have.a.lengthOf(4);
+      });
+
+      it("should remove the only segment matching the startTime", function(){
+        p.segments.removeByTime(5);
+
+        expect(p.segments.getSegments()).to.have.a.lengthOf(3);
+      });
+
+      it("should remove the two segments matching the startTime", function(){
+        p.segments.removeByTime(3);
+
+        expect(p.segments.getSegments()).to.have.a.lengthOf(2);
+      });
+
+      it("should remove only the segment matching both starTime and endTime", function(){
+        p.segments.removeByTime(3, 6);
+
+        expect(p.segments.getSegments()).to.have.a.lengthOf(3);
+      });
+    });
+
+    describe("removeAll", function(){
+      beforeEach(function(){
+        p.segments.addSegment(10, 12);
+        p.segments.addSegment(5, 12);
+      });
+
+      it("should clear all segments objects", function(){
+        p.segments.removeAll();
+
+        expect(p.segments.getSegments()).to.be.empty;
+      });
+
+      it("should clear views groups as well", function(){
+        p.segments.removeAll();
+
+        expect(p.waveform.waveformOverview.segmentLayer.children).to.have.a.property('length', 0);
+        expect(p.waveform.waveformZoomView.segmentLayer.children).to.have.a.property('length', 0);
+      });
     });
 
   });
