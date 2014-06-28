@@ -144,14 +144,14 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
         expect(p.segments.getSegments()).to.have.a.lengthOf(4);
       });
 
-      it("should return the number of deleted segments", function(){
-        expect(p.segments.removeByTime(6, 12)).to.equal(1);
-      });
-
       it("should remove the only segment matching the startTime", function(){
         p.segments.removeByTime(5);
 
         expect(p.segments.getSegments()).to.have.a.lengthOf(3);
+      });
+
+      it("should return the number of deleted segments", function(){
+        expect(p.segments.removeByTime(3)).to.equal(2);
       });
 
       it("should remove the two segments matching the startTime", function(){

@@ -237,10 +237,18 @@ define('peaks', [
 
           removeByTime: function (startTime, endTime) {
             endTime = (typeof endTime === 'number') ? endTime : 0;
+            var fnFilter;
 
-            var fnFilter = (endTime === 0
-              ? function(segment){ return segment.startTime === startTime; }
-              : function(segment){ return segment.startTime === startTime && segment.endTime === endTime ; });
+            if (endTime > 0) {
+              fnFilter = function(segment){
+                return segment.startTime === startTime && segment.endTime === endTime ;
+              };
+            }
+            else {
+              fnFilter = function(segment){
+                return segment.startTime === startTime;
+              };
+            }
 
             var indexes = self.waveform.segments.segments
               .filter(fnFilter)
