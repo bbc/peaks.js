@@ -20,7 +20,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
     afterEach(function (done) {
       removeAllFixtures();
       sandbox.restore();
-      setTimeout(done, 100);
+      done();
     });
 
     /**

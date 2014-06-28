@@ -31,7 +31,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
     afterEach(function (done) {
       sandbox.restore();
       removeAllFixtures();
-      setTimeout(done, 200);
+      done();
     });
 
     /**
