@@ -368,48 +368,5 @@ define([
     };*/
 
     // EVENTS ====================================================
-
-    peaks.on("setting_in_marker", function(startTime) {
-      /*var marker = setSegmentInMarker(startTime, markerType);
-      if (markerType == "in") {
-        var oldMarker = that.currentInMarker.pop();
-        if (oldMarker != undefined) {
-          oldMarker.zoom.waveformShape.destroy();
-          oldMarker.overview.waveformShape.destroy();
-        }
-        that.currentInMarker.push(marker);
-      } else {
-        that.currentOutMarker.pop();
-        that.currentOutMarker.push(marker);
-      }
-      //Join in and out markers when both have been set
-      /*if ((that.currentInMarker.length == 1) && (that.currentOutMarker.length == 1)) {
-        //Create a segment using the in and out marker start and end time (returns a segment)
-        //updateSegmentwaveform(segment)
-        //Empty arrays and remove lines
-      }*/
-
-      //Update Markers to draw
-      //updateMarkers(marker);
-
-      var segment = self.createSegment(startTime, startTime, true);
-      var oldMarker = self.currentInMarker.pop();
-      if (oldMarker !== undefined) {
-        oldMarker.zoom.destroy();
-        oldMarker.overview.destroy();
-      }
-
-      self.currentInMarker.push(segment);
-      segment.zoom.inMarker.attrs.draggable = false;
-      self.peaks.emit("segment_created", segment);
-    });
-
-    peaks.on("setting_out_marker", function(startTime, segment) {
-      segment.endTime = startTime;
-      segment.zoom.inMarker.attrs.draggable = true;
-
-      updateSegmentWaveform(segment);
-      self.currentInMarker.pop();
-    });
   };
 });
