@@ -384,9 +384,6 @@ define(function () {
           textAlign: "center"
         });
       };
-    },
-
-    customInMarker: function() {
     }
   };
 });

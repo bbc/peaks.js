@@ -7,6 +7,7 @@ define([
   function WaveformOverview(waveformData, container, peaks) {
     var that = this;
 
+    that.peaks = peaks;
     that.options = peaks.options;
     that.data = waveformData;
     that.container = container;

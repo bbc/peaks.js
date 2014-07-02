@@ -464,6 +464,7 @@ define([
         }
 
         that.seekFrame(that.data.at_time(currentTime));
+        that.peaks.emit("waveform_zoom_activated", that.frameOffset * that.data.seconds_per_pixel, (that.frameOffset+that.width) * that.data.seconds_per_pixel);
       }
     }, that.zoomWaveformLayer);
 

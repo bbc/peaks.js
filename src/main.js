@@ -464,6 +464,15 @@ define('peaks', [
            */
           getZoom: function () {
             return self.currentZoomLevel;
+          },
+
+          /**
+           * Sets the zoom level to an overview level
+           *
+           * @since 0.3
+           */
+          overview: function resetOverview() {
+            self.zoom.setZoom(self.options.zoomLevels.length - 1);
           }
         };
       }
