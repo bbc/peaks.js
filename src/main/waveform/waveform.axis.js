@@ -1,3 +1,11 @@
+/**
+ * WAVEFORM.AXIS.JS
+ *
+ * This module handles all functionality related to drawing the
+ * visualisations. Only a sigle object of this type is
+ * instantiated meaning this code is reused multiple times.
+ *
+ */
 define(["peaks/waveform/waveform.mixins"], function (mixins) {
   'use strict';
 

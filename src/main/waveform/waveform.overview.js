@@ -1,3 +1,11 @@
+/**
+ * WAVEFORM.OVERVIEW.JS
+ *
+ * This module handles all functionality related to the overview
+ * timeline canvas and initialises its own instance of the axis
+ * object.
+ *
+ */
 define([
   "peaks/waveform/waveform.axis",
   "peaks/waveform/waveform.mixins"
@@ -142,9 +150,11 @@ define([
       y:11,
       width: 0,
       stroke: "grey",
-      strokeWidth: 1.8,
+      strokeWidth: 1,
       height: 28,
-      lineJoin: 'round'
+      fill:'grey',
+      opacity: 0.3,
+      cornerRadius: 2
     });
 
     this.refLayer.add(this.refWaveformRect);
