@@ -244,16 +244,18 @@ define(function () {
      * @param {Canvas} canvas
      * @param {interpolateHeight} y
      */
-    waveformSegmentDrawFunction: function(waveform, id, canvas, y){
+    waveformSegmentDrawFunction: function(waveform, id, view){
       if (waveform.segments[id] === undefined){
         return;
       }
-      var segment = waveform.segments[id],
-          offset_length = segment.offset_length,
-          offset_start = segment.offset_start - waveform.offset_start,
-          ctx = canvas.getContext();
-      drawWaveform(ctx, segment.min, segment.max, offset_start, offset_length, y);
-      canvas.fillStroke(this);
+      var segment = waveform.segments[id];
+      var offset_length = segment.offset_length;
+      var offset_start = segment.offset_start - waveform.offset_start;
+
+      view.waveformShape.setAttrs({
+        x: offset_start,
+        width: offset_length
+      });
     },
 
     waveformZoomviewSegmentDrawFunction: function(waveform, id, zoomview) {

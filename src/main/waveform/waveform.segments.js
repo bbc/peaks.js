@@ -125,7 +125,7 @@ define([
         mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformOverview.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformOverview.height));
       });*/
 
-      mixins.waveformOverviewSegmentDrawFunction(peaks.waveform.waveformOverview.data, segment.id, segment.overview);
+      mixins.waveformSegmentDrawFunction(peaks.waveform.waveformOverview.data, segment.id, segment.overview);
 
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
@@ -160,7 +160,7 @@ define([
         /*segment.zoom.waveformShape.setDrawFunc(function(canvas) {
           mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
         });*/
-        mixins.waveformZoomviewSegmentDrawFunction(peaks.waveform.waveformZoomView.data, segment.id, segment.zoom);
+        mixins.waveformSegmentDrawFunction(peaks.waveform.waveformZoomView.data, segment.id, segment.zoom);
 
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
