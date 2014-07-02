@@ -114,8 +114,12 @@ define('peaks', [
        */
       pointMarkerColor:     '#FF0000', //Color for the point marker
       pointDblClickHandler: null, //Handler called when point handle double clicked.
-      pointDragEndHandler:  null // Called when the point handle has finished dragging
+      pointDragEndHandler:  null, // Called when the point handle has finished dragging
 
+      /**
+       * Called when the waveform has been drawn and is ready
+       */
+       waveFormReadyHandler: null
     };
 
     /**
@@ -195,6 +199,10 @@ define('peaks', [
 
       if (instance.options.points) { //Any initial points to be displayed?
         instance.points.addPoint(instance.options.points);
+      }
+
+      if(instance.options.waveFormReadyHandler) {
+        instance.options.waveFormReadyHandler();
       }
 
     });
