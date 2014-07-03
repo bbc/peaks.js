@@ -32,9 +32,8 @@ define([
     that.pixelsPerSecond = that.data.pixels_per_second;
     that.frameOffset = 0; // the pixel offset of the current frame being displayed
 
-    that.container = container;
-    that.width = that.container.clientWidth;
-    that.height = that.options.height;
+    that.width = container.clientWidth;
+    that.height = container.clientHeight || that.options.height;
 
     that.stage = new Kinetic.Stage({
       container: container,
