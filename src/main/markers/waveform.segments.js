@@ -13,7 +13,6 @@ define([
     var self = this;
 
     self.segments = [];
-    self.currentInMarker = [];
     self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
       if (!view.segmentLayer) {
         view.segmentLayer = new Kinetic.Layer();
@@ -189,7 +188,6 @@ define([
       }
 
       updateSegmentWaveform(segment);
-      self.currentInMarker.pop();
     };
 
     var getSegmentColor = function () {
@@ -219,12 +217,6 @@ define([
     this.updateSegments = function () {
       this.segments.getSegments().forEach(updateSegmentWaveform);
       self.render();
-      /*if (that.currentInMarker.length == 1) {
-        updateMarkers(that.currentInMarker[0]);
-      }
-      if (that.currentOutMarker.length == 1) {
-        updateMarkers(that.currentOutMarker[0]);
-      }*/
     };
 
     /**
