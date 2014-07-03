@@ -9,7 +9,6 @@ define([
 
     that.options = peaks.options;
     that.data = waveformData;
-    console.log(container.clientHeight, that.options.height);
     that.width = container.clientWidth;
     that.height = container.clientHeight || that.options.height;
     that.frameOffset = 0;
