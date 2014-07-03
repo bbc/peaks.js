@@ -141,6 +141,7 @@ define([
       // Label
       // segment.overview.label.setX(overviewStartOffset);
 
+      segment.overview.view.segmentLayer.draw();
 
       // Zoom
       var zoomStartOffset = peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
