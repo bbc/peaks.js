@@ -34,7 +34,7 @@ module.exports = function (config) {
 
     // test results reporter to use
     // possible values: dots || progress || growl
-    reporters : ['progress'],
+    reporters : isCI ? ['dots', 'saucelabs'] : ['progress'],
 
     // web server port
     port : 8080,
@@ -61,11 +61,9 @@ module.exports = function (config) {
     browserNoActivityTimeout: 30000,
 
     sauceLabs: {
-      username: process.env.SAUCE_USERNAME,
-      accessKey: process.env.SAUCE_ACCESS_KEY,
       build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',
-      testName: 'peaks.js (by R&D IRFS)',
-      startConnect: true
+      testName: 'peaks.js',
+      startConnect: false
     },
 
     customLaunchers: {
@@ -120,7 +118,7 @@ module.exports = function (config) {
     },
 
     // If browser does not capture in given timeout [ms], kill it
-    captureTimeout : 10000,
+    captureTimeout : 120000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
