@@ -15,11 +15,7 @@ define([
   function WaveformZoomView(waveformData, container, peaks) {
     var that = this;
 
-    that.ticking = false;
     that.cur_scale = 0;
-
-    that.frameData = [];
-    that.runAnimation = true;
 
     that.peaks = peaks;
     that.options = peaks.options;
@@ -27,8 +23,6 @@ define([
 
     that.playing = false;
     that.seeking = false;
-
-    that.scale = 1;
 
     that.current_sample_rate = that.options.zoomLevels[peaks.zoom.getZoom()];
 
@@ -74,29 +68,30 @@ define([
       if (event.targetNode &&
         !event.targetNode.attrs.draggable &&
         !event.targetNode.parent.attrs.draggable) {
-        if (event.type == "mousedown") {
-          that.seeking = true;
+        if (event.type === "mousedown") {
           var x = event.layerX, dX, p;
+          that.seeking = true;
 
           // enable drag if necessary
           that.stage.on("mousemove", function (event) {
+            that.seeking = false;
+
             dX = event.layerX > x ? x - event.layerX : (x - event.layerX)*1;
             x = event.layerX;
             p = that.frameOffset+dX;
             p = p < 0 ? 0 : p > (that.pixelLength - that.width) ? (that.pixelLength - that.width) : p;
-            that.seeking = false;
 
-            that.frameOffset = p;
             that.updateZoomWaveform(p);
           });
 
           that.stage.on("mouseup", function () {
-            that.stage.off("mousemove mouseup");
-
             if (that.seeking){
               // Set playhead position only on click release, when not dragging
               that.peaks.emit("zoomview_user_seek", that.data.time(that.frameOffset + x), that.frameOffset + x);
             }
+
+            that.stage.off("mousemove mouseup");
+            that.seeking = false;
           });
         }
       }
@@ -215,17 +210,8 @@ define([
       mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
     });
     that.zoomWaveformLayer.draw();
-    that.ticking = false;
     //Update the refwaveform on the overview container
     that.peaks.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);
-  };
-
-  WaveformZoomView.prototype.requestWaveform = function() {
-    var that = this;
-    if(!that.ticking) {
-      requestAnimationFrame(that.update.bind(that));
-      that.ticking = true;
-    }
   };
 
   WaveformZoomView.prototype.createZoomWaveform = function() {
@@ -276,6 +262,9 @@ define([
   WaveformZoomView.prototype.updateZoomWaveform = function (pixelOffset) {
     var that = this;
 
+    that.frameOffset = pixelOffset;
+    that.pixelLength = that.data.adapter.length;
+
     var display = (that.playheadPixel >= pixelOffset) && (that.playheadPixel <= pixelOffset + that.width); //i.e. playhead is within the zoom frame width
 
     if (display) {
@@ -288,7 +277,6 @@ define([
       that.zoomPlayheadGroup.hide();
     }
 
-    that.uiLayer.setZIndex(100);
     that.uiLayer.draw();
 
     that.zoomWaveformShape.setDrawFunc(function(canvas) {
@@ -386,9 +374,15 @@ define([
   WaveformZoomView.prototype.startZoomAnimation = function (current_zoom_level, previous_zoom_level) {
     var that = this;
     var currentTime = that.peaks.time.getCurrentTime();
+    var frameData = [];
+
     var currentSampleRate = that.peaks.options.zoomLevels[current_zoom_level];
     var previousSampleRate = that.peaks.options.zoomLevels[previous_zoom_level];
+
     var numOfFrames = 30;
+    var input_index;
+    var output_index;
+    var lastFrameOffsetTime;
 
     //Fade out the time axis and the segments
     //that.axis.axisShape.setAttr('opacity', 0);
@@ -408,11 +402,26 @@ define([
       var frame_sample_rate = Math.round(previousSampleRate + ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames));
       //Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
 
-      //This way calculates the index of the start time at the scale we are coming from and the scale we are going to
-      var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / previousSampleRate;
-      var input_index = oldPixelIndex - (that.width / 2);
-      var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; //sample rate = 44100
-      var output_index = newPixelIndex - (that.width / 2);
+      var newWidthSeconds = that.width * frame_sample_rate / that.rootData.adapter.sample_rate;
+
+      if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds/2)){
+        input_index = 0;
+        output_index = 0;
+      }
+      else if ((currentTime <= that.rootData.duration) && (currentTime >= that.rootData.duration - newWidthSeconds/2)) {
+        lastFrameOffsetTime = that.rootData.duration - newWidthSeconds;
+
+        input_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / previousSampleRate;
+        output_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / frame_sample_rate; //sample rate = 44100
+      }
+      else {
+        //This way calculates the index of the start time at the scale we are coming from and the scale we are going to
+        var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / previousSampleRate;
+        input_index = oldPixelIndex - (that.width/2);
+
+        var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; //sample rate = 44100
+        output_index = newPixelIndex - (that.width/2);
+      }
 
       var resampled = that.rootData.resample({ // rootData should be swapped for your resampled dataset
         scale:        frame_sample_rate,
@@ -421,27 +430,20 @@ define([
         width:        that.width
       });
 
-      that.frameData.push(resampled);
+      frameData.push(resampled);
 
       previousSampleRate = frame_sample_rate;
     }
 
-    that.requestStart();
+    that.runZoomAnimation(frameData);
   };
 
-  WaveformZoomView.prototype.requestStart = function() {
-    if (this.runAnimation) {
-      this.runAnimation = true;
-      this.updateAnimationWaveform();
-    }
-  };
-
-  WaveformZoomView.prototype.updateAnimationWaveform = function () {
+  WaveformZoomView.prototype.runZoomAnimation = function (frameData) {
     var that = this;
 
-    if (that.frameData.length > 0) {
+    if (frameData.length) {
 
-      var intermediate_data = that.frameData.shift();
+      var intermediate_data = frameData.shift();
 
       //Send correct resampled waveform data object to drawFunc and draw it
       that.zoomWaveformShape.setDrawFunc(function(canvas) {
@@ -452,16 +454,13 @@ define([
       //Update the refwaveform on the overview container
       //bootstrap.pubsub.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);
       requestAnimationFrame( function () {
-        that.updateAnimationWaveform();
+        that.runZoomAnimation(frameData);
       });
     }
     else {
-      //Once all intermediate frames have been drawn
-      that.runAnimation = false;
       //Fade in the segments
-      that.setLayerVisibility(true);
+      that.segmentLayer.setVisible(true);
       that.seekFrame(that.data.at_time(that.currentTime));
-      that.requestStart();
     }
   };
 
