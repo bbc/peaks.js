@@ -318,7 +318,7 @@ define('peaks', [
            * @param color
            * @param labelText
            */
-          add: function (timestamp, editable, color, labelText) {
+          add: function (timestamp, editable, color, labelText, pointId) {
             var points = arguments[0];
 
             if (typeof points === "number") {
@@ -326,7 +326,8 @@ define('peaks', [
                 timestamp: timestamp,
                 editable:  editable,
                 color:     color,
-                labelText: labelText
+                labelText: labelText,
+                id: pointId
               }];
             }
 
@@ -369,6 +370,26 @@ define('peaks', [
               });
 
             self.waveform.points.render();
+
+            return indexes.length;
+          },
+          removeById: function(pointId) {
+            var indexes = self.waveform.points.points
+              .filter(function(point) {
+                return point.id === pointId;
+              })
+              .map(function(point, i) {
+                self.waveform.points.remove(point);
+              })
+              .sort(function(a, b) {
+                return b - a;
+              })
+              .map(function(index) {
+                self.waveform.points.points.splice(index, 1);
+
+                return index;
+              });
+              self.waveform.points.render();
 
             return indexes.length;
           },

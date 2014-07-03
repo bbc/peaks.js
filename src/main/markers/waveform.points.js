@@ -36,7 +36,7 @@ define([
         var view = self.views[i];
 
         if (point.editable) {
-          pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
+          pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler, point.color);
           pointGroup.add(pointGroup.marker);
         }
 
@@ -116,8 +116,9 @@ define([
       if ((point.timestamp >= 0) === false) {
         throw new RangeError("[waveform.points.createPoint] timestamp should be a >=0 value");
       }
-
-      point.id = "point" + self.points.length;
+      if(point.id === null || point.id === undefined) {
+        point.id = "point" + self.points.length;
+      }
 
       point = constructPoint(point);
       updatePoint(point);
