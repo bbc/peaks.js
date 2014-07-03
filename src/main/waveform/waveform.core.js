@@ -7,10 +7,10 @@
  */
 define([
   "waveform-data",
-  "peaks/waveform/waveform.overview",
-  "peaks/waveform/waveform.zoomview",
-  "peaks/waveform/waveform.segments",
-  "peaks/waveform/waveform.points"
+  "peaks/views/waveform.overview",
+  "peaks/views/waveform.zoomview",
+  "peaks/markers/waveform.segments",
+  "peaks/markers/waveform.points"
   ], function (WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
 
   'use strict';
