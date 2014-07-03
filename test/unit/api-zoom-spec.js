@@ -51,10 +51,10 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
         expect(p.zoom.getZoom()).to.equal(1);
       });
 
-      it("should dispatch waveform_zoom_level_changed with the value associated to the zoom level", function (){
+      it("should dispatch zoom.update with the value associated to the zoom level", function (){
         var spy = sandbox.spy();
 
-        p.on("waveform_zoom_level_changed", spy);
+        p.on("zoom.update", spy);
         p.zoom.setZoom(1);
 
         expect(spy.calledWith(1024)).to.equal(true);
@@ -84,12 +84,11 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
     describe("zoomOut", function(){
       it("should call setZoom with a bigger zoom level", function(){
         var spy = sandbox.spy();
-        var zoomLevel = p.currentZoomLevel;
 
-        p.on("waveform_zoom_level_changed", spy);
+        p.on("zoom.update", spy);
         p.zoom.zoomOut();
 
-        expect(spy.getCall(0).args).to.deep.equal([ p.options.zoomLevels[zoomLevel + 1] ]);
+        expect(spy).to.be.calledWith(1024, 512);
       });
     });
 
@@ -98,12 +97,11 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
         p.zoom.setZoom(1);
 
         var spy = sandbox.spy();
-        var zoomLevel = p.currentZoomLevel;
 
-        p.on("waveform_zoom_level_changed", spy);
+        p.on("zoom.update", spy);
         p.zoom.zoomIn();
 
-        expect(spy.getCall(0).args).to.deep.equal([ p.options.zoomLevels[zoomLevel - 1] ]);
+        expect(spy).to.be.calledWith(512, 1024);
       });
     });
 

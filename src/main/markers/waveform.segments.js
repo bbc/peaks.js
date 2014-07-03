@@ -202,7 +202,7 @@ define([
     };
 
     this.init = function () {
-      peaks.on("waveform_zoom_displaying", self.updateSegments);
+      peaks.on("waveform_zoom_displaying", this.updateSegments.bind(this));
 
       peaks.emit("segments.ready");
     };
@@ -215,8 +215,8 @@ define([
      * @api
      */
     this.updateSegments = function () {
-      this.segments.getSegments().forEach(updateSegmentWaveform);
-      self.render();
+      this.segments.forEach(updateSegmentWaveform);
+      this.render();
     };
 
     /**
@@ -281,7 +281,7 @@ define([
      * @since 0.0.2
      */
     this.render = function renderSegments(){
-      self.views.forEach(function(view){
+      this.views.forEach(function(view){
         view.segmentLayer.draw();
       });
     };

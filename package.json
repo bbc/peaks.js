@@ -30,7 +30,6 @@
     "grunt-wiredep": "^1.8.0",
     "jshint": "^2.5.1",
     "karma": "^0.12.0",
-    "karma-chai": "~0.0.2",
     "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-html2js-preprocessor": "~0.1",
@@ -40,7 +39,7 @@
     "karma-safari-launcher": "~0.1.1",
     "karma-sauce-launcher": "~0.1.8",
     "karma-script-launcher": "~0.1.0",
-    "karma-sinon": "~1.0.0",
+    "karma-sinon-chai": "^0.2.0",
     "mocha": "~1.17.1"
   }
 }
