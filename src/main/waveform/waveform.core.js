@@ -104,9 +104,6 @@ define([
         this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
         var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
 
-        peaks.options.zoomLevels.push(overviewWaveformData.adapter.scale);
-        peaks.currentZoomLevel = peaks.options.zoomLevels.length - 1;
-
         this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
 
         peaks.emit("waveformOverviewReady");

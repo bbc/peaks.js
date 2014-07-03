@@ -24,8 +24,6 @@ define([
     that.playing = false;
     that.seeking = false;
 
-    that.current_sample_rate = that.options.zoomLevels[peaks.zoom.getZoom()];
-
     that.data = that.rootData.resample({
       scale: that.options.zoomLevels[peaks.zoom.getZoom()]
     });
@@ -142,17 +140,17 @@ define([
       that.syncPlayhead(that.data.at_time(time));
     });
 
-    that.peaks.on("zoom.update", function (current_zoom_level, previous_zoom_level) {
+    that.peaks.on("zoom.update", function (current_scale, previous_scale) {
       if (that.playing) {
         return;
       }
 
-      if (current_zoom_level !== previous_zoom_level) {
+      if (current_scale !== previous_scale) {
         that.data = that.rootData.resample({
-          scale: that.options.zoomLevels[current_zoom_level]
+          scale: current_scale
         });
 
-        that.startZoomAnimation(current_zoom_level, previous_zoom_level);
+        that.startZoomAnimation(current_scale, previous_scale);
       }
     });
 
@@ -198,7 +196,7 @@ define([
     var output_index = newPixelIndex - (that.width/2);
 
     that.data = that.rootData.resample({
-      scale: that.current_sample_rate,
+      scale: that.rootData.adapter.scale,
       input_index: Math.floor(input_index),
       output_index: Math.floor(output_index),
       length: that.width
@@ -370,13 +368,10 @@ define([
     that.updateZoomWaveform(that.frameOffset);
   };
 
-  WaveformZoomView.prototype.startZoomAnimation = function (current_zoom_level, previous_zoom_level) {
+  WaveformZoomView.prototype.startZoomAnimation = function (currentSampleRate, previousSampleRate) {
     var that = this;
     var currentTime = that.peaks.time.getCurrentTime();
     var frameData = [];
-
-    var currentSampleRate = that.peaks.options.zoomLevels[current_zoom_level];
-    var previousSampleRate = that.peaks.options.zoomLevels[previous_zoom_level];
 
     var numOfFrames = 30;
     var input_index;
@@ -391,13 +386,13 @@ define([
     }
 
     // Determine whether zooming in or out
-    if (previous_zoom_level < current_zoom_level) {
+    if (previousSampleRate < currentSampleRate) {
       numOfFrames = 15;
     }
 
     // Create array with resampled data for each animation frame (need to know duration, resample points per frame)
     for (var i = 0; i < numOfFrames; i++) {
-      // Work out interpolated resample scale using current_zoom_level and previous_zoom_level
+      // Work out interpolated resample scale using currentSampleRate and previousSampleRate
       var frame_sample_rate = Math.round(previousSampleRate + ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames));
       //Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
 

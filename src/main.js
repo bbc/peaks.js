@@ -456,7 +456,7 @@ define('peaks', [
             var previousZoomLevel = self.currentZoomLevel;
 
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit("zoom.update", zoomLevelIndex, previousZoomLevel);
+            self.emit("zoom.update", self.options.zoomLevels[zoomLevelIndex], self.options.zoomLevels[previousZoomLevel]);
           },
 
           /**
@@ -473,8 +473,17 @@ define('peaks', [
            *
            * @since 0.3
            */
-          overview: function resetOverview() {
-            self.zoom.setZoom(self.options.zoomLevels.length - 1);
+          overview: function zoomToOverview() {
+            self.emit("zoom.update", self.waveform.waveformOverview.data.adapter.scale, self.options.zoomLevels[ self.currentZoomLevel ]);
+          },
+
+          /**
+           * Sets the zoom level to an overview level
+           *
+           * @since 0.3
+           */
+          reset: function resetOverview() {
+            self.emit("zoom.update", self.options.zoomLevels[ self.currentZoomLevel ], self.waveform.waveformOverview.data.adapter.scale);
           }
         };
       }
