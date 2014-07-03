@@ -18,9 +18,8 @@ define([
     that.peaks = peaks;
     that.options = peaks.options;
     that.data = waveformData;
-    that.container = container;
-    that.width = that.container.clientWidth;
-    that.height = that.options.overviewHeight;
+    that.width = container.clientWidth;
+    that.height = container.clientHeight || that.options.height;
     that.frameOffset = 0;
     that.seeking = false;
 
