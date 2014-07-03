@@ -30,17 +30,14 @@ define([
 
     that.scale = 1;
 
-    that.current_zoom_level = 0;
-    that.current_sample_rate = that.options.zoomLevels[that.current_zoom_level];
-    that.new_zoom_index = 0;
+    that.current_sample_rate = that.options.zoomLevels[peaks.zoom.getZoom()];
 
     that.data = that.rootData.resample({
-      scale: that.options.zoomLevels[that.current_zoom_level]
+      scale: that.options.zoomLevels[peaks.zoom.getZoom()]
     });
 
     that.playheadPixel = that.data.at_time(that.options.mediaElement.currentTime);
     that.pixelLength = that.data.adapter.length;
-    that.pixelsPerSecond = that.data.pixels_per_second;
     that.frameOffset = 0; // the pixel offset of the current frame being displayed
 
     that.container = container;
@@ -151,27 +148,17 @@ define([
       that.syncPlayhead(that.data.at_time(time));
     });
 
-    that.peaks.on("waveform_zoom_level_changed", function (zoom_level) {
+    that.peaks.on("zoom.update", function (current_zoom_level, previous_zoom_level) {
       if (that.playing) {
         return;
       }
 
-      if (zoom_level != that.current_zoom_level) {
-        //Zoom Level
-        that.oldZoomLevel = that.current_zoom_level;
-        that.current_zoom_level = zoom_level;
-
-        //Samples Per Pixel
-        that.old_sample_rate = that.current_sample_rate;
-        that.current_sample_rate = that.options.zoomLevels[zoom_level];
-
-        that.new_zoom_index = that.current_zoom_level;
-
+      if (current_zoom_level !== previous_zoom_level) {
         that.data = that.rootData.resample({
-          scale: that.current_sample_rate
+          scale: that.options.zoomLevels[current_zoom_level]
         });
-        that.pixelsPerSecond = that.data.pixels_per_second;
-        that.startZoomAnimation();
+
+        that.startZoomAnimation(current_zoom_level, previous_zoom_level);
       }
     });
 
@@ -222,7 +209,7 @@ define([
       output_index: Math.floor(output_index),
       length: that.width
     });
-    that.pixelsPerSecond = that.data.pixels_per_second;
+
     //Draw waveform
     that.zoomWaveformShape.setDrawFunc(function(canvas) {
       mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
@@ -335,12 +322,13 @@ define([
     }
 
     var frameSeconds = 0;
+    var pixelsPerSecond = that.data.pixels_per_second;
 
     that.playheadLineAnimation = new Kinetic.Animation(function (frame) {
       var time = frame.time;
 
       var seconds = time / 1000;
-      var positionInFrame = Math.round(startPosition - that.frameOffset + (that.pixelsPerSecond * (seconds-frameSeconds)));
+      var positionInFrame = Math.round(startPosition - that.frameOffset + (pixelsPerSecond * (seconds-frameSeconds)));
 
       that.syncPlayhead(that.frameOffset + positionInFrame);
     }, that.uiLayer);
@@ -395,12 +383,12 @@ define([
     that.updateZoomWaveform(that.frameOffset);
   };
 
-  WaveformZoomView.prototype.startZoomAnimation = function () {
+  WaveformZoomView.prototype.startZoomAnimation = function (current_zoom_level, previous_zoom_level) {
     var that = this;
     var currentTime = that.peaks.time.getCurrentTime();
-    var direction;
-    var oldSampleRate = that.old_sample_rate;
-    var numOfFrames = 20;
+    var currentSampleRate = that.peaks.options.zoomLevels[current_zoom_level];
+    var previousSampleRate = that.peaks.options.zoomLevels[previous_zoom_level];
+    var numOfFrames = 30;
 
     //Fade out the time axis and the segments
     //that.axis.axisShape.setAttr('opacity', 0);
@@ -410,22 +398,18 @@ define([
     }
 
     // Determine whether zooming in or out
-    if (that.oldZoomLevel > that.current_zoom_level) {
-      direction = "In";
-      numOfFrames = 30;
-    } else {
-      direction = "Out";
+    if (previous_zoom_level < current_zoom_level) {
       numOfFrames = 15;
     }
 
     // Create array with resampled data for each animation frame (need to know duration, resample points per frame)
     for (var i = 0; i < numOfFrames; i++) {
-      // Work out interpolated resample scale using that.current_zoom_level and that.oldZoomLevel
-      var frame_sample_rate = Math.round(that.old_sample_rate + ((i + 1) * (that.current_sample_rate - that.old_sample_rate) / numOfFrames));
+      // Work out interpolated resample scale using current_zoom_level and previous_zoom_level
+      var frame_sample_rate = Math.round(previousSampleRate + ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames));
       //Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
 
       //This way calculates the index of the start time at the scale we are coming from and the scale we are going to
-      var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / oldSampleRate;
+      var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / previousSampleRate;
       var input_index = oldPixelIndex - (that.width / 2);
       var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; //sample rate = 44100
       var output_index = newPixelIndex - (that.width / 2);
@@ -439,18 +423,16 @@ define([
 
       that.frameData.push(resampled);
 
-      oldSampleRate = frame_sample_rate;
+      previousSampleRate = frame_sample_rate;
     }
 
     that.requestStart();
-
   };
 
   WaveformZoomView.prototype.requestStart = function() {
-    var that = this;
-    if (that.runAnimation) {
-      that.runAnimation = true;
-      that.updateAnimationWaveform();
+    if (this.runAnimation) {
+      this.runAnimation = true;
+      this.updateAnimationWaveform();
     }
   };
 
@@ -465,6 +447,7 @@ define([
       that.zoomWaveformShape.setDrawFunc(function(canvas) {
         mixins.waveformDrawFunction.call(this, intermediate_data, canvas, mixins.interpolateHeight(that.height));
       });
+
       that.zoomWaveformLayer.draw();
       //Update the refwaveform on the overview container
       //bootstrap.pubsub.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);

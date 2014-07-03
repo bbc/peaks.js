@@ -453,8 +453,10 @@ define('peaks', [
               zoomLevelIndex = 0;
             }
 
+            var previousZoomLevel = self.currentZoomLevel;
+
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit("waveform_zoom_level_changed", zoomLevelIndex);
+            self.emit("zoom.update", zoomLevelIndex, previousZoomLevel);
           },
 
           /**
