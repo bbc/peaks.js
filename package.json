@@ -28,21 +28,18 @@
   },
   "license": "LGPL 3",
   "scripts": {
+    "build": "browserify -t deamdify ./src/main.js -p [minifyify --map peaks.min.map --output dist/peaks.min.map] -s peaks -o dist/peaks.min.js",
     "test": "npm run test-pre && ./node_modules/karma/bin/karma start",
     "test-pre": "jshint ./src",
     "test-watch": "FAST=true ./node_modules/karma/bin/karma start --auto-watch --no-single-run",
-    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body"
+    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body",
+    "start": "http-server -o"
   },
   "devDependencies": {
+    "browserify": "^4.2.0",
     "deamdify": "^0.1.1",
     "github-changes": "^0.0.10",
-    "grunt": "~0.4.1",
-    "grunt-concurrent": "~0.3.0",
-    "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-watch": "~0.5.1",
-    "grunt-devserver": "~0.4.1",
-    "grunt-wiredep": "^1.8.0",
+    "http-server": "^0.6.1",
     "jshint": "^2.5.1",
     "karma": "^0.12.0",
     "karma-chai": "~0.0.2",
@@ -54,8 +51,8 @@
     "karma-requirejs": "~0.1.0",
     "karma-safari-launcher": "~0.1.1",
     "karma-sauce-launcher": "~0.1.8",
-    "karma-script-launcher": "~0.1.0",
     "karma-sinon": "~1.0.0",
+    "minifyify": "^3.0.11",
     "mocha": "~1.17.1"
   }
 }

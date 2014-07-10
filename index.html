@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Peaks.js Demo Page</title>
+    <style>
+      #titles {
+        font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
+      }
+
+      #titles, [id*="waveform-visualiser"] {
+        margin: 24px auto;
+        width: 1000px;
+      }
+
+      [id*="waveform-visualiser"] [class*="-container"] {
+        box-shadow: 3px 3px 20px #919191;
+        margin: 0 0 24px 0;
+        -moz-box-shadow: 3px 3px 20px #919191;
+        -webkit-box-shadow: 3px 3px 20px #919191;
+        line-height: 0;
+      }
+
+      .overview-container {
+        height: 85px;
+      }
+
+      #second-waveform-visualiser-container [class*="-container"] {
+        background: #111;
+      }
+
+
+      #demo-controls {
+        margin: 0 auto 24px auto;
+        width: 1000px;
+      }
+
+      #demo-controls > * {
+        vertical-align: middle;
+      }
+
+      #demo-controls button {
+        background: #fff;
+        border: 1px solid #919191;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+
+      <div id="titles">
+        <h1>Peaks.js Frontend Component Demo</h1>
+
+        <p>Peaks is a modular frontend component designed for the display of and interaction with audio waveform material in the browser.</p>
+
+        <p>Peaks was developed by <a href="http://www.bbc.co.uk/rd">BBC R&amp;D</a> to allow users to make accurate clippings of audio data over a timeline in browser by leveraging a backend API for encoding.</p>
+
+        <p>Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference eg: distinguishing music from speech or identifying different music tracks.</p>
+      </div>
+
+      <div id="first-waveform-visualiser-container"></div>
+
+      <div id="demo-controls">
+        <audio controls=controls>
+          <source src="./test_data/sample.mp3" type="audio/mpeg">
+          <source src="./test_data/sample.ogg" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
+
+        <button data-action="zoom-in">zoom in</button>
+        <button data-action="zoom-out">zoom out</button>
+        <button data-action="add-segment">Add a Segment at current time</button>
+        <button data-action="add-point">Add a Point at current time</button>
+        <button data-action="log-data">Log segments/points</button>
+      </div>
+
+      <script src="bower_components/requirejs/require.js"></script>
+      <script>
+        requirejs.config({
+          paths: {
+            peaks: 'src/main',
+            EventEmitter: 'bower_components/eventEmitter/EventEmitter',
+            Kinetic: 'bower_components/KineticJS/index',
+            'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
+          }
+        });
+
+        require(['peaks'], function(Peaks){
+          var options = {
+            container: document.getElementById('first-waveform-visualiser-container'),
+            mediaElement: document.querySelector('audio'),
+            dataUri: {
+              arraybuffer: '/test_data/sample.dat',
+              json: '/test_data/sample.json'
+            },
+            keyboard: false
+          };
+
+          var peaksInstance = Peaks.init(options);
+
+          document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
+          document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
+
+          document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
+            var segment = {
+              startTime: peaksInstance.time.getCurrentTime(),
+              endTime: peaksInstance.time.getCurrentTime() + 10,
+              editable: true
+            };
+
+            peaksInstance.segments.add([segment]);
+          });
+
+          document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
+            var point = {
+              timestamp: peaksInstance.time.getCurrentTime(),
+              editable: true
+            };
+
+            peaksInstance.points.add([point]);
+          });
+
+          document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
+            console.log('Segments', peaksInstance.segments.getSegments());
+            console.log('Points', peaksInstance.points.getPoints());
+          });
+        });
+      </script>
+  </body>
+</html>
