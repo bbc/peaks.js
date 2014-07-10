@@ -14,7 +14,10 @@
   },
   "license": "LGPL 3",
   "scripts": {
-    "test": "npm run test-pre && ./node_modules/karma/bin/karma start",
+    "test": "npm run test-pre && npm run test-webkit && npm run test-firefox && npm run test-ie",
+    "test-ie": "./node_modules/karma/bin/karma start --browsers SauceIE9,SauceIE10,SauceIE11",
+    "test-webkit": "./node_modules/karma/bin/karma start --browsers SauceChrome,SauceSafari6,SauceSafari7",
+    "test-firefox": "./node_modules/karma/bin/karma start --browsers SauceFirefox,SauceFirefoxLinux",
     "test-pre": "jshint ./src",
     "test-watch": "FAST=true ./node_modules/karma/bin/karma start --auto-watch --no-single-run",
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body"
