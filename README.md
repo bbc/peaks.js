@@ -69,6 +69,7 @@ requirejs.config({
   paths: {
     peaks: 'bower_components/peaks.js/src/main',
     EventEmitter: 'bower_components/eventEmitter/EventEmitter',
+    Kinetic: 'bower_components/Kinetic/index',
     'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
   }
 });
@@ -78,7 +79,7 @@ require(['peaks'], function (Peaks) {
   var p = Peaks.init({
     container: document.querySelector('#peaks-container'),
     mediaElement: document.querySelector('audio'),
-    dataUri: 'test_data/sample.dat'
+    dataUri: 'test_data/sample.json'
   });
 
   p.on('segments.ready', function(){
@@ -92,10 +93,9 @@ Working examples are provided in [`demo_page.html`](demo_page.html) and [`demo_p
 ## Start using vanilla JavaScript
 
 ```html
-<script src="path/to/build/js/peaks.min.js"></script>
+<script src="path/to/peaks.js/dist/peaks.min.js"></script>
 <script>
-var p = peaks.init({
-});
+var p = peaks.init({ … });
 </script>
 ```
 
@@ -131,32 +131,47 @@ var options = {
   /** REQUIRED OPTIONS **/
   // Containing element
   container: document.getElementById('peaks-container'),
+  
   // HTML5 Media element containing an audio track
-  mediaElement: document.getElementById('media'),
-  // URI to waveform data file in binary or JSON
-  dataUri: '../test_data/sample.dat',
-
+  mediaElement: document.querySelector('audio'),
+  
   /** Optional config with defaults **/
-  // height of the waveform canvases in pixels
+  // URI to waveform data file in binary or JSON
+  dataUri: {
+    arraybuffer: '../test_data/sample.dat',
+    json: '../test_data/sample.json',
+  },
+
+  // default height of the waveform canvases in pixels
   height: 200,
+  
   // Array of zoom levels in samples per pixel (big >> small)
   zoomLevels: [512, 1024, 2048, 4096],
+  
   // Bind keyboard controls
   keyboard: false,
+  
   // Keyboard nudge increment in seconds (left arrow/right arrow)
   nudgeIncrement: 0.01,
+  
   // Colour for the in marker of segments
   inMarkerColor: '#a0a0a0',
+  
   // Colour for the out marker of segments
   outMarkerColor: '#a0a0a0',
+  
   // Colour for the zoomed in waveform
   zoomWaveformColor: 'rgba(0, 225, 128, 1)',
+  
   // Colour for the overview waveform
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
+  
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
+  
   // Colour of the play head
   playheadColor: 'rgba(0, 0, 0, 1)',
+  
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
@@ -377,7 +392,7 @@ The project *bundles* everything you need to do so.
 ```bash
 git clone https://github.com/bbcrd/peaks.js.git
 cd peaks.js
-npm install -g grunt-cli bower
+npm install -g bower
 npm install
 bower install
 ```
@@ -388,30 +403,22 @@ This command will produce a minified standalone version of Peaks.
 It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as Vanilla JavaScript.
 
 ```bash
-grunt build
+npm run build
 ```
 
 The output of the build will be located in the `build/js` folder, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
-## Development Instance
+## Live Demo
 
 This command will open a livereload demo page of Peaks to reflect every source code change.
 
 ```bash
-grunt server-dev
-```
-
-## Demo Instance
-
-This command will build Peaks and open a demo using the minified standalone version.
-
-```bash
-grunt server-demo
+npm start
 ```
 
 # Testing
 
-`npm run test-local` should work for simple one time testing.
+`npm test` should work for simple one time testing.
 
 If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
 
