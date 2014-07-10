@@ -88,19 +88,20 @@ require(['peaks'], function (Peaks) {
 });
 ```
 
-Working examples are provided in [`demo_page.html`](demo_page.html) and [`demo_page_dev.html`](demo_page_dev.html).
+A working examples is provided in [`index.html`](index.html).
 
 ## Start using vanilla JavaScript
 
 ```html
-<script src="path/to/peaks.js/dist/peaks.min.js"></script>
+<script src="http://wzrd.in/standalone/peaks.js@beta"></script>
 <script>
 var p = peaks.init({ … });
 </script>
 ```
 
-**Notice**: as of `peaks@0.2.0`, the vanilla JavaScript build is not shipped anymore.
-Please [see below](#building-peaks) to learn more about how to build Peaks for development or production purpose.
+**Notice**: this examples uses [Browserify CDN](http://wzrd.in/): save it as a local copy or build your own.
+
+Please [refer to the *Building Peaks* section](#building-peaks) to learn more about how to build Peaks for development or production purpose.
 
 ## Web Audio based waveforms
 
