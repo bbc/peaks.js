@@ -8,6 +8,11 @@
     "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
     "Chris Needham (https://github.com/chrisn)"
   ],
+  "browserify": {
+    "transform": [
+      "deamdify"
+    ]
+  },
   "browser": {
     "EventEmitter": "./bower_components/eventEmitter/EventEmitter.js",
     "Kinetic": "./bower_components/KineticJS/index.js",
