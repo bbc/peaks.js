@@ -93,9 +93,11 @@ A working examples is provided in [`index.html`](index.html).
 ## Start using vanilla JavaScript
 
 ```html
-<script src="http://wzrd.in/standalone/peaks.js@beta"></script>
+<script src="http://wzrd.in/standalone/peaks.js@0.3.0-beta.5"></script>
 <script>
-var p = peaks.init({ … });
+(function(Peaks){
+    var p = Peaks.init({ … });
+})(peaks.js);
 </script>
 ```
 
