@@ -11,7 +11,7 @@
   "browser": {
     "EventEmitter": "./bower_components/eventEmitter/EventEmitter.js",
     "Kinetic": "./bower_components/KineticJS/index.js",
-    "waveform-data": "./bower_components/waveform-data/dist/waveform-data.min.js",
+    "waveform-data": "./bower_components/waveform-data/waveform-data.js",
     "peaks/player/player": "./src/main/player/player.js",
     "peaks/player/player.keyboard": "./src/main/player/player.keyboard.js",
     "peaks/waveform/waveform.axis": "./src/main/waveform/waveform.axis.js",
