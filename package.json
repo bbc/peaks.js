@@ -8,6 +8,20 @@
     "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
     "Chris Needham (https://github.com/chrisn)"
   ],
+  "browser": {
+    "EventEmitter": "./bower_components/eventEmitter/EventEmitter.js",
+    "Kinetic": "./bower_components/KineticJS/index.js",
+    "waveform-data": "./bower_components/waveform-data/waveform-data.js",
+    "peaks/player/player": "./src/main/player/player.js",
+    "peaks/player/player.keyboard": "./src/main/player/player.keyboard.js",
+    "peaks/waveform/waveform.axis": "./src/main/waveform/waveform.axis.js",
+    "peaks/waveform/waveform.core": "./src/main/waveform/waveform.core.js",
+    "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
+    "peaks/waveform/waveform.overview": "./src/main/waveform/waveform.overview.js",
+    "peaks/waveform/waveform.points": "./src/main/waveform/waveform.points.js",
+    "peaks/waveform/waveform.segments": "./src/main/waveform/waveform.segments.js",
+    "peaks/waveform/waveform.zoomview": "./src/main/waveform/waveform.zoomview.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/bbcrd/peaks.js.git"
@@ -20,6 +34,7 @@
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body"
   },
   "devDependencies": {
+    "deamdify": "^0.1.1",
     "github-changes": "^0.0.10",
     "grunt": "~0.4.1",
     "grunt-concurrent": "~0.3.0",

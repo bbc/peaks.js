@@ -1,4 +1,4 @@
-define(["peaks/waveform/waveform.mixins"], function (mixins) {
+define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic) {
   'use strict';
 
   /*
