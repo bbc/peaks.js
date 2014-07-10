@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.3.0-beta.4",
+  "version": "0.3.0-beta.5",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./src/main.js",
   "contributors": [
@@ -41,8 +41,6 @@
     "start": "http-server -o"
   },
   "devDependencies": {
-    "browserify": "^4.2.0",
-    "deamdify": "^0.1.1",
     "github-changes": "^0.0.10",
     "http-server": "^0.6.1",
     "jshint": "^2.5.1",
@@ -59,5 +57,10 @@
     "karma-sinon": "~1.0.0",
     "minifyify": "^3.0.11",
     "mocha": "~1.17.1"
+  },
+  "dependencies": {},
+  "optionalDependencies": {
+    "browserify": "^4.2.0",
+    "deamdify": "^0.1.1"
   }
 }
