@@ -1,20 +1,10 @@
-```
-     ____    ____    ______  __  __   ____         _____  ____
-    /\  _`\ /\  _`\ /\  _  \/\ \/\ \ /\  _`\      /\___ \/\  _`\
-    \ \ \L\ \ \ \L\_\ \ \L\ \ \ \/'/'\ \,\L\_\    \/__/\ \ \,\L\_\
-     \ \ ,__/\ \  _\L\ \  __ \ \ , <  \/_\__ \       _\ \ \/_\__ \
-      \ \ \/  \ \ \L\ \ \ \/\ \ \ \\`\  /\ \L\ \  __/\ \_\ \/\ \L\ \
-       \ \_\   \ \____/\ \_\ \_\ \_\ \_\\ `\____\/\_\ \____/\ `\____\
-        \/_/    \/___/  \/_/\/_/\/_/\/_/ \/_____/\/_/\/___/  \/_____/
-```
+# Peaks.js [![Build Status](https://travis-ci.org/bbcrd/peaks.js.png?branch=master)](https://travis-ci.org/bbcrd/peaks.js)
 
-# PEAKS.JS [![Build Status](https://travis-ci.org/bbcrd/peaks.js.png?branch=master)](https://travis-ci.org/bbcrd/peaks.js)
-
-> A browser based audio waveform visualisation frontend component from BBC R&D
+> A browser based audio waveform visualisation frontend component from BBC R&D.
 
 Peaks is a modular frontend component designed for the display of and interaction with audio waveform material in the browser.
 
-![](peaks.png)
+![](https://github.com/bbcrd/peaks.js/blob/master/peaks.png?raw=1)
 
 Peaks was developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
 
