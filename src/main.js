@@ -133,6 +133,11 @@ define('peaks', [
      * @type {number}
      */
     this.currentZoomLevel = 0;
+
+	this.refresh = function(){
+		this.waveform.init(buildUi(this.container));
+	};
+
   }
 
   Peaks.init = function init (opts) {
