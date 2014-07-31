@@ -34,7 +34,7 @@ module.exports = function (config) {
 
     // test results reporter to use
     // possible values: dots || progress || growl
-    reporters : isCI ? ['dots', 'saucelabs'] : ['progress'],
+    reporters : isCI ? ['dots'] : ['progress'],
 
     // web server port
     port : 8080,
@@ -54,66 +54,66 @@ module.exports = function (config) {
 
     // Start these browsers, currently available:
     browsers : isCI
-      ? ['Firefox', 'SauceSafari6', 'SauceIE9', 'SauceIE10']
+      ? ['BSChrome', 'BSFirefox', 'BSSafari6', 'BSSafari7', 'BSIE9', 'BSIE10', 'BSIE11']
       : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']),
 
     browserDisconnectTolerance: isCI ? 3 : 1,
     browserNoActivityTimeout: isCI ? 120000 : null,
 
-    sauceLabs: {
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER || null,
-      testName: 'peaks.js',
-      startConnect: false
+    browserStack: {
+      build: process.env.TRAVIS_JOB_NUMBER || 'localhost',
+      project: 'peaks.js'
     },
 
     customLaunchers: {
-      'SauceChrome': {
-        base: 'SauceLabs',
-        browserName: 'chrome',
-        platform: 'OS X 10.6',
-        version: '33'
+      'BSChrome': {
+        base: 'BrowserStack',
+        browser: 'Chrome',
+        browser_version: '27.0',
+        os: 'OS X',
+        os_version: '10.6'
       },
-      'SauceFirefox': {
-        base: 'SauceLabs',
-        browserName: 'firefox',
-        platform: 'Windows 7',
-        version: '29'
+      'BSFirefox': {
+        base: 'BrowserStack',
+        browser: 'Firefox',
+        browser_version: '26.0',
+        os: 'Windows',
+        os_version: '7'
       },
-      'SauceFirefoxLinux': {
-        base: 'SauceLabs',
-        browserName: 'firefox',
-        platform: 'Linux',
-        version: '29'
+      'BSSafari6': {
+        base: 'BrowserStack',
+        browser: 'Safari',
+        browser_version: '6.0',
+        os: 'OS X',
+        os_version: 'Lion'
       },
-      'SauceSafari6': {
-        base: 'SauceLabs',
-        browserName: 'safari',
-        platform: 'OS X 10.8',
-        version: '6'
+      'BSSafari7': {
+        base: 'BrowserStack',
+        browser: 'Safari',
+        browser_version: '7.0',
+        os: 'OS X',
+        os_version: 'Mavericks'
       },
-      'SauceSafari7': {
-        base: 'SauceLabs',
-        browserName: 'safari',
-        platform: 'OS X 10.9',
-        version: '7'
+      'BSIE9': {
+        base: 'BrowserStack',
+        browser: 'IE',
+        browser_version: '9.0',
+        os: 'Windows',
+        os_version: '7'
       },
-      'SauceIE9': {
-        base: 'SauceLabs',
-        browserName: 'internet explorer',
-        platform: 'Windows 7',
-        version: '9'
+      'BSIE10': {
+        base: 'BrowserStack',
+        browser: 'IE',
+        browser_version: '10',
+        os: 'Windows',
+        os_version: '8'
       },
-      'SauceIE10': {
-        base: 'SauceLabs',
-        browserName: 'internet explorer',
-        platform: 'Windows 8',
-        version: '10'
-      },
-      'SauceIE11': {
-        base: 'SauceLabs',
-        browserName: 'internet explorer',
-        platform: 'Windows 8.1',
-        version: '11'
+      'BSIE11': {
+        base: 'BrowserStack',
+        browser: 'IE',
+        browser_version: '11',
+        os: 'Windows',
+        os_version: '8.1'
       }
     },
 
