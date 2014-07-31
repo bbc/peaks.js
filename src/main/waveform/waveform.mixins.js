@@ -171,17 +171,6 @@ define(['Kinetic'], function (Kinetic) {
           group.label = text;
 
           /*
-          Handle
-           */
-          var handle = new Kinetic.Rect({
-            width: handleWidth,
-            height: handleHeight,
-            fill: color,
-            x: handleX,
-            y: handleTop
-          });
-
-          /*
           Line
            */
           var line = new Kinetic.Line({
@@ -193,19 +182,32 @@ define(['Kinetic'], function (Kinetic) {
           });
 
           /*
-          Events
+          Handle
            */
-          handle.on("mouseover", function (event) {
-            text.show();
-            text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
-            point.view.pointLayer.draw();
-          });
-          handle.on("mouseout", function (event) {
-            text.hide();
-            point.view.pointLayer.draw();
-          });
+          if(draggable) {
+            var handle = new Kinetic.Rect({
+              width: handleWidth,
+              height: handleHeight,
+              fill: color,
+              x: handleX,
+              y: handleTop
+            });
+          
 
-          group.add(handle);
+            /*
+            Events
+             */
+            handle.on("mouseover", function (event) {
+              text.show();
+              text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
+              point.view.pointLayer.draw();
+            });
+            handle.on("mouseout", function (event) {
+              text.hide();
+              point.view.pointLayer.draw();
+            });
+            group.add(handle);
+          }
           group.add(line);
           group.add(text);
 
@@ -338,6 +340,10 @@ define(['Kinetic'], function (Kinetic) {
 
     defaultPointMarker: function (options) {
       return createPointHandle(options.height, options.pointMarkerColor);
+    },
+
+    defaultNonEditablePointMarker: function(options) {
+      return createNonEditablePointHandle(options.height, options.pointMarkerColor);
     },
 
     defaultSegmentLabelDraw: function (options) {

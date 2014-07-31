@@ -6,8 +6,9 @@
  */
 define([
   "peaks/waveform/waveform.mixins",
-  "Kinetic"
-], function (mixins, Kinetic) {
+  "Kinetic",
+  "peaks/views/waveform.overview"
+], function (mixins, Kinetic, WaveformOverview) {
 
   return function (peaks) {
     var self = this;
@@ -35,11 +36,15 @@ define([
       pointGroups.forEach(function(pointGroup, i){
         var view = self.views[i];
 
-        if (point.editable) {
-          pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
+        if(view instanceof WaveformOverview) {
+          pointGroup.marker = new peaks.options.pointMarker(false, pointGroup, point, null, null, null);
           pointGroup.add(pointGroup.marker);
+        } else {
+          if (point.editable) {
+            pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
+            pointGroup.add(pointGroup.marker);
+          }
         }
-
         view.pointLayer.add(pointGroup);
       });
 
@@ -117,7 +122,7 @@ define([
         throw new RangeError("[waveform.points.createPoint] timestamp should be a >=0 value");
       }
 
-      point.id = "point" + self.points.length;
+        point.id = "point" + self.points.length;
 
       point = constructPoint(point);
       updatePoint(point);
