@@ -101,13 +101,15 @@ define([
        * @param xhr {XMLHttpRequest}
        */
       handleRemoteData: function (remoteData, xhr) {
-        this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
-        var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
-
-        this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
-
-        peaks.emit("waveformOverviewReady");
-        this.bindResize();
+	    try{
+	        this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
+	        var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
+	        this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
+	        peaks.emit("waveformOverviewReady");
+            this.bindResize();
+	    } catch (e){
+	        peaks.emit("waveformOverviewError", e);
+	    }
       },
 
       openZoomView: function () {
