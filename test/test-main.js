@@ -32,7 +32,7 @@ requirejs.config({
     paths: {
         'peaks': 'src/main',
         'waveform-data': 'bower_components/waveform-data/dist/waveform-data',
-        'EventEmitter': 'bower_components/eventEmitter/EventEmitter.min',
+        'EventEmitter': 'bower_components/eventemitter2/lib/eventemitter2',
         'Kinetic': 'bower_components/KineticJS/index'
     },
 
