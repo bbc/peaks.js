@@ -41,24 +41,26 @@
     "start": "http-server -o"
   },
   "devDependencies": {
+    "chai": "~1.9.1",
     "github-changes": "^0.0.10",
     "http-server": "^0.6.1",
     "jshint": "^2.5.1",
-    "karma": "^0.12.0",
-    "karma-chai": "~0.0.2",
+    "karma": "~0.12.0",
+    "karma-chai": "~0.1.0",
     "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-html2js-preprocessor": "~0.1",
-    "karma-mocha": "~0.1.1",
+    "karma-mocha": "~0.1.7",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma-requirejs": "~0.1.0",
     "karma-safari-launcher": "~0.1.1",
-    "karma-sauce-launcher": "^0.2.9",
+    "karma-sauce-launcher": "~0.2.10",
     "karma-sinon": "~1.0.0",
     "minifyify": "^3.0.11",
     "mocha": "~1.17.1"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "optionalDependencies": {
     "browserify": "^4.2.0",
     "deamdify": "^0.1.1"
