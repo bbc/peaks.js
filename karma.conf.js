@@ -57,8 +57,8 @@ module.exports = function (config) {
       ? ['SauceChrome', 'SauceFirefox', 'SauceFirefoxLinux', 'SauceSafari6', 'SauceSafari7', 'SauceIE9', 'SauceIE10', 'SauceIE11']
       : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox']),
 
-    browserDisconnectTolerance: 2,
-    browserNoActivityTimeout: 30000,
+    browserDisconnectTolerance: isCI ? 3 : 1,
+    browserNoActivityTimeout: isCI ? 120000 : null,
 
     sauceLabs: {
       build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',
