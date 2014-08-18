@@ -447,7 +447,7 @@ define([
       that.zoomWaveformLayer.draw();
       //Update the refwaveform on the overview container
       //bootstrap.pubsub.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);
-      requestAnimationFrame( function () {
+      Kinetic.Animation.requestAnimFrame( function () {
         that.runZoomAnimation(frameData);
       });
     }
