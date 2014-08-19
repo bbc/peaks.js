@@ -105,7 +105,7 @@ define(function () {
    * @param  {string}   color     Colour hex value for handle and line marker
    * @return {Function}
    */
-  var createPointHandle = function(height, color) {
+  function createPointHandle(height, color) {
       /**
        * @param  {Boolean}  draggable If true, marker is draggable
        * @param  {Object}   point     Parent point object with in times
@@ -189,7 +189,7 @@ define(function () {
           return group;
 
       };
-  };
+  }
 
   /**
    * Draw a waveform on a canvas context
@@ -200,7 +200,7 @@ define(function () {
    * @param  {Int}      offset_length How much to draw
    * @param  {Function} y             Calculate height (see fn interpolateHeight)
    */
-  var drawWaveform = function (ctx, min, max, offset_start, offset_length, y) {
+  function drawWaveform(ctx, min, max, offset_start, offset_length, y) {
     ctx.beginPath();
 
     min.forEach(function(val, x){
@@ -212,17 +212,25 @@ define(function () {
     });
 
     ctx.closePath();
-  };
+  }
+
+  /**
+   * Returns a height interpolator function
+   *
+   * @param {Number} total_height
+   * @returns {interpolateHeight}
+   */
+  function interpolateHeightGenerator (total_height){
+    var amplitude = 256;
+    return function interpolateHeight (size){
+      return total_height - ((size + 128) * total_height) / amplitude;
+    };
+  }
 
   // Public API
   return {
 
-    interpolateHeight: function interpolateHeightGenerator (total_height){
-      var amplitude = 256;
-      return function interpolateHeight (size){
-        return total_height - ((size + 128) * total_height) / amplitude;
-      };
-    },
+    interpolateHeight: interpolateHeightGenerator,
 
     /**
      * Draws a whole waveform
@@ -244,18 +252,21 @@ define(function () {
      * @param {Canvas} canvas
      * @param {interpolateHeight} y
      */
-    waveformSegmentDrawFunction: function(waveform, id, view){
+    waveformSegmentDrawFunction: function(id, view, canvas){
+      var waveform = view.data;
+
       if (waveform.segments[id] === undefined){
         return;
       }
+
       var segment = waveform.segments[id];
       var offset_length = segment.offset_length;
       var offset_start = segment.offset_start - waveform.offset_start;
+      var ctx = canvas.getContext();
+      var y = interpolateHeightGenerator(view.height);
 
-      view.waveformShape.setAttrs({
-        x: offset_start,
-        width: offset_length
-      });
+      drawWaveform(ctx, segment.min, segment.max, offset_start, offset_length, y);
+      canvas.fillStroke(this);
     },
 
     waveformZoomviewSegmentDrawFunction: function(waveform, id, zoomview) {

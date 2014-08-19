@@ -51,32 +51,35 @@ define([
       segmentGroups.forEach(function(segmentGroup, i){
         var view = self.views[i];
 
-        if (segmentGroup == segmentOverviewGroup) {
-          segmentGroup.waveformShape = new Kinetic.Rect({
-            fill: color,
-            strokeWidth: 0,
-            y:11,
-            x:0,
-            width: 0,
-            height: 28,
-            opacity:0.4
-          });
-        } else {
-          segmentGroup.waveformShape = new Kinetic.Rect({
-            fill: color,
-            strokeWidth: 0,
-            y:3,
-            x:0,
-            width: 0,
-            height: view.height,
-            opacity:0.4
-          });
-          /*segmentGroup.waveformShape = new Kinetic.Shape({
-            fill: color,
-            strokeWidth: 0,
-            opacity: 1
-          });*/
-        }
+//        if (segmentGroup == segmentOverviewGroup) {
+//          segmentGroup.waveformShape = new Kinetic.Rect({
+//            fill: color,
+//            strokeWidth: 0,
+//            y:11,
+//            x:0,
+//            width: 0,
+//            height: 28,
+//            opacity:0.4
+//          });
+//        } else {
+//          segmentGroup.waveformShape = new Kinetic.Rect({
+//            fill: color,
+//            strokeWidth: 0,
+//            y:3,
+//            x:0,
+//            width: 0,
+//            height: view.height,
+//            opacity:0.4
+//          });
+//      }
+
+        segmentGroup.waveformShape = new Kinetic.Shape({
+          fill: color,
+          strokeWidth: 0,
+          opacity: 1
+        });
+
+        segmentGroup.waveformShape.setDrawFunc(mixins.waveformSegmentDrawFunction.bind(segmentGroup.waveformShape, segment.id, view));
 
         segmentGroup.waveformShape.on("mouseenter", menter);
         segmentGroup.waveformShape.on("mouseleave", mleave);
@@ -120,11 +123,11 @@ define([
       var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
       var overviewEndOffset = peaks.waveform.waveformOverview.data.at_time(segment.endTime);
 
-      /*segment.overview.waveformShape.setDrawFunc(function(canvas) {
-        mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformOverview.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformOverview.height));
-      });*/
+//      segment.overview.waveformShape.setDrawFunc(function(canvas) {
+//        mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformOverview.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformOverview.height));
+//      });
 
-      mixins.waveformSegmentDrawFunction(peaks.waveform.waveformOverview.data, segment.id, segment.overview);
+//      mixins.waveformSegmentDrawFunction(peaks.waveform.waveformOverview.data, segment.id, segment.overview);
 
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
@@ -157,10 +160,11 @@ define([
         var endPixel = zoomEndOffset - frameStartOffset;
 
         segment.zoom.show();
-        /*segment.zoom.waveformShape.setDrawFunc(function(canvas) {
-          mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
-        });*/
-        mixins.waveformSegmentDrawFunction(peaks.waveform.waveformZoomView.data, segment.id, segment.zoom);
+//        segment.zoom.waveformShape.setDrawFunc(function(canvas) {
+//          mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
+//        });
+
+//        mixins.waveformSegmentDrawFunction(peaks.waveform.waveformZoomView.data, segment.id, segment.zoom);
 
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
