@@ -14,7 +14,9 @@
   },
   "license": "LGPL 3",
   "scripts": {
-    "test": "npm run test-pre && npm run test-webkit && npm run test-firefox && npm run test-ie",
+    "test": "npm run test-pre && if [$CI]; then npm run test-ci; else npm run test-local; fi",
+    "test-local": "./node_modules/karma/bin/karma start --single-run",
+    "test-ci": "npm run test-webkit && npm run test-firefox && npm run test-ie",
     "test-ie": "./node_modules/karma/bin/karma start --browsers SauceIE9,SauceIE10,SauceIE11",
     "test-webkit": "./node_modules/karma/bin/karma start --browsers SauceChrome,SauceSafari6,SauceSafari7",
     "test-firefox": "./node_modules/karma/bin/karma start --browsers SauceFirefox,SauceFirefoxLinux",
