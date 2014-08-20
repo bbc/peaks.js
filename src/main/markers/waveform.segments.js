@@ -6,7 +6,7 @@
  */
 define([
   "peaks/waveform/waveform.mixins",
-  "peaks/markers/shapes/rect"
+  "peaks/markers/shapes/wave"
   ], function (mixins, SegmentShape) {
   'use strict';
 

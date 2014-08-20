@@ -251,9 +251,10 @@ define(function () {
       if (waveform.segments.zoom === undefined){
         return;
       }
-      var offset_length = waveform.segments.zoom.offset_length,
-          offset_start = waveform.segments.zoom.offset_start - waveform.offset_start,
-          ctx = canvas.getContext();
+      var offset_length = waveform.segments.zoom.offset_length;
+      var offset_start = waveform.segments.zoom.offset_start - waveform.offset_start;
+      var ctx = canvas.getContext();
+
       drawWaveform(ctx, waveform.segments.zoom.min, waveform.segments.zoom.max, offset_start, offset_length, y);
       canvas.fillStroke(this);
     },

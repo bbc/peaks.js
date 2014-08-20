@@ -45,11 +45,11 @@ define([
 
     that.axis = new WaveformAxis(that);
 
-    //that.createWaveform();
-    that.stage.add(that.waveformLayer);
+    that.createWaveform();
 
     that.createRefWaveform();
     that.axis.drawAxis(0);
+    that.stage.add(that.waveformLayer);
     that.createUi();
 
     // INTERACTION ===============================================
