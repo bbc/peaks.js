@@ -5,8 +5,9 @@
  * removing and manipulation of segments
  */
 define([
-  "peaks/waveform/waveform.mixins"
-  ], function (mixins) {
+  "peaks/waveform/waveform.mixins",
+  "peaks/markers/shapes/rect"
+  ], function (mixins, SegmentShape) {
   'use strict';
 
   return function (peaks) {
@@ -28,15 +29,15 @@ define([
         id: segmentId,
         startTime: startTime,
         endTime: endTime,
-        labelText: labelText || ""
+        labelText: labelText || "",
+        color: color || getSegmentColor(),
+        editable: editable
       };
 
       var segmentZoomGroup = new Kinetic.Group();
       var segmentOverviewGroup = new Kinetic.Group();
 
       var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
-
-      color = color || getSegmentColor();
 
       var menter = function (event) {
         this.parent.label.show();
@@ -51,35 +52,7 @@ define([
       segmentGroups.forEach(function(segmentGroup, i){
         var view = self.views[i];
 
-//        if (segmentGroup == segmentOverviewGroup) {
-//          segmentGroup.waveformShape = new Kinetic.Rect({
-//            fill: color,
-//            strokeWidth: 0,
-//            y:11,
-//            x:0,
-//            width: 0,
-//            height: 28,
-//            opacity:0.4
-//          });
-//        } else {
-//          segmentGroup.waveformShape = new Kinetic.Rect({
-//            fill: color,
-//            strokeWidth: 0,
-//            y:3,
-//            x:0,
-//            width: 0,
-//            height: view.height,
-//            opacity:0.4
-//          });
-//      }
-
-        segmentGroup.waveformShape = new Kinetic.Shape({
-          fill: color,
-          strokeWidth: 0,
-          opacity: 1
-        });
-
-        segmentGroup.waveformShape.setDrawFunc(mixins.waveformSegmentDrawFunction.bind(segmentGroup.waveformShape, segment.id, view));
+        segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
         segmentGroup.waveformShape.on("mouseenter", menter);
         segmentGroup.waveformShape.on("mouseleave", mleave);
@@ -108,8 +81,6 @@ define([
       segment.zoom.view = peaks.waveform.waveformZoomView;
       segment.overview = segmentOverviewGroup;
       segment.overview.view = peaks.waveform.waveformOverview;
-      segment.color = color;
-      segment.editable = editable;
 
       return segment;
     };
@@ -122,12 +93,6 @@ define([
       // Overview
       var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
       var overviewEndOffset = peaks.waveform.waveformOverview.data.at_time(segment.endTime);
-
-//      segment.overview.waveformShape.setDrawFunc(function(canvas) {
-//        mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformOverview.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformOverview.height));
-//      });
-
-//      mixins.waveformSegmentDrawFunction(peaks.waveform.waveformOverview.data, segment.id, segment.overview);
 
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
@@ -143,6 +108,7 @@ define([
       // Label
       // segment.overview.label.setX(overviewStartOffset);
 
+      SegmentShape.update.call(segment.overview.waveformShape, peaks.waveform.waveformOverview, segment.id);
       segment.overview.view.segmentLayer.draw();
 
       // Zoom
@@ -160,11 +126,8 @@ define([
         var endPixel = zoomEndOffset - frameStartOffset;
 
         segment.zoom.show();
-//        segment.zoom.waveformShape.setDrawFunc(function(canvas) {
-//          mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
-//        });
 
-//        mixins.waveformSegmentDrawFunction(peaks.waveform.waveformZoomView.data, segment.id, segment.zoom);
+        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
 
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());

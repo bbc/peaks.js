@@ -232,13 +232,9 @@ define(function () {
 
     interpolateHeight: interpolateHeightGenerator,
 
-    /**
-     * Draws a whole waveform
-     *
-     * @param {WaveformData} waveform
-     * @param {Canvas} canvas
-     * @param {Function} y interpolateHeightGenerator instance
-     */
+    drawWaveform: drawWaveform,
+
+    // TODO refactor this as markers/wave#update
     waveformDrawFunction: function (waveform, canvas, y) {
       var offset_length = waveform.offset_length,
           ctx = canvas.getContext();
@@ -246,59 +242,11 @@ define(function () {
       canvas.fillStroke(this);
     },
 
-    /**
-     *
-     * @param {WaveformData} waveform
-     * @param {Canvas} canvas
-     * @param {interpolateHeight} y
-     */
-    waveformSegmentDrawFunction: function(id, view, canvas){
-      var waveform = view.data;
-
-      if (waveform.segments[id] === undefined){
-        return;
-      }
-
-      var segment = waveform.segments[id];
-      var offset_length = segment.offset_length;
-      var offset_start = segment.offset_start - waveform.offset_start;
-      var ctx = canvas.getContext();
-      var y = interpolateHeightGenerator(view.height);
-
-      drawWaveform(ctx, segment.min, segment.max, offset_start, offset_length, y);
-      canvas.fillStroke(this);
-    },
-
-    waveformZoomviewSegmentDrawFunction: function(waveform, id, zoomview) {
-      if (waveform.segments[id] === undefined){
-        return;
-      }
-      var segment = waveform.segments[id],
-        offset_length = segment.offset_length,
-        offset_start = segment.offset_start - waveform.offset_start;
-        zoomview.waveformShape.setAttrs({
-          x: offset_start,
-          width: offset_length
-      });
-    },
-
-    waveformOverviewSegmentDrawFunction: function(waveform, id, overview) {
-      if (waveform.segments[id] === undefined){
-        return;
-      }
-      var segment = waveform.segments[id],
-        offset_length = segment.offset_length,
-        offset_start = segment.offset_start - waveform.offset_start;
-        overview.waveformShape.setAttrs({
-          x: offset_start,
-          width: offset_length
-      });
-    },
-
     waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
       viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);
     },
 
+    // TODO refactor this as markers/wave#update
     waveformOffsetDrawFunction: function(waveform, canvas, y){
       if (waveform.segments.zoom === undefined){
         return;
@@ -310,6 +258,7 @@ define(function () {
       canvas.fillStroke(this);
     },
 
+    // TODO refactor this as markers/rect#update
     waveformRectDrawFunction: function(waveform) {
       if (waveform.segments.zoom === undefined){
         return;
