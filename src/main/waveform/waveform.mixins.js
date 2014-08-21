@@ -234,29 +234,18 @@ define(function () {
 
     drawWaveform: drawWaveform,
 
-    // TODO refactor this as markers/wave#update
-    waveformDrawFunction: function (waveform, canvas, y) {
-      var offset_length = waveform.offset_length,
-          ctx = canvas.getContext();
+    waveformDrawFunction: function (view, canvas) {
+      var waveform = view.intermediateData || view.data;
+      var y = interpolateHeightGenerator(view.height);
+      var offset_length = waveform.offset_length;
+      var ctx = canvas.getContext();
+
       drawWaveform(ctx, waveform.min, waveform.max, 0, offset_length, y);
       canvas.fillStroke(this);
     },
 
     waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
       viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);
-    },
-
-    // TODO refactor this as markers/wave#update
-    waveformOffsetDrawFunction: function(waveform, canvas, y){
-      if (waveform.segments.zoom === undefined){
-        return;
-      }
-      var offset_length = waveform.segments.zoom.offset_length;
-      var offset_start = waveform.segments.zoom.offset_start - waveform.offset_start;
-      var ctx = canvas.getContext();
-
-      drawWaveform(ctx, waveform.segments.zoom.min, waveform.segments.zoom.max, offset_start, offset_length, y);
-      canvas.fillStroke(this);
     },
 
     // TODO refactor this as markers/rect#update

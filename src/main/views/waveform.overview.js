@@ -116,12 +116,12 @@ define([
   WaveformOverview.prototype.createWaveform = function() {
     var that = this;
     this.waveformShape = new Kinetic.Shape({
-      drawFunc: function(canvas) {
-        mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
-      },
       fill: that.options.overviewWaveformColor,
       strokeWidth: 0
     });
+
+    this.waveformShape.setDrawFunc(mixins.waveformDrawFunction.bind(this.waveformShape, that));
+
     this.waveformLayer.add(this.waveformShape);
     this.stage.add(this.waveformLayer);
   };
@@ -134,7 +134,7 @@ define([
 
     /*this.refWaveformShape = new Kinetic.Shape({
       drawFunc: function(canvas) {
-        mixins.waveformOffsetDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
+        mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
       },
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0

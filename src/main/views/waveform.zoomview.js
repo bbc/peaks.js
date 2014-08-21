@@ -181,12 +181,11 @@ define([
   WaveformZoomView.prototype.createZoomWaveform = function() {
     var that = this;
     that.zoomWaveformShape = new Kinetic.Shape({
-      drawFunc: function(canvas) {
-        mixins.waveformDrawFunction.call(this, that.intermediateData || that.data, canvas, mixins.interpolateHeight(that.height));
-      },
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0
     });
+
+    that.zoomWaveformShape.setDrawFunc(mixins.waveformDrawFunction.bind(that.zoomWaveformShape, that));
 
     that.zoomWaveformLayer.add(that.zoomWaveformShape);
     that.stage.add(that.zoomWaveformLayer);
