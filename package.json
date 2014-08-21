@@ -23,9 +23,12 @@
     "peaks/waveform/waveform.core": "./src/main/waveform/waveform.core.js",
     "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
     "peaks/waveform/waveform.overview": "./src/main/waveform/waveform.overview.js",
-    "peaks/waveform/waveform.points": "./src/main/waveform/waveform.points.js",
-    "peaks/waveform/waveform.segments": "./src/main/waveform/waveform.segments.js",
-    "peaks/waveform/waveform.zoomview": "./src/main/waveform/waveform.zoomview.js"
+    "peaks/waveform/waveform.zoomview": "./src/main/waveform/waveform.zoomview.js",
+    "peaks/markers/waveform.points": "./src/main/markers/waveform.points.js",
+    "peaks/markers/waveform.segments": "./src/main/markers/waveform.segments.js",
+    "peaks/markers/shapes/base": "./src/main/markers/shapes/base.js",
+    "peaks/markers/shapes/rect": "./src/main/markers/shapes/rect.js",
+    "peaks/markers/shapes/wave": "./src/main/markers/shapes/wave.js"
   },
   "repository": {
     "type": "git",
