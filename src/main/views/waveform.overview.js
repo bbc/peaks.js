@@ -40,17 +40,11 @@ define([
 
     that.waveformLayer.add(that.background);
 
-    that.uiLayer = new Kinetic.Layer();
-    that.refLayer = new Kinetic.Layer();
-
-    that.axis = new WaveformAxis(that);
-
     that.createWaveform();
-
     that.createRefWaveform();
-    that.axis.drawAxis(0);
-    that.stage.add(that.waveformLayer);
     that.createUi();
+
+    that.stage.add(that.waveformLayer);
 
     // INTERACTION ===============================================
     var cancelSeeking = function(){
@@ -136,6 +130,8 @@ define([
   WaveformOverview.prototype.createRefWaveform = function () {
     var that = this;
 
+    this.refLayer = new Kinetic.Layer();
+
     /*this.refWaveformShape = new Kinetic.Shape({
       drawFunc: function(canvas) {
         mixins.waveformOffsetDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
@@ -162,11 +158,16 @@ define([
 
   WaveformOverview.prototype.createUi = function() {
     var that = this;
+
     this.playheadLine = new Kinetic.Line({
       points: that._getPlayheadPoints(0),
       stroke: that.options.playheadColor,
       strokeWidth: 1
     });
+
+    that.uiLayer = new Kinetic.Layer();
+    that.axis = new WaveformAxis(that);
+
     this.uiLayer.add(this.playheadLine);
     this.stage.add(this.uiLayer);
   };

@@ -56,7 +56,6 @@ define([
     that.axis = new WaveformAxis(that);
 
     that.createZoomWaveform();
-    that.axis.drawAxis(0);
     that.createUi();
 
     // INTERACTION ===============================================
@@ -284,7 +283,6 @@ define([
 
     that.zoomWaveformLayer.draw();
 
-    that.axis.drawAxis(that.data.time(pixelOffset));
     // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
 
     that.peaks.emit("waveform_zoom_displaying", pixelOffset * that.data.seconds_per_pixel, (pixelOffset+that.width) * that.data.seconds_per_pixel);
