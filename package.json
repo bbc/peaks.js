@@ -14,7 +14,7 @@
     ]
   },
   "browser": {
-    "EventEmitter": "./bower_components/eventEmitter/EventEmitter.js",
+    "EventEmitter": "./bower_components/eventemitter2/lib/eventemitter2.js",
     "Kinetic": "./bower_components/KineticJS/index.js",
     "waveform-data": "./bower_components/waveform-data/waveform-data.js",
     "peaks/player/player": "./src/main/player/player.js",

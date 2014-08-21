@@ -58,7 +58,7 @@ AMD modules are working out of the box without any optimiser.
 requirejs.config({
   paths: {
     peaks: 'bower_components/peaks.js/src/main',
-    EventEmitter: 'bower_components/eventEmitter/EventEmitter',
+    EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
     Kinetic: 'bower_components/Kinetic/index',
     'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
   }
