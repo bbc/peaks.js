@@ -1,3 +1,11 @@
+/**
+ * WAVEFORM.AXIS.JS
+ *
+ * This module handles all functionality related to drawing the
+ * visualisations. Only a sigle object of this type is
+ * instantiated meaning this code is reused multiple times.
+ *
+ */
 define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic) {
   'use strict';
 
@@ -20,29 +28,17 @@ define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic)
 
   function WaveformAxis(view) {
     this.view = view; // store reference to waveform view object
-    this.axisShape = null;
-  }
 
-  WaveformAxis.prototype.drawAxis = function (currentFrameStartTime) {
-    var that = this;
-    if (!this.axisShape) { // create
-      this.axisShape = new Kinetic.Shape({
-        drawFunc: function(canvas) {
-          that.axisDrawFunction(canvas, currentFrameStartTime);
-        },
-        fill: 'rgba(38, 255, 161, 1)',
-        strokeWidth: 0
-      });
-      this.view.uiLayer.add(this.axisShape);
-      this.view.uiLayer.draw();
-    }
-    else { // update
-      this.axisShape.setDrawFunc(function (canvas) {
-        that.axisDrawFunction(canvas, currentFrameStartTime);
-      });
-      this.view.uiLayer.draw();
-    }
-  };
+    this.axisShape = new Kinetic.Shape({
+      fill: 'rgba(38, 255, 161, 1)',
+      strokeWidth: 0,
+      opacity: 1
+    });
+
+    this.axisShape.setDrawFunc(this.axisDrawFunction.bind(this, view));
+
+    this.view.uiLayer.add(this.axisShape);
+  }
 
   /*
    * Returns number of seconds for each x-axis marker, appropriate for the
@@ -77,7 +73,9 @@ define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic)
   };
 
 
-  WaveformAxis.prototype.axisDrawFunction = function (canvas, currentFrameStartTime) {
+  WaveformAxis.prototype.axisDrawFunction = function (view, canvas) {
+    var currentFrameStartTime = view.data.time(view.frameOffset);
+
     // Draw axis markers
     var markerHeight = 10;
 

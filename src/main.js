@@ -449,8 +449,10 @@ define('peaks', [
               zoomLevelIndex = 0;
             }
 
+            var previousZoomLevel = self.currentZoomLevel;
+
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit("waveform_zoom_level_changed", self.options.zoomLevels[zoomLevelIndex]);
+            self.emit("zoom.update", self.options.zoomLevels[zoomLevelIndex], self.options.zoomLevels[previousZoomLevel]);
           },
 
           /**
@@ -460,6 +462,24 @@ define('peaks', [
            */
           getZoom: function () {
             return self.currentZoomLevel;
+          },
+
+          /**
+           * Sets the zoom level to an overview level
+           *
+           * @since 0.3
+           */
+          overview: function zoomToOverview() {
+            self.emit("zoom.update", self.waveform.waveformOverview.data.adapter.scale, self.options.zoomLevels[ self.currentZoomLevel ]);
+          },
+
+          /**
+           * Sets the zoom level to an overview level
+           *
+           * @since 0.3
+           */
+          reset: function resetOverview() {
+            self.emit("zoom.update", self.options.zoomLevels[ self.currentZoomLevel ], self.waveform.waveformOverview.data.adapter.scale);
           }
         };
       }

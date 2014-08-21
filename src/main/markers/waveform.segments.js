@@ -5,9 +5,10 @@
  * removing and manipulation of segments
  */
 define([
+  "Kinetic",
   "peaks/waveform/waveform.mixins",
-  "Kinetic"
-  ], function (mixins, Kinetic) {
+  "peaks/markers/shapes/wave"
+  ], function (Kinetic, mixins, SegmentShape) {
   'use strict';
 
   return function (peaks) {
@@ -29,15 +30,15 @@ define([
         id: segmentId,
         startTime: startTime,
         endTime: endTime,
-        labelText: labelText || ""
+        labelText: labelText || "",
+        color: color || getSegmentColor(),
+        editable: editable
       };
 
       var segmentZoomGroup = new Kinetic.Group();
       var segmentOverviewGroup = new Kinetic.Group();
 
       var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
-
-      color = color || getSegmentColor();
 
       var menter = function (event) {
         this.parent.label.show();
@@ -52,10 +53,7 @@ define([
       segmentGroups.forEach(function(segmentGroup, i){
         var view = self.views[i];
 
-        segmentGroup.waveformShape = new Kinetic.Shape({
-          fill: color,
-          strokeWidth: 0
-        });
+        segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
         segmentGroup.waveformShape.on("mouseenter", menter);
         segmentGroup.waveformShape.on("mouseleave", mleave);
@@ -66,10 +64,14 @@ define([
         segmentGroup.add(segmentGroup.label.hide());
 
         if (editable) {
-          segmentGroup.inMarker = new peaks.options.segmentInMarker(true, segmentGroup, segment, segmentHandleDrag);
+          var draggable = true;
+          if (segmentGroup === segmentOverviewGroup) {
+            draggable = false;
+          }
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.inMarker);
 
-          segmentGroup.outMarker = new peaks.options.segmentOutMarker(true, segmentGroup, segment, segmentHandleDrag);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.outMarker);
         }
 
@@ -80,8 +82,6 @@ define([
       segment.zoom.view = peaks.waveform.waveformZoomView;
       segment.overview = segmentOverviewGroup;
       segment.overview.view = peaks.waveform.waveformOverview;
-      segment.color = color;
-      segment.editable = editable;
 
       return segment;
     };
@@ -94,10 +94,6 @@ define([
       // Overview
       var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
       var overviewEndOffset = peaks.waveform.waveformOverview.data.at_time(segment.endTime);
-
-      segment.overview.waveformShape.setDrawFunc(function(canvas) {
-        mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformOverview.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformOverview.height));
-      });
 
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
@@ -113,6 +109,8 @@ define([
       // Label
       // segment.overview.label.setX(overviewStartOffset);
 
+      SegmentShape.update.call(segment.overview.waveformShape, peaks.waveform.waveformOverview, segment.id);
+      segment.overview.view.segmentLayer.draw();
 
       // Zoom
       var zoomStartOffset = peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
@@ -129,9 +127,8 @@ define([
         var endPixel = zoomEndOffset - frameStartOffset;
 
         segment.zoom.show();
-        segment.zoom.waveformShape.setDrawFunc(function(canvas) {
-          mixins.waveformSegmentDrawFunction.call(this, peaks.waveform.waveformZoomView.data, segment.id, canvas, mixins.interpolateHeight(peaks.waveform.waveformZoomView.height));
-        });
+
+        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
 
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
@@ -145,10 +142,6 @@ define([
       } else {
         segment.zoom.hide();
       }
-
-      // Label
-      // segment.zoom.label.setX(0);
-      // segment.zoom.label.setY(12);
     };
 
     var segmentHandleDrag = function (thisSeg, segment) {
@@ -163,7 +156,6 @@ define([
       }
 
       updateSegmentWaveform(segment);
-      self.render();
     };
 
     var getSegmentColor = function () {
@@ -178,7 +170,7 @@ define([
     };
 
     this.init = function () {
-      peaks.on("waveform_zoom_displaying", self.updateSegments);
+      peaks.on("waveform_zoom_displaying", this.updateSegments.bind(this));
 
       peaks.emit("segments.ready");
     };
@@ -191,8 +183,8 @@ define([
      * @api
      */
     this.updateSegments = function () {
-      self.segments.forEach(updateSegmentWaveform);
-      self.render();
+      this.segments.forEach(updateSegmentWaveform);
+      this.render();
     };
 
     /**
@@ -257,7 +249,7 @@ define([
      * @since 0.0.2
      */
     this.render = function renderSegments(){
-      self.views.forEach(function(view){
+      this.views.forEach(function(view){
         view.segmentLayer.draw();
       });
     };
