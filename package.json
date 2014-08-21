@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.3.0-beta.2",
+  "version": "0.3.0-beta.5",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./src/main.js",
   "contributors": [
@@ -8,6 +8,25 @@
     "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
     "Chris Needham (https://github.com/chrisn)"
   ],
+  "browserify": {
+    "transform": [
+      "deamdify"
+    ]
+  },
+  "browser": {
+    "EventEmitter": "./bower_components/eventemitter2/lib/eventemitter2.js",
+    "Kinetic": "./bower_components/KineticJS/index.js",
+    "waveform-data": "./bower_components/waveform-data/waveform-data.js",
+    "peaks/player/player": "./src/main/player/player.js",
+    "peaks/player/player.keyboard": "./src/main/player/player.keyboard.js",
+    "peaks/waveform/waveform.axis": "./src/main/waveform/waveform.axis.js",
+    "peaks/waveform/waveform.core": "./src/main/waveform/waveform.core.js",
+    "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
+    "peaks/waveform/waveform.overview": "./src/main/waveform/waveform.overview.js",
+    "peaks/waveform/waveform.points": "./src/main/waveform/waveform.points.js",
+    "peaks/waveform/waveform.segments": "./src/main/waveform/waveform.segments.js",
+    "peaks/waveform/waveform.zoomview": "./src/main/waveform/waveform.zoomview.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/bbcrd/peaks.js.git"
@@ -20,31 +39,34 @@
     "test-ie": "./node_modules/karma/bin/karma start --browsers SauceIE9,SauceIE10,SauceIE11",
     "test-webkit": "./node_modules/karma/bin/karma start --browsers SauceChrome,SauceSafari6,SauceSafari7",
     "test-firefox": "./node_modules/karma/bin/karma start --browsers SauceFirefox,SauceFirefoxLinux",
+    "build": "browserify -t deamdify ./src/main.js -p [minifyify --map peaks.min.map --output dist/peaks.min.map] -s peaks -o dist/peaks.min.js",
     "test-pre": "jshint ./src",
     "test-watch": "FAST=true ./node_modules/karma/bin/karma start --auto-watch --no-single-run",
-    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body"
+    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body",
+    "start": "http-server -o"
   },
   "devDependencies": {
+    "chai": "~1.9.1",
     "github-changes": "^0.0.10",
-    "grunt": "~0.4.1",
-    "grunt-concurrent": "~0.3.0",
-    "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-watch": "~0.5.1",
-    "grunt-devserver": "~0.4.1",
-    "grunt-wiredep": "^1.8.0",
+    "http-server": "^0.6.1",
     "jshint": "^2.5.1",
-    "karma": "^0.12.0",
+    "karma": "~0.12.0",
+    "karma-sinon-chai": "~0.2.0",
     "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-html2js-preprocessor": "~0.1",
-    "karma-mocha": "~0.1.1",
+    "karma-mocha": "~0.1.7",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma-requirejs": "~0.1.0",
     "karma-safari-launcher": "~0.1.1",
-    "karma-sauce-launcher": "^0.2.9",
-    "karma-script-launcher": "~0.1.0",
-    "karma-sinon-chai": "^0.2.0",
+    "karma-sauce-launcher": "~0.2.10",
+    "minifyify": "^3.0.11",
     "mocha": "~1.17.1"
+  },
+  "dependencies": {
+  },
+  "optionalDependencies": {
+    "browserify": "^4.2.0",
+    "deamdify": "^0.1.1"
   }
 }

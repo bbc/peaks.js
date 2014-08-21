@@ -5,9 +5,10 @@
  * removing and manipulation of segments
  */
 define([
+  "Kinetic",
   "peaks/waveform/waveform.mixins",
   "peaks/markers/shapes/wave"
-  ], function (mixins, SegmentShape) {
+  ], function (Kinetic, mixins, SegmentShape) {
   'use strict';
 
   return function (peaks) {

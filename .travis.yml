@@ -10,8 +10,10 @@ cache:
   - bower_components
 
 before_install:
-- npm install -g grunt-cli bower --production
+- npm install -g bower --production
 - bower install
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
 
 env:
   global:

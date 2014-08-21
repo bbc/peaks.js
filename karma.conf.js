@@ -15,7 +15,7 @@ module.exports = function (config) {
     files : [
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'bower_components/eventEmitter/*.js', included: false },
+      { pattern: 'bower_components/eventemitter2/lib/*.js', included: false },
       { pattern: 'bower_components/waveform-data/dist/*.js', included: false },
       { pattern: 'bower_components/KineticJS/*.js', included: false },
       { pattern: 'test/*.html' },
@@ -54,11 +54,11 @@ module.exports = function (config) {
 
     // Start these browsers, currently available:
     browsers : isCI
-      ? ['SauceChrome', 'SauceFirefox', 'SauceFirefoxLinux', 'SauceSafari6', 'SauceSafari7', 'SauceIE9', 'SauceIE10', 'SauceIE11']
+      ? ['Firefox', 'SauceSafari6', 'SauceIE9', 'SauceIE10']
       : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox']),
 
-    browserDisconnectTolerance: 2,
-    browserNoActivityTimeout: 30000,
+    browserDisconnectTolerance: isCI ? 3 : 1,
+    browserNoActivityTimeout: isCI ? 120000 : null,
 
     sauceLabs: {
       build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',

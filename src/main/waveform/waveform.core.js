@@ -115,13 +115,13 @@ define([
 
         that.waveformZoomView = new WaveformZoomView(that.origWaveformData, that.ui.zoom, peaks);
 
-        peaks.emit("waveform_zoom_start");
-
         that.segments = new WaveformSegments(peaks);
         that.segments.init();
 
         that.points = new WaveformPoints(peaks);
         that.points.init();
+
+        peaks.emit('waveformZoomReady');
       },
 
       /**

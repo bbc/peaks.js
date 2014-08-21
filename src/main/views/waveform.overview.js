@@ -8,8 +8,9 @@
  */
 define([
   "peaks/waveform/waveform.axis",
-  "peaks/waveform/waveform.mixins"
-  ], function (WaveformAxis, mixins) {
+  "peaks/waveform/waveform.mixins",
+  "Kinetic"
+  ], function (WaveformAxis, mixins, Kinetic) {
   'use strict';
 
   function WaveformOverview(waveformData, container, peaks) {

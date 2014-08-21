@@ -6,8 +6,9 @@
  */
 define([
   "peaks/markers/shapes/base",
-  "peaks/waveform/waveform.mixins"
-], function (BaseShape, mixins) {
+  "peaks/waveform/waveform.mixins",
+  "Kinetic"
+], function (BaseShape, mixins, Kinetic) {
   'use strict';
 
   var WaveShape = Object.create(BaseShape.prototype);
