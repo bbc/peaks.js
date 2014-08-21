@@ -142,13 +142,13 @@ define([
     });*/
 
     this.refWaveformRect = new Kinetic.Rect({
-      x:0,
-      y:11,
+      x: 0,
+      y: 11,
       width: 0,
       stroke: "grey",
       strokeWidth: 1,
-      height: 28,
-      fill:'grey',
+      height: this.height - (11*2),
+      fill: 'grey',
       opacity: 0.3,
       cornerRadius: 2
     });
