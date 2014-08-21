@@ -24,6 +24,7 @@ define([
     that.playing = false;
     that.seeking = false;
 
+    that.intermediateData = null;
     that.data = that.rootData.resample({
       scale: that.options.zoomLevels[peaks.zoom.getZoom()]
     });
@@ -177,46 +178,11 @@ define([
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
 
-  WaveformZoomView.prototype.update = function() {
-    var that = this;
-    var time = that.peaks.time;
-
-    //Hide Axis
-    //that.axis.axisShape.setAttr('opacity', 0);
-    //Hide Segments
-    if (that.segmentLayer) {
-      that.segmentLayer.setVisible(false);
-    }
-
-    //Partial resampling
-    var oldPixelIndex = (time.getCurrentTime() * that.rootData.adapter.sample_rate) / that.old_sample_rate;
-    var input_index = oldPixelIndex - (that.width/2);
-    var newPixelIndex = (time.getCurrentTime() * that.rootData.adapter.sample_rate) / that.cur_scale; //sample rate = 44100
-    var output_index = newPixelIndex - (that.width/2);
-
-    that.data = that.rootData.resample({
-      scale: that.rootData.adapter.scale,
-      input_index: Math.floor(input_index),
-      output_index: Math.floor(output_index),
-      length: that.width
-    });
-
-    //Draw waveform
-    that.zoomWaveformShape.setDrawFunc(function(canvas) {
-      mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
-    });
-    that.zoomWaveformLayer.draw();
-    //Update the refwaveform on the overview container
-    that.peaks.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);
-  };
-
   WaveformZoomView.prototype.createZoomWaveform = function() {
     var that = this;
     that.zoomWaveformShape = new Kinetic.Shape({
       drawFunc: function(canvas) {
-        that.data.offset(0, that.width);
-
-        mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
+        mixins.waveformDrawFunction.call(this, that.intermediateData || that.data, canvas, mixins.interpolateHeight(that.height));
       },
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0
@@ -260,6 +226,7 @@ define([
 
     that.frameOffset = pixelOffset;
     that.pixelLength = that.data.adapter.length;
+    that.data.offset(pixelOffset, pixelOffset + that.width);
 
     var display = (that.playheadPixel >= pixelOffset) && (that.playheadPixel <= pixelOffset + that.width); //i.e. playhead is within the zoom frame width
 
@@ -274,13 +241,6 @@ define([
     }
 
     that.uiLayer.draw();
-
-    that.zoomWaveformShape.setDrawFunc(function(canvas) {
-      that.data.offset(pixelOffset, pixelOffset + that.width);
-
-      mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
-    });
-
     that.zoomWaveformLayer.draw();
 
     // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
@@ -432,17 +392,16 @@ define([
 
   WaveformZoomView.prototype.runZoomAnimation = function (frameData) {
     var that = this;
+    that.intermediateData = null;
 
     if (frameData.length) {
 
       var intermediate_data = frameData.shift();
 
       //Send correct resampled waveform data object to drawFunc and draw it
-      that.zoomWaveformShape.setDrawFunc(function(canvas) {
-        mixins.waveformDrawFunction.call(this, intermediate_data, canvas, mixins.interpolateHeight(that.height));
-      });
-
+      that.intermediateData = intermediate_data;
       that.zoomWaveformLayer.draw();
+
       //Update the refwaveform on the overview container
       //bootstrap.pubsub.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);
       Kinetic.Animation.requestAnimFrame( function () {
