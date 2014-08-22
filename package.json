@@ -14,9 +14,8 @@
     ]
   },
   "browser": {
-    "EventEmitter": "./bower_components/eventemitter2/lib/eventemitter2.js",
-    "Kinetic": "./bower_components/KineticJS/index.js",
-    "waveform-data": "./bower_components/waveform-data/waveform-data.js",
+    "EventEmitter": "eventemitter2",
+    "Kinetic": "kinetic",
     "peaks/player/player": "./src/main/player/player.js",
     "peaks/player/player.keyboard": "./src/main/player/player.keyboard.js",
     "peaks/waveform/waveform.axis": "./src/main/waveform/waveform.axis.js",
@@ -61,7 +60,11 @@
     "mocha": "~1.17.1",
     "serve": "~1.4.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "kinetic": "~5.1.0",
+    "waveform-data": "~1.4.0",
+    "eventemitter2": "~0.4.14"
+  },
   "optionalDependencies": {
     "browserify": "^4.2.0",
     "deamdify": "^0.1.1"
