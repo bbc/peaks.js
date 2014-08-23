@@ -25,7 +25,6 @@ define([
     that.rootData = waveformData;
 
     that.playing = false;
-    that.seeking = false;
 
     that.intermediateData = null;
     that.data = that.rootData.resample({
@@ -71,11 +70,11 @@ define([
         !event.target.parent.attrs.draggable) {
         if (event.type === "mousedown") {
           var x = event.evt.layerX, dX, p;
-          that.seeking = true;
+          peaks.seeking = true;
 
           // enable drag if necessary
           that.stage.on("mousemove", function (event) {
-            that.seeking = false;
+            peaks.seeking = false;
 
             dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX)*1;
             x = event.evt.layerX;
@@ -86,13 +85,13 @@ define([
           });
 
           that.stage.on("mouseup", function () {
-            if (that.seeking){
+            if (peaks.seeking){
               // Set playhead position only on click release, when not dragging
               that.peaks.emit("user_seek.zoomview", that.data.time(that.frameOffset + x), that.frameOffset + x);
             }
 
             that.stage.off("mousemove mouseup");
-            that.seeking = false;
+            peaks.seeking = false;
           });
         }
       }
@@ -112,7 +111,7 @@ define([
     };
 
     that.peaks.on("player_time_update", function (time) {
-      if (!that.seeking) {
+      if (!peaks.seeking) {
         that.seekFrame(that.data.at_time(time));
       }
     });

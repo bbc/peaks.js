@@ -68,6 +68,7 @@ define([
           if (segmentGroup === segmentOverviewGroup) {
             draggable = false;
           }
+
           segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.inMarker);
 

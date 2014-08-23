@@ -26,21 +26,10 @@ define(['Kinetic'], function (Kinetic) {
      * @return {Kinetic Object}     Kinetic group object of handle marker elements
      */
     return function (draggable, segment, parent, onDrag) {
-      var markerTop     = 0,
-          markerX       = 0.5,
-          handleTop     = (height / 2) - 10.5,
-          handleBottom  = (height / 2) + 9.5,
-          markerBottom  = height,
-          handleX       = inMarker ? -19.5 : 19.5;
-
-      var handlePoints = [
-        [markerX, markerTop],
-        [markerX, handleTop],
-        [handleX, handleTop],
-        [handleX, handleBottom],
-        [markerX, handleBottom],
-        [markerX, markerBottom]
-      ];
+      var handleHeight = 20;
+      var handleWidth = handleHeight / 2;
+      var handleY = (height / 2) - 10.5;
+      var handleX = inMarker ? -handleWidth + 0.5 : 0.5;
 
       var group = new Kinetic.Group({
         draggable: draggable,
@@ -78,22 +67,43 @@ define(['Kinetic'], function (Kinetic) {
       });
       text.hide();
       group.label = text;
-      group.add(text);
 
-      var handle = new Kinetic.Line({
-        points: handlePoints,
+      var handle = new Kinetic.Rect({
+        width: handleWidth,
+        height: handleHeight,
         fill: color,
         stroke: color,
         strokeWidth: 1,
-        closed: true
-      }).on("mouseover", function (event) {
-        text.show();
+        x: handleX,
+        y: handleY
+      });
+
+      /*
+      Vertical Line
+       */
+      var line = new Kinetic.Line({
+        points: [0.5, 0, 0.5, height],
+        strokeWidth: 1,
+        stroke: color,
+        x: 0,
+        y: 0
+      });
+
+      /*
+      Events
+       */
+      handle.on("mouseover", function (event) {
         if (inMarker) text.setX(xPosition - text.getWidth());
+        text.show();
         segment.view.segmentLayer.draw();
-      }).on("mouseout", function (event) {
+      });
+      handle.on("mouseout", function (event) {
         text.hide();
         segment.view.segmentLayer.draw();
       });
+
+      group.add(text);
+      group.add(line);
       group.add(handle);
 
       return group;

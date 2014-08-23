@@ -22,7 +22,6 @@ define([
     that.width = container.clientWidth;
     that.height = container.clientHeight || that.options.height;
     that.frameOffset = 0;
-    that.seeking = false;
 
     that.stage = new Kinetic.Stage({
       container: container,
@@ -50,7 +49,7 @@ define([
     // INTERACTION ===============================================
     var cancelSeeking = function(){
       that.stage.off("mousemove mouseup");
-      that.seeking = false;
+      peaks.seeking = false;
     };
 
     that.stage.on("mousedown", function (event) {
@@ -58,7 +57,7 @@ define([
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
         if (event.type == "mousedown") {
-          that.seeking = true;
+          peaks.seeking = true;
 
           peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
 
@@ -76,8 +75,10 @@ define([
     // EVENTS ====================================================
 
     function trackPlayheadPosition(time, frame){
-      that.playheadPixel = that.data.at_time(time);
-      that.updateUi(that.playheadPixel);
+      if (!peaks.seaking) {
+        that.playheadPixel = that.data.at_time(time);
+        that.updateUi(that.playheadPixel);
+      }
     }
 
     peaks.on("player_time_update", trackPlayheadPosition);
