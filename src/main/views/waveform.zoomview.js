@@ -197,7 +197,7 @@ define([
     var that = this;
 
     that.zoomPlayheadLine = new Kinetic.Line({
-      points: [{x: 0, y: 0},{x: 0, y: that.height}],
+      points: [0.5, 0, 0.5, that.height],
       stroke: that.options.playheadColor,
       strokeWidth: 1
     });
@@ -219,6 +219,8 @@ define([
 
     that.uiLayer.add(that.zoomPlayheadGroup);
     that.stage.add(that.uiLayer);
+
+    that.zoomPlayheadGroup.moveToTop();
   };
 
   WaveformZoomView.prototype.updateZoomWaveform = function (pixelOffset) {
@@ -300,12 +302,14 @@ define([
 
     if (display) {
       var remPixels = that.playheadPixel - that.frameOffset; //places playhead at centre of zoom frame i.e. remPixels = 500
-      that.zoomPlayheadGroup.show().setAttr("x", remPixels + 0.5);
+      that.zoomPlayheadGroup.show().setAttr("x", remPixels);
       that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
     }
     else {
       that.zoomPlayheadGroup.hide();
     }
+
+    that.uiLayer.draw();
   };
 
   WaveformZoomView.prototype.seekFrame = function (pixelIndex) {

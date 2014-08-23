@@ -161,12 +161,13 @@ define([
     var that = this;
 
     this.playheadLine = new Kinetic.Line({
-      points: that._getPlayheadPoints(0),
+      points: [0.5, 0, 0.5, that.height],
       stroke: that.options.playheadColor,
-      strokeWidth: 1
+      strokeWidth: 1,
+      x: 0
     });
 
-    that.uiLayer = new Kinetic.Layer();
+    that.uiLayer = new Kinetic.Layer({ index: 100 });
     that.axis = new WaveformAxis(that);
 
     this.uiLayer.add(this.playheadLine);
@@ -212,14 +213,9 @@ define([
 
   WaveformOverview.prototype.updateUi = function (pixel) {
     var that = this;
-    that.playheadLine.setAttr("points", that._getPlayheadPoints(pixel));
-    that.uiLayer.setZIndex(100);
-    that.uiLayer.draw();
-  };
 
-  WaveformOverview.prototype._getPlayheadPoints = function (pixelOffset) {
-    var that = this;
-    return [{x:pixelOffset+0.5, y:0},{x:pixelOffset+0.5, y:that.height}];
+    that.playheadLine.setAttr("x", pixel);
+    that.uiLayer.draw();
   };
 
   return WaveformOverview;
