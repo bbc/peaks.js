@@ -125,21 +125,10 @@ define(['Kinetic'], function (Kinetic) {
        * @return {Kinetic Object}     Kinetic group object of handle marker elements
        */
       return function (draggable, point, parent, onDrag, onDblClick, onDragEnd) {
-          var markerTop     = 0,
-              markerX       = 0.5,
-              handleTop     = (height / 2) - 10.5,
-              handleBottom  = (height / 2) + 9.5,
-              markerBottom  = height,
-              handleX       = 9.75; //Place in the middle of the marker
-
-          var handlePoints = [
-              [markerX, markerTop],
-              [markerX, handleTop],
-              [handleX, handleTop],
-              [handleX, handleBottom],
-              [markerX, handleBottom],
-              [markerX, markerBottom]
-          ];
+          var handleTop = (height / 2) - 10.5;
+          var handleWidth = 10;
+          var handleHeight = 20;
+          var handleX = 0.5; //Place in the middle of the marker
 
           var group = new Kinetic.Group({
               draggable: draggable,
@@ -167,7 +156,7 @@ define(['Kinetic'], function (Kinetic) {
           }
 
           //Place text to the left of the mark
-          var xPosition = -24;
+          var xPosition = -handleWidth;
 
           var text = new Kinetic.Text({
               x: xPosition,
@@ -180,23 +169,45 @@ define(['Kinetic'], function (Kinetic) {
           });
           text.hide();
           group.label = text;
-          group.add(text);
 
-          var handle = new Kinetic.Line({
-              points: handlePoints,
-              fill: color,
-              stroke: color,
-              strokeWidth: 1,
-              closed: true
-          }).on("mouseover", function (event) {
-                  text.show();
-                  text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
-                  point.view.pointLayer.draw();
-              }).on("mouseout", function (event) {
-                  text.hide();
-                  point.view.pointLayer.draw();
-              });
+          /*
+          Handle
+           */
+          var handle = new Kinetic.Rect({
+            width: handleWidth,
+            height: handleHeight,
+            fill: color,
+            x: handleX,
+            y: handleTop
+          });
+
+          /*
+          Line
+           */
+          var line = new Kinetic.Line({
+            points: [0, 0, 0, height],
+            stroke: color,
+            strokeWidth: 1,
+            x: handleX,
+            y: 0
+          });
+
+          /*
+          Events
+           */
+          handle.on("mouseover", function (event) {
+            text.show();
+            text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
+            point.view.pointLayer.draw();
+          });
+          handle.on("mouseout", function (event) {
+            text.hide();
+            point.view.pointLayer.draw();
+          });
+
           group.add(handle);
+          group.add(line);
+          group.add(text);
 
           return group;
 

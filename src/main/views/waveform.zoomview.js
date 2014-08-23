@@ -346,6 +346,7 @@ define([
     //Fade out segments
     if (that.segmentLayer) {
       that.segmentLayer.setVisible(false);
+      that.pointLayer.setVisible(false);
     }
 
     // Determine whether zooming in or out
@@ -420,6 +421,7 @@ define([
     else {
       //Fade in the segments
       that.segmentLayer.setVisible(true);
+      that.pointLayer.setVisible(true);
       that.seekFrame(that.data.at_time(that.currentTime));
     }
   };
