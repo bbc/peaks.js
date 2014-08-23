@@ -73,7 +73,12 @@ define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic)
   };
 
 
-  WaveformAxis.prototype.axisDrawFunction = function (view, canvas) {
+  /**
+   *
+   * @param {WaveformOverview|WaveformZoomview} view
+   * @param {Kinetic.Context} context
+   */
+  WaveformAxis.prototype.axisDrawFunction = function (view, context) {
     var currentFrameStartTime = view.data.time(view.frameOffset);
 
     // Draw axis markers
@@ -91,16 +96,14 @@ define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic)
     // Distance between waveform start time and first axis marker (pixels)
     var axisLabelOffsetPixels = this.view.data.at_time(axisLabelOffsetSecs);
 
-    var ctx = canvas.getContext();
-
-    ctx.strokeStyle = "#ccc";
-    ctx.lineWidth = 1;
+    context.strokeStyle = "#ccc";
+    context.lineWidth = 1;
 
     // Set text style
-    ctx.font = "11px sans-serif";
-    ctx.fillStyle = "#aaa";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "bottom";
+    context.font = "11px sans-serif";
+    context.fillStyle = "#aaa";
+    context.textAlign = "left";
+    context.textBaseline = "bottom";
 
     var secs = firstAxisLabelSecs;
     var x;
@@ -114,20 +117,20 @@ define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic)
 
       // Draw the axis out old-skool canvas style
 
-      ctx.beginPath();
-      ctx.moveTo(x + 0.5, 0);
-      ctx.lineTo(x + 0.5, 0 + markerHeight);
-      ctx.moveTo(x + 0.5, this.view.height);
-      ctx.lineTo(x + 0.5, this.view.height - markerHeight);
-      ctx.stroke();
+      context.beginPath();
+      context.moveTo(x + 0.5, 0);
+      context.lineTo(x + 0.5, 0 + markerHeight);
+      context.moveTo(x + 0.5, this.view.height);
+      context.lineTo(x + 0.5, this.view.height - markerHeight);
+      context.stroke();
 
       var label      = mixins.niceTime(secs, true);
-      var labelWidth = ctx.measureText(label).width;
+      var labelWidth = context._context.measureText(label).width; // todo handle this with Kinetic.Text
       var labelX     = x - labelWidth / 2;
       var labelY     = this.view.height - 1 - markerHeight;
 
       if (labelX >= 0) {
-        ctx.fillText(label, labelX, labelY);
+        context.fillText(label, labelX, labelY);
       }
 
       secs += axisLabelIntervalSecs;

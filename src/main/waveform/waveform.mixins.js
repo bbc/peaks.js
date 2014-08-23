@@ -193,7 +193,7 @@ define(['Kinetic'], function (Kinetic) {
 
   /**
    * Draw a waveform on a canvas context
-   * @param  {Object}   ctx           Canvas Context to draw on
+   * @param  {Kinetic.Context}  ctx   Canvas Context to draw on
    * @param  {Array}    min           Min values for waveform
    * @param  {Array}    max           Max values for waveform
    * @param  {Int}      offset_start  Where to start drawing
@@ -212,6 +212,7 @@ define(['Kinetic'], function (Kinetic) {
     });
 
     ctx.closePath();
+    ctx.fillStrokeShape(this);
   }
 
   /**
@@ -234,14 +235,18 @@ define(['Kinetic'], function (Kinetic) {
 
     drawWaveform: drawWaveform,
 
-    waveformDrawFunction: function (view, canvas) {
+    /**
+     *
+     * @this {Kinetic.Shape}
+     * @param {WaveformOverview} view
+     * @param {Kinetic.Context} context
+     */
+    waveformDrawFunction: function (view, context) {
       var waveform = view.intermediateData || view.data;
       var y = interpolateHeightGenerator(view.height);
       var offset_length = waveform.offset_length;
-      var ctx = canvas.getContext();
 
-      drawWaveform(ctx, waveform.min, waveform.max, 0, offset_length, y);
-      canvas.fillStroke(this);
+      drawWaveform.call(this, context, waveform.min, waveform.max, 0, offset_length, y);
     },
 
     waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
