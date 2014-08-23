@@ -24,6 +24,8 @@ define('peaks', [
   };
 
   function Peaks (container) {
+    EventEmitter.call(this, { wildcard: true });
+
     this.options = {
       /**
        * Array of scale factors (samples per pixel) for the zoom levels (big >> small)

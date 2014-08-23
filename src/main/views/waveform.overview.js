@@ -67,7 +67,7 @@ define([
             that.data.time(event.evt.layerX + width)
           );
 
-          peaks.emit("overview_user_seek", that.data.time(event.evt.layerX), event.evt.layerX);
+          peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
 
           that.stage.on("mousemove", function (event) {
             that.updateRefWaveform(
@@ -75,7 +75,7 @@ define([
               that.data.time(event.evt.layerX + width)
             );
 
-            peaks.emit("overview_user_seek", that.data.time(event.evt.layerX), event.evt.layerX);
+            peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
           });
 
           that.stage.on("mouseup", cancelSeeking);
@@ -94,11 +94,9 @@ define([
       }
     });
 
-    peaks.on("overview_user_seek", function (time, frame) {
-      that.playheadPixel = frame;
+    peaks.on("user_seek.*", function (time, frame) {
+      that.playheadPixel = that.data.at_time(time);
       that.updateUi(that.playheadPixel);
-
-      that.options.mediaElement.currentTime = time;
     });
 
     peaks.on("waveform_zoom_displaying", function (start, end) {

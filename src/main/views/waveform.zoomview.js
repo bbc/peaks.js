@@ -87,7 +87,7 @@ define([
           that.stage.on("mouseup", function () {
             if (that.seeking){
               // Set playhead position only on click release, when not dragging
-              that.peaks.emit("zoomview_user_seek", that.data.time(that.frameOffset + x), that.frameOffset + x);
+              that.peaks.emit("user_seek.zoomview", that.data.time(that.frameOffset + x), that.frameOffset + x);
             }
 
             that.stage.off("mousemove mouseup");
@@ -115,18 +115,8 @@ define([
       }
     });
 
-    that.peaks.on("zoomview_user_seek", function (time, frameIndex) {
-      that.options.mediaElement.currentTime = time;
-
-      that.syncPlayhead(frameIndex);
-
-      if (that.playing){
-        that.playFrom(time, that.data.at_time(time));
-      }
-    });
-
-    that.peaks.on("waveform_seek", userSeekHandler);
-    that.peaks.on("overview_user_seek", userSeekHandler);
+    that.peaks.on("player_seek", userSeekHandler);
+    that.peaks.on("user_seek.*", userSeekHandler);
 
     that.peaks.on("player_play", function (time) {
       that.playing = true;
@@ -237,7 +227,7 @@ define([
     if (display) {
       var remPixels = that.playheadPixel - pixelOffset;
 
-      that.zoomPlayheadGroup.show().setAttr("x", remPixels + 0.5);
+      that.zoomPlayheadGroup.show().setAttr("x", remPixels);
       that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
     }
     else {
