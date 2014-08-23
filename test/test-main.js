@@ -26,9 +26,9 @@ requirejs.config({
 
     paths: {
         'peaks': 'src/main',
-        'waveform-data': 'bower_components/waveform-data/dist/waveform-data',
-        'EventEmitter': 'bower_components/eventemitter2/lib/eventemitter2',
-        'Kinetic': 'bower_components/KineticJS/index'
+        'waveform-data': 'node_modules/waveform-data/dist/waveform-data',
+        'EventEmitter': 'node_modules/eventemitter2/lib/eventemitter2',
+        'Kinetic': 'node_modules/kinetic/kinetic'
     },
 
     // ask Require.js to load these files (all our tests)
