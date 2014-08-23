@@ -84,8 +84,8 @@ define(['Kinetic'], function (Kinetic) {
         points: handlePoints,
         fill: color,
         stroke: color,
-	strokeWidth: 1,
-	closed: true
+        strokeWidth: 1,
+        closed: true
       }).on("mouseover", function (event) {
         text.show();
         if (inMarker) text.setX(xPosition - text.getWidth());
@@ -172,12 +172,12 @@ define(['Kinetic'], function (Kinetic) {
           group.label = text;
           group.add(text);
 
-	  var handle = new Kinetic.Line({
+          var handle = new Kinetic.Line({
               points: handlePoints,
               fill: color,
               stroke: color,
-	      strokeWidth: 1,
-	      closed: true
+              strokeWidth: 1,
+              closed: true
           }).on("mouseover", function (event) {
                   text.show();
                   text.setX(xPosition - text.getWidth()); //Position text to the left of the mark

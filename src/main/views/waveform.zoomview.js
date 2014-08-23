@@ -65,19 +65,19 @@ define([
     // INTERACTION ===============================================
 
     that.stage.on("mousedown", function (event) {
-      if (event.targetNode &&
-        !event.targetNode.attrs.draggable &&
-        !event.targetNode.parent.attrs.draggable) {
+      if (event.target &&
+        !event.target.attrs.draggable &&
+        !event.target.parent.attrs.draggable) {
         if (event.type === "mousedown") {
-          var x = event.layerX, dX, p;
+          var x = event.evt.layerX, dX, p;
           that.seeking = true;
 
           // enable drag if necessary
           that.stage.on("mousemove", function (event) {
             that.seeking = false;
 
-            dX = event.layerX > x ? x - event.layerX : (x - event.layerX)*1;
-            x = event.layerX;
+            dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX)*1;
+            x = event.evt.layerX;
             p = that.frameOffset+dX;
             p = p < 0 ? 0 : p > (that.pixelLength - that.width) ? (that.pixelLength - that.width) : p;
 

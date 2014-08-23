@@ -54,28 +54,28 @@ define([
     };
 
     that.stage.on("mousedown", function (event) {
-      if (event.targetNode &&
-        !event.targetNode.attrs.draggable &&
-        !event.targetNode.parent.attrs.draggable) {
+      if (event.target &&
+        !event.target.attrs.draggable &&
+        !event.target.parent.attrs.draggable) {
         if (event.type == "mousedown") {
           that.seeking = true;
 
           var width = that.refWaveformRect.getWidth();
 
           that.updateRefWaveform(
-            that.data.time(event.layerX),
-            that.data.time(event.layerX + width)
+            that.data.time(event.evt.layerX),
+            that.data.time(event.evt.layerX + width)
           );
 
-          peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
+          peaks.emit("overview_user_seek", that.data.time(event.evt.layerX), event.evt.layerX);
 
           that.stage.on("mousemove", function (event) {
             that.updateRefWaveform(
-              that.data.time(event.layerX),
-              that.data.time(event.layerX + width)
+              that.data.time(event.evt.layerX),
+              that.data.time(event.evt.layerX + width)
             );
 
-            peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
+            peaks.emit("overview_user_seek", that.data.time(event.evt.layerX), event.evt.layerX);
           });
 
           that.stage.on("mouseup", cancelSeeking);
