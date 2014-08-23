@@ -13,6 +13,8 @@ define([
   ], function (WaveformAxis, mixins, Kinetic) {
   'use strict';
 
+  var RAF = Kinetic.root.requestAnimationFrame || Kinetic.root.webkitRequestAnimationFrame || Kinetic.root.mozRequestAnimationFrame;
+
   function WaveformZoomView(waveformData, container, peaks) {
     var that = this;
 
@@ -412,7 +414,7 @@ define([
 
       //Update the refwaveform on the overview container
       //bootstrap.pubsub.emit("waveform_zoom_displaying", output_index * that.data.seconds_per_pixel, (output_index+that.width) * that.data.seconds_per_pixel);
-      Kinetic.Animation.requestAnimFrame( function () {
+      RAF( function () {
         that.runZoomAnimation(frameData);
       });
     }
