@@ -31,13 +31,14 @@ define([
     that.data = that.rootData.resample({
       scale: that.options.zoomLevels[peaks.zoom.getZoom()]
     });
-
     that.playheadPixel = that.data.at_time(that.options.mediaElement.currentTime);
     that.pixelLength = that.data.adapter.length;
     that.frameOffset = 0; // the pixel offset of the current frame being displayed
 
     that.width = container.clientWidth;
     that.height = container.clientHeight || that.options.height;
+
+    that.data.offset(that.frameOffset, that.frameOffset + that.width);
 
     that.stage = new Kinetic.Stage({
       container: container,
@@ -99,10 +100,11 @@ define([
 
     // EVENTS ====================================================
 
-    var userSeekHandler = function userSeekHandler (time) {
+    var userSeekHandler = function userSeekHandler (options, time) {
+      options = options || { withOffset: true };
       var frameIndex = that.data.at_time(time);
 
-      that.seekFrame(frameIndex);
+      that.seekFrame(frameIndex, options.withOffset ? Math.round(that.width / 2) : 0);
 
       if (that.playing){
         that.playFrom(time, frameIndex);
@@ -110,13 +112,14 @@ define([
     };
 
     that.peaks.on("player_time_update", function (time) {
-      if (!that.seeking && !that.playing) {
+      if (!that.seeking) {
         that.seekFrame(that.data.at_time(time));
       }
     });
 
-    that.peaks.on("player_seek", userSeekHandler);
-    that.peaks.on("user_seek.*", userSeekHandler);
+    that.peaks.on("player_seek", userSeekHandler.bind(null, { withOffset: true }));
+    that.peaks.on("user_seek.*", userSeekHandler.bind(null, { withOffset: true }));
+    that.peaks.on("user_scrub.*", userSeekHandler.bind(null, { withOffset: false }));
 
     that.peaks.on("player_play", function (time) {
       that.playing = true;
@@ -240,7 +243,6 @@ define([
     // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
 
     that.peaks.emit("waveform_zoom_displaying", pixelOffset * that.data.seconds_per_pixel, (pixelOffset+that.width) * that.data.seconds_per_pixel);
-    that.peaks.emit("waveform_zoom_displaying_finished", pixelOffset * that.data.seconds_per_pixel, (pixelOffset+that.width) * that.data.seconds_per_pixel);
   };
 
   // UI functions ==============================
@@ -304,16 +306,24 @@ define([
     that.uiLayer.draw();
   };
 
-  WaveformZoomView.prototype.seekFrame = function (pixelIndex) {
+  WaveformZoomView.prototype.seekFrame = function (pixelIndex, offset) {
     var that = this;
     var upperLimit = that.data.adapter.length - that.width;
+    var direction = pixelIndex < that.data.offset_start ? 'backwards' : 'onwards';
 
     if (!that.data.in_offset(pixelIndex)) {
       if (pixelIndex > that.width && pixelIndex < upperLimit) {
-        that.frameOffset = pixelIndex - Math.round(that.width / 2);
-      } else if (pixelIndex >= upperLimit) {
+        if (direction === 'backwards') {
+          that.frameOffset = that.data.offset_start - that.width;
+        }
+        else {
+          that.frameOffset = pixelIndex - (offset || 0);
+        }
+      }
+      else if (pixelIndex >= upperLimit) {
         that.frameOffset = upperLimit;
-      } else {
+      }
+      else {
         that.frameOffset = 0;
       }
     }

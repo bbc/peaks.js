@@ -255,18 +255,6 @@ define(['Kinetic'], function (Kinetic) {
       viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);
     },
 
-    // TODO refactor this as markers/rect#update
-    waveformRectDrawFunction: function(waveform) {
-      if (waveform.segments.zoom === undefined){
-        return;
-      }
-
-      this.refWaveformRect.setAttrs({
-        x: waveform.segments.zoom.offset_start - waveform.offset_start,
-        width: waveform.segments.zoom.offset_length
-      });
-    },
-
     /**
      * Format a time nicely
      * @param  {int}      time            Time in seconds to be formatted

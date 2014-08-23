@@ -60,22 +60,10 @@ define([
         if (event.type == "mousedown") {
           that.seeking = true;
 
-          var width = that.refWaveformRect.getWidth();
-
-          that.updateRefWaveform(
-            that.data.time(event.evt.layerX),
-            that.data.time(event.evt.layerX + width)
-          );
-
           peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
 
           that.stage.on("mousemove", function (event) {
-            that.updateRefWaveform(
-              that.data.time(event.evt.layerX),
-              that.data.time(event.evt.layerX + width)
-            );
-
-            peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
+            peaks.emit("user_scrub.overview", that.data.time(event.evt.layerX), event.evt.layerX);
           });
 
           that.stage.on("mouseup", cancelSeeking);
@@ -87,17 +75,14 @@ define([
 
     // EVENTS ====================================================
 
-    peaks.on("player_time_update", function (time) {
-      if (!that.seeking) {
-        that.playheadPixel = that.data.at_time(time);
-        that.updateUi(that.playheadPixel);
-      }
-    });
-
-    peaks.on("user_seek.*", function (time, frame) {
+    function trackPlayheadPosition(time, frame){
       that.playheadPixel = that.data.at_time(time);
       that.updateUi(that.playheadPixel);
-    });
+    }
+
+    peaks.on("player_time_update", trackPlayheadPosition);
+    peaks.on("user_seek.*", trackPlayheadPosition);
+    peaks.on("user_scrub.*", trackPlayheadPosition);
 
     peaks.on("waveform_zoom_displaying", function (start, end) {
       that.updateRefWaveform(start, end);
@@ -203,9 +188,12 @@ define([
     var offset_out = that.data.at_time(time_out);
 
     that.data.set_segment(offset_in, offset_out, "zoom");
-    mixins.waveformRectDrawFunction.call(this, that.data);
 
-    that.refWaveformRect.setWidth(that.data.at_time(time_out) - that.data.at_time(time_in));
+    that.refWaveformRect.setAttrs({
+      x: that.data.segments.zoom.offset_start - that.data.offset_start,
+      width: that.data.at_time(time_out) - that.data.at_time(time_in)
+    });
+
     that.refLayer.draw();
   };
 
