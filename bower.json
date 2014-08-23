@@ -12,10 +12,10 @@
     "test_data"
   ],
   "dependencies": {
-    "KineticJS": "http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.5.5.min.js",
     "waveform-data": "~1.4.0",
     "requirejs": "~2.1.14",
-    "eventemitter2": "~0.4.14"
+    "eventemitter2": "~0.4.14",
+    "kineticjs": "~5.1.0"
   },
   "devDependencies": {}
 }
