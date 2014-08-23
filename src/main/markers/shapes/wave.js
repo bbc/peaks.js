@@ -50,7 +50,8 @@ define([
     var offset_start = segment.offset_start - waveformData.offset_start;
     var y = mixins.interpolateHeight(view.height);
 
-    mixins.drawWaveform.call(this, context, segment.min, segment.max, offset_start, offset_length, y);
+    mixins.drawWaveform(context, segment.min, segment.max, offset_start, offset_length, y);
+    context.fillStrokeShape(this);
   };
 
   return WaveShape;

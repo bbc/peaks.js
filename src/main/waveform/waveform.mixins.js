@@ -212,7 +212,6 @@ define(['Kinetic'], function (Kinetic) {
     });
 
     ctx.closePath();
-    ctx.fillStrokeShape(this);
   }
 
   /**
@@ -246,7 +245,8 @@ define(['Kinetic'], function (Kinetic) {
       var y = interpolateHeightGenerator(view.height);
       var offset_length = waveform.offset_length;
 
-      drawWaveform.call(this, context, waveform.min, waveform.max, 0, offset_length, y);
+      drawWaveform(context, waveform.min, waveform.max, 0, offset_length, y);
+      context.fillStrokeShape(this);
     },
 
     waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
