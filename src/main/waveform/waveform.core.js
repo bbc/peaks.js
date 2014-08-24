@@ -63,8 +63,8 @@ define([
 
           that.waveformOverview = new WaveformOverview(overviewWaveformData, that.ui.overview, peaks);
 
-          peaks.emit("waveformOverviewReady");
           that.bindResize();
+          peaks.emit("waveformOverviewReady");
         };
       },
 
