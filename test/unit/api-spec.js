@@ -10,7 +10,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
     beforeEach(function beforeEach(done) {
       loadAllFixtures();
       sandbox = sinon.sandbox.create();
-      setTimeout(done, 100);
+      done();
     });
 
     /**
@@ -67,7 +67,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
     });
 
     describe('core#getRemoteData', function(){
-      it("should use the defaultDataUriFormat as a hint if dataUri is provided as string", function(done){
+      it("should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string", function(done){
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
@@ -123,6 +123,18 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
 
           done();
         });
+      });
+
+      !('ArrayBuffer' in window) && it("should throw an exception if the only available format is browser incompatible", function(){
+        expect(function() {
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            mediaElement: document.querySelector('audio'),
+            dataUri: {
+              arraybuffer: 'base/test_data/sample.dat'
+            }
+          });
+        }).to.throw();
       });
 
       it("should pick the arraybuffer format over the JSON one", function(done){
