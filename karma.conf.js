@@ -61,7 +61,8 @@ module.exports = function (config) {
     browserNoActivityTimeout: isCI ? 120000 : null,
 
     sauceLabs: {
-      build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',
+      build: process.env.TRAVIS_BUILD_NUMBER || 'local tunnel',
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER || null,
       testName: 'peaks.js',
       startConnect: false
     },
