@@ -105,7 +105,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
         });
       });
 
-      it("should use the arraybuffer dataUri connector or fail if not available", function(done){
+      ('ArrayBuffer' in window) && it("should use the arraybuffer dataUri connector or fail if not available", function(done){
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
@@ -147,7 +147,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
         });
       });
 
-      xit("should build using WebAudio if the API is available and no dataUri is provided", function(done){
+      ('AudioBuffer' in window) && it("should build using WebAudio if the API is available and no dataUri is provided", function(done){
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio')
@@ -156,9 +156,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
 
         p.on('segments.ready', function(){
-          var remoteData = spy.getCall(0).args[0];
-
-          expect(remoteData instanceof WaveformData).to.be.true;
+          expect(spy).to.have.been.calledOnce;
 
           done();
         });

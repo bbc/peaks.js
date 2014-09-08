@@ -60,12 +60,14 @@ define([
 
         // WebAudio Builder
         if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
+          options.mediaElement.load();
+
           requestType = 'arraybuffer';
           uri = options.mediaElement.currentSrc || options.mediaElement.src;
           builder = 'webaudio';
         }
 
-        if(!uri && !requestType) {
+        if(!uri) {
           throw new Error("Unable to determine a compatible dataUri format for this browser.");
         }
 
