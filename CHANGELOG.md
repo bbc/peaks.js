@@ -1,6 +1,20 @@
 ## Change Log
 
-### 0.3.0-beta.2 (2014/06/28 16:29 +00:00)
+### 0.3.1 (2014/09/08 11:05 +00:00)
+- [#74](https://github.com/bbcrd/peaks.js/pull/74) 0.3 Build System Fix (@oncletom)
+
+### 0.3.0 (2014/08/21 13:19 +00:00)
+- [#71](https://github.com/bbcrd/peaks.js/pull/71) eventEmitter -> eventemitter2 (@oncletom)
+
+### 0.3.0-beta.5 (2014/07/10 17:28 +00:00)
+- [#62](https://github.com/bbcrd/peaks.js/pull/62) Added waveformZoomReady event (after segments and points initialized) (@chainlink)
+
+### 0.3.0-beta.3 (2014/07/10 16:14 +00:00)
+- [#52](https://github.com/bbcrd/peaks.js/pull/52) Custom Height for each container (@oncletom)
+- [#63](https://github.com/bbcrd/peaks.js/pull/63) Fixed Bug when using grunt build for vanilla JS (Kinetic Not Found). (@chainlink)
+- [#66](https://github.com/bbcrd/peaks.js/pull/66) Simplified build system. (@oncletom)
+
+### 0.3.0-beta.2 (2014/06/28 16:31 +00:00)
 - [#51](https://github.com/bbcrd/peaks.js/pull/51) Delete segments (@oncletom)
 
 ### 0.3.0-beta.1 (2014/06/27 19:26 +00:00)
