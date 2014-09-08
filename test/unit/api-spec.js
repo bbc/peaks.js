@@ -10,7 +10,7 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
     beforeEach(function beforeEach(done) {
       loadAllFixtures();
       sandbox = sinon.sandbox.create();
-      done();
+      setTimeout(done, 100);
     });
 
     /**

@@ -60,8 +60,6 @@ define([
 
         // WebAudio Builder
         if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
-          options.mediaElement.load();
-
           requestType = 'arraybuffer';
           uri = options.mediaElement.currentSrc || options.mediaElement.src;
           builder = 'webaudio';
