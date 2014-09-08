@@ -39,7 +39,7 @@
     "build": "browserify -t deamdify ./src/main.js -p [minifyify --map peaks.min.map --output peaks.min.map] -s peaks -o peaks.min.js",
     "test": "npm run test-pre && ./node_modules/karma/bin/karma start --single-run",
     "test-pre": "jshint ./src",
-    "test-watch": "FAST=true ./node_modules/karma/bin/karma start --auto-watch --no-single-run",
+    "test-watch": "FAST=true ./node_modules/karma/bin/karma start --auto-watch --no-single-run --browsers Chrome,'IE9 - Win7'",
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body",
     "start": "http-server -o"
   },
@@ -49,20 +49,20 @@
     "http-server": "^0.6.1",
     "jshint": "^2.5.1",
     "karma": "~0.12.0",
-    "karma-sinon-chai": "~0.2.0",
     "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-html2js-preprocessor": "~0.1",
+    "karma-ievms": "~0.0.4",
     "karma-mocha": "~0.1.7",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma-requirejs": "~0.1.0",
     "karma-safari-launcher": "~0.1.1",
     "karma-sauce-launcher": "~0.2.10",
+    "karma-sinon-chai": "~0.2.0",
     "minifyify": "^3.0.11",
     "mocha": "~1.17.1"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "optionalDependencies": {
     "browserify": "^4.2.0",
     "deamdify": "^0.1.1"
