@@ -71,19 +71,19 @@ module.exports = function (config) {
         base: 'SauceLabs',
         browserName: 'chrome',
         platform: 'OS X 10.6',
-        version: '27'
+        version: '33'
       },
       'SauceFirefox': {
         base: 'SauceLabs',
         browserName: 'firefox',
         platform: 'Windows 7',
-        version: '26'
+        version: '29'
       },
       'SauceFirefoxLinux': {
         base: 'SauceLabs',
         browserName: 'firefox',
         platform: 'Linux',
-        version: '26'
+        version: '29'
       },
       'SauceSafari6': {
         base: 'SauceLabs',

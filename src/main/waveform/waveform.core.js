@@ -65,7 +65,7 @@ define([
           builder = 'webaudio';
         }
 
-        if(!uri && !requestType) {
+        if(!uri) {
           throw new Error("Unable to determine a compatible dataUri format for this browser.");
         }
 
