@@ -15,6 +15,12 @@ before_install:
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"
 
+script:
+- npm run test-pre
+- ./node_modules/karma/bin/karma start --browsers SauceFirefox,SauceFirefoxLinux
+- ./node_modules/karma/bin/karma start --browsers SauceChrome,SauceSafari6,SauceSafari7
+- ./node_modules/karma/bin/karma start --browsers SauceIE9,SauceIE10,SauceIE11
+
 after_script:
 - npm run build
 
