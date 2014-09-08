@@ -61,7 +61,7 @@ module.exports = function (config) {
     browserNoActivityTimeout: isCI ? 120000 : null,
 
     sauceLabs: {
-      build: process.env.TRAVIS_JOB_NUMBER || 'local tunnel',
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER || null,
       testName: 'peaks.js',
       startConnect: false
     },
@@ -77,7 +77,7 @@ module.exports = function (config) {
         base: 'SauceLabs',
         browserName: 'firefox',
         platform: 'Windows 7',
-        version: '21'
+        version: '26'
       },
       'SauceFirefoxLinux': {
         base: 'SauceLabs',
