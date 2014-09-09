@@ -1,15 +1,14 @@
 define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
   describe("Peaks.segments", function () {
 
-    var p, sandbox;
+    var p;
 
     /**
      * SETUP =========================================================
      */
 
-    beforeEach(function beforeEach(done) {
+    before(function before(done) {
       loadAllFixtures();
-      sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
@@ -24,12 +23,15 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       p.on('segments.ready', done);
     });
 
+    beforeEach(function(){
+      p.segments.removeAll();
+    });
+
     /**
      * TEARDOWN ======================================================
      */
 
-    afterEach(function (done) {
-      sandbox.restore();
+    after(function (done) {
       removeAllFixtures();
       done();
     });
