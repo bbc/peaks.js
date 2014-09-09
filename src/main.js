@@ -370,6 +370,16 @@ define('peaks', [
             self.waveform.points.render();
 
             return indexes.length;
+          },
+
+          /**
+           * Remove all points
+           *
+           * @api
+           * @since 0.3.2
+           */
+          removeAll: function removeAll(){
+            self.waveform.points.removeAll();
           }
         };
       }
