@@ -29,7 +29,7 @@ module.exports = function (config) {
       { pattern: 'test/*.html' },
       { pattern: 'src/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
-      { pattern: 'test_data/sample.*', included: false, served: true },
+      { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
       'test/test-main.js'
     ],
 

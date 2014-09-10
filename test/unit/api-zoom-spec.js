@@ -1,4 +1,4 @@
-define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
+define(['peaks'], function(Peaks){
   describe("Peaks.zoom", function () {
 
     var p, sandbox;
@@ -23,12 +23,11 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       p.on('segments.ready', done);
     });
 
-    /**
-     * TEARDOWN ======================================================
-     */
+    beforeEach(function(){
+      p.zoom.setZoom(0);
+    });
 
     afterEach(function(){
-      p.zoom.setZoom(0);
       sandbox.restore();
     });
 

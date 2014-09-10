@@ -4,17 +4,11 @@ cache:
   directories:
   - node_modules
   - bower_components
-before_install:
-- npm install -g bower serve --production
-- bower install
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- npm run build
-- cd .. && mv peaks.js peaks-js && cd peaks-js
 env:
   global:
   - secure: Bg08bmtZxlt18xVd7IT3Ft8rC8Cd3iT2txSqoFKaUERu2FzlaPvi+DS5K0SeOqAB9LfyRST/Msdg+jmPEvQ/0VXa2lfhqf31YSrXStnd9h1Owxr53KPV3O6FX1mfH8RlmHVDosKUR6mJeiush4MSEFPCmB1VBTwpyRcbBt3sbJ0=
   - secure: M4PJdQwYF0dWq+/bMhz4WTRhiKnDuuvgwLImzGQQ0I5zEz6yQofUVmXsAdYkqTvhr8klO+XQktzq62wsWADIe1eb5Vlym87rZweA1MmhzhpfSgYSwQ9IdpVXRbqFVB7HbqrGTHqOSfGOu27e8z4RNg8h3EXCiTnN1qHyY0N5vrI=
+  matrix:
   - BROWSER=BSChrome27
   - BROWSER=BSChromeLatest
   - BROWSER=BSFirefox26
@@ -24,6 +18,15 @@ env:
   - BROWSER=BSIE9
   - BROWSER=BSIE10
   - BROWSER=BSIE11
+before_install:
+- npm install -g bower serve --production
+- bower install
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- cd .. && mv peaks.js peaks-js && cd peaks-js
+before_script:
+- npm run build
 script:
+- npm start & sleep 2
 - npm run test-pre
-- ./node_modules/karma/bin/karma --browsers $BROWSER --single-run
+- ./node_modules/karma/bin/karma start --browsers $BROWSER --single-run
