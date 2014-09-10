@@ -17,13 +17,8 @@ function loadFixtures(filename){
   return el;
 }
 
-function removeFixtures(filename){
-  document.body.removeChild(document.getElementById('fixtures-container-' + filename));
-}
-
 var fixtureFiles = ['audioElement', 'waveformContainer'];
 var loadAllFixtures = fixtureFiles.forEach.bind(fixtureFiles, loadFixtures);
-var removeAllFixtures = fixtureFiles.forEach.bind(fixtureFiles, removeFixtures);
 
 requirejs.config({
     // Karma serves files from '/base'
@@ -40,6 +35,9 @@ requirejs.config({
     deps: tests,
 
     // start test run, once Require.js is done
-    callback: window.__karma__.start
+    callback: function(){
+      loadAllFixtures();
+      window.__karma__.start();
+    }
 });
 

@@ -4,8 +4,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
 
     var sandbox, p;
 
-    beforeEach(function beforeEach(done) {
-      loadAllFixtures();
+    before(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -21,9 +20,9 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       p.on('segments.ready', done);
     });
 
-    afterEach(function () {
-      removeAllFixtures();
+    afterEach(function(){
       sandbox.restore();
+      document.querySelector('audio').currentTime = 0;
     });
 
     describe("getCurrentTime", function(){

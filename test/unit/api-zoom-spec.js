@@ -7,8 +7,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
      * SETUP =========================================================
      */
 
-    beforeEach(function beforeEach(done) {
-      loadAllFixtures();
+    before(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -28,10 +27,9 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
      * TEARDOWN ======================================================
      */
 
-    afterEach(function (done) {
+    afterEach(function(){
+      p.zoom.setZoom(0);
       sandbox.restore();
-      removeAllFixtures();
-      done();
     });
 
     /**

@@ -4,8 +4,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
 
     var sandbox, p;
 
-    beforeEach(function beforeEach(done) {
-      loadAllFixtures();
+    before(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -22,7 +21,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
     });
 
     afterEach(function(){
-      removeAllFixtures();
+      p.segments.removeAll();
       sandbox.restore();
     });
 
