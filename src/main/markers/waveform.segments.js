@@ -241,6 +241,16 @@ define([
       return index;
     };
 
+    this.removeAll = function removeAllSegments(){
+      this.views.forEach(function(view){
+        view.segmentLayer.removeChildren();
+      });
+
+      this.segments = [];
+
+      this.render();
+    };
+
     /**
      * Performs the rendering of the segments on screen
      *

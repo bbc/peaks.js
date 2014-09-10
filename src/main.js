@@ -288,13 +288,7 @@ define('peaks', [
           },
 
           removeAll: function () {
-            self.waveform.segments.segments.forEach(function (segment) {
-              self.waveform.segments.remove(segment);
-            });
-
-            self.waveform.segments.segments = [];
-
-            self.waveform.segments.updateSegments();
+            self.waveform.segments.removeAll();
           },
 
           getSegments: function () {
@@ -370,6 +364,16 @@ define('peaks', [
             self.waveform.points.render();
 
             return indexes.length;
+          },
+
+          /**
+           * Remove all points
+           *
+           * @api
+           * @since 0.3.2
+           */
+          removeAll: function removeAll(){
+            self.waveform.points.removeAll();
           }
         };
       }

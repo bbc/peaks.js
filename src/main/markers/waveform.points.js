@@ -142,6 +142,16 @@ define([
       return index;
     };
 
+    this.removeAll = function removeAllPoints(){
+      this.views.forEach(function(view){
+        view.pointLayer.removeChildren();
+      });
+
+      this.points = [];
+
+      this.render();
+    };
+
     /**
      * Performs the rendering of the segments on screen
      *

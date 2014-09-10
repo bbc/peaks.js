@@ -55,7 +55,7 @@ module.exports = function (config) {
     // Start these browsers, currently available:
     browsers : isCI
       ? ['Firefox', 'SauceSafari6', 'SauceIE9', 'SauceIE10']
-      : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox']),
+      : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']),
 
     browserDisconnectTolerance: isCI ? 3 : 1,
     browserNoActivityTimeout: isCI ? 120000 : null,
