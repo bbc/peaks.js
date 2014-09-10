@@ -202,8 +202,8 @@ define('peaks', [
     return instance;
   };
 
-
-  Peaks.prototype = Object.create(EventEmitter.prototype, {
+  // Temporary workaround while https://github.com/asyncly/EventEmitter2/pull/122
+  Peaks.prototype = Object.create((EventEmitter.EventEmitter2 || EventEmitter).prototype, {
     segments: {
       get: function () {
         var self = this;
