@@ -8,8 +8,6 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
      */
 
     before(function before(done) {
-      loadAllFixtures();
-
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
@@ -25,15 +23,6 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
 
     beforeEach(function(){
       p.segments.removeAll();
-    });
-
-    /**
-     * TEARDOWN ======================================================
-     */
-
-    after(function (done) {
-      removeAllFixtures();
-      done();
     });
 
     /**

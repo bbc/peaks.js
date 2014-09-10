@@ -8,7 +8,6 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
      */
 
     beforeEach(function beforeEach(done) {
-      loadAllFixtures();
       sandbox = sinon.sandbox.create();
       setTimeout(done, 100);
     });
@@ -17,10 +16,8 @@ define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kine
      * TEARDOWN ======================================================
      */
 
-    afterEach(function (done) {
-      removeAllFixtures();
+    afterEach(function () {
       sandbox.restore();
-      done();
     });
 
     /**
