@@ -1,5 +1,9 @@
 ## Change Log
 
+### 0.3.2 (2014/09/10 09:51 +00:00)
+- [#75](https://github.com/bbcrd/peaks.js/pull/75) Travis + IE9 tests to work again (@oncletom)
+- [#79](https://github.com/bbcrd/peaks.js/pull/79) EventEmitter2 prototype workaround. (@oncletom)
+
 ### 0.3.1 (2014/09/08 11:05 +00:00)
 - [#74](https://github.com/bbcrd/peaks.js/pull/74) 0.3 Build System Fix (@oncletom)
 
