@@ -20,6 +20,10 @@ define(['peaks'], function(Peaks){
       p.on('segments.ready', done);
     });
 
+    beforeEach(function(){
+      document.querySelector('audio').currentTime = 0;
+    });
+
     afterEach(function(){
       sandbox.restore();
     });
