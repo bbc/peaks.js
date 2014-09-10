@@ -22,7 +22,6 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
 
     afterEach(function(){
       sandbox.restore();
-      document.querySelector('audio').currentTime = 0;
     });
 
     describe("getCurrentTime", function(){
