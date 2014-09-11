@@ -7,7 +7,7 @@ define(['peaks'], function(Peaks){
      * SETUP =========================================================
      */
 
-    before(function beforeEach(done) {
+    beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -21,10 +21,6 @@ define(['peaks'], function(Peaks){
       });
 
       p.on('segments.ready', done);
-    });
-
-    beforeEach(function(){
-      p.zoom.setZoom(0);
     });
 
     afterEach(function(){
@@ -63,7 +59,7 @@ define(['peaks'], function(Peaks){
         expect(p.zoom.getZoom()).to.equal(0);
       });
 
-      it("should be inefficient if the zoom level index is an inexisting index", function (){
+      it("should be inefficient if the zoom level index is an unexisting index", function (){
         p.options.zoomLevels = [512, 1024];
 
         p.zoom.setZoom(2);

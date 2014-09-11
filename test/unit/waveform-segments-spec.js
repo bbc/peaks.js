@@ -4,7 +4,7 @@ define(['peaks'], function(Peaks){
 
     var sandbox, p;
 
-    before(function beforeEach(done) {
+    beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -21,7 +21,6 @@ define(['peaks'], function(Peaks){
     });
 
     afterEach(function(){
-      p.segments.removeAll();
       sandbox.restore();
     });
 

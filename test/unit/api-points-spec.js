@@ -7,7 +7,7 @@ define(['peaks'], function (Peaks) {
      * SETUP =========================================================
      */
 
-    before(function (done) {
+    beforeEach(function (done) {
       p = Peaks.init({
         container:    document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
@@ -17,10 +17,6 @@ define(['peaks'], function (Peaks) {
       });
 
       p.on('points.ready', done);
-    });
-
-    beforeEach(function(){
-      p.points.removeAll();
     });
 
     /**

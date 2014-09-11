@@ -4,7 +4,7 @@ define(['peaks'], function(Peaks){
 
     var sandbox, p;
 
-    before(function beforeEach(done) {
+    beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -20,10 +20,6 @@ define(['peaks'], function(Peaks){
       p.on('segments.ready', done);
     });
 
-    beforeEach(function(){
-      document.querySelector('audio').currentTime = 0;
-    });
-
     afterEach(function(){
       sandbox.restore();
     });
@@ -32,7 +28,7 @@ define(['peaks'], function(Peaks){
       var newTime = 6.0;
 
       it("should return the actual value of the audio element", function(){
-        expect(p.time.getCurrentTime()).to.equal(document.querySelector('audio').currentTime);
+        expect(p.time.getCurrentTime()).to.equal(0);
       });
 
       //@see https://github.com/bbcrd/peaks.js/issues/9
