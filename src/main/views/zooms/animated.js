@@ -86,10 +86,8 @@ define(["Kinetic"], function (Kinetic) {
        */
       return function(frame){
         if (frameData.length) {
-          var intermediate_data = frameData.shift();
-
           //Send correct resampled waveform data object to drawFunc and draw it
-          that.intermediateData = intermediate_data;
+          that.intermediateData = frameData.shift();
           that.zoomWaveformLayer.draw();
         }
         else {
@@ -98,7 +96,7 @@ define(["Kinetic"], function (Kinetic) {
           that.pointLayer.setVisible(true);
           that.seekFrame(that.data.at_time(that.currentTime));
         }
-      }
+      };
     }
   };
 });
