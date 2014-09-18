@@ -1,30 +1,29 @@
 language: node_js
 node_js: '0.10'
-
-addons:
-  sauce_connect: true
-
 cache:
   directories:
   - node_modules
   - bower_components
-
 before_install:
-- npm install -g bower --production
+- npm install -g bower serve --production
 - bower install
-- "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start"
-
-script:
-- npm run test-pre
-- ./node_modules/karma/bin/karma start --browsers SauceFirefox,SauceFirefoxLinux
-- ./node_modules/karma/bin/karma start --browsers SauceChrome,SauceSafari6,SauceSafari7
-- ./node_modules/karma/bin/karma start --browsers SauceIE9,SauceIE10,SauceIE11
-
-after_script:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 - npm run build
-
+- cd .. && mv peaks.js peaks-js && cd peaks-js
 env:
   global:
-  - secure: Dvv2FqDqWdvqyNxZ2RFn75JLZLbIcXoialla3Dxn4ikTVQ57TWrz40j65EWxJliGa8+a4MK2msqtZEm3+zbNa0iV/cOfxvBtHM6O0MbaneVQwtFKtQsptfwTHppizk52E6FSPNEb+rsHThyGcwP66mksq06inGS9UGEFlxI+X7Y=
-  - secure: HtaQh9PNw+2fyLkF9Sf52BoswncG4E639yN1JSYqHHZ+GwAn9C3UC6WK/MzSl9iPDGiTBmebI6Xj5r30Tp573BzwJ7XhnAnwbsEpdUCpVP9kqqZrkP0KJyZ0YQqlyW1//ustgxP98D47Mb0DCfBvC6/zIora5LmvQTCrZJudCBU=
+  - secure: Bg08bmtZxlt18xVd7IT3Ft8rC8Cd3iT2txSqoFKaUERu2FzlaPvi+DS5K0SeOqAB9LfyRST/Msdg+jmPEvQ/0VXa2lfhqf31YSrXStnd9h1Owxr53KPV3O6FX1mfH8RlmHVDosKUR6mJeiush4MSEFPCmB1VBTwpyRcbBt3sbJ0=
+  - secure: M4PJdQwYF0dWq+/bMhz4WTRhiKnDuuvgwLImzGQQ0I5zEz6yQofUVmXsAdYkqTvhr8klO+XQktzq62wsWADIe1eb5Vlym87rZweA1MmhzhpfSgYSwQ9IdpVXRbqFVB7HbqrGTHqOSfGOu27e8z4RNg8h3EXCiTnN1qHyY0N5vrI=
+  - BROWSER=BSChrome27
+  - BROWSER=BSChromeLatest
+  - BROWSER=BSFirefox26
+  - BROWSER=BSFirefoxLatest
+  - BROWSER=BSSafari6
+  - BROWSER=BSSafari7
+  - BROWSER=BSIE9
+  - BROWSER=BSIE10
+  - BROWSER=BSIE11
+script:
+- npm run test-pre
+- ./node_modules/karma/bin/karma --browsers $BROWSER --single-run
