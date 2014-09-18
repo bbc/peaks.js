@@ -1,6 +1,14 @@
+'use strict';
+
+function filterBrowsers(browsers, re){
+  return Object.keys(browsers).filter(function(key){
+    return re.test(key);
+  });
+}
+
 module.exports = function (config) {
 
-  var isCI = Boolean(process.env.CI);
+  var isCI = (Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY)) === true;
   var isFast = Boolean(process.env.FAST);
 
   config.set({
@@ -52,65 +60,74 @@ module.exports = function (config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch : false,
 
-    // Start these browsers, currently available:
-    browsers : isCI
-      ? ['BSChrome', 'BSFirefox', 'BSSafari6', 'BSSafari7', 'BSIE9', 'BSIE10', 'BSIE11']
-      : (isFast ? ['Chrome'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']),
-
     browserDisconnectTolerance: isCI ? 3 : 1,
     browserNoActivityTimeout: isCI ? 120000 : null,
 
     browserStack: {
-      build: process.env.TRAVIS_JOB_NUMBER || 'localhost',
-      project: 'peaks.js'
+      build: process.env.TRAVIS_JOB_NUMBER || ('localhost ' + Date.now()),
+      project: 'bbcrd/peaks.js'
     },
 
     customLaunchers: {
-      'BSChrome': {
+      'BSChrome27': {
         base: 'BrowserStack',
-        browser: 'Chrome',
+        browser: 'chrome',
         browser_version: '27.0',
-        os: 'OS X',
-        os_version: '10.6'
+        os: 'Windows',
+        os_version: 'XP'
       },
-      'BSFirefox': {
+      'BSChromeLatest': {
         base: 'BrowserStack',
-        browser: 'Firefox',
+        browser: 'chrome',
+        browser_version: 'latest',
+        os: 'OS X',
+        os_version: 'Mavericks'
+      },
+      'BSFirefox26': {
+        base: 'BrowserStack',
+        browser: 'firefox',
         browser_version: '26.0',
         os: 'Windows',
         os_version: '7'
       },
+      'BSFirefoxLatest': {
+        base: 'BrowserStack',
+        browser: 'firefox',
+        browser_version: 'latest',
+        os: 'OS X',
+        os_version: 'Mavericks'
+      },
       'BSSafari6': {
         base: 'BrowserStack',
-        browser: 'Safari',
+        browser: 'safari',
         browser_version: '6.0',
         os: 'OS X',
         os_version: 'Lion'
       },
       'BSSafari7': {
         base: 'BrowserStack',
-        browser: 'Safari',
+        browser: 'safari',
         browser_version: '7.0',
         os: 'OS X',
         os_version: 'Mavericks'
       },
       'BSIE9': {
         base: 'BrowserStack',
-        browser: 'IE',
+        browser: 'ie',
         browser_version: '9.0',
         os: 'Windows',
         os_version: '7'
       },
       'BSIE10': {
         base: 'BrowserStack',
-        browser: 'IE',
+        browser: 'ie',
         browser_version: '10',
         os: 'Windows',
         os_version: '8'
       },
       'BSIE11': {
         base: 'BrowserStack',
-        browser: 'IE',
+        browser: 'ie',
         browser_version: '11',
         os: 'Windows',
         os_version: '8.1'
@@ -124,5 +141,9 @@ module.exports = function (config) {
     // if true, it capture browsers, run tests and exit
     singleRun : true
 
+  });
+
+  config.set({
+    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']
   });
 };
