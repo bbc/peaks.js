@@ -375,6 +375,10 @@ define([
         output_index = newPixelIndex - (that.width/2);
       }
 
+      if (input_index < 0) {
+        input_index = 0;
+      }
+
       var resampled = that.rootData.resample({ // rootData should be swapped for your resampled dataset
         scale:        frame_sample_rate,
         input_index:  Math.floor(input_index),
