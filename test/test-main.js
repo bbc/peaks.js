@@ -11,7 +11,7 @@ for (var file in window.__karma__.files) {
 function loadFixtures(filename){
   var el = document.createElement('div');
   el.id = 'fixtures-container-' + filename;
-  el.innerHTML = window.__html__['test/'+ filename +'.html'];
+  el.innerHTML = window.__html__['test/'+ filename +'.html'].replace('localhost', window.location.hostname);
   document.body.appendChild(el);
 
   return el;

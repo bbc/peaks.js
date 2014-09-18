@@ -1,4 +1,4 @@
-define(['peaks', 'waveform-data', 'Kinetic'], function(Peaks, WaveformData, Kinetic){
+define(['peaks'], function(Peaks){
   describe("Peaks API interface", function () {
 
     var sandbox;

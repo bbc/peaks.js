@@ -403,10 +403,12 @@ The output of the build will be located in the `build/js` folder, alongside its 
 
 ## Live Demo
 
-This command will open a livereload demo page of Peaks to reflect every source code change.
+This command will serve a working version of Peaks to reflect your local updates.
 
 ```bash
 npm start
+
+# then open http://localhost:9000 in a Web browser
 ```
 
 # Testing

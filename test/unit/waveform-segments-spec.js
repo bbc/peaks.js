@@ -1,10 +1,10 @@
-define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
+define(['peaks'], function(Peaks){
 
   describe("player/waveform/waveform.segments", function () {
 
     var sandbox, p;
 
-    before(function beforeEach(done) {
+    beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -21,7 +21,6 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
     });
 
     afterEach(function(){
-      p.segments.removeAll();
       sandbox.restore();
     });
 

@@ -1,4 +1,4 @@
-define(['peaks', 'Kinetic'], function (Peaks, Kinetic) {
+define(['peaks'], function (Peaks) {
   describe("Peaks.points", function () {
 
     var p;
@@ -7,7 +7,7 @@ define(['peaks', 'Kinetic'], function (Peaks, Kinetic) {
      * SETUP =========================================================
      */
 
-    before(function (done) {
+    beforeEach(function (done) {
       p = Peaks.init({
         container:    document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
@@ -17,10 +17,6 @@ define(['peaks', 'Kinetic'], function (Peaks, Kinetic) {
       });
 
       p.on('points.ready', done);
-    });
-
-    beforeEach(function(){
-      p.points.removeAll();
     });
 
     /**

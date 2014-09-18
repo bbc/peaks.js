@@ -1,4 +1,4 @@
-define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
+define(['peaks'], function(Peaks){
   describe("Peaks.zoom", function () {
 
     var p, sandbox;
@@ -7,7 +7,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
      * SETUP =========================================================
      */
 
-    before(function beforeEach(done) {
+    beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
       p = Peaks.init({
@@ -23,12 +23,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
       p.on('segments.ready', done);
     });
 
-    /**
-     * TEARDOWN ======================================================
-     */
-
     afterEach(function(){
-      p.zoom.setZoom(0);
       sandbox.restore();
     });
 
@@ -64,7 +59,7 @@ define(['peaks', 'Kinetic'], function(Peaks, Kinetic){
         expect(p.zoom.getZoom()).to.equal(0);
       });
 
-      it("should be inefficient if the zoom level index is an inexisting index", function (){
+      it("should be inefficient if the zoom level index is an unexisting index", function (){
         p.options.zoomLevels = [512, 1024];
 
         p.zoom.setZoom(2);
