@@ -7,9 +7,7 @@
 define(function () {
   'use strict';
 
-  function BaseShape(){
-    console.log('BaseShape');
-  }
+  function BaseShape(){}
 
   function noop(){}
 

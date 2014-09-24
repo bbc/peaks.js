@@ -24,6 +24,8 @@ define('peaks', [
   };
 
   function Peaks (container) {
+    EventEmitter.call(this, { wildcard: true });
+
     this.options = {
       /**
        * Array of scale factors (samples per pixel) for the zoom levels (big >> small)
@@ -185,6 +187,9 @@ define('peaks', [
 
     instance.waveform = new Waveform(instance);
     instance.waveform.init(buildUi(instance.container));
+
+    // TODO maybe to move in the player object
+    instance.seeking = false;
 
     instance.on("waveformOverviewReady", function () {
       instance.waveform.openZoomView();

@@ -150,6 +150,14 @@ define([
         peaks.on("zoomview_resized", function () {
           that.ui.zoom.removeAttribute('hidden');
         });
+
+        peaks.on("user_seek.*", function(time){
+          peaks.player.seekBySeconds(time);
+        });
+
+        peaks.on("user_scrub.*", function(time){
+          peaks.player.seekBySeconds(time);
+        });
       }
     };
   };

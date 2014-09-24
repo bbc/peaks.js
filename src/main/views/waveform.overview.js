@@ -22,7 +22,6 @@ define([
     that.width = container.clientWidth;
     that.height = container.clientHeight || that.options.height;
     that.frameOffset = 0;
-    that.seeking = false;
 
     that.stage = new Kinetic.Stage({
       container: container,
@@ -50,32 +49,20 @@ define([
     // INTERACTION ===============================================
     var cancelSeeking = function(){
       that.stage.off("mousemove mouseup");
-      that.seeking = false;
+      peaks.seeking = false;
     };
 
     that.stage.on("mousedown", function (event) {
-      if (event.targetNode &&
-        !event.targetNode.attrs.draggable &&
-        !event.targetNode.parent.attrs.draggable) {
+      if (event.target &&
+        !event.target.attrs.draggable &&
+        !event.target.parent.attrs.draggable) {
         if (event.type == "mousedown") {
-          that.seeking = true;
+          peaks.seeking = true;
 
-          var width = that.refWaveformRect.getWidth();
-
-          that.updateRefWaveform(
-            that.data.time(event.layerX),
-            that.data.time(event.layerX + width)
-          );
-
-          peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
+          peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
 
           that.stage.on("mousemove", function (event) {
-            that.updateRefWaveform(
-              that.data.time(event.layerX),
-              that.data.time(event.layerX + width)
-            );
-
-            peaks.emit("overview_user_seek", that.data.time(event.layerX), event.layerX);
+            peaks.emit("user_scrub.overview", that.data.time(event.evt.layerX), event.evt.layerX);
           });
 
           that.stage.on("mouseup", cancelSeeking);
@@ -87,19 +74,16 @@ define([
 
     // EVENTS ====================================================
 
-    peaks.on("player_time_update", function (time) {
-      if (!that.seeking) {
+    function trackPlayheadPosition(time, frame){
+      if (!peaks.seaking) {
         that.playheadPixel = that.data.at_time(time);
         that.updateUi(that.playheadPixel);
       }
-    });
+    }
 
-    peaks.on("overview_user_seek", function (time, frame) {
-      that.playheadPixel = frame;
-      that.updateUi(that.playheadPixel);
-
-      that.options.mediaElement.currentTime = time;
-    });
+    peaks.on("player_time_update", trackPlayheadPosition);
+    peaks.on("user_seek.*", trackPlayheadPosition);
+    peaks.on("user_scrub.*", trackPlayheadPosition);
 
     peaks.on("waveform_zoom_displaying", function (start, end) {
       that.updateRefWaveform(start, end);
@@ -161,12 +145,13 @@ define([
     var that = this;
 
     this.playheadLine = new Kinetic.Line({
-      points: that._getPlayheadPoints(0),
+      points: [0.5, 0, 0.5, that.height],
       stroke: that.options.playheadColor,
-      strokeWidth: 1
+      strokeWidth: 1,
+      x: 0
     });
 
-    that.uiLayer = new Kinetic.Layer();
+    that.uiLayer = new Kinetic.Layer({ index: 100 });
     that.axis = new WaveformAxis(that);
 
     this.uiLayer.add(this.playheadLine);
@@ -204,22 +189,20 @@ define([
     var offset_out = that.data.at_time(time_out);
 
     that.data.set_segment(offset_in, offset_out, "zoom");
-    mixins.waveformRectDrawFunction.call(this, that.data);
 
-    that.refWaveformRect.setWidth(that.data.at_time(time_out) - that.data.at_time(time_in));
+    that.refWaveformRect.setAttrs({
+      x: that.data.segments.zoom.offset_start - that.data.offset_start,
+      width: that.data.at_time(time_out) - that.data.at_time(time_in)
+    });
+
     that.refLayer.draw();
   };
 
   WaveformOverview.prototype.updateUi = function (pixel) {
     var that = this;
-    that.playheadLine.setAttr("points", that._getPlayheadPoints(pixel));
-    that.uiLayer.setZIndex(100);
-    that.uiLayer.draw();
-  };
 
-  WaveformOverview.prototype._getPlayheadPoints = function (pixelOffset) {
-    var that = this;
-    return [{x:pixelOffset+0.5, y:0},{x:pixelOffset+0.5, y:that.height}];
+    that.playheadLine.setAttr("x", pixel);
+    that.uiLayer.draw();
   };
 
   return WaveformOverview;

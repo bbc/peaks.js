@@ -26,21 +26,10 @@ define(['Kinetic'], function (Kinetic) {
      * @return {Kinetic Object}     Kinetic group object of handle marker elements
      */
     return function (draggable, segment, parent, onDrag) {
-      var markerTop     = 0,
-          markerX       = 0.5,
-          handleTop     = (height / 2) - 10.5,
-          handleBottom  = (height / 2) + 9.5,
-          markerBottom  = height,
-          handleX       = inMarker ? -19.5 : 19.5;
-
-      var handlePoints = [
-        [markerX, markerTop],
-        [markerX, handleTop],
-        [handleX, handleTop],
-        [handleX, handleBottom],
-        [markerX, handleBottom],
-        [markerX, markerBottom]
-      ];
+      var handleHeight = 20;
+      var handleWidth = handleHeight / 2;
+      var handleY = (height / 2) - 10.5;
+      var handleX = inMarker ? -handleWidth + 0.5 : 0.5;
 
       var group = new Kinetic.Group({
         draggable: draggable,
@@ -78,21 +67,43 @@ define(['Kinetic'], function (Kinetic) {
       });
       text.hide();
       group.label = text;
-      group.add(text);
 
-      var handle = new Kinetic.Polygon({
-        points: handlePoints,
+      var handle = new Kinetic.Rect({
+        width: handleWidth,
+        height: handleHeight,
         fill: color,
         stroke: color,
-        strokeWidth: 1
-      }).on("mouseover", function (event) {
-        text.show();
+        strokeWidth: 1,
+        x: handleX,
+        y: handleY
+      });
+
+      /*
+      Vertical Line
+       */
+      var line = new Kinetic.Line({
+        points: [0.5, 0, 0.5, height],
+        strokeWidth: 1,
+        stroke: color,
+        x: 0,
+        y: 0
+      });
+
+      /*
+      Events
+       */
+      handle.on("mouseover", function (event) {
         if (inMarker) text.setX(xPosition - text.getWidth());
+        text.show();
         segment.view.segmentLayer.draw();
-      }).on("mouseout", function (event) {
+      });
+      handle.on("mouseout", function (event) {
         text.hide();
         segment.view.segmentLayer.draw();
       });
+
+      group.add(text);
+      group.add(line);
       group.add(handle);
 
       return group;
@@ -114,21 +125,10 @@ define(['Kinetic'], function (Kinetic) {
        * @return {Kinetic Object}     Kinetic group object of handle marker elements
        */
       return function (draggable, point, parent, onDrag, onDblClick, onDragEnd) {
-          var markerTop     = 0,
-              markerX       = 0.5,
-              handleTop     = (height / 2) - 10.5,
-              handleBottom  = (height / 2) + 9.5,
-              markerBottom  = height,
-              handleX       = 9.75; //Place in the middle of the marker
-
-          var handlePoints = [
-              [markerX, markerTop],
-              [markerX, handleTop],
-              [handleX, handleTop],
-              [handleX, handleBottom],
-              [markerX, handleBottom],
-              [markerX, markerBottom]
-          ];
+          var handleTop = (height / 2) - 10.5;
+          var handleWidth = 10;
+          var handleHeight = 20;
+          var handleX = 0.5; //Place in the middle of the marker
 
           var group = new Kinetic.Group({
               draggable: draggable,
@@ -156,7 +156,7 @@ define(['Kinetic'], function (Kinetic) {
           }
 
           //Place text to the left of the mark
-          var xPosition = -24;
+          var xPosition = -handleWidth;
 
           var text = new Kinetic.Text({
               x: xPosition,
@@ -169,22 +169,45 @@ define(['Kinetic'], function (Kinetic) {
           });
           text.hide();
           group.label = text;
-          group.add(text);
 
-          var handle = new Kinetic.Polygon({
-              points: handlePoints,
-              fill: color,
-              stroke: color,
-              strokeWidth: 1
-          }).on("mouseover", function (event) {
-                  text.show();
-                  text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
-                  point.view.pointLayer.draw();
-              }).on("mouseout", function (event) {
-                  text.hide();
-                  point.view.pointLayer.draw();
-              });
+          /*
+          Handle
+           */
+          var handle = new Kinetic.Rect({
+            width: handleWidth,
+            height: handleHeight,
+            fill: color,
+            x: handleX,
+            y: handleTop
+          });
+
+          /*
+          Line
+           */
+          var line = new Kinetic.Line({
+            points: [0, 0, 0, height],
+            stroke: color,
+            strokeWidth: 1,
+            x: handleX,
+            y: 0
+          });
+
+          /*
+          Events
+           */
+          handle.on("mouseover", function (event) {
+            text.show();
+            text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
+            point.view.pointLayer.draw();
+          });
+          handle.on("mouseout", function (event) {
+            text.hide();
+            point.view.pointLayer.draw();
+          });
+
           group.add(handle);
+          group.add(line);
+          group.add(text);
 
           return group;
 
@@ -193,7 +216,7 @@ define(['Kinetic'], function (Kinetic) {
 
   /**
    * Draw a waveform on a canvas context
-   * @param  {Object}   ctx           Canvas Context to draw on
+   * @param  {Kinetic.Context}  ctx   Canvas Context to draw on
    * @param  {Array}    min           Min values for waveform
    * @param  {Array}    max           Max values for waveform
    * @param  {Int}      offset_start  Where to start drawing
@@ -234,30 +257,23 @@ define(['Kinetic'], function (Kinetic) {
 
     drawWaveform: drawWaveform,
 
-    waveformDrawFunction: function (view, canvas) {
+    /**
+     *
+     * @this {Kinetic.Shape}
+     * @param {WaveformOverview} view
+     * @param {Kinetic.Context} context
+     */
+    waveformDrawFunction: function (view, context) {
       var waveform = view.intermediateData || view.data;
       var y = interpolateHeightGenerator(view.height);
       var offset_length = waveform.offset_length;
-      var ctx = canvas.getContext();
 
-      drawWaveform(ctx, waveform.min, waveform.max, 0, offset_length, y);
-      canvas.fillStroke(this);
+      drawWaveform(context, waveform.min, waveform.max, 0, offset_length, y);
+      context.fillStrokeShape(this);
     },
 
     waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
       viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);
-    },
-
-    // TODO refactor this as markers/rect#update
-    waveformRectDrawFunction: function(waveform) {
-      if (waveform.segments.zoom === undefined){
-        return;
-      }
-
-      this.refWaveformRect.setAttrs({
-        x: waveform.segments.zoom.offset_start - waveform.offset_start,
-        width: waveform.segments.zoom.offset_length
-      });
     },
 
     /**

@@ -3,7 +3,6 @@ node_js: '0.10'
 cache:
   directories:
   - node_modules
-  - bower_components
 env:
   global:
   - secure: Bg08bmtZxlt18xVd7IT3Ft8rC8Cd3iT2txSqoFKaUERu2FzlaPvi+DS5K0SeOqAB9LfyRST/Msdg+jmPEvQ/0VXa2lfhqf31YSrXStnd9h1Owxr53KPV3O6FX1mfH8RlmHVDosKUR6mJeiush4MSEFPCmB1VBTwpyRcbBt3sbJ0=
@@ -19,10 +18,6 @@ env:
   - BROWSER=BSIE10
   - BROWSER=BSIE11
 before_install:
-- npm install -g bower serve --production
-- bower install
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
 - cd .. && mv peaks.js peaks-js && cd peaks-js
 before_script:
 - npm run build

@@ -35,10 +35,10 @@ define([
    *
    * @this  {Kinetic.Shape}
    * @param {WaveformData} waveform
-   * @param {Canvas} canvas
+   * @param {Kinetic.Context} context
    * @param {interpolateHeight} y
    */
-  WaveShape.drawFunc = function WaveShapedrawFunc(view, segmentId, canvas){
+  WaveShape.drawFunc = function WaveShapedrawFunc(view, segmentId, context){
     var waveformData = view.data;
 
     if (waveformData.segments[segmentId] === undefined){
@@ -48,11 +48,10 @@ define([
     var segment = waveformData.segments[segmentId];
     var offset_length = segment.offset_length;
     var offset_start = segment.offset_start - waveformData.offset_start;
-    var ctx = canvas.getContext();
     var y = mixins.interpolateHeight(view.height);
 
-    mixins.drawWaveform(ctx, segment.min, segment.max, offset_start, offset_length, y);
-    canvas.fillStroke(this);
+    mixins.drawWaveform(context, segment.min, segment.max, offset_start, offset_length, y);
+    context.fillStrokeShape(this);
   };
 
   return WaveShape;

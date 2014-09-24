@@ -23,9 +23,9 @@ module.exports = function (config) {
     files : [
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'bower_components/eventemitter2/lib/*.js', included: false },
-      { pattern: 'bower_components/waveform-data/dist/*.js', included: false },
-      { pattern: 'bower_components/KineticJS/*.js', included: false },
+      { pattern: 'node_modules/eventemitter2/lib/*.js', included: false },
+      { pattern: 'node_modules/waveform-data/dist/*.js', included: false },
+      { pattern: 'node_modules/kinetic/*.js', included: false },
       { pattern: 'test/*.html' },
       { pattern: 'src/**/*.js', included: false },
       { pattern: 'test/unit/**/*.js', included: false },
