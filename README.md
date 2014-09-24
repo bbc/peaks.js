@@ -385,9 +385,7 @@ The project *bundles* everything you need to do so.
 ```bash
 git clone https://github.com/bbcrd/peaks.js.git
 cd peaks.js
-npm install -g bower
 npm install
-bower install
 ```
 
 ## Building
@@ -399,7 +397,7 @@ It will indeed be UMD compatible, so as you can continue to use it with AMD or C
 npm run build
 ```
 
-The output of the build will be located in the `build/js` folder, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+The output of the build will be located as `peaks.min.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
 ## Live Demo
 
@@ -407,9 +405,9 @@ This command will serve a working version of Peaks to reflect your local updates
 
 ```bash
 npm start
-
-# then open http://localhost:9000 in a Web browser
 ```
+
+Then open http://localhost:9000 in a Web browser.
 
 # Testing
 

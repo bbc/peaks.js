@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./src/main.js",
   "contributors": [
@@ -36,7 +36,7 @@
   },
   "license": "LGPL 3",
   "scripts": {
-    "build": "browserify -t deamdify ./src/main.js -p [minifyify --map peaks.min.map --output peaks.min.map] -s peaks -o peaks.min.js",
+    "build": "browserify -d ./src/main.js -p [minifyify --map peaks.min.map --output peaks.min.map] -s peaks -o peaks.min.js",
     "test": "npm run test-pre && ./node_modules/karma/bin/karma start --single-run",
     "test-pre": "jshint ./src",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run",
@@ -44,30 +44,29 @@
     "start": "serve --cors -p 9000"
   },
   "devDependencies": {
-    "chai": "~1.9.1",
-    "github-changes": "^0.0.10",
+    "browserify": "^5.12.0",
+    "chai": "^1.9.1",
+    "deamdify": "^0.1.1",
+    "github-changes": "0.0.12",
     "jshint": "^2.5.1",
-    "karma": "~0.12.0",
+    "karma": "^0.12.0",
     "karma-browserstack-launcher": "^0.1.1",
-    "karma-chrome-launcher": "~0.1.0",
-    "karma-firefox-launcher": "~0.1.0",
-    "karma-html2js-preprocessor": "~0.1",
-    "karma-ievms": "~0.0.4",
-    "karma-mocha": "~0.1.7",
-    "karma-requirejs": "~0.1.0",
-    "karma-safari-launcher": "~0.1.1",
-    "karma-sinon-chai": "~0.2.0",
-    "minifyify": "^3.0.11",
-    "mocha": "~1.17.1",
-    "serve": "~1.4.0"
+    "karma-chrome-launcher": "^0.1.0",
+    "karma-firefox-launcher": "^0.1.0",
+    "karma-html2js-preprocessor": "^0.1",
+    "karma-ievms": "^0.0.4",
+    "karma-mocha": "^0.1.7",
+    "karma-requirejs": "^0.2.2",
+    "karma-safari-launcher": "^0.1.1",
+    "karma-sinon-chai": "^0.2.0",
+    "minifyify": "^4.2.0",
+    "mocha": "^1.17.1",
+    "requirejs": "^2.1.15",
+    "serve": "^1.4.0"
   },
   "dependencies": {
-    "eventemitter2": "~0.4.14",
-    "kinetic": "~5.0.6",
-    "waveform-data": "~1.4.0"
-  },
-  "optionalDependencies": {
-    "browserify": "^4.2.0",
-    "deamdify": "^0.1.1"
+    "eventemitter2": "^0.4.14",
+    "kinetic": "^5.0.6",
+    "waveform-data": "^1.4.0"
   }
 }

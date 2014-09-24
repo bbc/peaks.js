@@ -1,5 +1,11 @@
 ## Change Log
 
+### 0.4.0 (2014/09/24 12:11 +00:00)
+- [#78](https://github.com/bbcrd/peaks.js/pull/78) peaks.points.removeAll() method (@oncletom)
+- [#81](https://github.com/bbcrd/peaks.js/pull/81) beforeEach -> before, afterEach -> after (@oncletom)
+- [#84](https://github.com/bbcrd/peaks.js/pull/84) Switch from SauceLabs to BrowserStack (@oncletom)
+- [#72](https://github.com/bbcrd/peaks.js/pull/72) Upgrade to Kinetic 5.10 (@oncletom)
+
 ### 0.3.2 (2014/09/10 09:51 +00:00)
 - [#75](https://github.com/bbcrd/peaks.js/pull/75) Travis + IE9 tests to work again (@oncletom)
 - [#79](https://github.com/bbcrd/peaks.js/pull/79) EventEmitter2 prototype workaround. (@oncletom)
