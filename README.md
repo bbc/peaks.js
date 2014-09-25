@@ -59,7 +59,7 @@ requirejs.config({
   paths: {
     peaks: 'bower_components/peaks.js/src/main',
     EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
-    Kinetic: 'bower_components/Kinetic/index',
+    Kinetic: 'bower_components/kineticjs/kinetic',
     'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
   }
 });
