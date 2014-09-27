@@ -118,7 +118,13 @@ define('peaks', [
        */
       pointMarkerColor:     '#FF0000', //Color for the point marker
       pointDblClickHandler: null, //Handler called when point handle double clicked.
-      pointDragEndHandler:  null // Called when the point handle has finished dragging
+      pointDragEndHandler:  null, // Called when the point handle has finished dragging
+
+      /**
+       * Configure appearance, or non appearance, of segments
+       */
+      showSegmentsInZoomView : true, // whether segments are displayed in the Zoom view
+      showSegmentsInOverview: true // whether segments are displayed in the Overview view
 
     };
 
