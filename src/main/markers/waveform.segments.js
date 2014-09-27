@@ -15,7 +15,20 @@ define([
     var self = this;
 
     self.segments = [];
-    self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
+
+    var views = [];
+
+    // if we are configured to show segments in the zoom view, make sure this view is included
+    if (peaks.options.showSegmentsInZoomView) {
+      views.push (peaks.waveform.waveformZoomView);
+    }
+
+    // if we are configured to show segments in the zoom view, make sure this view is included
+    if (peaks.options.showSegmentsInOverview) {
+      views.push (peaks.waveform.waveformOverview);
+    }
+
+    self.views = views.map(function(view){
       if (!view.segmentLayer) {
         view.segmentLayer = new Kinetic.Layer();
         view.stage.add(view.segmentLayer);
@@ -35,10 +48,21 @@ define([
         editable: editable
       };
 
-      var segmentZoomGroup = new Kinetic.Group();
-      var segmentOverviewGroup = new Kinetic.Group();
+      var segmentZoomGroup, segmentOverviewGroup;
 
-      var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
+      var segmentGroups = [];
+
+      // if we are configured to show segments in the zoom view, make sure this view is included
+      if (peaks.options.showSegmentsInZoomView) {
+        segmentZoomGroup = new Kinetic.Group();
+        segmentGroups.push (segmentZoomGroup);
+      }
+
+      // if we are configured to show segments in the zoom view, make sure this view is included
+      if (peaks.options.showSegmentsInOverview) {
+        segmentOverviewGroup = new Kinetic.Group();
+        segmentGroups.push (segmentOverviewGroup);
+      }
 
       var menter = function (event) {
         this.parent.label.show();
@@ -79,70 +103,84 @@ define([
         view.segmentLayer.add(segmentGroup);
       });
 
-      segment.zoom = segmentZoomGroup;
-      segment.zoom.view = peaks.waveform.waveformZoomView;
-      segment.overview = segmentOverviewGroup;
-      segment.overview.view = peaks.waveform.waveformOverview;
+      if (segmentZoomGroup) {
+        segment.zoom = segmentZoomGroup;
+        segment.zoom.view = peaks.waveform.waveformZoomView;
+      }
+
+      if (segmentOverviewGroup) {
+        segment.overview = segmentOverviewGroup;
+        segment.overview.view = peaks.waveform.waveformOverview;
+      }
 
       return segment;
     };
 
     var updateSegmentWaveform = function (segment) {
-      // Binding with data
-      peaks.waveform.waveformOverview.data.set_segment(peaks.waveform.waveformOverview.data.at_time(segment.startTime), peaks.waveform.waveformOverview.data.at_time(segment.endTime), segment.id);
-      peaks.waveform.waveformZoomView.data.set_segment(peaks.waveform.waveformZoomView.data.at_time(segment.startTime), peaks.waveform.waveformZoomView.data.at_time(segment.endTime), segment.id);
 
-      // Overview
-      var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
-      var overviewEndOffset = peaks.waveform.waveformOverview.data.at_time(segment.endTime);
+      if (segment.overview) {
+        // Overview
+        //
+        // Binding with data
+        peaks.waveform.waveformOverview.data.set_segment(peaks.waveform.waveformOverview.data.at_time(segment.startTime), peaks.waveform.waveformOverview.data.at_time(segment.endTime), segment.id);
 
-      segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
+        var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
+        var overviewEndOffset = peaks.waveform.waveformOverview.data.at_time(segment.endTime);
 
-      if (segment.editable) {
-        if (segment.overview.inMarker) segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
-        if (segment.overview.outMarker) segment.overview.outMarker.show().setX(overviewEndOffset);
-
-        // Change Text
-        segment.overview.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
-        segment.overview.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
-      }
-
-      // Label
-      // segment.overview.label.setX(overviewStartOffset);
-
-      SegmentShape.update.call(segment.overview.waveformShape, peaks.waveform.waveformOverview, segment.id);
-      segment.overview.view.segmentLayer.draw();
-
-      // Zoom
-      var zoomStartOffset = peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
-      var zoomEndOffset = peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
-
-      var frameStartOffset = peaks.waveform.waveformZoomView.frameOffset;
-      var frameEndOffset = peaks.waveform.waveformZoomView.frameOffset + peaks.waveform.waveformZoomView.width;
-
-      if (zoomStartOffset < frameStartOffset) zoomStartOffset = frameStartOffset;
-      if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
-
-      if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
-        var startPixel = zoomStartOffset - frameStartOffset;
-        var endPixel = zoomEndOffset - frameStartOffset;
-
-        segment.zoom.show();
-
-        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
+        segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
         if (segment.editable) {
-          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
-          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
+          if (segment.overview.inMarker) segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
+          if (segment.overview.outMarker) segment.overview.outMarker.show().setX(overviewEndOffset);
 
           // Change Text
-          segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
-          segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
+          segment.overview.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
+          segment.overview.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
         }
 
-      } else {
-        segment.zoom.hide();
+        // Label
+        // segment.overview.label.setX(overviewStartOffset);
+
+        SegmentShape.update.call(segment.overview.waveformShape, peaks.waveform.waveformOverview, segment.id);
+        segment.overview.view.segmentLayer.draw();
       }
+
+
+      if (segment.zoom) {
+        // Zoom
+        peaks.waveform.waveformZoomView.data.set_segment(peaks.waveform.waveformZoomView.data.at_time(segment.startTime), peaks.waveform.waveformZoomView.data.at_time(segment.endTime), segment.id);
+
+        var zoomStartOffset = peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
+        var zoomEndOffset = peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
+
+        var frameStartOffset = peaks.waveform.waveformZoomView.frameOffset;
+        var frameEndOffset = peaks.waveform.waveformZoomView.frameOffset + peaks.waveform.waveformZoomView.width;
+
+        if (zoomStartOffset < frameStartOffset) zoomStartOffset = frameStartOffset;
+        if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
+
+        if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
+          var startPixel = zoomStartOffset - frameStartOffset;
+          var endPixel = zoomEndOffset - frameStartOffset;
+
+          segment.zoom.show();
+
+          SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
+
+          if (segment.editable) {
+            if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
+            if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
+
+            // Change Text
+            segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
+            segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
+          }
+
+        } else {
+          segment.zoom.hide();
+        }
+      }
+
     };
 
     var segmentHandleDrag = function (thisSeg, segment) {
@@ -235,8 +273,13 @@ define([
       if (typeof index === 'number'){
         segment = this.segments[index];
 
-        segment.overview.destroy();
-        segment.zoom.destroy();
+        if (segment.overview) {
+          segment.overview.destroy();
+        }
+
+        if (segment.view) {
+          segment.zoom.destroy();
+        }
       }
 
       return index;
