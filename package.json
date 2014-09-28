@@ -67,6 +67,6 @@
   "dependencies": {
     "eventemitter2": "^0.4.14",
     "kinetic": "^5.0.6",
-    "waveform-data": "^1.4.2"
+    "waveform-data": "git+ssh://git@bitbucket.org/flowpress/waveform-data.js.git#default-scale"
   }
 }

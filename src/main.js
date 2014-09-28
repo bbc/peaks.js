@@ -118,8 +118,15 @@ define('peaks', [
        */
       pointMarkerColor:     '#FF0000', //Color for the point marker
       pointDblClickHandler: null, //Handler called when point handle double clicked.
-      pointDragEndHandler:  null // Called when the point handle has finished dragging
+      pointDragEndHandler:  null, // Called when the point handle has finished dragging
 
+      /**
+       * Waveform Scale
+       */
+       waveformBuilderOptions: {
+        scale: 512,
+        scale_adjuster: 127
+       }
     };
 
     /**
