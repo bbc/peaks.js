@@ -342,10 +342,6 @@ define(['Kinetic'], function (Kinetic) {
       return createPointHandle(options.height, options.pointMarkerColor);
     },
 
-    defaultNonEditablePointMarker: function(options) {
-      return createNonEditablePointHandle(options.height, options.pointMarkerColor);
-    },
-
     defaultSegmentLabelDraw: function (options) {
       return function (segment, parent) {
         return new Kinetic.Text({

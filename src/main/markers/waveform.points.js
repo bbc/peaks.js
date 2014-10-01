@@ -6,8 +6,7 @@
  */
 define([
   "peaks/waveform/waveform.mixins",
-  "Kinetic",
-  "peaks/views/waveform.overview"
+  "Kinetic"
 ], function (mixins, Kinetic, WaveformOverview) {
 
   return function (peaks) {
@@ -36,7 +35,7 @@ define([
       pointGroups.forEach(function(pointGroup, i){
         var view = self.views[i];
 
-        if(view instanceof WaveformOverview) {
+        if(view === peaks.waveform.waveformOverview) {
           pointGroup.marker = new peaks.options.pointMarker(false, pointGroup, point, null, null, null);
           pointGroup.add(pointGroup.marker);
         } else {
