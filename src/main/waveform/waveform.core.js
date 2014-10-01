@@ -84,11 +84,7 @@ define([
         xhr.onload = function(response) {
           if (this.readyState === 4 && this.status === 200) {
             if (builder){
-              if(options.waveformBuilderOptions) {
                 WaveformData.builders[builder](response.target.response, options.waveformBuilderOptions, that.handleRemoteData.bind(that));
-              } else {
-                WaveformData.builders[builder](response.target.response, that.handleRemoteData.bind(that));
-              }
             }
             else {
               that.handleRemoteData(response.target, xhr);
