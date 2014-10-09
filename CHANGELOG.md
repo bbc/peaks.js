@@ -1,6 +1,9 @@
 ## Change Log
 
-### 0.4.0 (2014/09/24 12:11 +00:00)
+### 0.4.1 (2014/10/09 19:12 +00:00)
+- [#86](https://github.com/bbcrd/peaks.js/pull/86) Fix Kinetic bower path in README. (@oncletom)
+
+### 0.4.0 (2014/09/24 12:15 +00:00)
 - [#78](https://github.com/bbcrd/peaks.js/pull/78) peaks.points.removeAll() method (@oncletom)
 - [#81](https://github.com/bbcrd/peaks.js/pull/81) beforeEach -> before, afterEach -> after (@oncletom)
 - [#84](https://github.com/bbcrd/peaks.js/pull/84) Switch from SauceLabs to BrowserStack (@oncletom)

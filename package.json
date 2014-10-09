@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./src/main.js",
   "contributors": [
@@ -47,7 +47,7 @@
     "browserify": "^5.12.0",
     "chai": "^1.9.1",
     "deamdify": "^0.1.1",
-    "github-changes": "0.0.12",
+    "github-changes": "^0.0.12",
     "jshint": "^2.5.1",
     "karma": "^0.12.0",
     "karma-browserstack-launcher": "^0.1.1",
