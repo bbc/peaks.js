@@ -121,7 +121,11 @@ define('peaks', [
       pointDragEndHandler:  null, // Called when the point handle has finished dragging
 
       /**
-       * Waveform Scale
+       * WaveformData WebAudio Decoder Options
+       *
+       * You mostly want to play with the 'scale' option.
+       *
+       * @see https://github.com/bbcrd/waveform-data.js/blob/master/lib/builders/webaudio.js
        */
        waveformBuilderOptions: {
         scale: 512,
