@@ -118,8 +118,19 @@ define('peaks', [
        */
       pointMarkerColor:     '#FF0000', //Color for the point marker
       pointDblClickHandler: null, //Handler called when point handle double clicked.
-      pointDragEndHandler:  null // Called when the point handle has finished dragging
+      pointDragEndHandler:  null, // Called when the point handle has finished dragging
 
+      /**
+       * WaveformData WebAudio Decoder Options
+       *
+       * You mostly want to play with the 'scale' option.
+       *
+       * @see https://github.com/bbcrd/waveform-data.js/blob/master/lib/builders/webaudio.js
+       */
+       waveformBuilderOptions: {
+        scale: 512,
+        scale_adjuster: 127
+       }
     };
 
     /**
