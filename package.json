@@ -44,9 +44,7 @@
     "start": "serve --cors -p 9000"
   },
   "devDependencies": {
-    "browserify": "^5.12.0",
     "chai": "^1.9.1",
-    "deamdify": "^0.1.1",
     "github-changes": "^0.0.12",
     "jshint": "^2.5.1",
     "karma": "^0.12.0",
@@ -68,5 +66,9 @@
     "eventemitter2": "^0.4.14",
     "kinetic": "^5.0.6",
     "waveform-data": "^1.4.3"
+  },
+  "optionalDependencies": {
+    "browserify": "^5.12.0",
+    "deamdify": "^0.1.1"
   }
 }
