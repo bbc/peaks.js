@@ -1,5 +1,8 @@
 ## Change Log
 
+### 0.4.3 (2014/10/15 12:34 +00:00)
+- [#101](https://github.com/bbcrd/peaks.js/pull/101) deamdify and browserify back to optionalDependencies. (@oncletom)
+
 ### 0.4.1 (2014/10/09 19:12 +00:00)
 - [#86](https://github.com/bbcrd/peaks.js/pull/86) Fix Kinetic bower path in README. (@oncletom)
 
