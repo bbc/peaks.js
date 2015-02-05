@@ -126,8 +126,6 @@ define([
 
         segment.zoom.show();
 
-        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
-
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
           if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
@@ -136,6 +134,10 @@ define([
           segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
           segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
         }
+
+        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
+
+        segment.zoom.view.segmentLayer.draw();
 
       } else {
         segment.zoom.hide();
