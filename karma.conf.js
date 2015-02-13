@@ -144,6 +144,6 @@ module.exports = function (config) {
   });
 
   config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']
+    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : (isFast ? ['Chrome', 'Firefox'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7'])
   });
 };
