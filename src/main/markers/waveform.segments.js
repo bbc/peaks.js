@@ -199,15 +199,7 @@ define([
      * @return {Object}
      */
     this.createSegment = function (startTime, endTime, editable, color, labelText) {
-      var segmentId = null;
-      var sId = self.segments.length;
-      while (segmentId === null) {
-        if (JSON.stringify(self.segments).indexOf('segment' + sId ) > -1) {
-          sId++;
-        } else {
-          segmentId = 'segment' + sId;
-        }
-      }
+      var segmentId = "segment" + self.segments.length;
 
       if ((startTime >= 0) === false){
         throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");
