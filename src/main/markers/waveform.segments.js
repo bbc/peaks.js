@@ -65,9 +65,6 @@ define([
 
         if (editable) {
           var draggable = true;
-          if (segmentGroup === segmentOverviewGroup) {
-            draggable = false;
-          }
 
           segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.inMarker);
@@ -129,8 +126,6 @@ define([
 
         segment.zoom.show();
 
-        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
-
         if (segment.editable) {
           if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
           if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
@@ -139,6 +134,10 @@ define([
           segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
           segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
         }
+
+        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
+
+        segment.zoom.view.segmentLayer.draw();
 
       } else {
         segment.zoom.hide();
@@ -200,7 +199,15 @@ define([
      * @return {Object}
      */
     this.createSegment = function (startTime, endTime, editable, color, labelText) {
-      var segmentId = "segment" + self.segments.length;
+      var segmentId = null;
+      var sId = self.segments.length;
+      while (segmentId === null) {
+        if (JSON.stringify(self.segments).indexOf('segment' + sId ) > -1) {
+          sId++;
+        } else {
+          segmentId = 'segment' + sId;
+        }
+      }
 
       if ((startTime >= 0) === false){
         throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");

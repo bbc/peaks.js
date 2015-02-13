@@ -311,19 +311,11 @@ define([
     var direction = pixelIndex < that.data.offset_start ? 'backwards' : 'onwards';
 
     if (!that.data.in_offset(pixelIndex)) {
-      if (pixelIndex > that.width && pixelIndex < upperLimit) {
-        if (direction === 'backwards') {
-          that.frameOffset = that.data.offset_start - that.width;
-        }
-        else {
-          that.frameOffset = pixelIndex - (offset || 0);
-        }
-      }
-      else if (pixelIndex >= upperLimit) {
-        that.frameOffset = upperLimit;
-      }
-      else {
+      that.frameOffset = pixelIndex - Math.round(that.width / 2);
+      if (that.frameOffset <= 0) {
         that.frameOffset = 0;
+      } else if (that.frameOffset + that.width >= that.data.adapter.length) {
+        that.frameOffset = upperLimit;
       }
     }
 
