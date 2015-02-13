@@ -61,6 +61,33 @@ define(['peaks'], function(Peaks){
           });
         }).to.throw(/width/);
       });
+
+      it("should thrown an exception if the logger is defined and not a function", function(){
+        expect(function(){
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            mediaElement: document.querySelector('audio'),
+            dataUri: 'base/test_data/sample.json',
+            logger: 'foo'
+          });
+        }).to.throw(/logger/);
+      });
+
+      it("should broadcast errors to a configurable logger", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json',
+          logger: sandbox.spy()
+        });
+
+        p.emit('error', new Error('Expected to be logged.'));
+
+        setTimeout(function(){
+          expect(p.logger).to.have.been.calledOnce;
+          done();
+        }, 0);
+      });
     });
 
     describe('core#getRemoteData', function(){
@@ -77,6 +104,21 @@ define(['peaks'], function(Peaks){
           var xhr = spy.getCall(0).args[1];
 
           expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
+
+          done();
+        });
+      });
+
+      it("should emit an error if the data handling fails", function(done){
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/404-file.json'
+        });
+
+        var spy = sandbox.spy();
+
+        p.on('error', function(err){
 
           done();
         });
@@ -171,7 +213,6 @@ define(['peaks'], function(Peaks){
         });
       });
     });
-
   });
 
 });
