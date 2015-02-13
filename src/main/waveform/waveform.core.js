@@ -82,12 +82,17 @@ define([
         }
 
         xhr.onload = function(response) {
-          if (this.readyState === 4 && this.status === 200) {
-            if (builder){
-              WaveformData.builders[builder](response.target.response, options.waveformBuilderOptions, that.handleRemoteData.bind(that));
+          if (this.readyState === 4) {
+            if (this.status === 200) {
+              if (builder){
+                WaveformData.builders[builder](response.target.response, options.waveformBuilderOptions, that.handleRemoteData.bind(that, null));
+              }
+              else {
+                that.handleRemoteData(null, response.target, xhr);
+              }
             }
             else {
-              that.handleRemoteData(response.target, xhr);
+              that.handleRemoteData(new Error('Unable to fetch remote data. HTTP Status ' + this.status));
             }
           }
         };
@@ -97,16 +102,28 @@ define([
 
       /**
        *
+       * @param err {Error}
        * @param remoteData {WaveformData|ProgressEvent}
        * @param xhr {XMLHttpRequest}
        */
-      handleRemoteData: function (remoteData, xhr) {
-        this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
-        var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
+      handleRemoteData: function (err, remoteData, xhr) {
+        if (err) {
+          return peaks.emit('error', err);
+        }
 
-        this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
+        this.origWaveformData = null;
 
-        peaks.emit("waveformOverviewReady");
+        try {
+          this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
+          var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
+          this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
+        }
+        catch (e) {
+          return peaks.emit('error', e);
+        }
+
+
+        peaks.emit("waveformOverviewReady", this.waveformOverview);
         this.bindResize();
       },
 
@@ -121,7 +138,7 @@ define([
         that.points = new WaveformPoints(peaks);
         that.points.init();
 
-        peaks.emit('waveformZoomReady');
+        peaks.emit('waveformZoomReady', that.waveformZoomView);
       },
 
       /**

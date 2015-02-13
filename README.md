@@ -124,10 +124,10 @@ var options = {
   /** REQUIRED OPTIONS **/
   // Containing element
   container: document.getElementById('peaks-container'),
-  
+
   // HTML5 Media element containing an audio track
   mediaElement: document.querySelector('audio'),
-  
+
   /** Optional config with defaults **/
   // URI to waveform data file in binary or JSON
   dataUri: {
@@ -135,36 +135,39 @@ var options = {
     json: '../test_data/sample.json',
   },
 
+  // async logging function
+  logger: console.error.bind(console),
+
   // default height of the waveform canvases in pixels
   height: 200,
-  
+
   // Array of zoom levels in samples per pixel (big >> small)
   zoomLevels: [512, 1024, 2048, 4096],
-  
+
   // Bind keyboard controls
   keyboard: false,
-  
+
   // Keyboard nudge increment in seconds (left arrow/right arrow)
   nudgeIncrement: 0.01,
-  
+
   // Colour for the in marker of segments
   inMarkerColor: '#a0a0a0',
-  
+
   // Colour for the out marker of segments
   outMarkerColor: '#a0a0a0',
-  
+
   // Colour for the zoomed in waveform
   zoomWaveformColor: 'rgba(0, 225, 128, 1)',
-  
+
   // Colour for the overview waveform
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
-  
+
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
-  
+
   // Colour of the play head
   playheadColor: 'rgba(0, 0, 0, 1)',
-  
+
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 

@@ -64,6 +64,13 @@ define('peaks', [
        */
       dataUriDefaultFormat:  'json',
       /**
+       * Will report errors to that function
+       *
+       * @type {Function=}
+       * @since 0.5.0
+       */
+      logger:                null,
+      /**
        * Bind keyboard controls
        */
       keyboard:              false,
@@ -144,6 +151,13 @@ define('peaks', [
      * @type {number}
      */
     this.currentZoomLevel = 0;
+
+    /**
+     * Asynchronous errors logger.
+     *
+     * @type {Function}
+     */
+    this.logger = console.error.bind(console);
   }
 
   Peaks.init = function init (opts) {
@@ -153,12 +167,12 @@ define('peaks', [
       opts.mediaElement = opts.audioElement;
 
       if (console && typeof console.log === 'function') {
-        console.log('`audioElement` option is deprecated. Please use `mediaElement` instead.');
+        console.log('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
       }
     }
 
     if (!opts.mediaElement) {
-      throw new Error("Please provide an audio element.");
+      throw new Error("[Peaks.init] Please provide an audio element.");
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
@@ -166,11 +180,15 @@ define('peaks', [
     }
 
     if (!opts.container) {
-      throw new Error("Please provide a container object.");
+      throw new Error("[Peaks.init] Please provide a container object.");
     }
 
     if ((opts.container.clientWidth > 0) === false) {
-      throw new TypeError("Please ensure that the container has a width.");
+      throw new TypeError("[Peaks.init] Please ensure that the container has a width.");
+    }
+
+    if (opts.logger && typeof opts.logger !== 'function') {
+      throw new TypeError("[Peaks.init] The `logger` option should be a function.");
     }
 
     var instance = new Peaks(opts.container);
@@ -183,6 +201,18 @@ define('peaks', [
       pointMarker:      mixins.defaultPointMarker(instance.options)
     });
 
+    /*
+     Setup the logger
+     */
+    if (opts.logger) {
+      instance.logger = opts.logger;
+    }
+
+    instance.on('error', instance.logger.bind(null));
+
+    /*
+     Setup the layout
+     */
     if (typeof instance.options.template === 'string') {
       instance.container.innerHTML = instance.options.template;
     }
@@ -198,6 +228,9 @@ define('peaks', [
     instance.player = new AudioPlayer(instance);
     instance.player.init(instance.options.mediaElement);
 
+    /*
+     Setup the UI components
+     */
     instance.waveform = new Waveform(instance);
     instance.waveform.init(buildUi(instance.container));
 
