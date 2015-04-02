@@ -96,12 +96,12 @@ define(["peaks/waveform/waveform.mixins", "Kinetic"], function (mixins, Kinetic)
     // Distance between waveform start time and first axis marker (pixels)
     var axisLabelOffsetPixels = this.view.data.at_time(axisLabelOffsetSecs);
 
-    context.setAttr('strokeStyle', '#ccc');
+    context.setAttr('strokeStyle', this.view.options.axisGridlineColor);
     context.setAttr('lineWidth', 1);
 
     // Set text style
     context.setAttr('font', "11px sans-serif");
-    context.setAttr('fillStyle', "#aaa");
+    context.setAttr('fillStyle', this.view.options.axisLabelColor);
     context.setAttr('textAlign', "left");
     context.setAttr('textBaseline', "bottom");
 
