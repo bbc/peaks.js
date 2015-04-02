@@ -111,6 +111,14 @@ define('peaks', [
        */
       playheadColor:         'rgba(0, 0, 0, 1)',
       /**
+       * Colour of the axis gridlines
+      */
+      axisGridlineColor:     '#ccc',
+      /**
+       * Colour of the axis labels
+       */
+      axisLabelColor:        '#aaa',
+      /**
        *
        */
       template:              [
