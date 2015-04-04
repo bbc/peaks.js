@@ -345,7 +345,7 @@ instance.segments.add([
 ]);
 ```
 
-## #`instance.segments.getSegments()`
+### `instance.segments.getSegments()`
 
 Returns an array of objects representing all displayed segments present on the timeline in the segment format.
 
