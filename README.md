@@ -423,7 +423,7 @@ If you are developing and want to repeatedly run tests in a browser on your mach
 
 See [COPYING](COPYING)
 
-This project includes sample audio from the [radio show Desert Island](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
+This project includes sample audio from the radio show [Desert Island Discs](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
 # Authors
 
@@ -436,4 +436,4 @@ This project includes sample audio from the [radio show Desert Island](http://en
 
 # Copyright
 
-Copyright 2014 British Broadcasting Corporation
+Copyright 2014-2015 British Broadcasting Corporation
