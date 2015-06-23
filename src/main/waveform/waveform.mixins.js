@@ -4,13 +4,13 @@
  * Common functions used in multiple modules are
  * collected here for DRY purposes.
  */
-define(['Kinetic'], function (Kinetic) {
+define(['konva'], function (Konva) {
   'use strict';
 
   // Private methods
 
   /**
-   * Create a Left or Right side handle group in Kinetic based on given options.
+   * Create a Left or Right side handle group in Konva based on given options.
    * @param  {int}      height    Height of handle group container (canvas)
    * @param  {string}   color     Colour hex value for handle and line marker
    * @param  {Boolean}  inMarker  Is this marker the inMarker (LHS) or outMarker (RHS)
@@ -23,7 +23,7 @@ define(['Kinetic'], function (Kinetic) {
      * @param  {Object}   segment   Parent segment object with in and out times
      * @param  {Object}   parent    Parent context
      * @param  {Function} onDrag    Callback after drag completed
-     * @return {Kinetic Object}     Kinetic group object of handle marker elements
+     * @return {Konva Object}     Konva group object of handle marker elements
      */
     return function (draggable, segment, parent, onDrag) {
       var handleHeight = 20;
@@ -31,7 +31,7 @@ define(['Kinetic'], function (Kinetic) {
       var handleY = (height / 2) - 10.5;
       var handleX = inMarker ? -handleWidth + 0.5 : 0.5;
 
-      var group = new Kinetic.Group({
+      var group = new Konva.Group({
         draggable: draggable,
         dragBoundFunc: function(pos) {
           var limit;
@@ -56,7 +56,7 @@ define(['Kinetic'], function (Kinetic) {
 
       var xPosition = inMarker ? -24 : 24;
 
-      var text = new Kinetic.Text({
+      var text = new Konva.Text({
         x: xPosition,
         y: (height / 2) - 5,
         text: "",
@@ -68,7 +68,7 @@ define(['Kinetic'], function (Kinetic) {
       text.hide();
       group.label = text;
 
-      var handle = new Kinetic.Rect({
+      var handle = new Konva.Rect({
         width: handleWidth,
         height: handleHeight,
         fill: color,
@@ -81,7 +81,7 @@ define(['Kinetic'], function (Kinetic) {
       /*
       Vertical Line
        */
-      var line = new Kinetic.Line({
+      var line = new Konva.Line({
         points: [0.5, 0, 0.5, height],
         strokeWidth: 1,
         stroke: color,
@@ -111,7 +111,7 @@ define(['Kinetic'], function (Kinetic) {
   };
 
   /**
-   * Create a point handle group in Kinetic based on given options.
+   * Create a point handle group in Konva based on given options.
    * @param  {int}      height    Height of handle group container (canvas)
    * @param  {string}   color     Colour hex value for handle and line marker
    * @return {Function}
@@ -122,7 +122,7 @@ define(['Kinetic'], function (Kinetic) {
        * @param  {Object}   point     Parent point object with in times
        * @param  {Object}   parent    Parent context
        * @param  {Function} onDrag    Callback after drag completed
-       * @return {Kinetic Object}     Kinetic group object of handle marker elements
+       * @return {Konva Object}     Konva group object of handle marker elements
        */
       return function (draggable, point, parent, onDrag, onDblClick, onDragEnd) {
           var handleTop = (height / 2) - 10.5;
@@ -130,7 +130,7 @@ define(['Kinetic'], function (Kinetic) {
           var handleHeight = 20;
           var handleX = 0.5; //Place in the middle of the marker
 
-          var group = new Kinetic.Group({
+          var group = new Konva.Group({
               draggable: draggable,
               dragBoundFunc: function(pos) {
 
@@ -158,7 +158,7 @@ define(['Kinetic'], function (Kinetic) {
           //Place text to the left of the mark
           var xPosition = -handleWidth;
 
-          var text = new Kinetic.Text({
+          var text = new Konva.Text({
               x: xPosition,
               y: (height / 2) - 5,
               text: "",
@@ -173,7 +173,7 @@ define(['Kinetic'], function (Kinetic) {
           /*
           Handle
            */
-          var handle = new Kinetic.Rect({
+          var handle = new Konva.Rect({
             width: handleWidth,
             height: handleHeight,
             fill: color,
@@ -184,7 +184,7 @@ define(['Kinetic'], function (Kinetic) {
           /*
           Line
            */
-          var line = new Kinetic.Line({
+          var line = new Konva.Line({
             points: [0, 0, 0, height],
             stroke: color,
             strokeWidth: 1,
@@ -216,7 +216,7 @@ define(['Kinetic'], function (Kinetic) {
 
   /**
    * Draw a waveform on a canvas context
-   * @param  {Kinetic.Context}  ctx   Canvas Context to draw on
+   * @param  {Konva.Context}  ctx   Canvas Context to draw on
    * @param  {Array}    min           Min values for waveform
    * @param  {Array}    max           Max values for waveform
    * @param  {Int}      offset_start  Where to start drawing
@@ -259,9 +259,9 @@ define(['Kinetic'], function (Kinetic) {
 
     /**
      *
-     * @this {Kinetic.Shape}
+     * @this {Konva.Shape}
      * @param {WaveformOverview} view
-     * @param {Kinetic.Context} context
+     * @param {Konva.Context} context
      */
     waveformDrawFunction: function (view, context) {
       var waveform = view.intermediateData || view.data;
@@ -320,7 +320,7 @@ define(['Kinetic'], function (Kinetic) {
      * Return a function that on execution creates and returns a new
      * IN handle object
      * @param  {Object}   options Root Peaks.js options containing config info for handle
-     * @return {Function} Provides Kinetic handle group on execution
+     * @return {Function} Provides Konva handle group on execution
      */
     defaultInMarker: function (options) {
       return createHandle(options.height, options.outMarkerColor, true);
@@ -330,7 +330,7 @@ define(['Kinetic'], function (Kinetic) {
      * Return a function that on execution creates and returns a new
      * OUT handle object
      * @param  {Object}   options Root Peaks.js options containing config info for handle
-     * @return {Function} Provides Kinetic handle group on execution
+     * @return {Function} Provides Konva handle group on execution
      */
     defaultOutMarker: function (options) {
       return createHandle(options.height, options.outMarkerColor, false);
@@ -342,7 +342,7 @@ define(['Kinetic'], function (Kinetic) {
 
     defaultSegmentLabelDraw: function (options) {
       return function (segment, parent) {
-        return new Kinetic.Text({
+        return new Konva.Text({
           x: 12,
           y: 12,
           text: parent.labelText,

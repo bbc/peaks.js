@@ -4,7 +4,7 @@
  * This module handles all functionality related to the adding,
  * removing and manipulation of segments
  */
-define(["Kinetic"], function (Kinetic) {
+define(["konva"], function (Konva) {
   'use strict';
 
   return {
@@ -74,7 +74,7 @@ define(["Kinetic"], function (Kinetic) {
         previousSampleRate = frame_sample_rate;
       }
 
-      return new Kinetic.Animation(this.onFrameData(view, frameData), view);
+      return new Konva.Animation(this.onFrameData(view, frameData), view);
     },
     onFrameData: function(view, frameData){
       var that = view;
@@ -82,7 +82,7 @@ define(["Kinetic"], function (Kinetic) {
 
       /**
        * @param {Object} frame
-       * @this {Kinetic.Animation}
+       * @this {Konva.Animation}
        */
       return function(frame){
         if (frameData.length) {
