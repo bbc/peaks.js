@@ -34,7 +34,7 @@
     "type": "git",
     "url": "git://github.com/bbcrd/peaks.js.git"
   },
-  "license": "LGPL 3",
+  "license": "LGPL-3.0",
   "scripts": {
     "build": "browserify -d ./src/main.js -p [minifyify --map peaks.min.map --output peaks.min.map] -s peaks -o peaks.min.js",
     "test": "npm run test-pre && ./node_modules/karma/bin/karma start --single-run",
