@@ -37,6 +37,7 @@
   "license": "LGPL 3",
   "scripts": {
     "build": "browserify -d ./src/main.js -p [minifyify --map peaks.min.map --output peaks.min.map] -s peaks -o peaks.min.js",
+    "build-max": "browserify ./src/main.js -s peaks -o peaks.js",
     "test": "npm run test-pre && ./node_modules/karma/bin/karma start --single-run",
     "test-pre": "jshint ./src",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run",

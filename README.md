@@ -188,6 +188,12 @@ var options = {
   // Colour of the play head
   playheadColor: 'rgba(0, 0, 0, 1)',
 
+  // Colour of the axis gridlines
+  axisGridlineColor: '#ccc',
+
+  // Colour of the axis labels
+  axisLabelColor: '#aaa',
+
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
