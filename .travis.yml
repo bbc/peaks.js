@@ -2,9 +2,11 @@ language: node_js
 node_js:
   - '0.10'
   - '0.12'
+sudo: false
 cache:
   directories:
   - node_modules
+  - bower_components
 env:
   global:
   - secure: Bg08bmtZxlt18xVd7IT3Ft8rC8Cd3iT2txSqoFKaUERu2FzlaPvi+DS5K0SeOqAB9LfyRST/Msdg+jmPEvQ/0VXa2lfhqf31YSrXStnd9h1Owxr53KPV3O6FX1mfH8RlmHVDosKUR6mJeiush4MSEFPCmB1VBTwpyRcbBt3sbJ0=
