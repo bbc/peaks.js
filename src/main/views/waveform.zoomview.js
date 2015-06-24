@@ -218,6 +218,8 @@ define([
   };
 
   WaveformZoomView.prototype.updateZoomWaveform = function (pixelOffset) {
+    if (isNaN(pixelOffset)) throw new Error("WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: " + pixelOffset);
+
     var that = this;
 
     that.frameOffset = pixelOffset;
@@ -275,6 +277,8 @@ define([
   };
 
   WaveformZoomView.prototype.newFrame = function (frameOffset) {
+    if (isNaN(frameOffset)) throw new Error("WaveformZoomView#newFrame passed a frame offset that is not a number: " + frameOffset);
+
     var nextOffset = frameOffset + this.width;
 
     if (nextOffset < this.data.adapter.length){
@@ -288,6 +292,8 @@ define([
   };
 
   WaveformZoomView.prototype.syncPlayhead = function (pixelIndex) {
+    if (isNaN(pixelIndex)) throw new Error("WaveformZoomView#syncPlayhead passed a pixel index that is not a number: " + pixelIndex);
+
     var that = this;
     var display = (pixelIndex >= that.frameOffset) && (pixelIndex <= that.frameOffset + that.width);
 
@@ -306,6 +312,8 @@ define([
   };
 
   WaveformZoomView.prototype.seekFrame = function (pixelIndex, offset) {
+    if (isNaN(pixelIndex)) throw new Error("WaveformZoomView#seekFrame passed a pixel index that is not a number: " + pixelIndex);
+
     var that = this;
     var upperLimit = that.data.adapter.length - that.width;
     var direction = pixelIndex < that.data.offset_start ? 'backwards' : 'onwards';

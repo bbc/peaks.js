@@ -183,6 +183,9 @@ define([
   };*/
 
   WaveformOverview.prototype.updateRefWaveform = function (time_in, time_out) {
+    if (isNaN(time_in))  throw new Error("WaveformOverview#updateRefWaveform passed a time in that is not a number: " + time_in);
+    if (isNaN(time_out)) throw new Error("WaveformOverview#updateRefWaveform passed a time out that is not a number: " + time_out);
+
     var that = this;
 
     var offset_in = that.data.at_time(time_in);
@@ -199,6 +202,8 @@ define([
   };
 
   WaveformOverview.prototype.updateUi = function (pixel) {
+    if (isNaN(pixel)) throw new Error("WaveformOverview#updateUi passed a value that is not a number: " + pixel);
+
     var that = this;
 
     that.playheadLine.setAttr("x", pixel);
