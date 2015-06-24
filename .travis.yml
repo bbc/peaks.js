@@ -1,5 +1,7 @@
 language: node_js
-node_js: '0.10'
+node_js:
+  - '0.10'
+  - '0.12'
 cache:
   directories:
   - node_modules
@@ -25,3 +27,7 @@ script:
 - npm start & sleep 2
 - npm run test-pre
 - ./node_modules/karma/bin/karma start --browsers Firefox --single-run
+
+matrix:
+  allow_failures:
+    - node_js: '0.12'
