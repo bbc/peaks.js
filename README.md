@@ -194,6 +194,9 @@ var options = {
   // Colour of the play head text
   playheadTextColor: '#aaa',
 
+  // the color of a point marker
+  pointMarkerColor: '#FF0000',
+
   // Colour of the axis gridlines
   axisGridlineColor: '#ccc',
 
