@@ -202,7 +202,7 @@ define([
       text: "00:00:00",
       fontSize: 11,
       fontFamily: 'sans-serif',
-      fill: '#aaa',
+      fill: that.options.playheadTextColor,
       align: 'right'
     });
 

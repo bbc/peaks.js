@@ -129,10 +129,10 @@ define([
       x: 0,
       y: 11,
       width: 0,
-      stroke: "grey",
+      stroke: that.options.overviewHighlightRectangleColor,
       strokeWidth: 1,
       height: this.height - (11*2),
-      fill: 'grey',
+      fill: that.options.overviewHighlightRectangleColor,
       opacity: 0.3,
       cornerRadius: 2
     });
