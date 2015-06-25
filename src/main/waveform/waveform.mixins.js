@@ -122,9 +122,12 @@ define(['Kinetic'], function (Kinetic) {
        * @param  {Object}   point     Parent point object with in times
        * @param  {Object}   parent    Parent context
        * @param  {Function} onDrag    Callback after drag completed
+       * @param  {String}   aColor    Set Point color to something other than default
        * @return {Kinetic Object}     Kinetic group object of handle marker elements
        */
-      return function (draggable, point, parent, onDrag, onDblClick, onDragEnd) {
+      return function (draggable, point, parent, onDrag, onDblClick, onDragEnd, aColor) {
+        
+          if(aColor) { color = aColor; }
           var handleTop = (height / 2) - 10.5;
           var handleWidth = 10;
           var handleHeight = 20;

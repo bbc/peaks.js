@@ -37,15 +37,26 @@ define(['peaks'], function (Peaks) {
 
 
     describe("add", function () {
-      it("should create a segment with the mandatory values as arguments", function () {
-        p.points.add(10, true, "#ff0000", "A point");
+      it("should create a point with the mandatory values as arguments, override default color", function () {
+        p.points.add(10, true, "#00FF00", "A point");
 
         var point = p.points.getPoints()[0];
-
         expect(p.points.getPoints()).to.have.a.lengthOf(1).and.to.have.deep.property('[0].timestamp', 10);
+        expect(p.points.getPoints()).to.have.deep.property('[0].id', 'point0');
+        expect(p.points.getPoints()).to.have.deep.property('[0].color', '#00FF00');
       });
 
-      it("should accept an array of point objects", function () {
+      it("should create a point with mandatory and optional values as arguments", function() {
+        p.points.add(10, true, "#ff0000", "A Point", 0);
+
+        var point = p.points.getPoints()[0];
+        expect(p.points.getPoints().length).to.equal(1);
+        expect(point.id).to.equal(0);
+        expect(point.timestamp).to.equal(10);
+
+      });
+
+      it("should accept an array of point objects without ids", function () {
         var points = [
           { timestamp: 10, editable: true, color: "#ff0000", labelText: "A point"},
           { timestamp: 12, editable: true, color: "#ff0000", labelText: "Another point"}
@@ -55,6 +66,36 @@ define(['peaks'], function (Peaks) {
 
         expect(p.points.getPoints()).to.have.length.of(2);
         expect(p.points.getPoints()[1]).to.include.keys('timestamp', 'labelText');
+        expect(p.points.getPoints()).to.have.deep.property('[0].id', 'point0');
+        expect(p.points.getPoints()).to.have.deep.property('[1].id', 'point1');
+      });
+
+      it("should accept an array of point objects with numeric ids", function() {
+        var points = [
+          { timestamp: 10, editable: true, color: "#ff0000", labelText: "A point", id: 0},
+          { timestamp: 12, editable: true, color: "#ff0000", labelText: "Another point", id: 1}
+        ];
+        
+        p.points.add(points);
+
+        expect(p.points.getPoints()).to.have.length.of(2);
+        expect(p.points.getPoints()[1]).to.include.keys('timestamp', 'labelText');
+        expect(p.points.getPoints()).to.have.deep.property('[0].id', 0);
+        expect(p.points.getPoints()).to.have.deep.property('[1].id', 1);
+      });
+
+      it("should accept an array of point objects with string ids", function() {
+        var points = [
+          { timestamp: 10, editable: true, color: "#ff0000", labelText: "A point", id: "0"},
+          { timestamp: 12, editable: true, color: "#ff0000", labelText: "Another point", id: "1"}
+        ];
+        
+        p.points.add(points);
+
+        expect(p.points.getPoints()).to.have.length.of(2);
+        expect(p.points.getPoints()[1]).to.include.keys('timestamp', 'labelText');
+        expect(p.points.getPoints()).to.have.deep.property('[0].id', "0");
+        expect(p.points.getPoints()).to.have.deep.property('[1].id', "1");
       });
 
       it("should throw an exception if argument is an object", function () {
@@ -101,7 +142,7 @@ define(['peaks'], function (Peaks) {
         p.points.add(12, false, "#ff0000", "Another point");
       });
 
-      it("should remove one of the point", function () {
+      it("should remove one of the points", function () {
         p.points.removeByTime(10);
 
         expect(p.points.getPoints()).to.have.length.of(1);
@@ -111,6 +152,25 @@ define(['peaks'], function (Peaks) {
         p.points.removeByTime(10);
 
         expect(p.points.getPoints()).to.have.deep.property('[0].id', 'point1');
+      });
+    });
+
+    describe("removeById", function() {
+      beforeEach(function(){
+        p.points.add(10, true, "#ff0000", "A point", 1);
+        p.points.add(12, false, "#ff0000", "Another point");
+      });
+
+      it("should remove one of the points", function() {
+        p.points.removeById(1);
+
+        expect(p.points.getPoints()).to.have.length.of(1);
+      });
+
+      it("should let the other point intact", function() {
+        p.points.removeById('point0');
+
+        expect(p.points.getPoints()).to.have.deep.property('[0].id', 1);
       });
     });
 
