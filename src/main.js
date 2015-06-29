@@ -145,7 +145,12 @@ define('peaks', [
        waveformBuilderOptions: {
         scale: 512,
         scale_adjuster: 127
-       }
+       },
+
+       /**
+        * Use animation on zoom
+        */
+      zoomAnimationEnabled: true,
     };
 
     /**

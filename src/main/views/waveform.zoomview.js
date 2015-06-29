@@ -144,8 +144,15 @@ define([
           scale: current_scale
         });
 
-        var animation = ZoomAnimation.init(current_scale, previous_scale, that);
-        animation.start();
+        if (that.peaks.options.zoomAnimationEnabled) {
+          var animation = ZoomAnimation.init(current_scale, previous_scale, that);
+          animation.start();
+        } else {
+          that.segmentLayer.draw();
+          that.pointLayer.draw();
+
+          that.seekFrame(that.data.at_time(that.peaks.time.getCurrentTime()));
+        }
       }
     });
 
