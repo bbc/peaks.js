@@ -240,7 +240,7 @@ define([
       pixelOffset = that.pixelLength - that.width;
     }
 
-    //
+    // we must not have a negative pixelOffset
     if (pixelOffset < 0) {
       pixelOffset = 0;
     }
