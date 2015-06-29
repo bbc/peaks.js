@@ -197,6 +197,9 @@ var options = {
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
+  // Use animations upon zoom
+  zoomAnimationEnabled: true,
+
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.
   // See below.
