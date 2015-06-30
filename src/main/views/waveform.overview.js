@@ -75,7 +75,7 @@ define([
     // EVENTS ====================================================
 
     function trackPlayheadPosition(time, frame){
-      if (!peaks.seaking) {
+      if (!peaks.seeking) {
         that.playheadPixel = that.data.at_time(time);
         that.updateUi(that.playheadPixel);
       }
