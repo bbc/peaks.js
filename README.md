@@ -218,6 +218,10 @@ var options = {
   // Zoom view adapter to use. Valid adapters are: 'animated' (default) and 'static'
   zoomAdapter: 'animated',
 
+  // Vertical padding in pixel to add to the waveform reference rectangle. Defaults to 11px. You might want to adjust this
+  // depending on whether an axis is enabled in the overview waveform or not.
+  refWaveformRectPadding: 11,
+
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.
   // See below.

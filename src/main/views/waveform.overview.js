@@ -125,13 +125,18 @@ define([
       strokeWidth: 0
     });*/
 
+    var refPadding = this.options.refWaveformRectPadding;
+    if (refPadding * 2 > this.height) {
+      refPadding = 0;
+    }
+
     this.refWaveformRect = new Konva.Rect({
       x: 0,
-      y: 11,
+      y: refPadding,
       width: 0,
       stroke: that.options.overviewHighlightRectangleColor,
       strokeWidth: 1,
-      height: this.height - (11*2),
+      height: this.height - (refPadding * 2),
       fill: that.options.overviewHighlightRectangleColor,
       opacity: 0.3,
       cornerRadius: 2

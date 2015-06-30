@@ -142,6 +142,11 @@ define('peaks', [
       overviewAxisGridlineColor: '#ccc',
 
       /**
+       * Vertical padding in pixel to add to the waveform reference rectangle. Defaults to 11px
+       */
+      refWaveformRectPadding: 11,
+
+      /**
        *
        */
       template:              [
