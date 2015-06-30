@@ -58,7 +58,7 @@ define([
     that.zoomWaveformLayer.add(that.background);
 
     if (that.peaks.options.axisOnWaveforms.indexOf('zoomview') > -1) {
-      that.axis = new WaveformAxis(that);
+      that.axis = new WaveformAxis(that, { axisGridlineColor: that.peaks.options.axisGridlineColor, axisLabelColor: that.peaks.options.axisLabelColor });
     }
 
     that.createZoomWaveform();

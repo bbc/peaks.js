@@ -154,7 +154,7 @@ define([
     that.uiLayer = new Konva.Layer({ index: 100 });
 
     if (that.peaks.options.axisOnWaveforms.indexOf('overview') > -1) {
-      that.axis = new WaveformAxis(that);
+      that.axis = new WaveformAxis(that, { axisGridlineColor: that.peaks.options.overviewAxisGridlineColor, axisLabelColor: that.peaks.options.overviewAxisLabelColor });
     }
 
     this.uiLayer.add(this.playheadLine);

@@ -206,6 +206,12 @@ var options = {
   // Use an axis on the following waveforms: 'overview', 'zoomview'
   axisOnWaveforms: ['overview', 'zoomview'],
 
+  // Color for the axis labels in the overview waveform
+  overviewAxisLabelColor: '#aaa',
+
+  // Color for the axis gridlines in the overview waveform
+  overviewAxisGridlineColor: '#ccc',
+
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
