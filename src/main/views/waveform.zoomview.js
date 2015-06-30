@@ -10,8 +10,9 @@ define([
   "peaks/waveform/waveform.axis",
   "peaks/waveform/waveform.mixins",
   "peaks/views/zooms/animated",
+  "peaks/views/zooms/static",
   "Kinetic"
-  ], function (WaveformAxis, mixins, ZoomAnimation, Kinetic) {
+  ], function (WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Kinetic) {
   'use strict';
 
   function WaveformZoomView(waveformData, container, peaks) {
@@ -135,6 +136,8 @@ define([
     });
 
     that.peaks.on("zoom.update", function (current_scale, previous_scale) {
+      var adapterClass, adapter;
+
       if (that.playing) {
         return;
       }
@@ -144,15 +147,20 @@ define([
           scale: current_scale
         });
 
-        if (that.peaks.options.zoomAnimationEnabled) {
-          var animation = ZoomAnimation.init(current_scale, previous_scale, that);
-          animation.start();
-        } else {
-          that.segmentLayer.draw();
-          that.pointLayer.draw();
-
-          that.seekFrame(that.data.at_time(that.peaks.time.getCurrentTime()));
+        switch(that.peaks.options.zoomAdapter) {
+          case 'AnimatedZoomAdapter':
+            adapterClass = AnimatedZoomAdapter;
+            break;
+          case 'StaticZoomAdapter':
+            adapterClass = StaticZoomAdapter;
+            break;
+          default:
+            throw new Error("Invalid zoomAdapter: " + that.peaks.options.zoomAdapter);
+            break;
         }
+
+        adapter = adapterClass.init(current_scale, previous_scale, that);
+        adapter.start();
       }
     });
 

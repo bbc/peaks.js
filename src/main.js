@@ -147,10 +147,10 @@ define('peaks', [
         scale_adjuster: 127
        },
 
-       /**
-        * Use animation on zoom
-        */
-      zoomAnimationEnabled: true,
+      /**
+       * Use animation on zoom
+       */
+      zoomAdapter: 'AnimatedZoomAdapter',
     };
 
     /**
