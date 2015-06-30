@@ -152,7 +152,10 @@ define([
     });
 
     that.uiLayer = new Konva.Layer({ index: 100 });
-    that.axis = new WaveformAxis(that);
+
+    if (that.peaks.options.axisOnWaveforms.indexOf('overview') > -1) {
+      that.axis = new WaveformAxis(that);
+    }
 
     this.uiLayer.add(this.playheadLine);
     this.stage.add(this.uiLayer);

@@ -127,6 +127,12 @@ define('peaks', [
        * Colour of the axis labels
        */
       axisLabelColor:        '#aaa',
+
+      /**
+       * Define the waveforms where an axis will be drawn. Valid options are 'overview' and 'zoomview'
+       */
+      axisOnWaveforms: ['overview', 'zoomview'],
+
       /**
        *
        */

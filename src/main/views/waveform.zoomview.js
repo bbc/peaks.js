@@ -57,7 +57,9 @@ define([
 
     that.zoomWaveformLayer.add(that.background);
 
-    that.axis = new WaveformAxis(that);
+    if (that.peaks.options.axisOnWaveforms.indexOf('zoomview') > -1) {
+      that.axis = new WaveformAxis(that);
+    }
 
     that.createZoomWaveform();
     that.createUi();
