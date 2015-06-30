@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "chai": "^1.9.1",
-    "github-changes": "^0.0.12",
+    "github-changes": "^1.0.0",
     "jshint": "^2.5.1",
     "karma": "^0.12.0",
     "karma-browserstack-launcher": "^0.1.1",
