@@ -125,7 +125,7 @@ define([
       strokeWidth: 0
     });*/
 
-    var refPadding = this.options.refWaveformRectPadding;
+    var refPadding = this.options.overviewHighlightRectanglePadding;
     if (refPadding * 2 > this.height) {
       refPadding = 0;
     }
@@ -137,8 +137,8 @@ define([
       stroke: that.options.overviewHighlightRectangleColor,
       strokeWidth: 1,
       height: this.height - (refPadding * 2),
-      fill: that.options.overviewHighlightRectangleColor,
-      opacity: 0.3,
+      fill: this.options.overviewHighlightRectangleColor,
+      opacity: this.options.overviewHighlightRectangleOpacity,
       cornerRadius: 2
     });
 

@@ -185,6 +185,12 @@ var options = {
   // Colour for the overview waveform rectangle that shows what the zoom view shows
   overviewHighlightRectangleColor: 'grey',
 
+  // Vertical padding in pixel to add to the overview waveform highlight rectangle. Defaults to 11px
+  overviewHighlightRectanglePadding: 11,
+
+  // Opacity of the overview waveform highlight rectangle. Defaults to 0.3
+  overviewHighlightRectangleOpacity: 0.3,
+
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
 
@@ -217,10 +223,6 @@ var options = {
 
   // Zoom view adapter to use. Valid adapters are: 'animated' (default) and 'static'
   zoomAdapter: 'animated',
-
-  // Vertical padding in pixel to add to the waveform reference rectangle. Defaults to 11px. You might want to adjust this
-  // depending on whether an axis is enabled in the overview waveform or not.
-  refWaveformRectPadding: 11,
 
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.
