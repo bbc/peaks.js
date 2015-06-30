@@ -3,7 +3,7 @@
  *
  * This module is a zoom view adapter with no animations.
  */
-define(["Kinetic"], function (Kinetic) {
+define([], function () {
   'use strict';
 
   return {
