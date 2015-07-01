@@ -37,8 +37,10 @@ define([
 
         if (point.editable) {
           pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
-          pointGroup.add(pointGroup.marker);
+        } else {
+          pointGroup.marker = new peaks.options.pointMarker(false, pointGroup, point);
         }
+        pointGroup.add(pointGroup.marker);
 
         view.pointLayer.add(pointGroup);
       });
@@ -59,9 +61,8 @@ define([
       // Overview
       var overviewtimestampOffset = waveformView.waveformOverview.data.at_time(point.timestamp);
 
-      if (point.editable) {
-        if (point.overview.marker) point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
-
+      if (point.overview.marker) {
+        point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
         // Change Text
         point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
       }
@@ -79,9 +80,8 @@ define([
 
         point.zoom.show();
 
-        if (point.editable) {
-          if (point.zoom.marker) point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
-
+        if (point.zoom.marker) {
+          point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
           // Change Text
           point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
         }
