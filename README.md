@@ -197,8 +197,8 @@ var options = {
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
-  // Zoom view adapter to use. Valid adapters are: 'AnimatedZoomAdapter' (default) and 'StaticZoomAdapter'
-  zoomAdapter: 'AnimatedZoomAdapter',
+  // Zoom view adapter to use. Valid adapters are: 'animated' (default) and 'static'
+  zoomAdapter: 'animated',
 
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.

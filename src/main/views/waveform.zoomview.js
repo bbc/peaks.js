@@ -136,7 +136,7 @@ define([
     });
 
     that.peaks.on("zoom.update", function (current_scale, previous_scale) {
-      var adapterClass, adapter;
+      var adapter, zoomAdapterMap;
 
       if (that.playing) {
         return;
@@ -147,19 +147,16 @@ define([
           scale: current_scale
         });
 
-        switch(that.peaks.options.zoomAdapter) {
-          case 'AnimatedZoomAdapter':
-            adapterClass = AnimatedZoomAdapter;
-            break;
-          case 'StaticZoomAdapter':
-            adapterClass = StaticZoomAdapter;
-            break;
-          default:
-            throw new Error("Invalid zoomAdapter: " + that.peaks.options.zoomAdapter);
-            break;
+        zoomAdapterMap = {
+          'animated': AnimatedZoomAdapter,
+          'static': StaticZoomAdapter
         }
 
-        adapter = adapterClass.init(current_scale, previous_scale, that);
+        if (zoomAdapterMap[that.peaks.options.zoomAdapter] === undefined) {
+          throw new Error("Invalid zoomAdapter: " + that.peaks.options.zoomAdapter);
+        }
+
+        adapter = zoomAdapterMap[that.peaks.options.zoomAdapter].init(current_scale, previous_scale, that);
         adapter.start();
       }
     });
