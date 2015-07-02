@@ -24,6 +24,7 @@
     "peaks/views/waveform.overview": "./src/main/views/waveform.overview.js",
     "peaks/views/waveform.zoomview": "./src/main/views/waveform.zoomview.js",
     "peaks/views/zooms/animated": "./src/main/views/zooms/animated.js",
+    "peaks/views/zooms/static": "./src/main/views/zooms/static.js",
     "peaks/markers/waveform.points": "./src/main/markers/waveform.points.js",
     "peaks/markers/waveform.segments": "./src/main/markers/waveform.segments.js",
     "peaks/markers/shapes/base": "./src/main/markers/shapes/base.js",
