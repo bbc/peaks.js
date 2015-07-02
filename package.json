@@ -42,6 +42,8 @@
     "test": "npm run test-pre && ./node_modules/karma/bin/karma start --single-run",
     "test-pre": "jshint ./src",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run",
+    "preversion": "npm test",
+    "version": "npm run changelog && npm run build && git add CHANGELOG.md",
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body",
     "start": "serve --cors -p 9000"
   },
