@@ -123,10 +123,6 @@ define(['konva'], function (Konva) {
    */
   function createPointHandle(height, color) {
       /**
-       * @param  {Boolean}  draggable If true, marker is draggable
-       * @param  {Object}   point     Parent point object with in times
-       * @param  {Object}   parent    Parent context
-       * @param  {Function} onDrag    Callback after drag completed
        * @param  {Boolean}  draggable  If true, marker is draggable
        * @param  {Object}   point      Parent point object with in times
        * @param  {Object}   parent     Parent context
