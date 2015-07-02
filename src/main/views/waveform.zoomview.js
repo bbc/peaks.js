@@ -150,7 +150,7 @@ define([
         zoomAdapterMap = {
           'animated': AnimatedZoomAdapter,
           'static': StaticZoomAdapter
-        }
+        };
 
         if (zoomAdapterMap[that.peaks.options.zoomAdapter] === undefined) {
           throw new Error("Invalid zoomAdapter: " + that.peaks.options.zoomAdapter);
