@@ -182,11 +182,20 @@ var options = {
   // Colour for the overview waveform
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
 
+  // Colour for the overview waveform rectangle that shows what the zoom view shows
+  overviewHighlightRectangleColor: 'grey',
+
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
 
   // Colour of the play head
   playheadColor: 'rgba(0, 0, 0, 1)',
+
+  // Colour of the play head text
+  playheadTextColor: '#aaa',
+
+  // the color of a point marker
+  pointMarkerColor: '#FF0000',
 
   // Colour of the axis gridlines
   axisGridlineColor: '#ccc',

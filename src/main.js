@@ -95,6 +95,11 @@ define('peaks', [
        */
       overviewWaveformColor: 'rgba(0,0,0,0.2)',
       /**
+       * Colour for the overview waveform highlight rectangle, which shows
+       * you what you see in the zoom view.
+       */
+      overviewHighlightRectangleColor: 'grey',
+      /**
        * Random colour per segment (overrides segmentColor)
        */
       randomizeSegmentColor: true,
@@ -110,6 +115,10 @@ define('peaks', [
        * Colour of the play head
        */
       playheadColor:         'rgba(0, 0, 0, 1)',
+      /**
+       * Colour of the play head text
+       */
+      playheadTextColor:     '#aaa',
       /**
        * Colour of the axis gridlines
       */
