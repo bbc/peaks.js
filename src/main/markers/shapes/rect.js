@@ -7,8 +7,8 @@
 define([
   "peaks/markers/shapes/base",
   "peaks/waveform/waveform.mixins",
-  "Kinetic"
-], function (BaseShape, mixins, Kinetic) {
+  "konva"
+], function (BaseShape, mixins, Konva) {
   'use strict';
 
   var WaveShape = Object.create(BaseShape.prototype);
@@ -17,10 +17,10 @@ define([
    *
    * @param segmentData
    * @param view
-   * @returns {Kinetic.Rect}
+   * @returns {Konva.Rect}
    */
   WaveShape.createShape = function createShape(segmentData, view){
-    var shape = new Kinetic.Rect({
+    var shape = new Konva.Rect({
       fill: segmentData.color,
       strokeWidth: 0,
       y: 0,
