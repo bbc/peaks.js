@@ -11,8 +11,8 @@ define([
   "peaks/waveform/waveform.mixins",
   "peaks/views/zooms/animated",
   "peaks/views/zooms/static",
-  "Kinetic"
-  ], function (WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Kinetic) {
+  "konva"
+  ], function (WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
   'use strict';
 
   function WaveformZoomView(waveformData, container, peaks) {
@@ -39,16 +39,16 @@ define([
 
     that.data.offset(that.frameOffset, that.frameOffset + that.width);
 
-    that.stage = new Kinetic.Stage({
+    that.stage = new Konva.Stage({
       container: container,
       width: that.width,
       height: that.height
     });
 
-    that.zoomWaveformLayer = new Kinetic.Layer();
-    that.uiLayer = new Kinetic.Layer();
+    that.zoomWaveformLayer = new Konva.Layer();
+    that.uiLayer = new Konva.Layer();
 
-    that.background = new Kinetic.Rect({
+    that.background = new Konva.Rect({
       x: 0,
       y: 0,
       width: that.width,
@@ -187,12 +187,12 @@ define([
 
   WaveformZoomView.prototype.createZoomWaveform = function() {
     var that = this;
-    that.zoomWaveformShape = new Kinetic.Shape({
+    that.zoomWaveformShape = new Konva.Shape({
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0
     });
 
-    that.zoomWaveformShape.setDrawFunc(mixins.waveformDrawFunction.bind(that.zoomWaveformShape, that));
+    that.zoomWaveformShape.sceneFunc(mixins.waveformDrawFunction.bind(that.zoomWaveformShape, that));
 
     that.zoomWaveformLayer.add(that.zoomWaveformShape);
     that.stage.add(that.zoomWaveformLayer);
@@ -202,13 +202,13 @@ define([
   WaveformZoomView.prototype.createUi = function() {
     var that = this;
 
-    that.zoomPlayheadLine = new Kinetic.Line({
+    that.zoomPlayheadLine = new Konva.Line({
       points: [0.5, 0, 0.5, that.height],
       stroke: that.options.playheadColor,
       strokeWidth: 1
     });
 
-    that.zoomPlayheadText = new Kinetic.Text({
+    that.zoomPlayheadText = new Konva.Text({
       x:2,
       y: 12,
       text: "00:00:00",
@@ -218,7 +218,7 @@ define([
       align: 'right'
     });
 
-    that.zoomPlayheadGroup = new Kinetic.Group({
+    that.zoomPlayheadGroup = new Konva.Group({
       x: 0,
       y: 0
     }).add(that.zoomPlayheadLine).add(that.zoomPlayheadText);
@@ -291,7 +291,7 @@ define([
     var frameSeconds = 0;
     var pixelsPerSecond = that.data.pixels_per_second;
 
-    that.playheadLineAnimation = new Kinetic.Animation(function (frame) {
+    that.playheadLineAnimation = new Konva.Animation(function (frame) {
       var time = frame.time;
 
       var seconds = time / 1000;

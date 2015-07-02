@@ -28,7 +28,7 @@ requirejs.config({
         'peaks': 'src/main',
         'waveform-data': 'node_modules/waveform-data/dist/waveform-data',
         'EventEmitter': 'node_modules/eventemitter2/lib/eventemitter2',
-        'Kinetic': 'node_modules/kinetic/kinetic'
+        'konva': 'node_modules/konva/konva'
     },
 
     // ask Require.js to load these files (all our tests)

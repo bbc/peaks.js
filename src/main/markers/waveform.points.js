@@ -6,8 +6,8 @@
  */
 define([
   "peaks/waveform/waveform.mixins",
-  "Kinetic"
-], function (mixins, Kinetic) {
+  "konva"
+], function (mixins, Konva) {
 
   return function (peaks) {
     var self = this;
@@ -17,7 +17,7 @@ define([
 
     self.views = [waveformView.waveformZoomView, waveformView.waveformOverview].map(function(view){
       if (!view.pointLayer) {
-        view.pointLayer = new Kinetic.Layer();
+        view.pointLayer = new Konva.Layer();
         view.stage.add(view.pointLayer);
         view.pointLayer.moveToTop();
       }
@@ -26,8 +26,8 @@ define([
     });
 
     function constructPoint(point) {
-      var pointZoomGroup = new Kinetic.Group();
-      var pointOverviewGroup = new Kinetic.Group();
+      var pointZoomGroup = new Konva.Group();
+      var pointOverviewGroup = new Konva.Group();
       var pointGroups = [pointZoomGroup, pointOverviewGroup];
 
       point.editable = Boolean(point.editable);

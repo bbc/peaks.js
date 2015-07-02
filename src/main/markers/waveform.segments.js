@@ -5,10 +5,10 @@
  * removing and manipulation of segments
  */
 define([
-  "Kinetic",
+  "konva",
   "peaks/waveform/waveform.mixins",
   "peaks/markers/shapes/wave"
-  ], function (Kinetic, mixins, SegmentShape) {
+], function (Konva, mixins, SegmentShape) {
   'use strict';
 
   return function (peaks) {
@@ -17,7 +17,7 @@ define([
     self.segments = [];
     self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
       if (!view.segmentLayer) {
-        view.segmentLayer = new Kinetic.Layer();
+        view.segmentLayer = new Konva.Layer();
         view.stage.add(view.segmentLayer);
         view.segmentLayer.moveToTop();
       }
@@ -35,8 +35,8 @@ define([
         editable: editable
       };
 
-      var segmentZoomGroup = new Kinetic.Group();
-      var segmentOverviewGroup = new Kinetic.Group();
+      var segmentZoomGroup = new Konva.Group();
+      var segmentOverviewGroup = new Konva.Group();
 
       var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
 
