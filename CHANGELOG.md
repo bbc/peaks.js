@@ -1,5 +1,8 @@
 ## Change Log
 
+### 0.4.5 (2015/07/02 10:52 +00:00)
+- [#123](https://github.com/bbcrd/peaks.js/pull/123) Allow alternate zoom adapters, add a static (non-animated) zoom adapter, add more safety checks (@johvet, @ziggythehamster)
+
 ### v0.4.4 (2015/06/30 06:55 +00:00)
 - [#122](https://github.com/bbcrd/peaks.js/pull/122) Fix typo, seeking instead of seaking (@johvet)
 - [#113](https://github.com/bbcrd/peaks.js/pull/113) Make the axis label and gridline colors configurable (@ziggythehamster)
