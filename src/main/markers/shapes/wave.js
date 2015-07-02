@@ -7,8 +7,8 @@
 define([
   "peaks/markers/shapes/base",
   "peaks/waveform/waveform.mixins",
-  "Kinetic"
-], function (BaseShape, mixins, Kinetic) {
+  "konva"
+], function (BaseShape, mixins, Konva) {
   'use strict';
 
   var WaveShape = Object.create(BaseShape.prototype);
@@ -17,25 +17,25 @@ define([
    *
    * @param segmentData
    * @param view
-   * @returns {Kinetic.Shape}
+   * @returns {Konva.Shape}
    */
   WaveShape.createShape = function createShape(segmentData, view){
-    var shape = new Kinetic.Shape({
+    var shape = new Konva.Shape({
       fill: segmentData.color,
       strokeWidth: 0,
       opacity: 1
     });
 
-    shape.setDrawFunc(WaveShape.drawFunc.bind(shape, view, segmentData.id));
+    shape.sceneFunc(WaveShape.drawFunc.bind(shape, view, segmentData.id));
 
     return shape;
   };
 
   /**
    *
-   * @this  {Kinetic.Shape}
+   * @this  {Konva.Shape}
    * @param {WaveformData} waveform
-   * @param {Kinetic.Context} context
+   * @param {Konva.Context} context
    * @param {interpolateHeight} y
    */
   WaveShape.drawFunc = function WaveShapedrawFunc(view, segmentId, context){
