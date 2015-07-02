@@ -209,6 +209,10 @@ var options = {
   // Zoom view adapter to use. Valid adapters are: 'animated' (default) and 'static'
   zoomAdapter: 'animated',
 
+  // Show marker lines for uneditable segments and points on the following waveforms: 'overview', 'zoomview'.
+  // Default is none of them.
+  showMarkerLinesWhenUneditable: [],
+
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.
   // See below.

@@ -38,7 +38,7 @@ define([
       var segmentZoomGroup = new Konva.Group();
       var segmentOverviewGroup = new Konva.Group();
 
-      var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
+      var segmentGroups = [{ group: segmentZoomGroup, view: 'zoomview' }, { group: segmentOverviewGroup, view: 'overview' }];
 
       var menter = function (event) {
         this.parent.label.show();
@@ -50,8 +50,9 @@ define([
         this.parent.view.segmentLayer.draw();
       };
 
-      segmentGroups.forEach(function(segmentGroup, i){
+      segmentGroups.forEach(function(item, i){
         var view = self.views[i];
+        var segmentGroup = item.group;
 
         segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
@@ -63,12 +64,20 @@ define([
         segmentGroup.label = new peaks.options.segmentLabelDraw(segmentGroup, segment);
         segmentGroup.add(segmentGroup.label.hide());
 
-        var handleDrag = editable ? segmentHandleDrag : undefined;
-        segmentGroup.inMarker = new peaks.options.segmentInMarker(editable, segmentGroup, segment, handleDrag);
-        segmentGroup.outMarker = new peaks.options.segmentOutMarker(editable, segmentGroup, segment, handleDrag);
+        if (editable) {
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(editable, segmentGroup, segment, segmentHandleDrag);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(editable, segmentGroup, segment, segmentHandleDrag);
 
-        segmentGroup.add(segmentGroup.inMarker);
-        segmentGroup.add(segmentGroup.outMarker);
+          segmentGroup.add(segmentGroup.inMarker);
+          segmentGroup.add(segmentGroup.outMarker);
+
+        } else if (peaks.options.showMarkerLinesWhenUneditable.indexOf(item.view) > -1) {
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(false, segmentGroup, segment);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(false, segmentGroup, segment);
+
+          segmentGroup.add(segmentGroup.inMarker);
+          segmentGroup.add(segmentGroup.outMarker);
+        }
 
         view.segmentLayer.add(segmentGroup);
       });

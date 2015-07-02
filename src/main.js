@@ -145,6 +145,12 @@ define('peaks', [
       pointDragEndHandler:  null, // Called when the point handle has finished dragging
 
       /**
+       * Show marker lines for uneditable segments and points on the following waveforms: 'overview', 'zoomview'.
+       * Default is none of them.
+       */
+      showMarkerLinesWhenUneditable: [],
+
+      /**
        * WaveformData WebAudio Decoder Options
        *
        * You mostly want to play with the 'scale' option.

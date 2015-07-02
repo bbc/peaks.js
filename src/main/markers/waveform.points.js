@@ -28,19 +28,22 @@ define([
     function constructPoint(point) {
       var pointZoomGroup = new Konva.Group();
       var pointOverviewGroup = new Konva.Group();
-      var pointGroups = [pointZoomGroup, pointOverviewGroup];
+      var pointGroups = [ { group: pointZoomGroup, view: 'zoomview' }, { group: pointOverviewGroup, view: 'overview' }];
 
       point.editable = Boolean(point.editable);
 
-      pointGroups.forEach(function(pointGroup, i){
+      pointGroups.forEach(function(item, i){
         var view = self.views[i];
+        var pointGroup = item.group;
 
         if (point.editable) {
           pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
-        } else {
+          pointGroup.add(pointGroup.marker);
+
+        } else if (peaks.options.showMarkerLinesWhenUneditable.indexOf(item.view) > -1) {
           pointGroup.marker = new peaks.options.pointMarker(false, pointGroup, point);
+          pointGroup.add(pointGroup.marker);
         }
-        pointGroup.add(pointGroup.marker);
 
         view.pointLayer.add(pointGroup);
       });
