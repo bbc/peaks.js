@@ -44,8 +44,6 @@ define([
     that.createRefWaveform();
     that.createUi();
 
-    that.stage.add(that.waveformLayer);
-
     // INTERACTION ===============================================
     var cancelSeeking = function(){
       that.stage.off("mousemove mouseup");
@@ -156,6 +154,7 @@ define([
 
     this.uiLayer.add(this.playheadLine);
     this.stage.add(this.uiLayer);
+    this.uiLayer.moveToTop();
   };
 
   /*WaveformOverview.prototype.updateWaveform = function () {
