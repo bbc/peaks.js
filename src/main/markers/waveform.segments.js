@@ -141,14 +141,20 @@ define([
       if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
 
       if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
+
+        var segmentData = peaks.waveform.waveformZoomView.data.segments[segment.id];
+        var offset_length = segmentData.offset_length;
+        var offset_start = segmentData.offset_start - peaks.waveform.waveformZoomView.data.offset_start;
+
         var startPixel = zoomStartOffset - frameStartOffset;
         var endPixel = zoomEndOffset - frameStartOffset;
 
+       
         segment.zoom.show();
 
         if (segment.editable) {
-          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
-          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
+          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(offset_start - segment.zoom.inMarker.getWidth());
+          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(offset_length + offset_start);
 
           // Change Text
           segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
@@ -164,12 +170,12 @@ define([
     var segmentHandleDrag = function (thisSeg, segment) {
       if (thisSeg.inMarker.getX() > 0) {
         var inOffset = thisSeg.view.frameOffset + thisSeg.inMarker.getX() + thisSeg.inMarker.getWidth();
-        segment.startTime = thisSeg.view.data.time(inOffset);
+        segment.startTime = (typeof thisSeg.view.atDataTime === 'function') ?  thisSeg.view.atDataTime(inOffset) : thisSeg.data.time(inOffset);
       }
 
       if (thisSeg.outMarker.getX() < thisSeg.view.width) {
         var outOffset = thisSeg.view.frameOffset + thisSeg.outMarker.getX();
-        segment.endTime = thisSeg.view.data.time(outOffset);
+        segment.endTime = (typeof thisSeg.view.atDataTime === 'function') ? thisSeg.view.atDataTime(outOffset) : thisSeg.view.data.time(outOffset);
       }
 
       updateSegmentWaveform(segment);
