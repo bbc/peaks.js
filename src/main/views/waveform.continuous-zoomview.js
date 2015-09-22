@@ -145,7 +145,7 @@ define([
         that.data_cache.push(newData);
         ready();
       }
-    }
+    };
 
     // being the pre-loading phase
     doNext();
@@ -385,7 +385,7 @@ define([
       // and finally, send out notification that we're ready to go
       that.peaks.emit("zoomview.ready");
 
-    }
+    };
 
 
 
@@ -402,7 +402,7 @@ define([
     this.justUpdatedTime = false;
 
     // if we're seeking...
-    if (this.peaks.seeking && this.seekMovement != 0) {
+    if (this.peaks.seeking && this.seekMovement !== 0) {
       this.adjustFromSeek();
       this.seekMovement = 0;
     }
@@ -522,7 +522,7 @@ define([
   // Clamp the left and right edges of the display to make sure we don't go out of bounds. 
   WaveformContinuousZoomView.prototype.clamp = function() {
 
-    this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (this.width * this.seconds_per_pixel), this.leftEdgeTime))
+    this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (this.width * this.seconds_per_pixel), this.leftEdgeTime));
 
     var start = Math.floor(this.leftEdgeTime * this.pixels_per_second),
       end = start + (this.width / this.zoomRatio);
@@ -530,7 +530,7 @@ define([
     this.data.offset(start, end);
     this.zoomWaveformLayer.draw();
 
-  }
+  };
 
   /* During a seek (e.g. user dragging overview window) we need to adjust the position of the waveform to keep things in sync */
   WaveformContinuousZoomView.prototype.adjustFromSeek = function() {
@@ -554,13 +554,13 @@ define([
     }
     this.zoomWaveformLayer.draw();
 
-  }
+  };
 
 
   // make UI adjustments once the segment layer is added
   WaveformContinuousZoomView.prototype.segmentLayerAdded = function () {
     this.uiLayer.moveToTop ();
-  }
+  };
 
  
   // another method to help with adjusting and clamping the zoom to prevent us going out of bounds
@@ -577,7 +577,7 @@ define([
     }
 
     // clamp the position
-    this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (secondsOnScreen), this.leftEdgeTime))
+    this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (secondsOnScreen), this.leftEdgeTime));
 
     var start = Math.floor(this.leftEdgeTime * this.pixels_per_second / (this.zoomRatio)),
       end = start + (this.width / this.zoomRatio);

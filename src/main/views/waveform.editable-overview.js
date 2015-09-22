@@ -121,7 +121,7 @@ define([
 
     peaks.on("overview.toggleMinimizedState", function () {
       that.toggleMinimizedState ();
-    })
+    });
 
     peaks.on("resizeEndOverview", function(width, newWaveformData) {
       that.width = width;
@@ -211,8 +211,8 @@ define([
         strokeHitEnabled:false,
         listening: false,
         strokeWidth: 1
-      })
-    }
+      });
+    };
 
     // a short cut function that will create a group and add 4 new lines to that group
     var addLinesToGroup = function(group) {
@@ -228,7 +228,7 @@ define([
       });
 
       group.lines = lineGroup;
-    }
+    };
 
 
     // this is the left-hand edge of the editable window
@@ -325,13 +325,13 @@ define([
       event.evt.stopPropagation();
       event.evt.preventDefault();
       return false;
-    })
+    });
 
     this.leftGroup.on('mousedown', function(event) {
       event.evt.stopPropagation();
       event.evt.preventDefault();
       return false;
-    })
+    });
 
     // handler for when we're dragging the big rectangle that covers the editable window
     this.refWaveformRect.on('dragmove', function(event) {
@@ -351,19 +351,19 @@ define([
       // force the updating of positions, sizes etc
       that.forceUpdateRefWaveform(that.refWaveformRect.x(), that.refWaveformRect.x() + that.refWaveformRect.width());
 
-    })
+    });
 
     // when dragging the right hand box (which will resize the active area)
     this.rightGroup.on('dragmove', function(event) {
       // force the updating of positions, sizes etc
       that.forceUpdateRefWaveform(that.leftGroup.x(), that.rightGroup.x() + (that.rightGroup.scaleX() * 11));
-    })
+    });
 
     // when dragging the right hand box (which will resize the active area)
     this.leftGroup.on('dragmove', function(event) {
       // force the updating of positions, sizes etc
       that.forceUpdateRefWaveform(that.leftGroup.x(), that.rightGroup.x() + (that.rightGroup.scaleX() * 11));
-    })
+    });
 
     
 
@@ -386,7 +386,7 @@ define([
 
     this.refWaveformRect.on('dragend', function(event) {
       that.peaks.dragseeking = false;
-    })
+    });
 
 
     this.leftGroup.on('dragstart', function() {
@@ -400,11 +400,11 @@ define([
 
     this.leftGroup.on('dragend', function(event) {
       that.peaks.dragseeking = false;
-    })
+    });
 
     this.rightGroup.on('dragend', function(event) {
       that.peaks.dragseeking = false;
-    })
+    });
 
   };
 
@@ -432,25 +432,26 @@ define([
     var that = this;
     that.minimized = true;
     that.updateState();
-  }
+  };
 
   // move to maximized state
   WaveformEditableOverview.prototype.maximize = function() {
     var that = this;
     that.minimized = false;
     that.updateState();
-  }
+  };
 
   // toggle between minimized and maximized states
   WaveformEditableOverview.prototype.toggleMinimizedState = function() { 
     this.minimized = !this.minimized;
     this.updateState ();
-  }
+  };
 
   // redraw and reposition based on the current state
   // todo - this is messy
   WaveformEditableOverview.prototype.updateState = function() {
     var that = this;
+    var backgroundTweenNodes,tween,lineTweens,tween6,tween2,tween4;
     // if we're in minimized state...
     if (that.minimized) {
       // hide the waveform in this state
@@ -460,7 +461,7 @@ define([
       // tween some parts of the UI
       // 
       // first of all, the background and waveform
-      var backgroundTweenNodes = [that.waveformLayer, that.backgroundLayer];
+      backgroundTweenNodes = [that.waveformLayer, that.backgroundLayer];
       backgroundTweenNodes.map(function(item) {
         var tween = new Konva.Tween({
           node: item,
@@ -473,7 +474,7 @@ define([
 
 
       // then the ref layer
-      var tween = new Konva.Tween({
+      tween = new Konva.Tween({
         node: that.refLayer,
         duration: 0.3,
         scaleY: 25 / that.height
@@ -481,7 +482,7 @@ define([
       tween.play();
 
       // adjust the position of the lines
-      var lineTweens = [that.leftGroup.lines, that.centerGroup.lines, that.rightGroup.lines];
+      lineTweens = [that.leftGroup.lines, that.centerGroup.lines, that.rightGroup.lines];
       lineTweens.map(function(item) {
         var tween6 = new Konva.Tween({
           node: item,
@@ -490,10 +491,10 @@ define([
           y: -95
         });
         tween6.play();
-      })
+      });
 
       // adjust the center box
-      var tween6 = new Konva.Tween({
+      tween6 = new Konva.Tween({
         node: that.centerRect,
         duration: 0.3,
         height: that.height,
@@ -502,7 +503,7 @@ define([
       tween6.play();
 
       // tween the position of the entire UI layer
-      var tween2 = new Konva.Tween({
+      tween2 = new Konva.Tween({
         node: that.uiLayer,
         duration: 0.3,
         scaleY: 25 / that.height
@@ -511,7 +512,7 @@ define([
 
       // and the segment layer, if it exists...
       if (that.segmentLayer) {
-        var tween4 = new Konva.Tween({
+        tween4 = new Konva.Tween({
           node: that.segmentLayer,
           duration: 0.2,
           scaleY: (25/that.height),
@@ -529,7 +530,7 @@ define([
       that.waveformShape.show();
       that.refWaveformShape.show();
 
-      var backgroundTweenNodes = [that.waveformLayer, that.backgroundLayer];
+      backgroundTweenNodes = [that.waveformLayer, that.backgroundLayer];
       backgroundTweenNodes.map(function(item) {
         var tween = new Konva.Tween({
           node: item,
@@ -543,7 +544,7 @@ define([
       // tween some parts of the UI
       // 
       // first of all, the background and waveform
-      var tween = new Konva.Tween({
+      tween = new Konva.Tween({
         node: that.refLayer,
         duration: 0.3,
         scaleY: 1,
@@ -552,7 +553,7 @@ define([
       tween.play();
 
       // tween the position of the lines
-      var lineTweens = [that.leftGroup.lines, that.centerGroup.lines, that.rightGroup.lines];
+      lineTweens = [that.leftGroup.lines, that.centerGroup.lines, that.rightGroup.lines];
       lineTweens.map(function(item) {
         var tween6 = new Konva.Tween({
           node: item,
@@ -561,10 +562,10 @@ define([
           y: 0
         });
         tween6.play();
-      })
+      });
 
       // and the center box...
-      var tween6 = new Konva.Tween({
+      tween6 = new Konva.Tween({
         node: that.centerRect,
         duration: 0.3,
         height: 21,
@@ -573,7 +574,7 @@ define([
       tween6.play();
 
       // and the entire UI layer
-      var tween2 = new Konva.Tween({
+      tween2 = new Konva.Tween({
         node: that.uiLayer,
         duration: 0.3,
         scaleY: 1
@@ -582,7 +583,7 @@ define([
 
       // and the segment layer, if it exists...
       if (that.segmentLayer) {
-        var tween4 = new Konva.Tween({
+        tween4 = new Konva.Tween({
           node: that.segmentLayer,
           duration: 0.3,
           scaleY: 1,
@@ -595,7 +596,7 @@ define([
       that.refWaveformShape.draw();
       
     }
-  }
+  };
 
   // Update when we drag or resize
   WaveformEditableOverview.prototype.forceUpdateRefWaveform = function(offset_in, offset_out) {
@@ -710,7 +711,7 @@ define([
 
     this.refWaveformRect.setAttrs({
       opacity: rectOpacity
-    })
+    });
 
     // hide the lines if the rectangles drop below a certain width
     if (rectWidth < 11) {

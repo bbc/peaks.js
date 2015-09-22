@@ -621,7 +621,7 @@ define('peaks', [
                   self.rafPointer = window.requestAnimationFrame(step);
                 }
               
-              }
+              };
               // cancel any existing requests...
               window.cancelAnimationFrame(self.rafPointer);
               // call the first step of the ease

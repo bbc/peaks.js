@@ -142,7 +142,7 @@ define([
           break;
           default:
             throw new Error("Invalid zoomModel: " + peaks.options.zoomMode);
-          break;
+          
         }
         
 

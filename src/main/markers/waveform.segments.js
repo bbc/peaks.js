@@ -26,7 +26,7 @@ define([
       break;
       default:
         throw new Error("Invalid segmentStyle: " + peaks.options.segmentStyle);
-      break;
+   
     }
 
     self.segments = [];
