@@ -3,7 +3,7 @@
   <head>
     <title>Peaks.js Demo Page</title>
     <style>
-      #titles {
+      #titles,#peaks-loading {
         font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
       }
 
@@ -12,17 +12,34 @@
         width: 1000px;
       }
 
-      [id*="waveform-visualiser"] [class*="-container"] {
-        box-shadow: 3px 3px 20px #919191;
+      .zoom-container {
         margin: 0 0 24px 0;
-        -moz-box-shadow: 3px 3px 20px #919191;
-        -webkit-box-shadow: 3px 3px 20px #919191;
+        border:1px solid #ccc;
         line-height: 0;
       }
 
       .overview-container {
-        height: 85px;
+        height: 25px;
+        background:white;
+        border:1px solid #ccc;
+        border-bottom:none;
+        overflow: hidden;
       }
+
+      .overview-container.maximized {
+        height:85px;
+      }
+
+      /* Loading stuff */
+      #peaks-loading {
+        text-align: center;
+      }
+
+      #peaks-ready {
+        visibility:hidden;
+      }
+
+      /*.overvoew-*/
 
       #second-waveform-visualiser-container [class*="-container"] {
         background: #111;
@@ -57,20 +74,29 @@
         <p>Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference eg: distinguishing music from speech or identifying different music tracks.</p>
       </div>
 
-      <div id="first-waveform-visualiser-container"></div>
+      <div id="peaks-loading">
+      </div>
+      <div id="peaks-ready">
+        <div id="first-waveform-visualiser-container"></div>
 
-      <div id="demo-controls">
-        <audio controls=controls>
-          <source src="./test_data/sample.mp3" type="audio/mpeg">
-          <source src="./test_data/sample.ogg" type="audio/ogg">
-          Your browser does not support the audio element.
-        </audio>
-
-        <button data-action="zoom-in">zoom in</button>
-        <button data-action="zoom-out">zoom out</button>
-        <button data-action="add-segment">Add a Segment at current time</button>
-        <button data-action="add-point">Add a Point at current time</button>
-        <button data-action="log-data">Log segments/points</button>
+        <div id="demo-controls">
+          <audio controls=controls>
+            <source src="./test_data/test.mp3" type="audio/mpeg">
+            <source src="./test_data/test.ogg" type="audio/ogg">
+            Your browser does not support the audio element.
+          </audio>
+          <p>
+            <button data-action="zoom-out">zoom out</button>
+            <input tabindex=-1 type=range min=0 max=1000 value=1000 id="zoom-slider" step="0.1">
+            <button data-action="zoom-in">zoom in</button>
+            <button data-action="toggle-overview">Toggle overview state</button>
+          </p>
+          <p>
+            <button data-action="add-segment">Add Segment</button>
+            <button data-action="add-point">Add Point</button>        
+            <button data-action="log-data">Log segments/points</button>
+          </p>
+        </div>
       </div>
 
       <script src="bower_components/requirejs/require.js"></script>
@@ -89,15 +115,47 @@
             container: document.getElementById('first-waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: {
-              arraybuffer: '/test_data/sample.dat',
-              json: '/test_data/sample.json'
+              arraybuffer: '/test_data/test.dat',
+              json: '/test_data/test.json'
             },
-            keyboard: false
+            // use the new continuous zoom mode
+            zoomMode: 'continuous',
+            // specify the initial zoom mode - in this case, fully zoomed in
+            initialZoomLevel: 1,
+            // show the editable version of the overview
+            showEditableOverview: true,
+            // use rectangles for segment shapes
+            segmentStyle: 'rect',
+            // hide the overview panel initially
+            editableOverviewIsMaximized: false,
+            overviewHeight:85,
+            keyboard: false,
+
+            // change the default markup
+            template:              [
+               '<div class="waveform">',
+               '<div class="overview-container"></div>',
+               '<div class="zoom-container"></div>',
+               '</div>'
+             ].join(''),
           };
 
           var peaksInstance = Peaks.init(options);
 
           window['peaksInstance'] = peaksInstance;
+
+          // sort out the slider functionality
+          var slider = document.querySelector('#zoom-slider');
+          if (slider) {
+            slider.addEventListener("input",function () {
+             peaksInstance.zoom.zoomTo(this.value/1000);
+            });
+
+            peaksInstance.on ('zoom.change', function (zoomValue) {
+             slider.value = 1000 * zoomValue;
+            });
+          }
+          
 
           document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
           document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
@@ -121,10 +179,24 @@
             peaksInstance.points.add([point]);
           });
 
+          document.querySelector('[data-action="toggle-overview"]').addEventListener("click", function () {
+            peaksInstance.emit ("overview.toggleMinimizedState");
+            document.querySelector('.overview-container').classList.toggle('maximized');
+          });
+
           document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
             console.log('Segments', peaksInstance.segments.getSegments());
             console.log('Points', peaksInstance.points.getPoints());
           });
+
+          peaksInstance.on("zoom.preload-progress", function (currentStep, totalSteps) {
+            document.getElementById("peaks-loading").innerHTML = "<p>Initialising - " + Math.round (100 * currentStep / totalSteps) + "%</p>";
+          })
+
+          peaksInstance.on("zoomview.ready", function () {
+            document.getElementById("peaks-loading").style.display = "none";
+            document.getElementById("peaks-ready").style.visibility = "visible";
+          })
         });
       </script>
   </body>

@@ -7,12 +7,27 @@
 define([
   "konva",
   "peaks/waveform/waveform.mixins",
-  "peaks/markers/shapes/wave"
-], function (Konva, mixins, SegmentShape) {
+  "peaks/markers/shapes/wave",
+  "peaks/markers/shapes/rect"
+], function (Konva, mixins, SegmentShape,RectangleShape) {
   'use strict';
 
   return function (peaks) {
     var self = this;
+
+    var SegmentShape;
+
+    switch (peaks.options.segmentStyle) {
+      case 'wave':
+        SegmentShape = WaveShape;
+      break;
+      case 'rect':
+        SegmentShape = RectangleShape;
+      break;
+      default:
+        throw new Error("Invalid segmentStyle: " + peaks.options.segmentStyle);
+      break;
+    }
 
     self.segments = [];
     self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
@@ -20,6 +35,12 @@ define([
         view.segmentLayer = new Konva.Layer();
         view.stage.add(view.segmentLayer);
         view.segmentLayer.moveToTop();
+
+        // if the view's public API supports it, 
+        // let it know that it the segment layer has been added so that it may reorganise its layers
+        if (typeof view.segmentLayerAdded === 'function') {
+          view.segmentLayerAdded ();
+        }
       }
 
       return view;
