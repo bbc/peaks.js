@@ -151,7 +151,7 @@ define([
         segment.endTime = thisSeg.view.data.time(outOffset);
       }
       
-      peaks.emit("segments.handle_dragged");
+      peaks.emit("segments.dragged", segment);
 
       updateSegmentWaveform(segment);
       this.render();
