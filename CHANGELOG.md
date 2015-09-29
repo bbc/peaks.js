@@ -1,6 +1,12 @@
 ## Change Log
 
-### 0.4.5 (2015/07/02 10:52 +00:00)
+### 0.4.6 (2015/09/29 10:56 +00:00)
+- [#127](https://github.com/bbcrd/peaks.js/pull/127) Bugfix: Don't add waveform layer to the overview stage twice and ensure the UI layer is on top (@johvet)
+- [#125](https://github.com/bbcrd/peaks.js/pull/125) Node 0.12 and iojs compability (@oncletom)
+- [#120](https://github.com/bbcrd/peaks.js/pull/120) Explicit segment draw on drag resize (@oncletom)
+- [#121](https://github.com/bbcrd/peaks.js/pull/121) Make more colors configurable (@ziggythehamster)
+
+### v0.4.5 (2015/07/02 10:45 +00:00)
 - [#123](https://github.com/bbcrd/peaks.js/pull/123) Allow alternate zoom adapters, add a static (non-animated) zoom adapter, add more safety checks (@johvet, @ziggythehamster)
 
 ### v0.4.4 (2015/06/30 06:55 +00:00)
