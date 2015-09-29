@@ -6,30 +6,17 @@ Peaks is a modular frontend component designed for the display of and interactio
 
 ![](https://github.com/bbcrd/peaks.js/blob/master/peaks.png?raw=1)
 
-Peaks was developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
+Peaks is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
 
 Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
-See the Project overview here: [http://waveform.prototyping.bbc.co.uk/](http://waveform.prototyping.bbc.co.uk/)
+[More informations about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
 
 # Installation
 
-<table>
-  <thead>
-    <tr>
-      <th><a href="https://npmjs.org/">npm</a></th>
-      <th><a href="https://github.com/bower/bower">bower</a></th>
-      <th>old school</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>npm install --save peaks.js</code></td>
-      <td><code>bower install --save peaks.js</code></td>
-      <td><a href="https://github.com/bbcrd/peaks.js/archive/master.zip">download zip file</a></td>
-    </tr>
-  </tbody>
-</table>
+- **npm**: `npm install --save peaks.js`
+- *bower*: `bower install --save peaks.js`
+- *old school*: [download zip file](https://github.com/bbcrd/peaks.js/archive/master.zip)
 
 # Using Peaks.js in your own project
 
@@ -416,6 +403,40 @@ var instance = peaks.init({ … });
 instance.segments.removeAll();
 ```
 
+## Events
+
+Peaks emit events to enable you to extend its behaviour according to your needs.
+
+### General
+
+                           | Arguments
+---------------------------|----------------
+`error`                    | `Error err`
+
+### Media / User interactions
+
+                           | Arguments
+---------------------------|----------------
+`segments.ready`           | N/A
+`zoomview_resized`         | N/A
+`user_seek.overview`       | `float time`
+`user_seek.zoomview`       | `float time`
+`user_scrub.overview`      | `float time`
+
+### Waveforms
+
+                           | Arguments
+---------------------------|----------------
+`zoom.update`              | `float currentZoomLevel`, `float previousZoomLevel`
+
+### Segments / Points
+
+                           | Arguments
+---------------------------|----------------
+`segments.ready`           | N/A
+`points.ready`             | N/A
+`segment.dragged`          | `Segment segment`
+
 # Building Peaks
 
 You might want to build a minified standalone version of Peaks, to test a contribution or to run additional tests.
@@ -463,15 +484,12 @@ See [COPYING](COPYING)
 
 This project includes sample audio from the radio show [Desert Island Discs](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
-# Authors
-
->  British Broadcasting Corporation
+# Credits
 
 - [Chris Finch](http://github.com/chrisfinch)
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](http://github.com/chrisn)
 
+Copyright 2015, British Broadcasting Corporation.
 
-# Copyright
 
-Copyright 2014-2015 British Broadcasting Corporation

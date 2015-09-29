@@ -8,6 +8,15 @@
     "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
     "Chris Needham (https://github.com/chrisn)"
   ],
+  "keywords": [
+    "audio",
+    "visualisation",
+    "bbc",
+    "webaudio",
+    "browser",
+    "interactive",
+    "waveform"
+  ],
   "browserify": {
     "transform": [
       "deamdify"
@@ -47,6 +56,7 @@
     "start": "serve --cors -p 9000"
   },
   "devDependencies": {
+    "browserify": "^11.2.0",
     "chai": "^3.0.0",
     "github-changes": "^1.0.0",
     "jshint": "^2.5.1",
@@ -66,12 +76,9 @@
     "serve": "^1.4.0"
   },
   "dependencies": {
+    "deamdify": "^0.1.1",
     "eventemitter2": "^0.4.14",
-    "waveform-data": "^1.5.1",
-    "konva": "~0.9.5"
-  },
-  "optionalDependencies": {
-    "browserify": "^10.2.4",
-    "deamdify": "^0.1.1"
+    "konva": "~0.9.5",
+    "waveform-data": "^1.5.1"
   }
 }
