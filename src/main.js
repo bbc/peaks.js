@@ -361,7 +361,9 @@ define('peaks', [
           },
 
           removeAll: function () {
-            self.waveform.segments.removeAll();
+            if (self.waveform.segments) {
+              self.waveform.segments.removeAll();
+            }
           },
 
           getSegments: function () {
@@ -446,7 +448,9 @@ define('peaks', [
            * @since 0.3.2
            */
           removeAll: function removeAll(){
-            self.waveform.points.removeAll();
+            if (self.waveform.points) {
+              self.waveform.points.removeAll();
+            }
           }
         };
       }
