@@ -60,7 +60,7 @@
     "chai": "^3.0.0",
     "github-changes": "^1.0.0",
     "jshint": "^2.5.1",
-    "karma": "^0.13.00",
+    "karma": "^0.13.12",
     "karma-browserstack-launcher": "^0.1.1",
     "karma-chai-plugins": "^0.6.0",
     "karma-chrome-launcher": "^0.2.0",

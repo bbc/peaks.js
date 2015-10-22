@@ -1,23 +1,14 @@
 'use strict';
 
-function filterBrowsers(browsers, re){
-  return Object.keys(browsers).filter(function(key){
-    return re.test(key);
-  });
-}
-
 module.exports = function (config) {
-
   var isCI = (Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY)) === true;
   var isFast = Boolean(process.env.FAST);
 
   config.set({
-    // Karma configuration
-
     // base path, that will be used to resolve files and exclude
     basePath : '',
 
-    frameworks : ['mocha', 'requirejs', 'sinon-chai'],
+    frameworks : ['mocha', 'requirejs', 'chai', 'sinon-chai'],
 
     // list of files / patterns to load in the browser
     files : [
@@ -60,7 +51,7 @@ module.exports = function (config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch : false,
 
-    browserDisconnectTolerance: isCI ? 3 : 1,
+    browserDisconnectTolerance: 3,
     browserNoActivityTimeout: isCI ? 120000 : null,
 
     browserStack: {
@@ -134,16 +125,22 @@ module.exports = function (config) {
       }
     },
 
+    // Recommended for Browserstack
+    concurrency: 5,
+
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout : 120000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun : true
-
   });
 
-  config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : (isFast ? ['Chrome', 'Firefox'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7'])
-  });
+  // speedy testing on your laptop
+  // FAST=1 npm test
+  if (!isCI) {
+    config.set({
+      browsers: isFast ? ['Chrome', 'Firefox'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']
+    });
+  }
 };
