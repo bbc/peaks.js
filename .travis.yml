@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - '0.10'
   - '0.12'
-  - 'iojs'
+  - 'v4'
 sudo: false
 cache:
   directories:
@@ -12,16 +12,16 @@ env:
   global:
   - secure: Bg08bmtZxlt18xVd7IT3Ft8rC8Cd3iT2txSqoFKaUERu2FzlaPvi+DS5K0SeOqAB9LfyRST/Msdg+jmPEvQ/0VXa2lfhqf31YSrXStnd9h1Owxr53KPV3O6FX1mfH8RlmHVDosKUR6mJeiush4MSEFPCmB1VBTwpyRcbBt3sbJ0=
   - secure: M4PJdQwYF0dWq+/bMhz4WTRhiKnDuuvgwLImzGQQ0I5zEz6yQofUVmXsAdYkqTvhr8klO+XQktzq62wsWADIe1eb5Vlym87rZweA1MmhzhpfSgYSwQ9IdpVXRbqFVB7HbqrGTHqOSfGOu27e8z4RNg8h3EXCiTnN1qHyY0N5vrI=
-#  matrix:
-#  - BROWSER=BSChrome27
-#  - BROWSER=BSChromeLatest
-#  - BROWSER=BSFirefox26
-#  - BROWSER=BSFirefoxLatest
-#  - BROWSER=BSSafari6
-#  - BROWSER=BSSafari7
-#  - BROWSER=BSIE9
-#  - BROWSER=BSIE10
-#  - BROWSER=BSIE11
+  matrix:
+  - BROWSER=BSChrome27
+  - BROWSER=BSChromeLatest
+  - BROWSER=BSFirefox26
+  - BROWSER=BSFirefoxLatest
+  - BROWSER=BSSafari6
+  - BROWSER=BSSafari7
+  - BROWSER=BSIE9
+  - BROWSER=BSIE10
+  - BROWSER=BSIE11
 before_script:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start

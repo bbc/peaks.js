@@ -60,25 +60,25 @@
     "chai": "^3.0.0",
     "github-changes": "^1.0.0",
     "jshint": "^2.5.1",
-    "karma": "^0.12.0",
+    "karma": "^0.13.12",
     "karma-browserstack-launcher": "^0.1.1",
+    "karma-chai-plugins": "^0.6.0",
     "karma-chrome-launcher": "^0.2.0",
     "karma-firefox-launcher": "^0.1.0",
     "karma-html2js-preprocessor": "^0.1",
-    "karma-ievms": "^0.0.4",
+    "karma-ievms": "0.1.0",
     "karma-mocha": "^0.2.0",
     "karma-requirejs": "^0.2.2",
     "karma-safari-launcher": "^0.1.1",
-    "karma-sinon-chai": "^1.0.0",
     "minifyify": "^7.0.2",
-    "mocha": "^1.17.1",
+    "mocha": "^2.3.0",
     "requirejs": "^2.1.15",
     "serve": "^1.4.0"
   },
   "dependencies": {
     "deamdify": "^0.1.1",
     "eventemitter2": "^0.4.14",
-    "konva": "~0.9.5",
+    "konva": "^0.9.5",
     "waveform-data": "^1.5.1"
   }
 }
