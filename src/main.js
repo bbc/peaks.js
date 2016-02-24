@@ -30,7 +30,7 @@ define('peaks', [
 
     this.options = {
       /**
-       * Array of scale factors (samples per pixel) for the zoom levels (big >> small)
+       * Array of scale factors (samples per pixel) for the stepped zoom levels (big >> small)
        */
       zoomLevels:            [512, 1024, 2048, 4096],
       /**
@@ -157,9 +157,51 @@ define('peaks', [
        },
 
       /**
-       * Use animation on zoom
+       * Use animation on zoom - only relevant if zoom mode is 'stepped'
        */
       zoomAdapter: 'animated',
+
+      /**
+       * Which mode of zoom to use? 
+       *
+       * The default is 'stepped', which tells Peaks to use the original ZoomView (with static or animated adapters)
+       * A value of 'continuous' tells Peaks to use the new continuous ZoomView 
+       * 
+       */
+      zoomMode: 'stepped',
+
+      /**
+       * The initial zoom level to work with
+       * 
+       */
+      initialZoomLevel: 0,
+
+      /**
+       * We can specify the number of different breakpoints that should be pre-sampled. Passing a value of null here will leave the decision
+       * to the zoom view, which is recommended.
+       *
+       * If choosing to specify a value, 15 would be a sensible minimum
+       */
+      continuousZoomCacheSize: null,
+      
+     /**
+      * Should we use the new editable overview that allows the user to adjust the zoom level with drag handles
+      */
+     showEditableOverview: false,
+
+     /**
+      * Whether the editable overview should start in maximized state
+      */
+     editableOverviewIsMaximized: true,
+
+     /**
+      * How segment shapes should be drawn - defaults to wave, other option is 'rect'
+      *
+      * 'wave' is slightly inaccurate when using the continuous zoom style
+      */
+     segmentStyle: 'wave'
+
+     
     };
 
     /**
@@ -170,6 +212,8 @@ define('peaks', [
 
     /**
      *
+     * In 'stepped' zoom mode, this holds the current index of the zoomLevels array.
+     * In 'continuous' zoom mode, this holds the current zoom level as a number between 0 (zoomed fully out) and 1 (zoomed fully in)
      * @type {number}
      */
     this.currentZoomLevel = 0;
@@ -222,6 +266,9 @@ define('peaks', [
       segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
       pointMarker:      mixins.defaultPointMarker(instance.options)
     });
+
+    // set the initial zoom level
+    instance.currentZoomLevel = instance.options.initialZoomLevel;
 
     /*
      Setup the logger
@@ -490,10 +537,28 @@ define('peaks', [
         };
       }
     },
+
     /**
-     * Zoom API
+     * Zoom API - a proxy for the currently user zoom mode
+     * 
      */
-    zoom:     {
+    zoom: {
+      get: function () {
+        // should current be one of 'stepped' or 'continuous'
+        var zoomMode = this.options.zoomMode;
+
+        // check to see if an invalid zoom mode was specified
+        if (this[zoomMode + "_zoom"] === undefined) {
+          throw new Error("Invalid zoomModel: " + zoomMode);
+        }
+        return this[zoomMode + "_zoom"];
+      }
+    },
+
+    /**
+     * Continuous Zoom API
+     */
+    continuous_zoom:     {
       get: function () {
         var self = this;
         return {
@@ -502,14 +567,110 @@ define('peaks', [
            * Zoom in one level
            */
           zoomIn: function () {
-            self.zoom.setZoom(self.currentZoomLevel - 1);
+            self.continuous_zoom.zoomTo(self.currentZoomLevel + 0.1, true);
           },
 
           /**
            * Zoom out one level
            */
           zoomOut: function () {
-            self.zoom.setZoom(self.currentZoomLevel + 1);
+            self.continuous_zoom.zoomTo(self.currentZoomLevel - 0.1, true);
+          },
+
+          /**
+           * Sets the current zoom value
+           *
+           * @param {number} zoomValue - between 0 and 1
+           * @param {bool} ease - whether or not the zoom should ease into position (true), or whether it should be instant (false)
+           */
+          zoomTo: function (zoomValue, ease) { 
+
+            // clamp the input
+            if (zoomValue > 1) {
+              zoomValue = 1;
+            }
+
+            if (zoomValue < 0) {
+              zoomValue = 0;
+            }
+
+
+            // if we want to ease the transition...
+            if (ease) {
+
+              var EASE_VALUE = 3;
+
+              // we're easing, so we need to requestAnimationFrame and move in steps
+              
+               // start and end points of the zoom
+              var finalZoomValue = zoomValue; 
+              var currentZoomValue = self.currentZoomLevel;
+
+              // store the zoom value we're moving to
+              self.currentZoomLevel = zoomValue;
+
+              var step = function () {
+                currentZoomValue += (finalZoomValue - currentZoomValue) / EASE_VALUE;
+                // send out the interim zoom value
+                // 
+                self.emit("zoom.change", currentZoomValue);
+
+                // if we're not close enough to the final position,
+                // repeat the process next frame
+                if (Math.abs(currentZoomValue - finalZoomValue) > 0.001) {
+                  self.rafPointer = window.requestAnimationFrame(step);
+                }
+              
+              };
+              // cancel any existing requests...
+              window.cancelAnimationFrame(self.rafPointer);
+              // call the first step of the ease
+              step ();
+            } else {
+              // change immediately
+              self.currentZoomLevel = zoomValue;
+              self.emit("zoom.change", zoomValue);
+            }
+
+          },
+
+          getMaximumScaleFactor: function () {
+            return 512;
+          },
+
+          /**
+           * Returns the current zoom level
+           *
+           * @returns {number}
+           */
+          getZoom: function () {
+            return self.currentZoomLevel;
+          }
+
+        };
+      }
+    },
+
+    /**
+     * Stepped Zoom API
+     */
+    stepped_zoom:     {
+      get: function () {
+        var self = this;
+        return {
+
+          /**
+           * Zoom in one level
+           */
+          zoomIn: function () {
+            self.stepped_zoom.setZoom(self.currentZoomLevel - 1);
+          },
+
+          /**
+           * Zoom out one level
+           */
+          zoomOut: function () {
+            self.stepped_zoom.setZoom(self.currentZoomLevel + 1);
           },
 
           /**

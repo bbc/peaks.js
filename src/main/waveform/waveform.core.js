@@ -8,10 +8,12 @@
 define([
   "waveform-data",
   "peaks/views/waveform.overview",
+  "peaks/views/waveform.editable-overview",
   "peaks/views/waveform.zoomview",
+  "peaks/views/waveform.continuous-zoomview",
   "peaks/markers/waveform.segments",
   "peaks/markers/waveform.points"
-  ], function (WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
+  ], function (WaveformData, WaveformOverview, WaveformEditableOverview,WaveformZoomView, WaveformContinuousZoomView, WaveformSegments, WaveformPoints) {
 
   'use strict';
 
@@ -116,7 +118,8 @@ define([
         try {
           this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
           var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
-          this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
+          var OverviewClass = peaks.options.showEditableOverview ? WaveformEditableOverview : WaveformOverview;
+          this.waveformOverview = new OverviewClass(overviewWaveformData, this.ui.overview, peaks);
         }
         catch (e) {
           return peaks.emit('error', e);
@@ -130,7 +133,18 @@ define([
       openZoomView: function () {
         var that = this;
 
-        that.waveformZoomView = new WaveformZoomView(that.origWaveformData, that.ui.zoom, peaks);
+        switch (peaks.options.zoomMode) {
+          case 'continuous':
+            that.waveformZoomView = new WaveformContinuousZoomView(that.origWaveformData, that.ui.zoom, peaks);
+          break;
+          case 'stepped':
+            that.waveformZoomView = new WaveformZoomView(that.origWaveformData, that.ui.zoom, peaks);
+          break;
+          default:
+            throw new Error("Invalid zoomModel: " + peaks.options.zoomMode);
+          
+        }
+        
 
         that.segments = new WaveformSegments(peaks);
         that.segments.init();

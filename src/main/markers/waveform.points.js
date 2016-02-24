@@ -52,6 +52,8 @@ define([
     }
 
     function updatePoint(point) {
+
+
       // Binding with data
       waveformView.waveformOverview.data.set_point(waveformView.waveformOverview.data.at_time(point.timestamp), point.id);
       waveformView.waveformZoomView.data.set_point(waveformView.waveformZoomView.data.at_time(point.timestamp), point.id);
@@ -66,8 +68,9 @@ define([
         point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
       }
 
-      // Zoom
-      var zoomtimestampOffset = waveformView.waveformZoomView.data.at_time(point.timestamp);
+      // Zoom - 
+      // allow the view to override the position it reports
+      var zoomtimestampOffset = (typeof waveformView.waveformZoomView.atDataTime === 'function') ?  waveformView.waveformZoomView.atDataTime (point.timestamp) :  waveformView.waveformZoomView.data.at_time(point.timestamp);
       var frameStartOffset = waveformView.waveformZoomView.frameOffset;
 
       if (zoomtimestampOffset < frameStartOffset) {
@@ -79,9 +82,11 @@ define([
 
         point.zoom.show();
 
-        if (point.editable) {
-          if (point.zoom.marker) point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
+        if (point.zoom.marker) point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
 
+
+        if (point.editable) {
+          
           // Change Text
           point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
         }
@@ -103,6 +108,7 @@ define([
 
     this.init = function () {
       peaks.on("waveform_zoom_displaying", self.updatePoints.bind(self));
+      peaks.on("waveform_zoom_updating", self.updatePoints.bind(self));
       peaks.emit("points.ready");
     };
 
