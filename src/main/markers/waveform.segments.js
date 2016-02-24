@@ -7,12 +7,27 @@
 define([
   "konva",
   "peaks/waveform/waveform.mixins",
-  "peaks/markers/shapes/wave"
-], function (Konva, mixins, SegmentShape) {
+  "peaks/markers/shapes/wave",
+  "peaks/markers/shapes/rect"
+], function (Konva, mixins, SegmentShape,RectangleShape) {
   'use strict';
 
   return function (peaks) {
     var self = this;
+
+    var SegmentShape;
+
+    switch (peaks.options.segmentStyle) {
+      case 'wave':
+        SegmentShape = WaveShape;
+      break;
+      case 'rect':
+        SegmentShape = RectangleShape;
+      break;
+      default:
+        throw new Error("Invalid segmentStyle: " + peaks.options.segmentStyle);
+   
+    }
 
     self.segments = [];
     self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
@@ -20,6 +35,12 @@ define([
         view.segmentLayer = new Konva.Layer();
         view.stage.add(view.segmentLayer);
         view.segmentLayer.moveToTop();
+
+        // if the view's public API supports it, 
+        // let it know that it the segment layer has been added so that it may reorganise its layers
+        if (typeof view.segmentLayerAdded === 'function') {
+          view.segmentLayerAdded ();
+        }
       }
 
       return view;
@@ -120,14 +141,20 @@ define([
       if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
 
       if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
+
+        var segmentData = peaks.waveform.waveformZoomView.data.segments[segment.id];
+        var offset_length = segmentData.offset_length;
+        var offset_start = segmentData.offset_start - peaks.waveform.waveformZoomView.data.offset_start;
+
         var startPixel = zoomStartOffset - frameStartOffset;
         var endPixel = zoomEndOffset - frameStartOffset;
 
+       
         segment.zoom.show();
 
         if (segment.editable) {
-          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
-          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
+          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(offset_start - segment.zoom.inMarker.getWidth());
+          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(offset_length + offset_start);
 
           // Change Text
           segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
@@ -143,12 +170,12 @@ define([
     var segmentHandleDrag = function (thisSeg, segment) {
       if (thisSeg.inMarker.getX() > 0) {
         var inOffset = thisSeg.view.frameOffset + thisSeg.inMarker.getX() + thisSeg.inMarker.getWidth();
-        segment.startTime = thisSeg.view.data.time(inOffset);
+        segment.startTime = (typeof thisSeg.view.atDataTime === 'function') ?  thisSeg.view.atDataTime(inOffset) : thisSeg.data.time(inOffset);
       }
 
       if (thisSeg.outMarker.getX() < thisSeg.view.width) {
         var outOffset = thisSeg.view.frameOffset + thisSeg.outMarker.getX();
-        segment.endTime = thisSeg.view.data.time(outOffset);
+        segment.endTime = (typeof thisSeg.view.atDataTime === 'function') ? thisSeg.view.atDataTime(outOffset) : thisSeg.view.data.time(outOffset);
       }
       
       peaks.emit("segments.dragged", segment);

@@ -276,6 +276,19 @@ define(['konva'], function (Konva) {
       viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);
     },
 
+    /* Draws the waveform at a particular y position */
+    waveformOffsetDrawFunction: function(waveform, canvas, y) {
+      if (waveform.segments.zoom === undefined) {
+        return;
+      }
+      var offset_length = waveform.segments.zoom.offset_length;
+      var offset_start = waveform.segments.zoom.offset_start - waveform.offset_start;
+      var ctx = canvas.getContext();
+      drawWaveform(ctx, waveform.segments.zoom.min, waveform.segments.zoom.max, offset_start, offset_length, y);
+      ctx.fillStrokeShape(this);
+      
+    },
+
     /**
      * Format a time nicely
      * @param  {int}      time            Time in seconds to be formatted
