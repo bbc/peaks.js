@@ -395,7 +395,7 @@ define('peaks', [
           else {
             throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
           }
-        }
+        };
         return {
           /**
            *
