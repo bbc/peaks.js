@@ -1,4 +1,4 @@
-define(['peaks'], function(Peaks){
+(function(Peaks){
   describe("Peaks API interface", function () {
 
     var sandbox;
@@ -215,4 +215,4 @@ define(['peaks'], function(Peaks){
     });
   });
 
-});
+})(peaks);

@@ -1,4 +1,4 @@
-define(['peaks'], function(Peaks){
+(function(Peaks){
 
   describe("player/waveform/waveform.segments", function () {
 
@@ -59,4 +59,4 @@ define(['peaks'], function(Peaks){
     });
   });
 
-});
+})(peaks);

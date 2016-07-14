@@ -1,4 +1,4 @@
-define(['peaks'], function (Peaks) {
+(function (Peaks) {
   describe("Peaks.points", function () {
 
     var p;
@@ -116,4 +116,4 @@ define(['peaks'], function (Peaks) {
 
   });
 
-});
+})(peaks);

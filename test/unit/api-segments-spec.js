@@ -1,4 +1,4 @@
-define(['peaks'], function(Peaks){
+(function(Peaks){
   describe("Peaks.segments", function () {
 
     var p;
@@ -176,4 +176,4 @@ define(['peaks'], function(Peaks){
 
   });
 
-});
+})(peaks);
