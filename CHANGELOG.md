@@ -1,6 +1,6 @@
 ## Change Log
 
-### 0.4.6 (2015/09/29 10:56 +00:00)
+### v0.5.6 (2015/09/29 10:57 +00:00)
 - [#127](https://github.com/bbcrd/peaks.js/pull/127) Bugfix: Don't add waveform layer to the overview stage twice and ensure the UI layer is on top (@johvet)
 - [#125](https://github.com/bbcrd/peaks.js/pull/125) Node 0.12 and iojs compability (@oncletom)
 - [#120](https://github.com/bbcrd/peaks.js/pull/120) Explicit segment draw on drag resize (@oncletom)
@@ -43,10 +43,10 @@
 ### 0.3.0-beta.3 (2014/07/10 16:14 +00:00)
 - [#66](https://github.com/bbcrd/peaks.js/pull/66) Simplified build system. (@oncletom)
 - [#63](https://github.com/bbcrd/peaks.js/pull/63) Fixed Bug when using grunt build for vanilla JS (Kinetic Not Found). (@chainlink)
-- [#52](https://github.com/bbcrd/peaks.js/pull/52) Custom Height for each container (@oncletom)
+- [#52](https://github.com/bbcrd/peaks.js/pull/52) Custom Height for each container (@bbcrd)
 
 ### 0.3.0-beta.2 (2014/06/28 16:31 +00:00)
-- [#51](https://github.com/bbcrd/peaks.js/pull/51) Delete segments (@oncletom)
+- [#51](https://github.com/bbcrd/peaks.js/pull/51) Delete segments (@bbcrd)
 
 ### 0.3.0-beta.1 (2014/06/27 19:26 +00:00)
 - [#50](https://github.com/bbcrd/peaks.js/pull/50) Peaks build system. (@oncletom)
