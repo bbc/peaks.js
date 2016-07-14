@@ -2,7 +2,7 @@
   "name": "peaks.js",
   "version": "0.4.6",
   "description": "Frontend app for displaying audio waveforms",
-  "main": "./src/main.js",
+  "main": "./index.js",
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
     "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
@@ -17,11 +17,6 @@
     "interactive",
     "waveform"
   ],
-  "browserify": {
-    "transform": [
-      "deamdify"
-    ]
-  },
   "browser": {
     "EventEmitter": "eventemitter2",
     "peaks/player/player": "./src/main/player/player.js",
@@ -45,38 +40,40 @@
   },
   "license": "LGPL-3.0",
   "scripts": {
-    "build": "browserify -d ./src/main.js -p [minifyify --map peaks.min.map --output peaks.min.map] -s peaks -o peaks.min.js",
-    "build-max": "browserify ./src/main.js -s peaks -o peaks.js",
-    "test": "npm run test-pre && ./node_modules/karma/bin/karma start --single-run",
-    "test-pre": "jshint ./src",
+    "build": "npm run build:main && npm run build:standalone",
+    "build:main": "browserify -e ./src/main.js -t deamdify -o index.js",
+    "build:standalone": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map > peaks.js",
+    "test": "./node_modules/karma/bin/karma start --single-run",
+    "pretest": "jshint ./src",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run",
     "preversion": "npm test",
     "version": "npm run changelog && npm run build && git add CHANGELOG.md",
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} -a --only-pulls --use-commit-body",
+    "prestart": "npm run build",
     "start": "serve --cors -p 9000"
   },
   "devDependencies": {
-    "browserify": "^11.2.0",
+    "browserify": "^13.0.0",
     "chai": "^3.0.0",
+    "deamdify": "^0.2.0",
+    "exorcist": "^0.4.0",
     "github-changes": "^1.0.0",
     "jshint": "^2.5.1",
-    "karma": "^0.12.0",
-    "karma-browserstack-launcher": "^0.1.1",
-    "karma-chrome-launcher": "^0.2.0",
-    "karma-firefox-launcher": "^0.1.0",
-    "karma-html2js-preprocessor": "^0.1",
-    "karma-ievms": "^0.0.4",
-    "karma-mocha": "^0.2.0",
-    "karma-requirejs": "^0.2.2",
-    "karma-safari-launcher": "^0.1.1",
+    "karma": "^1.1.0",
+    "karma-browserstack-launcher": "^1.0.0",
+    "karma-chrome-launcher": "^1.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-html2js-preprocessor": "^1.0.0",
+    "karma-ievms": "^0.1.0",
+    "karma-mocha": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
     "karma-sinon-chai": "^1.0.0",
-    "minifyify": "^7.0.2",
-    "mocha": "^1.17.1",
-    "requirejs": "^2.1.15",
-    "serve": "^1.4.0"
+    "mocha": "^2.5.0",
+    "serve": "^1.4.0",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "deamdify": "^0.1.1",
     "eventemitter2": "^0.4.14",
     "konva": "~0.9.5",
     "waveform-data": "^1.5.1"

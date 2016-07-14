@@ -16,6 +16,7 @@ Peaks utilizes HTML5 canvas technology to display waveform data at different zoo
 
 - **npm**: `npm install --save peaks.js`
 - *bower*: `bower install --save peaks.js`
+- [Browserify CDN](http://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
 - *old school*: [download zip file](https://github.com/bbcrd/peaks.js/archive/master.zip)
 
 # Using Peaks.js in your own project
@@ -35,7 +36,7 @@ Peaks can be included in any web page by following these steps:
 <script src="bower_components/requirejs/require.js" data-main="app.js"></script>
 ```
 
-## Start using [require.js](http://requirejs.org/)
+## Start using AMD and [require.js](http://requirejs.org/)
 
 AMD modules are working out of the box without any optimiser.
 
@@ -67,20 +68,36 @@ require(['peaks'], function (Peaks) {
 
 A working examples is provided in [`index.html`](index.html).
 
+## Start using ES2015 module loader
+
+This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/) (with [babelify transform](https://github.com/babel/babelify)).
+
+```js
+import Peaks from 'peaks.js';
+
+const p = Peaks.init({ … });
+```
+
+## Start using CommonJS module loader
+
+This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/).
+
+```js
+var Peaks = require('peaks.js');
+
+var p = Peaks.init({ … });
+```
+
 ## Start using vanilla JavaScript
 
 ```html
-<script src="http://wzrd.in/standalone/peaks.js"></script>
+<script src="node_modules/peaks.js/peaks.js"></script>
 <script>
 (function(Peaks){
     var p = Peaks.init({ … });
 })(peaks.js);
 </script>
 ```
-
-**Notice**: this examples uses [Browserify CDN](http://wzrd.in/): save it as a local copy or build your own.
-
-Please [refer to the *Building Peaks* section](#building-peaks) to learn more about how to build Peaks for development or production purpose.
 
 ## Generate waveform data
 
@@ -459,7 +476,7 @@ It will indeed be UMD compatible, so as you can continue to use it with AMD or C
 npm run build
 ```
 
-The output of the build will be located as `peaks.min.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+The output of the build will be located as `peaks.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
 ## Live Demo
 
@@ -491,5 +508,3 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Chris Needham](http://github.com/chrisn)
 
 Copyright 2015, British Broadcasting Corporation.
-
-

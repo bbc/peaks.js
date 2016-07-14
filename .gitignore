@@ -1,5 +1,6 @@
 bower_components
 node_modules
 
-peaks.min.js
-peaks.min.map
+index.js
+peaks.js
+peaks.js.map

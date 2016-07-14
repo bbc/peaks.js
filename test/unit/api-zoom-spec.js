@@ -1,4 +1,4 @@
-define(['peaks'], function(Peaks){
+(function(Peaks){
   describe("Peaks.zoom", function () {
 
     var p, sandbox;
@@ -81,7 +81,7 @@ define(['peaks'], function(Peaks){
         p.on("zoom.update", spy);
         p.zoom.zoomOut();
 
-        expect(spy).to.be.calledWith(1024, 512);
+        expect(spy).to.have.been.calledWith(1024, 512);
       });
     });
 
@@ -94,10 +94,10 @@ define(['peaks'], function(Peaks){
         p.on("zoom.update", spy);
         p.zoom.zoomIn();
 
-        expect(spy).to.be.calledWith(512, 1024);
+        expect(spy).to.have.been.calledWith(512, 1024);
       });
     });
 
   });
 
-});
+})(peaks);

@@ -17,20 +17,23 @@ module.exports = function (config) {
     // base path, that will be used to resolve files and exclude
     basePath : '',
 
-    frameworks : ['mocha', 'requirejs', 'sinon-chai'],
+    frameworks : ['mocha', 'sinon-chai'],
+
+    client: {
+      chai: {
+        includeStack: true
+      }
+    },
 
     // list of files / patterns to load in the browser
     files : [
+      'peaks.js',
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'node_modules/eventemitter2/lib/*.js', included: false },
-      { pattern: 'node_modules/waveform-data/dist/*.js', included: false },
-      { pattern: 'node_modules/konva/*.js', included: false },
-      { pattern: 'test/*.html' },
-      { pattern: 'src/**/*.js', included: false },
-      { pattern: 'test/unit/**/*.js', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
-      'test/test-main.js'
+      { pattern: 'test/*.html' },
+      'test/load-fixtures.js',
+      'test/unit/**/*.js',
     ],
 
     preprocessors: {

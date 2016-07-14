@@ -1,4 +1,4 @@
-define(['peaks'], function(Peaks){
+(function(Peaks){
 
   describe("Peaks.time", function () {
 
@@ -57,4 +57,4 @@ define(['peaks'], function(Peaks){
     });
   });
 
-});
+})(peaks);
