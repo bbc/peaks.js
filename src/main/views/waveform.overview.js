@@ -29,7 +29,8 @@ define([
       height: that.height
     });
 
-    that.waveformLayer = new Konva.Layer();
+    that.backgroundLayer = new Konva.Layer();
+    that.waveformLayer = new Konva.FastLayer();
 
     that.background = new Konva.Rect({
       x: 0,
@@ -38,7 +39,8 @@ define([
       height: that.height
     });
 
-    that.waveformLayer.add(that.background);
+    that.backgroundLayer.add(that.background);
+    that.stage.add(that.backgroundLayer);
 
     that.createWaveform();
     that.createRefWaveform();

@@ -45,7 +45,8 @@ define([
       height: that.height
     });
 
-    that.zoomWaveformLayer = new Konva.Layer();
+    that.backgroundLayer = new Konva.Layer();
+    that.zoomWaveformLayer = new Konva.FastLayer();
     that.uiLayer = new Konva.Layer();
 
     that.background = new Konva.Rect({
@@ -55,7 +56,8 @@ define([
       height: that.height
     });
 
-    that.zoomWaveformLayer.add(that.background);
+    that.backgroundLayer.add(that.background);
+    that.stage.add(that.backgroundLayer);
 
     that.axis = new WaveformAxis(that);
 
