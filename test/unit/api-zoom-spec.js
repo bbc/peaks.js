@@ -24,6 +24,7 @@
     });
 
     afterEach(function() {
+      p.destroy();
       sandbox.restore();
     });
 

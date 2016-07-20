@@ -33,6 +33,7 @@ define([
    */
   Waveform.prototype.init = function(ui) {
     this.ui = ui; // See getUiElements in main.js
+    this.onResize = this.onResize.bind(this);
 
     /**
      * Handle data provided by our waveform data module after parsing the XHR request
@@ -184,22 +185,7 @@ define([
   Waveform.prototype.bindResize = function() {
     var self = this;
 
-    window.addEventListener('resize', function() {
-      self.ui.overview.hidden = true;
-      self.ui.zoom.hidden = true;
-
-      if (self.resizeTimeoutId) {
-        clearTimeout(self.resizeTimeoutId);
-      }
-
-      self.resizeTimeoutId = setTimeout(function() {
-        var width = self.ui.player.clientWidth;
-        var overviewWaveformData = self.origWaveformData.resample(width);
-
-        self.peaks.emit('resizeEndOverview', width, overviewWaveformData);
-        self.peaks.emit('window_resized', width, self.origWaveformData);
-      }, 500);
-    });
+    window.addEventListener("resize", this.onResize);
 
     self.peaks.on('overview_resized', function() {
       self.ui.overview.removeAttribute('hidden');
@@ -216,6 +202,35 @@ define([
     self.peaks.on('user_scrub.*', function(time) {
       self.peaks.player.seekBySeconds(time);
     });
+  };
+
+  Waveform.prototype.destroy = function() {
+    if (this.waveformOverview) this.waveformOverview.destroy();
+    if (this.waveformZoomView) this.waveformZoomView.destroy();
+    window.removeEventListener('resize', this.onResize);
+    if (this.resizeTimeoutId) {
+      clearTimeout(this.resizeTimeoutId);
+      this.resizeTimeoutId = null;
+    }
+  };
+
+
+  Waveform.prototype.onResize = function() {
+    var self = this;
+    self.ui.overview.hidden = true;
+    self.ui.zoom.hidden = true;
+
+    if (self.resizeTimeoutId) {
+      clearTimeout(self.resizeTimeoutId);
+    }
+
+    self.resizeTimeoutId = setTimeout(function() {
+      var width = self.ui.player.clientWidth;
+      var overviewWaveformData = self.origWaveformData.resample(width);
+
+      self.peaks.emit('resizeEndOverview', width, overviewWaveformData);
+      self.peaks.emit('window_resized', width, self.origWaveformData);
+    }, 500);
   };
 
   return Waveform;

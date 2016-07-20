@@ -20,6 +20,9 @@
 
       p.on('points.ready', done);
     });
+    afterEach(function () {
+      p.destroy();
+    })
 
     /**
      * TESTS =========================================================

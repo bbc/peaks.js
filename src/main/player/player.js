@@ -38,6 +38,7 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
       init: function(mediaElement) {
         var self = this;
 
+        this.listeners = [];
         this.mediaElement = mediaElement;
         this.duration = this.mediaElement.duration;
 
@@ -45,21 +46,33 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
           peaks.emit('player_load', this);
         }
 
-        this.mediaElement.addEventListener('timeupdate', function() {
+        this._addMediaListener('timeupdate', function() {
           peaks.emit('player_time_update', self.getTime());
         });
 
-        this.mediaElement.addEventListener('play', function() {
+        this._addMediaListener('play', function() {
           peaks.emit('player_play', self.getTime());
         });
 
-        this.mediaElement.addEventListener('pause', function() {
+        this._addMediaListener('pause', function() {
           peaks.emit('player_pause', self.getTime());
         });
 
-        this.mediaElement.addEventListener('seeked', function() {
+        this._addMediaListener('seeked', function() {
           peaks.emit('player_seek', self.getTime());
         });
+      },
+
+      _addMediaListener: function(type, callback) {
+        this.listeners.push([type, callback]);
+        this.mediaElement.addEventListener(type, callback);
+      },
+
+      destroy: function () {
+        for (var i=0; i<this.listeners.length; i++) {
+          this.mediaElement.removeEventListener(this.listeners[i][0], this.listeners[i][1]);
+        }
+        this.listeners = [];
       },
 
       setSource: function(source) {

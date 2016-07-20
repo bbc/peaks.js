@@ -400,5 +400,10 @@ define([
     this.updateZoomWaveform(this.frameOffset);
   };
 
+  WaveformZoomView.prototype.destroy = function () {
+    this.stage.destroy();
+    this.stage = null;
+  };
+
   return WaveformZoomView;
 });

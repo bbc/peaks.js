@@ -22,6 +22,9 @@
 
       p.on('segments.ready', done);
     });
+    afterEach(function () {
+      p.destroy();
+    })
 
     /**
      * TESTS =========================================================
