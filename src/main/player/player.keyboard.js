@@ -6,11 +6,12 @@ define([], function () {
     LEFT_ARROW = 37,
     RIGHT_ARROW = 39;
 
-  function handleKeyEventGenerator(peaksInstance) {
+  function handleKeyEventGenerator (peaksInstance) {
+
     /**
      * Arrow keys only triggered on keydown, not keypress
      */
-    return function handleKeyEvent(event){
+    return function handleKeyEvent (event) {
       var c = event.keyCode;
       var t = event.type;
 
@@ -21,7 +22,6 @@ define([], function () {
         }
 
         if (t === "keydown" || t === "keypress") {
-
           switch (c) {
             case SPACE:
               peaksInstance.emit("kybrd_space");
@@ -31,17 +31,25 @@ define([], function () {
               peaksInstance.emit("kybrd_tab");
               break;
           }
-        } else if (t === "keyup") {
-
+        }
+        else if (t === "keyup") {
           switch (c) {
             case LEFT_ARROW:
-              if (event.shiftKey) peaksInstance.emit("kybrd_shift_left");
-              else peaksInstance.emit("kybrd_left");
+              if (event.shiftKey) {
+                peaksInstance.emit("kybrd_shift_left");
+              }
+              else {
+                peaksInstance.emit("kybrd_left");
+              }
               break;
 
             case RIGHT_ARROW:
-              if (peaksInstance.shiftKey) peaksInstance.emit("kybrd_shift_right");
-              else peaksInstance.emit("kybrd_right");
+              if (event.shiftKey) {
+                peaksInstance.emit("kybrd_shift_right");
+              }
+              else {
+                peaksInstance.emit("kybrd_right");
+              }
               break;
           }
         }
