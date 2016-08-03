@@ -25,7 +25,15 @@
     });
 
     describe("addSegment", function(){
-      it("should accept spreaded arguments (soon deprecated)", function(){
+      it("should accept a single Segment object", function(){
+        var spy = sandbox.spy(p.waveform.segments, 'createSegment');
+        p.segments.addSegment({ startTime: 0, endTime: 10, editable: false })
+        expect(spy.callCount).to.equal(1);
+        expect(spy.args[0]).to.deep.equal([0, 10, false, undefined, undefined]);
+      });
+
+      it("should accept spreaded arguments (deprecated)", function(){
+        p.options.deprecationLogger = function() {}
         var stub = sandbox.stub(p.waveform.segments, 'createSegment');
 
         p.segments.addSegment(0, 10, false);

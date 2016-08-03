@@ -31,16 +31,25 @@
       });
 
       it("should return any added segment", function(){
-        p.segments.addSegment(0, 10);
-        p.segments.addSegment(2, 12);
+        p.segments.addSegment({startTime: 0, endTime: 10});
+        p.segments.addSegment({startTime: 2, endTime: 12});
 
         expect(p.segments.getSegments()).to.have.length.of(2);
       });
     });
 
     describe("addSegment", function(){
-      it("should create a segment with the mandatory values as arguments", function(){
+      it("should accept a list of properties for a single segment (deprecated)", function(){
+        p.options.deprecationLogger = function() {}
         p.segments.addSegment(0, 10);
+        expect(p.segments.getSegments()).to.have.length.of(1);
+        expect(p.segments.getSegments()[0]).to.include.keys('startTime', 'endTime');
+        expect(p.segments.getSegments()[0].startTime).to.equal(0)
+        expect(p.segments.getSegments()[0].endTime).to.equal(10)
+      })
+
+      it("should create a segment with the mandatory values as arguments", function(){
+        p.segments.addSegment({startTime: 0, endTime: 10});
         var segment = p.segments.getSegments()[0];
 
         expect(segment.startTime).to.equal(0);
@@ -51,13 +60,15 @@
 
       it("should throw an exception if the endTime argument is missing is missing", function(){
         expect(function(){
-          p.segments.addSegment(0);
-        }).to.throw(TypeError);
-
-        expect(function(){
           p.segments.addSegment([{startTime: 0 }]);
         }).to.throw(TypeError);
       });
+
+      it("should accept a single segment object", function(){
+        p.segments.addSegment({startTime: 0, endTime: 10});
+        expect(p.segments.getSegments()).to.have.length.of(1);
+        expect(p.segments.getSegments()[0]).to.include.keys('startTime', 'endTime');
+      })
 
       it("should accept an array of segments objects", function(){
         var segments = [{ startTime: 0, endTime: 10}, { startTime: 5, endTime: 10 }];
@@ -69,8 +80,8 @@
       });
 
       it("should throw an exception if arguments are not matching any previous accepted signature form", function(){
-        expect(function(){ p.segments.addSegment({startTime: 0, endTime: 10}); }).to.throw(TypeError);
-        expect(function(){ p.segments.addSegment(); }).to.throw(TypeError);
+        p.options.deprecationLogger = function() {}
+        expect(function(){ p.segments.addSegment({}); }).to.throw(TypeError);
         expect(function(){ p.segments.addSegment(undefined); }).to.throw(TypeError);
         expect(function(){ p.segments.addSegment(null); }).to.throw(TypeError);
         expect(function(){ p.segments.addSegment(NaN, NaN); }).to.throw(TypeError);
@@ -79,7 +90,7 @@
 
     describe("remove", function(){
       beforeEach(function(){
-        p.segments.add(10, 12);
+        p.segments.add({startTime: 10, endTime: 12});
       });
 
       it("should throw an exception if you remove a segment which does not exist", function(){
@@ -112,11 +123,11 @@
 
     describe("removeByTime", function(){
       beforeEach(function(){
-        p.segments.addSegment(10, 12);
-        p.segments.addSegment(5, 12);
+        p.segments.addSegment({startTime: 10, endTime: 12});
+        p.segments.addSegment({startTime: 5, endTime: 12});
 
-        p.segments.addSegment(3, 6);
-        p.segments.addSegment(3, 10);
+        p.segments.addSegment({startTime: 3, endTime: 6});
+        p.segments.addSegment({startTime: 3, endTime: 10});
       });
 
       it("should not remove any segment if the startTime does not match with any segment", function(){
@@ -156,8 +167,8 @@
 
     describe("removeAll", function(){
       beforeEach(function(){
-        p.segments.addSegment(10, 12);
-        p.segments.addSegment(5, 12);
+        p.segments.addSegment({startTime: 10, endTime: 12});
+        p.segments.addSegment({startTime: 5, endTime: 12});
       });
 
       it("should clear all segments objects", function(){

@@ -67,9 +67,16 @@ define('peaks', [
        * Will report errors to that function
        *
        * @type {Function=}
-       * @since 0.5.0
+       * @since 0.4.4
        */
       logger:                null,
+      /**
+       * Deprecation messages logger.
+       *
+       * @type {Function}
+       * @since 0.4.8
+       */
+      deprecationLogger:     console.log.bind(console),
       /**
        * Bind keyboard controls
        */
@@ -184,13 +191,11 @@ define('peaks', [
 
   Peaks.init = function init (opts) {
     opts = opts || {};
+    opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
 
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
-
-      if (console && typeof console.log === 'function') {
-        console.log('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
-      }
+      opts.deprecationLogger('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
     }
 
     if (!opts.mediaElement) {
@@ -281,34 +286,42 @@ define('peaks', [
       get: function () {
         var self = this;
 
-        function addSegment (startTime, endTime, editable, color, labelText) {
-          var segments = arguments[0];
+        function addSegment (segmentOrSegments) {
+          var segments = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
 
-          if (typeof segments === "number") {
+          if (typeof segments[0] === "number") {
+            self.options.deprecationLogger("[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object");
             segments = [
               {
-                startTime: startTime,
-                endTime:   endTime,
-                editable:  editable,
-                color:     color,
-                labelText: labelText
+                startTime: arguments[0],
+                endTime:   arguments[1],
+                editable:  arguments[2],
+                color:     arguments[3],
+                labelText: arguments[4]
               }
             ];
           }
 
-          if (Array.isArray(segments)) {
-            segments.forEach(function (segment) {
-              self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
-            });
+          segments.forEach(function (segment) {
+            if (typeof segment.startTime !== 'number') {
+              throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
+            }
+            self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
+          });
 
-            self.waveform.segments.render();
-          }
-          else {
-            throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
-          }
+          self.waveform.segments.render();
         }
 
         return {
+          /**
+           *
+           * @param {(...Object|Object[])} segmentOrSegments
+           * @param {Number} segmentOrSegments[].startTime
+           * @param {Number} segmentOrSegments[].endTime
+           * @param {Boolean=} segmentOrSegments[].editable
+           * @param {String=} segmentOrSegments[].color
+           * @param {String=} segmentOrSegments[].labelText
+           */
           addSegment: addSegment,
           add:        addSegment,
 
