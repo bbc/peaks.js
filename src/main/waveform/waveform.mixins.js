@@ -51,7 +51,9 @@ define(['konva'], function (Konva) {
           };
         }
       }).on("dragmove", function (event) {
-        onDrag(segment, parent);
+        if (typeof(onDrag) === 'function') {
+          onDrag(segment, parent);
+        }
       });
 
       var xPosition = inMarker ? -24 : 24;
@@ -92,19 +94,22 @@ define(['konva'], function (Konva) {
       /*
       Events
        */
-      handle.on("mouseover", function (event) {
-        if (inMarker) text.setX(xPosition - text.getWidth());
-        text.show();
-        segment.view.segmentLayer.draw();
-      });
-      handle.on("mouseout", function (event) {
-        text.hide();
-        segment.view.segmentLayer.draw();
-      });
+      if (draggable) {
+        handle.on("mouseover", function (event) {
+          if (inMarker) text.setX(xPosition - text.getWidth());
+          text.show();
+          segment.view.segmentLayer.draw();
+        });
+        handle.on("mouseout", function (event) {
+          text.hide();
+          segment.view.segmentLayer.draw();
+        });
+
+        group.add(handle);
+      }
 
       group.add(text);
       group.add(line);
-      group.add(handle);
 
       return group;
     };
@@ -118,11 +123,13 @@ define(['konva'], function (Konva) {
    */
   function createPointHandle(height, color) {
       /**
-       * @param  {Boolean}  draggable If true, marker is draggable
-       * @param  {Object}   point     Parent point object with in times
-       * @param  {Object}   parent    Parent context
-       * @param  {Function} onDrag    Callback after drag completed
-       * @return {Konva Object}     Konva group object of handle marker elements
+       * @param  {Boolean}  draggable  If true, marker is draggable
+       * @param  {Object}   point      Parent point object with in times
+       * @param  {Object}   parent     Parent context
+       * @param  {Function} onDrag     Callback while dragging
+       * @param  {Function} onDblClick Callback on double click
+       * @param  {Function} onDragEnd  Callback after drag completed
+       * @return {Konva Object}        Konva group object of handle marker elements
        */
       return function (draggable, point, parent, onDrag, onDblClick, onDragEnd) {
           var handleTop = (height / 2) - 10.5;
@@ -140,18 +147,24 @@ define(['konva'], function (Konva) {
                   };
               }
           }).on("dragmove", function (event) {
-                  onDrag(point, parent);
+                  if (typeof(onDrag) === 'function') {
+                    onDrag(point, parent);
+                  }
               });
 
           if(onDblClick) {
               group.on('dblclick', function (event) {
-                  onDblClick(parent);
+                  if (typeof(onDblClick) === 'function') {
+                    onDblClick(parent);
+                  }
               });
           }
 
           if(onDragEnd) {
               group.on('dragend', function (event) {
-                  onDragEnd(parent);
+                  if (typeof(onDragEnd) === 'function') {
+                    onDragEnd(parent);
+                  }
               });
           }
 
@@ -195,17 +208,19 @@ define(['konva'], function (Konva) {
           /*
           Events
            */
-          handle.on("mouseover", function (event) {
-            text.show();
-            text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
-            point.view.pointLayer.draw();
-          });
-          handle.on("mouseout", function (event) {
-            text.hide();
-            point.view.pointLayer.draw();
-          });
+          if (draggable) {
+            handle.on("mouseover", function (event) {
+              text.show();
+              text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
+              point.view.pointLayer.draw();
+            });
+            handle.on("mouseout", function (event) {
+              text.hide();
+              point.view.pointLayer.draw();
+            });
 
-          group.add(handle);
+            group.add(handle);
+          }
           group.add(line);
           group.add(text);
 

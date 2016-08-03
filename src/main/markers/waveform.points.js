@@ -28,15 +28,20 @@ define([
     function constructPoint(point) {
       var pointZoomGroup = new Konva.Group();
       var pointOverviewGroup = new Konva.Group();
-      var pointGroups = [pointZoomGroup, pointOverviewGroup];
+      var pointGroups = [ { group: pointZoomGroup, view: 'zoomview' }, { group: pointOverviewGroup, view: 'overview' }];
 
       point.editable = Boolean(point.editable);
 
-      pointGroups.forEach(function(pointGroup, i){
+      pointGroups.forEach(function(item, i){
         var view = self.views[i];
+        var pointGroup = item.group;
 
         if (point.editable) {
           pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
+          pointGroup.add(pointGroup.marker);
+
+        } else if (peaks.options.showMarkerLinesWhenUneditable.indexOf(item.view) > -1) {
+          pointGroup.marker = new peaks.options.pointMarker(false, pointGroup, point);
           pointGroup.add(pointGroup.marker);
         }
 
@@ -59,9 +64,8 @@ define([
       // Overview
       var overviewtimestampOffset = waveformView.waveformOverview.data.at_time(point.timestamp);
 
-      if (point.editable) {
-        if (point.overview.marker) point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
-
+      if (point.overview.marker) {
+        point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
         // Change Text
         point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
       }
@@ -79,9 +83,8 @@ define([
 
         point.zoom.show();
 
-        if (point.editable) {
-          if (point.zoom.marker) point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
-
+        if (point.zoom.marker) {
+          point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
           // Change Text
           point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
         }

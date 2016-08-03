@@ -38,7 +38,7 @@ define([
       var segmentZoomGroup = new Konva.Group();
       var segmentOverviewGroup = new Konva.Group();
 
-      var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
+      var segmentGroups = [{ group: segmentZoomGroup, view: 'zoomview' }, { group: segmentOverviewGroup, view: 'overview' }];
 
       var menter = function (event) {
         this.parent.label.show();
@@ -50,8 +50,9 @@ define([
         this.parent.view.segmentLayer.draw();
       };
 
-      segmentGroups.forEach(function(segmentGroup, i){
+      segmentGroups.forEach(function(item, i){
         var view = self.views[i];
+        var segmentGroup = item.group;
 
         segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
@@ -64,12 +65,17 @@ define([
         segmentGroup.add(segmentGroup.label.hide());
 
         if (editable) {
-          var draggable = true;
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(editable, segmentGroup, segment, segmentHandleDrag);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(editable, segmentGroup, segment, segmentHandleDrag);
 
-          segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
           segmentGroup.add(segmentGroup.inMarker);
+          segmentGroup.add(segmentGroup.outMarker);
 
-          segmentGroup.outMarker = new peaks.options.segmentOutMarker(draggable, segmentGroup, segment, segmentHandleDrag);
+        } else if (peaks.options.showMarkerLinesWhenUneditable.indexOf(item.view) > -1) {
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(false, segmentGroup, segment);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(false, segmentGroup, segment);
+
+          segmentGroup.add(segmentGroup.inMarker);
           segmentGroup.add(segmentGroup.outMarker);
         }
 
@@ -95,12 +101,15 @@ define([
 
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
-      if (segment.editable) {
-        if (segment.overview.inMarker) segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
-        if (segment.overview.outMarker) segment.overview.outMarker.show().setX(overviewEndOffset);
-
+      if (segment.overview.inMarker) {
+        segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
         // Change Text
         segment.overview.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
+      }
+
+      if (segment.overview.outMarker) {
+        segment.overview.outMarker.show().setX(overviewEndOffset);
+        // Change Text
         segment.overview.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
       }
 
@@ -125,12 +134,15 @@ define([
 
         segment.zoom.show();
 
-        if (segment.editable) {
-          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
-          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
-
+        if (segment.zoom.inMarker) {
+          segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
           // Change Text
           segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
+        }
+
+        if (segment.zoom.outMarker) {
+          segment.zoom.outMarker.show().setX(endPixel);
+          // Change Text
           segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
         }
 
