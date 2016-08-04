@@ -25,14 +25,15 @@ define([
       return view;
     });
 
-    var createSegmentWaveform = function (segmentId, startTime, endTime, editable, color, labelText) {
+    var createSegmentWaveform = function (options) {
+      var segmentId = "segment" + self.segments.length;
       var segment = {
         id: segmentId,
-        startTime: startTime,
-        endTime: endTime,
-        labelText: labelText || "",
-        color: color || getSegmentColor(),
-        editable: editable
+        startTime: options.startTime,
+        endTime: options.endTime,
+        labelText: options.labelText || "",
+        color: options.color || getSegmentColor(),
+        editable: options.editable || false
       };
 
       var segmentZoomGroup = new Konva.Group();
@@ -63,7 +64,7 @@ define([
         segmentGroup.label = new peaks.options.segmentLabelDraw(segmentGroup, segment);
         segmentGroup.add(segmentGroup.label.hide());
 
-        if (editable) {
+        if (segment.editable) {
           var draggable = true;
 
           segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
@@ -190,29 +191,32 @@ define([
      * Manage a new segment and propagates it into the different views
      *
      * @api
-     * @param {Number} startTime
-     * @param {Number} endTime
-     * @param {Boolean} editable
-     * @param {String=} color
-     * @param {String=} labelText
+     * @param {Object} options
+     * @param {Number} options.startTime
+     * @param {Number} options.endTime
+     * @param {Boolean=} options.editable
+     * @param {String=} options.color
+     * @param {String=} options.labelText
      * @return {Object}
      */
-    this.createSegment = function (startTime, endTime, editable, color, labelText) {
-      var segmentId = "segment" + self.segments.length;
-
-      if ((startTime >= 0) === false){
+    this.createSegment = function (options) {
+      if (typeof options === 'number'){ // watch for anyone still trying to use the old createSegment(startTime, endTime ... ) API
+        throw new TypeError("[waveform.segments.createSegment] `options` should be a Segment object");
+      }
+      
+      if ((options.startTime >= 0) === false){
         throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");
       }
 
-      if ((endTime > 0) === false){
+      if ((options.endTime > 0) === false){
         throw new TypeError("[waveform.segments.createSegment] endTime should be a positive value");
       }
 
-      if ((endTime > startTime) === false){
+      if ((options.endTime > options.startTime) === false){
         throw new RangeError("[waveform.segments.createSegment] endTime should be higher than startTime");
       }
 
-      var segment = createSegmentWaveform(segmentId, startTime, endTime, editable, color, labelText);
+      var segment = createSegmentWaveform(options);
 
       updateSegmentWaveform(segment);
       self.segments.push(segment);

@@ -302,13 +302,7 @@ define('peaks', [
             ];
           }
 
-          segments.forEach(function (segment) {
-            if (typeof segment.startTime !== 'number') {
-              throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
-            }
-            self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
-          });
-
+          segments.forEach(self.waveform.segments.createSegment.bind(self.waveform.segments));
           self.waveform.segments.render();
         }
 
