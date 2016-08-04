@@ -1,6 +1,6 @@
 ## Change Log
 
-### v0.5.6 (2015/09/29 10:57 +00:00)
+### v0.4.6 (2015/09/29 10:57 +00:00)
 - [#127](https://github.com/bbcrd/peaks.js/pull/127) Bugfix: Don't add waveform layer to the overview stage twice and ensure the UI layer is on top (@johvet)
 - [#125](https://github.com/bbcrd/peaks.js/pull/125) Node 0.12 and iojs compability (@oncletom)
 - [#120](https://github.com/bbcrd/peaks.js/pull/120) Explicit segment draw on drag resize (@oncletom)
