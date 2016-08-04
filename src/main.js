@@ -376,6 +376,26 @@ define('peaks', [
     points:   {
       get: function () {
         var self = this;
+        var add = function (timestamp, editable, color, labelText) {
+          var points = arguments[0];
+
+          if (typeof points === "number") {
+            points = [{
+              timestamp: timestamp,
+              editable:  editable,
+              color:     color,
+              labelText: labelText
+            }];
+          }
+
+          if (Array.isArray(points)) {
+            points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
+            self.waveform.points.render();
+          }
+          else {
+            throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
+          }
+        };
         return {
           /**
            *
@@ -384,26 +404,8 @@ define('peaks', [
            * @param color
            * @param labelText
            */
-          add: function (timestamp, editable, color, labelText) {
-            var points = arguments[0];
-
-            if (typeof points === "number") {
-              points = [{
-                timestamp: timestamp,
-                editable:  editable,
-                color:     color,
-                labelText: labelText
-              }];
-            }
-
-            if (Array.isArray(points)) {
-              points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
-              self.waveform.points.render();
-            }
-            else {
-              throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
-            }
-          },
+          add: add,
+          addPoint: add,
           /**
            *
            * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
