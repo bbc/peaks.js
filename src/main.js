@@ -386,30 +386,27 @@ define('peaks', [
         return {
           /**
            *
-           * @param timeStamp
-           * @param editable
-           * @param color
-           * @param labelText
+           * @param {(...Object|Object[])} pointOrPoints
+           * @param {Number} pointOrPoints[].timestamp
+           * @param {Boolean=} pointOrPoints[].editable
+           * @param {String=} pointOrPoints[].color
+           * @param {String=} pointOrPoints[].labelText
            */
-          add: function (timestamp, editable, color, labelText) {
-            var points = arguments[0];
+          add: function (pointOrPoints) {
+            var points = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
 
-            if (typeof points === "number") {
+            if (typeof points[0] === "number") {
+              self.options.deprecationLogger("[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object");
               points = [{
-                timestamp: timestamp,
-                editable:  editable,
-                color:     color,
-                labelText: labelText
+                timestamp: arguments[0],
+                editable:  arguments[1],
+                color:     arguments[2],
+                labelText: arguments[3]
               }];
             }
 
-            if (Array.isArray(points)) {
-              points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
-              self.waveform.points.render();
-            }
-            else {
-              throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
-            }
+            points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
+            self.waveform.points.render();
           },
           /**
            *

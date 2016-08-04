@@ -112,7 +112,9 @@ define([
     };
 
     this.createPoint = function (point) {
-
+      if (typeof point.timestamp !== 'number') {
+        throw new TypeError("[waveform.points.createPoint] timestamp should be a numeric value '" + typeof point.timestamp + "': " + point.typestamp);
+      }
       if ((point.timestamp >= 0) === false) {
         throw new RangeError("[waveform.points.createPoint] timestamp should be a >=0 value");
       }
