@@ -25,11 +25,15 @@ define([
       return view;
     });
 
+    var pointId = 0;
     function constructPoint(point) {
       var pointZoomGroup = new Konva.Group();
       var pointOverviewGroup = new Konva.Group();
       var pointGroups = [pointZoomGroup, pointOverviewGroup];
 
+      if (point.id === undefined || point.id === null) {
+        point.id = "peaks.point." + pointId++;
+      }
       point.editable = Boolean(point.editable);
 
       pointGroups.forEach(function(pointGroup, i){
@@ -118,9 +122,6 @@ define([
       if ((point.timestamp >= 0) === false) {
         throw new RangeError("[waveform.points.createPoint] timestamp should be a >=0 value");
       }
-
-      point.id = "point" + self.points.length;
-
       point = constructPoint(point);
       updatePoint(point);
       self.points.push(point);
