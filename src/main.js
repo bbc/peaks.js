@@ -316,6 +316,7 @@ define('peaks', [
            * @param {Boolean=} segmentOrSegments[].editable
            * @param {String=} segmentOrSegments[].color
            * @param {String=} segmentOrSegments[].labelText
+           * @param {Number=} segmentOrSegments[].id
            */
           addSegment: addSegment,
           add:        addSegment,
@@ -330,6 +331,13 @@ define('peaks', [
             self.waveform.segments.updateSegments();
 
             return self.waveform.segments.segments.splice(index, 1).pop();
+          },
+
+          removeById: function (segmentId) {
+            self.waveform.segments.segments
+              .filter(function (segment) {
+                return segment.id === segmentId;
+              }).forEach(this.remove.bind(this));
           },
 
           removeByTime: function (startTime, endTime) {
@@ -347,25 +355,9 @@ define('peaks', [
               };
             }
 
-            var indexes = self.waveform.segments.segments
-              .filter(fnFilter)
-              .map(function (segment, i) {
-                self.waveform.segments.remove(segment);
-
-                return i;
-              })
-              .sort(function (a, b) {
-                return b - a;
-              })
-              .map(function (index) {
-                self.waveform.segments.segments.splice(index, 1);
-
-                return index;
-              });
-
-            self.waveform.segments.updateSegments();
-
-            return indexes.length;
+            var matchingSegments = self.waveform.segments.segments.filter(fnFilter);
+            matchingSegments.forEach(this.remove.bind(this));
+            return matchingSegments.length;
           },
 
           removeAll: function () {

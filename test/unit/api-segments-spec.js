@@ -54,7 +54,7 @@
 
         expect(segment.startTime).to.equal(0);
         expect(segment.endTime).to.equal(10);
-        expect(segment.id).to.equal('segment0');
+        expect(segment.id).to.equal('peaks.segment.0');
         expect(segment.labelText).to.equal('');
       });
 
@@ -68,6 +68,18 @@
         p.segments.addSegment({startTime: 0, endTime: 10});
         expect(p.segments.getSegments()).to.have.length.of(1);
         expect(p.segments.getSegments()[0]).to.include.keys('startTime', 'endTime');
+      })
+
+      it("should accept an id for each segment", function(){
+        p.segments.addSegment([{startTime: 0, endTime: 10, id: 123}])
+        var segment = p.segments.getSegments()[0];
+        expect(segment.id).to.equal(123);
+      })
+
+      it("should allow 0 for a segment id", function(){
+        p.segments.addSegment([{startTime: 0, endTime: 10, id: 0}])
+        var segment = p.segments.getSegments()[0];
+        expect(segment.id).to.equal(0);
       })
 
       it("should accept an array of segments objects", function(){
@@ -85,6 +97,13 @@
         expect(function(){ p.segments.addSegment(undefined); }).to.throw(TypeError);
         expect(function(){ p.segments.addSegment(null); }).to.throw(TypeError);
         expect(function(){ p.segments.addSegment(NaN, NaN); }).to.throw(TypeError);
+      });
+
+      it("should accept an optional segment id", function(){
+        p.segments.addSegment({ startTime: 0, endTime: 10, id: 123 });
+
+        expect(p.segments.getSegments()).to.have.length.of(1);
+        expect(p.segments.getSegments()[0].id).to.eq(123);
       });
     });
 
@@ -164,6 +183,21 @@
         expect(p.segments.getSegments()).to.have.a.lengthOf(3);
       });
     });
+
+    describe("removeById", function(){
+      beforeEach(function(){
+        p.segments.addSegment([
+          {startTime: 0, endTime: 10, id: 123},
+          {startTime: 15, endTime: 25, id: 456},
+        ]);
+      });
+
+      it("should remove the segment by matching id", function(){
+        p.segments.removeById(123);
+        expect(p.segments.getSegments()).to.have.a.lengthOf(1);
+        expect(p.segments.getSegments()[0].id).to.eq(456);
+      });
+    })
 
     describe("removeAll", function(){
       beforeEach(function(){

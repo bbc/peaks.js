@@ -25,10 +25,10 @@ define([
       return view;
     });
 
+    var segmentId = 0;
     var createSegmentWaveform = function (options) {
-      var segmentId = "segment" + self.segments.length;
       var segment = {
-        id: segmentId,
+        id: options.id === undefined || options.id === null ? ('peaks.segment.' + segmentId++) : options.id,
         startTime: options.startTime,
         endTime: options.endTime,
         labelText: options.labelText || "",
@@ -197,6 +197,7 @@ define([
      * @param {Boolean=} options.editable
      * @param {String=} options.color
      * @param {String=} options.labelText
+     * @param {Number=} options.id
      * @return {Object}
      */
     this.createSegment = function (options) {
