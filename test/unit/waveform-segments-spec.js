@@ -25,13 +25,21 @@
     });
 
     describe("addSegment", function(){
-      it("should accept spreaded arguments (soon deprecated)", function(){
+      it("should accept a single Segment object", function(){
+        var spy = sandbox.spy(p.waveform.segments, 'createSegment');
+        p.segments.addSegment({ startTime: 0, endTime: 10, editable: false })
+        expect(spy.callCount).to.equal(1);
+        expect(spy.args[0][0]).to.deep.equal({ startTime: 0, endTime: 10, editable: false });
+      });
+
+      it("should accept spreaded arguments (deprecated)", function(){
+        p.options.deprecationLogger = function() {}
         var stub = sandbox.stub(p.waveform.segments, 'createSegment');
 
         p.segments.addSegment(0, 10, false);
 
         expect(stub.callCount).to.equal(1);
-        expect(stub.args[0]).to.deep.equal([0, 10, false, undefined, undefined]);
+        expect(stub.args[0][0]).to.deep.equal({startTime: 0, endTime: 10, editable: false, color: undefined, labelText: undefined});
       });
 
       it("should accept an array of Segment objects", function(){
@@ -43,7 +51,7 @@
         ]);
 
         expect(spy.callCount).to.equal(2);
-        expect(spy.args[1]).to.deep.equal([10, 20, true, 'rgba(255, 161, 39, 1)', 'dummy text']);
+        expect(spy.args[1][0]).to.deep.equal({startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'});
       });
 
       it("should paint once, and not after each segment addition", function(){
