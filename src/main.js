@@ -267,14 +267,15 @@ define('peaks', [
     instance.on("waveformOverviewReady", function () {
       instance.waveform.openZoomView();
 
-      if (instance.options.segments) { // Any initial segments to be displayed?
-        instance.segments.addSegment(instance.options.segments);
+      // Any initial segments to be displayed?
+      if (instance.options.segments) {
+        instance.segments.add(instance.options.segments);
       }
 
-      if (instance.options.points) { //Any initial points to be displayed?
-        instance.points.addPoint(instance.options.points);
+      // Any initial points to be displayed?
+      if (instance.options.points) {
+        instance.points.add(instance.options.points);
       }
-
     });
 
     return instance;
