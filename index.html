@@ -92,22 +92,18 @@
           document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
           document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
-            var segment = {
+            peaksInstance.segments.add({
               startTime: peaksInstance.time.getCurrentTime(),
               endTime: peaksInstance.time.getCurrentTime() + 10,
               editable: true
-            };
-
-            peaksInstance.segments.add([segment]);
+            });
           });
 
           document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
-            var point = {
+            peaksInstance.points.add({
               timestamp: peaksInstance.time.getCurrentTime(),
               editable: true
-            };
-
-            peaksInstance.points.add([point]);
+            });
           });
 
           document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
