@@ -2,13 +2,13 @@
 
 > A browser based audio waveform visualisation frontend component from BBC R&D.
 
-Peaks is a modular frontend component designed for the display of and interaction with audio waveform material in the browser.
+Peaks.js is a modular client-side JavaScript component designed for the display of and interaction with audio waveform material in the browser.
 
 ![](https://github.com/bbcrd/peaks.js/blob/master/peaks.png?raw=1)
 
-Peaks is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
+Peaks.js is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
 
-Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
+Peaks.js uses HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
 [More informations about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
 
@@ -21,11 +21,11 @@ Peaks utilizes HTML5 canvas technology to display waveform data at different zoo
 
 # Using Peaks.js in your own project
 
-Peaks can be included in any web page by following these steps:
+Peaks.js can be included in any web page by following these steps:
 
 1. include it your web page
 1. include a media element and its [waveform data file](https://github.com/bbcrd/audiowaveform)
-1. initialise Peaks
+1. initialise Peaks.js
 
 ```html
 <div id="peaks-container"></div>
@@ -38,7 +38,7 @@ Peaks can be included in any web page by following these steps:
 
 ## Start using AMD and [require.js](http://requirejs.org/)
 
-AMD modules are working out of the box without any optimiser.
+AMD modules work out of the box without any optimiser.
 
 ```javascript
 // in app.js
@@ -52,7 +52,7 @@ requirejs.config({
   }
 });
 
-// requires it
+// require it
 require(['peaks'], function (Peaks) {
   var p = Peaks.init({
     container: document.querySelector('#peaks-container'),
@@ -66,7 +66,7 @@ require(['peaks'], function (Peaks) {
 });
 ```
 
-A working examples is provided in [`index.html`](index.html).
+A working example is provided in [`index.html`](index.html).
 
 ## Start using ES2015 module loader
 
@@ -117,12 +117,12 @@ To generate a JSON format waveform data file:
 audiowaveform -i sample.mp3 -o sample.json -b 8
 ```
 
-Refer to audiowaveform(1) for full details of the available command line options.
+Refer to the man page audiowaveform(1) for full details of the available command line options.
 
 ## Web Audio based waveforms
 
-Since `0.3.0`, Peaks can rely on Web Audio to generate waveforms.
-Which means you would not have to pre-generate a `dat` or `json` beforehand.
+Since `0.3.0`, Peaks.js can use Web Audio to generate waveforms, which means you would not have to
+pre-generate a `dat` or `json` file beforehand.
 
 To do so, skip the `dataUri` option and make sure [your browser is compatible with Web Audio](http://caniuse.com/#feat=audio-api).
 
@@ -422,7 +422,7 @@ instance.segments.removeAll();
 
 ## Events
 
-Peaks emit events to enable you to extend its behaviour according to your needs.
+Peaks.js emits events to enable you to extend its behaviour according to your needs.
 
 ### General
 
@@ -454,9 +454,9 @@ Peaks emit events to enable you to extend its behaviour according to your needs.
 `points.ready`             | N/A
 `segment.dragged`          | `Segment segment`
 
-# Building Peaks
+# Building Peaks.js
 
-You might want to build a minified standalone version of Peaks, to test a contribution or to run additional tests.
+You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests.
 The project *bundles* everything you need to do so.
 
 ## Prerequisite
@@ -469,18 +469,18 @@ npm install
 
 ## Building
 
-This command will produce a minified standalone version of Peaks.
-It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as Vanilla JavaScript.
+This command will produce a minified standalone version of Peaks.js.
+It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as vanilla JavaScript.
 
 ```bash
 npm run build
 ```
 
-The output of the build will be located as `peaks.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+The output of the build is a file named `peaks.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
 ## Live Demo
 
-This command will serve a working version of Peaks to reflect your local updates.
+This command will serve a working version of Peaks.js to reflect your local updates.
 
 ```bash
 npm start
@@ -507,4 +507,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](http://github.com/chrisn)
 
-Copyright 2015, British Broadcasting Corporation.
+Copyright 2016, British Broadcasting Corporation.
