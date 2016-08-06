@@ -74,7 +74,7 @@
   },
   "dependencies": {
     "eventemitter2": "^0.4.14",
-    "konva": "~0.9.5",
+    "konva": "~1.0.0",
     "waveform-data": "git://github.com/bbcrd/waveform-data.js.git#v1.5.2"
   }
 }
