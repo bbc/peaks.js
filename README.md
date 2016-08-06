@@ -47,7 +47,7 @@ requirejs.config({
   paths: {
     peaks: 'bower_components/peaks.js/src/main',
     EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
-    Kinetic: 'bower_components/kineticjs/kinetic',
+    Konva: 'bower_components/konvajs/konva',
     'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
   }
 });
@@ -94,7 +94,7 @@ var p = Peaks.init({ … });
 <script src="node_modules/peaks.js/peaks.js"></script>
 <script>
 (function(Peaks){
-    var p = Peaks.init({ … });
+  var p = Peaks.init({ … });
 })(peaks.js);
 </script>
 ```
@@ -235,30 +235,33 @@ var options = {
 
 ## Segment Format
 
-Segments provided from peaks.js use the following format:
+Segments provided from Peaks.js use the following format:
 
 ```javascript
 [{
-   // Assigned colour of the segment
+  // Assigned colour of the segment
   color: "rgba(123, 2, 61, 1)",
-   // Editable state of the segment
+  // Editable state of the segment
   editable: true,
-   // End time in seconds of the segment
+  // End time in seconds of the segment
   endTime: 588.986667,
-   // Unique ID of the segment
+  // Unique ID of the segment
   id: "segment0",
-   // Kinetics.js Element group of segment canvas objects for overview waveform
-  overview: Kinetic.Group,
-   // End time in seconds of the segment
+  // Konva.js Element group of segment canvas objects for overview waveform
+  overview: Konva.Group,
+  // End time in seconds of the segment
   startTime: 578.986667,
-   // Kinetics.js Element group of segment canvas objects for overview waveform
-  zoom: Kinetic.Group
+  // Konva.js Element group of segment canvas objects for overview waveform
+  zoom: Konva.Group
 }]
 ```
 
 ## Advanced configuration
 
-The marker and label Kinetic.js objects may be overridden to give the segment markers or label your own custom appearance (see main.js / waveform.mixins.js, [Kinetic Polygon Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-polygon-tutorial/) and [Kinetic Text Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-text-tutorial/)) :
+The marker and label Konva.js objects may be overridden to give the segment
+markers or label your own custom appearance (see main.js / waveform.mixins.js,
+[Konva Polygon Example](http://konvajs.github.io/docs/shapes/Line_-_Polygon.html)
+and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
 
 ```javascript
 {
@@ -371,10 +374,11 @@ Add a segment to the waveform timeline. Accepts the following parameters:
 ```js
 var instance = peaks.init({ … });
 
-instance.segments.add({startTime: 0, endTime: 10.5}); // adds a 0 to 10.5 seconds non-editable segment with a random color
+// Add non-editable segment, from 0 to 10.5 seconds, with a random color
+instance.segments.add({startTime: 0, endTime: 10.5});
 ```
 
-Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
+Alternatively, provide an array of segment objects to add all those segments at once.
 
 ```js
 var instance = peaks.init({ … });
@@ -383,7 +387,7 @@ instance.segments.add([
   {
     startTime: 0,
     endTime: 10.5,
-    labelText: '0 to 10 seconds non-editable demo segment'
+    labelText: '0 to 10.5 seconds non-editable demo segment'
   },
   {
     startTime: 3.14,
@@ -508,7 +512,6 @@ Then open http://localhost:9000 in a Web browser.
 `npm test` should work for simple one time testing.
 
 If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
-
 
 # License
 
