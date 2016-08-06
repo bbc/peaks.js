@@ -117,18 +117,23 @@ define(['konva'], function (Konva) {
    * @return {Function}
    */
   function createPointHandle(height, color) {
+
       /**
-       * @param  {Boolean}  draggable If true, marker is draggable
-       * @param  {Object}   point     Parent point object with in times
-       * @param  {Object}   parent    Parent context
-       * @param  {Function} onDrag    Callback after drag completed
-       * @return {Konva Object}     Konva group object of handle marker elements
+       * @param  {Boolean}     draggable   If true, marker is draggable
+       * @param  {Konva.Group} point
+       * @param  {Object}      parent      Parent point object with timestamp
+       * @param  {Function}    onDrag      Callback after drag completed
+       * @param  {Function}    onDblClick
+       * @param  {Function}    onDragEnd
+       * @return {Konva Object} Konva group object of handle marker elements
        */
       return function (draggable, point, parent, onDrag, onDblClick, onDragEnd) {
           var handleTop = (height / 2) - 10.5;
           var handleWidth = 10;
           var handleHeight = 20;
           var handleX = 0.5; //Place in the middle of the marker
+
+          var handleColor = parent.color ? parent.color : color;
 
           var group = new Konva.Group({
               draggable: draggable,
@@ -176,7 +181,7 @@ define(['konva'], function (Konva) {
           var handle = new Konva.Rect({
             width: handleWidth,
             height: handleHeight,
-            fill: color,
+            fill: handleColor,
             x: handleX,
             y: handleTop
           });
@@ -186,7 +191,7 @@ define(['konva'], function (Konva) {
            */
           var line = new Konva.Line({
             points: [0, 0, 0, height],
-            stroke: color,
+            stroke: handleColor,
             strokeWidth: 1,
             x: handleX,
             y: 0
@@ -200,6 +205,7 @@ define(['konva'], function (Konva) {
             text.setX(xPosition - text.getWidth()); //Position text to the left of the mark
             point.view.pointLayer.draw();
           });
+
           handle.on("mouseout", function (event) {
             text.hide();
             point.view.pointLayer.draw();
@@ -210,7 +216,6 @@ define(['konva'], function (Konva) {
           group.add(text);
 
           return group;
-
       };
   }
 
