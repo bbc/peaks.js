@@ -316,6 +316,7 @@ define('peaks', [
            * @param {Boolean=} segmentOrSegments[].editable
            * @param {String=} segmentOrSegments[].color
            * @param {String=} segmentOrSegments[].labelText
+           * @param {Number=} segmentOrSegments[].id
            */
           addSegment: addSegment,
           add:        addSegment,
@@ -330,6 +331,13 @@ define('peaks', [
             self.waveform.segments.updateSegments();
 
             return self.waveform.segments.segments.splice(index, 1).pop();
+          },
+
+          removeById: function (segmentId) {
+            self.waveform.segments.segments
+              .filter(function (segment) {
+                return segment.id === segmentId;
+              }).forEach(this.remove.bind(this));
           },
 
           removeByTime: function (startTime, endTime) {
@@ -347,25 +355,9 @@ define('peaks', [
               };
             }
 
-            var indexes = self.waveform.segments.segments
-              .filter(fnFilter)
-              .map(function (segment, i) {
-                self.waveform.segments.remove(segment);
-
-                return i;
-              })
-              .sort(function (a, b) {
-                return b - a;
-              })
-              .map(function (index) {
-                self.waveform.segments.segments.splice(index, 1);
-
-                return index;
-              });
-
-            self.waveform.segments.updateSegments();
-
-            return indexes.length;
+            var matchingSegments = self.waveform.segments.segments.filter(fnFilter);
+            matchingSegments.forEach(this.remove.bind(this));
+            return matchingSegments.length;
           },
 
           removeAll: function () {
@@ -392,6 +384,7 @@ define('peaks', [
            * @param {Boolean=} pointOrPoints[].editable
            * @param {String=} pointOrPoints[].color
            * @param {String=} pointOrPoints[].labelText
+           * @param {Number=} pointOrPoints[].id
            */
           add: function (pointOrPoints) {
             var points = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
@@ -409,6 +402,19 @@ define('peaks', [
             points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
             self.waveform.points.render();
           },
+
+          remove: function (point) {
+            var index = self.waveform.points.remove(point);
+
+            if (index === null) {
+              throw new RangeError('Unable to find the requested point' + String(point));
+            }
+
+            self.waveform.points.render();
+
+            return self.waveform.points.points.splice(index, 1).pop();
+          },
+
           /**
            *
            * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
@@ -418,30 +424,25 @@ define('peaks', [
           },
           /**
            *
-           * @param id
+           * @param {Number} timestamp
            */
           removeByTime: function (timestamp) {
-            var indexes = self.waveform.points.points
+            var matchingPoints = self.waveform.points.points
               .filter(function(point){
                 return point.timestamp === timestamp;
-              })
-              .map(function (point, i) {
-                self.waveform.points.remove(point);
-
-                return i;
-              })
-              .sort(function (a, b) {
-                return b - a;
-              })
-              .map(function (index) {
-                self.waveform.points.points.splice(index, 1);
-
-                return index;
               });
-
-            self.waveform.points.render();
-
-            return indexes.length;
+            matchingPoints.forEach(this.remove.bind(this));
+            return matchingPoints.length;
+          },
+          /**
+           *
+           * @param {Number|String} id
+           */
+          removeById: function (pointId) {
+            self.waveform.points.points
+              .filter(function (point) {
+                return point.id === pointId;
+              }).forEach(this.remove.bind(this));
           },
 
           /**
