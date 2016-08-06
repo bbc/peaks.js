@@ -101,6 +101,17 @@ define('peaks', [
        * Colour for the overview waveform
        */
       overviewWaveformColor: 'rgba(0,0,0,0.2)',
+
+      /**
+       * Vertical padding in pixel to add to the overview waveform highlight rectangle. Defaults to 11px
+       */
+      overviewHighlightRectanglePadding: 11,
+
+      /**
+       * Opacity of the overview waveform highlight rectangle. Defaults to 0.3
+       */
+      overviewHighlightRectangleOpacity: 0.3,
+
       /**
        * Colour for the overview waveform highlight rectangle, which shows
        * you what you see in the zoom view.
@@ -134,6 +145,20 @@ define('peaks', [
        * Colour of the axis labels
        */
       axisLabelColor:        '#aaa',
+
+      /**
+       * Define the waveforms where an axis will be drawn. Valid options are 'overview' and 'zoomview'
+       */
+      axisOnWaveforms: ['overview', 'zoomview'],
+      /**
+       * Color for the axis labels in the overview waveform
+       */
+      overviewAxisLabelColor: '#aaa',
+      /**
+       * Color for the axis gridlines in the overview waveform
+       */
+      overviewAxisGridlineColor: '#ccc',
+
       /**
        *
        */

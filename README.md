@@ -189,6 +189,12 @@ var options = {
   // Colour for the overview waveform rectangle that shows what the zoom view shows
   overviewHighlightRectangleColor: 'grey',
 
+  // Vertical padding in pixel to add to the overview waveform highlight rectangle. Defaults to 11px
+  overviewHighlightRectanglePadding: 11,
+
+  // Opacity of the overview waveform highlight rectangle. Defaults to 0.3
+  overviewHighlightRectangleOpacity: 0.3,
+
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
 
@@ -206,6 +212,15 @@ var options = {
 
   // Colour of the axis labels
   axisLabelColor: '#aaa',
+
+  // Use an axis on the following waveforms: 'overview', 'zoomview'
+  axisOnWaveforms: ['overview', 'zoomview'],
+
+  // Color for the axis labels in the overview waveform
+  overviewAxisLabelColor: '#aaa',
+
+  // Color for the axis gridlines in the overview waveform
+  overviewAxisGridlineColor: '#ccc',
 
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
