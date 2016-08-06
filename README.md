@@ -10,7 +10,7 @@ Peaks.js is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to ma
 
 Peaks.js uses HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
-[More informations about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
+[More information about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
 
 # Installation
 
@@ -495,7 +495,7 @@ It will indeed be UMD compatible, so as you can continue to use it with AMD or C
 npm run build
 ```
 
-The output of the build is a file named `peaks.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+The output of the build is a file named `peaks.js`, alongside its associated [source map](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
 ## Live Demo
 
