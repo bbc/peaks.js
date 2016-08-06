@@ -15,6 +15,7 @@ define([
     var self = this;
 
     self.segments = [];
+
     self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
       if (!view.segmentLayer) {
         view.segmentLayer = new Konva.Layer();
@@ -26,15 +27,22 @@ define([
     });
 
     var segmentId = 0;
+
     var createSegmentWaveform = function (options) {
       var segment = {
-        id: options.id === undefined || options.id === null ? ('peaks.segment.' + segmentId++) : options.id,
         startTime: options.startTime,
         endTime: options.endTime,
         labelText: options.labelText || "",
         color: options.color || getSegmentColor(),
         editable: options.editable || false
       };
+
+      if (options.id !== undefined && options.id !== null) {
+        segment.id = options.id;
+      }
+      else {
+        segment.id = 'peaks.segment.' + segmentId++;
+      }
 
       var segmentZoomGroup = new Konva.Group();
       var segmentOverviewGroup = new Konva.Group();
@@ -151,7 +159,7 @@ define([
         var outOffset = thisSeg.view.frameOffset + thisSeg.outMarker.getX();
         segment.endTime = thisSeg.view.data.time(outOffset);
       }
-      
+
       peaks.emit("segments.dragged", segment);
 
       updateSegmentWaveform(segment);
@@ -204,7 +212,7 @@ define([
       if (typeof options === 'number'){ // watch for anyone still trying to use the old createSegment(startTime, endTime ... ) API
         throw new TypeError("[waveform.segments.createSegment] `options` should be a Segment object");
       }
-      
+
       if ((options.startTime >= 0) === false){
         throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");
       }

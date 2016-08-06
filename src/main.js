@@ -292,6 +292,7 @@ define('peaks', [
 
           if (typeof segments[0] === "number") {
             self.options.deprecationLogger("[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object");
+
             segments = [
               {
                 startTime: arguments[0],
@@ -308,7 +309,9 @@ define('peaks', [
         }
 
         return {
+
           /**
+           * Add one or more segments to the timeline
            *
            * @param {(...Object|Object[])} segmentOrSegments
            * @param {Number} segmentOrSegments[].startTime
@@ -333,6 +336,14 @@ define('peaks', [
             return self.waveform.segments.segments.splice(index, 1).pop();
           },
 
+          /**
+           * Remove segments with the given id
+           *
+           * @param {Number|String} id
+           *
+           * @api
+           * @since 0.5.0
+           */
           removeById: function (segmentId) {
             self.waveform.segments.segments
               .filter(function (segment) {
@@ -342,6 +353,7 @@ define('peaks', [
 
           removeByTime: function (startTime, endTime) {
             endTime = (typeof endTime === 'number') ? endTime : 0;
+
             var fnFilter;
 
             if (endTime > 0) {
@@ -370,14 +382,19 @@ define('peaks', [
         };
       }
     },
+
     /**
      * Points API
      */
-    points:   {
+
+    points: {
       get: function () {
         var self = this;
+
         return {
+
           /**
+           * Add one or more points to the timeline
            *
            * @param {(...Object|Object[])} pointOrPoints
            * @param {Number} pointOrPoints[].timestamp
@@ -391,6 +408,7 @@ define('peaks', [
 
             if (typeof points[0] === "number") {
               self.options.deprecationLogger("[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object");
+
               points = [{
                 timestamp: arguments[0],
                 editable:  arguments[1],
@@ -416,27 +434,35 @@ define('peaks', [
           },
 
           /**
+           * Return all points
            *
            * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
            */
           getPoints: function () {
             return self.waveform.points.points;
           },
+
           /**
+           * Remove points at the given time
            *
            * @param {Number} timestamp
            */
           removeByTime: function (timestamp) {
             var matchingPoints = self.waveform.points.points
-              .filter(function(point){
+              .filter(function(point) {
                 return point.timestamp === timestamp;
               });
             matchingPoints.forEach(this.remove.bind(this));
             return matchingPoints.length;
           },
+
           /**
+           * Remove points with the given id
            *
            * @param {Number|String} id
+           *
+           * @api
+           * @since 0.5.0
            */
           removeById: function (pointId) {
             self.waveform.points.points
@@ -451,16 +477,18 @@ define('peaks', [
            * @api
            * @since 0.3.2
            */
-          removeAll: function removeAll(){
+          removeAll: function removeAll() {
             self.waveform.points.removeAll();
           }
         };
       }
     },
+
     /**
      * Time API
      */
-    time:     {
+
+    time: {
       get: function () {
         var self = this;
 
@@ -496,10 +524,12 @@ define('peaks', [
         };
       }
     },
+
     /**
      * Zoom API
      */
-    zoom:     {
+
+    zoom: {
       get: function () {
         var self = this;
         return {

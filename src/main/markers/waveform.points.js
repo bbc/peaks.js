@@ -26,15 +26,17 @@ define([
     });
 
     var pointId = 0;
-    function constructPoint(point) {
-      var pointZoomGroup = new Konva.Group();
-      var pointOverviewGroup = new Konva.Group();
-      var pointGroups = [pointZoomGroup, pointOverviewGroup];
 
+    function constructPoint(point) {
       if (point.id === undefined || point.id === null) {
         point.id = "peaks.point." + pointId++;
       }
+
       point.editable = Boolean(point.editable);
+
+      var pointZoomGroup = new Konva.Group();
+      var pointOverviewGroup = new Konva.Group();
+      var pointGroups = [pointZoomGroup, pointOverviewGroup];
 
       pointGroups.forEach(function(pointGroup, i){
         var view = self.views[i];
