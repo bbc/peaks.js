@@ -356,16 +356,22 @@ console.log(instance.zoom.getZoom()); // -> 1
 **Segments** give the ability to visually tag timed portions of a media object.
 This is a great way to provide visual cues to your users.
 
-### `instance.segments.add({startTime, endTime, editable, color, labelText})`
+### `instance.segments.add({startTime, endTime, editable, color, labelText, id})`
 ### `instance.segments.add(segment[])`
 
-Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds)
-and set whether the segment is user editable with `editable` (boolean, defaults to `false`).
+Add a segment to the waveform timeline. Accepts the following parameters:
+
+* `startTime`: the segment start time (seconds)
+* `endTime`: the segment end time (seconds)
+* `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
+* `color`: (optional) the segment color. If not specified, the segment is given a default color (see the `segmentColor` and
+`randomizeSegmentColor` [options](#Configuration)).
+* `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
 
 ```js
 var instance = peaks.init({ … });
 
-instance.segments.add({startTime: 0, endTime: 10.5}); //adds a 0 to 10.5 seconds non-editable segment with a random color
+instance.segments.add({startTime: 0, endTime: 10.5}); // adds a 0 to 10.5 seconds non-editable segment with a random color
 ```
 
 Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
@@ -391,11 +397,11 @@ instance.segments.add([
 
 Returns an array of objects representing all displayed segments present on the timeline in the segment format.
 
-### `instance.segments.removeByTime(timeStart, timeEnd)`
+### `instance.segments.removeByTime(startTime, endTime)`
 
-Remove any segment which start at `timeStart`, and which optionally finish at `timeEnd`.
+Remove any segment which start at `startTime` (seconds), and which optionally finish at `endTime` (seconds).
 
-The returned value corresponds to the number of deleted segments.
+The return value indicates the number of deleted segments.
 
 ```js
 var instance = peaks.init({ … });
@@ -407,7 +413,16 @@ instance.segments.removeByTime(10);
 
 // remove only the first segment
 instance.segments.removeByTime(10, 12);
+```
 
+### `instance.segments.removeById(segmentId)`
+
+Remove segments with the given identifier.
+
+```js
+var instance = peaks.init({ … });
+
+instance.segments.removeById('peaks.segment.3');
 ```
 
 ### `instance.segments.removeAll()`
