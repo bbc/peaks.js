@@ -6,7 +6,7 @@
  * instantiated meaning this code is reused multiple times.
  *
  */
-define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
+define(["peaks/waveform/waveform.mixins", "konva"], function(mixins, Konva) {
   'use strict';
 
   /*
@@ -75,13 +75,12 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
     return secs;
   };
 
-
   /**
    *
    * @param {WaveformOverview|WaveformZoomview} view
    * @param {Konva.Context} context
    */
-  WaveformAxis.prototype.axisDrawFunction = function (view, context) {
+  WaveformAxis.prototype.axisDrawFunction = function(view, context) {
     var currentFrameStartTime = view.data.time(view.frameOffset);
 
     // Draw axis markers

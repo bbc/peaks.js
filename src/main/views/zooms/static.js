@@ -3,11 +3,11 @@
  *
  * This module is a zoom view adapter with no animations.
  */
-define([], function () {
+define([], function() {
   'use strict';
 
   return {
-    init: function (currentSampleRate, previousSampleRate, view) {
+    init: function(currentSampleRate, previousSampleRate, view) {
       return {
         start: function() {
           view.segmentLayer.draw();

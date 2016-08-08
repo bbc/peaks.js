@@ -10,7 +10,7 @@ define([
   "peaks/waveform/waveform.axis",
   "peaks/waveform/waveform.mixins",
   "konva"
-], function (WaveformAxis, mixins, Konva) {
+], function(WaveformAxis, mixins, Konva) {
   'use strict';
 
   function WaveformOverview(waveformData, container, peaks) {
@@ -53,7 +53,7 @@ define([
       peaks.seeking = false;
     }
 
-    that.stage.on("mousedown", function (event) {
+    that.stage.on("mousedown", function(event) {
       if (event.target &&
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
@@ -62,7 +62,7 @@ define([
 
           peaks.emit("user_seek.overview", that.data.time(event.evt.layerX), event.evt.layerX);
 
-          that.stage.on("mousemove", function (event) {
+          that.stage.on("mousemove", function(event) {
             peaks.emit("user_scrub.overview", that.data.time(event.evt.layerX), event.evt.layerX);
           });
 
@@ -87,11 +87,11 @@ define([
     peaks.on("user_seek.*", trackPlayheadPosition);
     peaks.on("user_scrub.*", trackPlayheadPosition);
 
-    peaks.on("waveform_zoom_displaying", function (start, end) {
+    peaks.on("waveform_zoom_displaying", function(start, end) {
       that.updateRefWaveform(start, end);
     });
 
-    peaks.on("resizeEndOverview", function (width, newWaveformData) {
+    peaks.on("resizeEndOverview", function(width, newWaveformData) {
       that.width = width;
       that.data = newWaveformData;
       that.stage.setWidth(that.width);
@@ -117,7 +117,7 @@ define([
   // Green Reference Waveform to inform users where they are in overview
   // waveform based on current zoom level
 
-  WaveformOverview.prototype.createRefWaveform = function () {
+  WaveformOverview.prototype.createRefWaveform = function() {
     var that = this;
 
     this.refLayer = new Konva.Layer();
@@ -192,7 +192,7 @@ define([
   };
   */
 
-  WaveformOverview.prototype.updateRefWaveform = function (time_in, time_out) {
+  WaveformOverview.prototype.updateRefWaveform = function(time_in, time_out) {
     if (isNaN(time_in)) {
       throw new Error("WaveformOverview#updateRefWaveform passed a time in that is not a number: " + time_in);
     }
@@ -216,7 +216,7 @@ define([
     that.refLayer.draw();
   };
 
-  WaveformOverview.prototype.updateUi = function (pixel) {
+  WaveformOverview.prototype.updateUi = function(pixel) {
     if (isNaN(pixel)) {
       throw new Error("WaveformOverview#updateUi passed a value that is not a number: " + pixel);
     }

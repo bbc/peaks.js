@@ -4,11 +4,11 @@
  * This module handles all functionality related to the adding,
  * removing and manipulation of segments
  */
-define(["konva"], function (Konva) {
+define(["konva"], function(Konva) {
   'use strict';
 
   return {
-    init: function (currentSampleRate, previousSampleRate, view) {
+    init: function(currentSampleRate, previousSampleRate, view) {
       var that = view;
       var currentTime = that.peaks.time.getCurrentTime();
       var frameData = [];

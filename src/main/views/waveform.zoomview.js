@@ -12,7 +12,7 @@ define([
   "peaks/views/zooms/animated",
   "peaks/views/zooms/static",
   "konva"
-  ], function (WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
+  ], function(WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
   'use strict';
 
   function WaveformZoomView(waveformData, container, peaks) {
@@ -66,7 +66,7 @@ define([
 
     // INTERACTION ===============================================
 
-    that.stage.on("mousedown", function (event) {
+    that.stage.on("mousedown", function(event) {
       if (event.target &&
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
@@ -76,7 +76,7 @@ define([
           peaks.seeking = true;
 
           // enable drag if necessary
-          that.stage.on("mousemove", function (event) {
+          that.stage.on("mousemove", function(event) {
             peaks.seeking = false;
 
             dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX) * 1;
@@ -87,7 +87,7 @@ define([
             that.updateZoomWaveform(p);
           });
 
-          that.stage.on("mouseup", function () {
+          that.stage.on("mouseup", function() {
             if (peaks.seeking) {
               // Set playhead position only on click release, when not dragging
               that.peaks.emit("user_seek.zoomview", that.data.time(that.frameOffset + x), that.frameOffset + x);
@@ -113,7 +113,7 @@ define([
       }
     }
 
-    that.peaks.on("player_time_update", function (time) {
+    that.peaks.on("player_time_update", function(time) {
       if (!peaks.seeking) {
         that.seekFrame(that.data.at_time(time));
       }
@@ -123,12 +123,12 @@ define([
     that.peaks.on("user_seek.*", userSeekHandler.bind(null, { withOffset: true }));
     that.peaks.on("user_scrub.*", userSeekHandler.bind(null, { withOffset: false }));
 
-    that.peaks.on("player_play", function (time) {
+    that.peaks.on("player_play", function(time) {
       that.playing = true;
       that.playFrom(time, that.data.at_time(time));
     });
 
-    that.peaks.on("player_pause", function (time) {
+    that.peaks.on("player_pause", function(time) {
       that.playing = false;
 
       if (that.playheadLineAnimation) {
@@ -138,7 +138,7 @@ define([
       that.syncPlayhead(that.data.at_time(time));
     });
 
-    that.peaks.on("zoom.update", function (current_scale, previous_scale) {
+    that.peaks.on("zoom.update", function(current_scale, previous_scale) {
       var adapter, zoomAdapterMap;
 
       if (that.playing) {
@@ -164,7 +164,7 @@ define([
       }
     });
 
-    that.peaks.on("window_resized", function (width, newWaveformData) {
+    that.peaks.on("window_resized", function(width, newWaveformData) {
       that.width = width;
       that.data = newWaveformData;
       that.stage.setWidth(that.width);
@@ -237,7 +237,7 @@ define([
     that.zoomPlayheadGroup.moveToTop();
   };
 
-  WaveformZoomView.prototype.updateZoomWaveform = function (pixelOffset) {
+  WaveformZoomView.prototype.updateZoomWaveform = function(pixelOffset) {
     if (isNaN(pixelOffset)) {
       throw new Error("WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: " + pixelOffset);
     }
@@ -294,7 +294,7 @@ define([
    * @param {Number} time Position in time where the playhead starts
    * @param {Integer} startPosition Position in frame index where the playhead starts
    */
-  WaveformZoomView.prototype.playFrom = function (time, startPosition) {
+  WaveformZoomView.prototype.playFrom = function(time, startPosition) {
     var that = this;
 
     if (that.playheadLineAnimation) {
@@ -304,7 +304,7 @@ define([
     var frameSeconds = 0;
     var pixelsPerSecond = that.data.pixels_per_second;
 
-    that.playheadLineAnimation = new Konva.Animation(function (frame) {
+    that.playheadLineAnimation = new Konva.Animation(function(frame) {
       var time = frame.time;
 
       var seconds = time / 1000;
@@ -316,7 +316,7 @@ define([
     that.playheadLineAnimation.start();
   };
 
-  WaveformZoomView.prototype.newFrame = function (frameOffset) {
+  WaveformZoomView.prototype.newFrame = function(frameOffset) {
     if (isNaN(frameOffset)) {
       throw new Error("WaveformZoomView#newFrame passed a frame offset that is not a number: " + frameOffset);
     }
@@ -333,7 +333,7 @@ define([
     return false;
   };
 
-  WaveformZoomView.prototype.syncPlayhead = function (pixelIndex) {
+  WaveformZoomView.prototype.syncPlayhead = function(pixelIndex) {
     if (isNaN(pixelIndex)) {
       throw new Error("WaveformZoomView#syncPlayhead passed a pixel index that is not a number: " + pixelIndex);
     }
@@ -357,7 +357,7 @@ define([
     that.uiLayer.draw();
   };
 
-  WaveformZoomView.prototype.seekFrame = function (pixelIndex, offset) {
+  WaveformZoomView.prototype.seekFrame = function(pixelIndex, offset) {
     if (isNaN(pixelIndex)) {
       throw new Error("WaveformZoomView#seekFrame passed a pixel index that is not a number: " + pixelIndex);
     }

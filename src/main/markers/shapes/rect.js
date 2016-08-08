@@ -8,7 +8,7 @@ define([
   "peaks/markers/shapes/base",
   "peaks/waveform/waveform.mixins",
   "konva"
-], function (BaseShape, mixins, Konva) {
+], function(BaseShape, mixins, Konva) {
   'use strict';
 
   var WaveShape = Object.create(BaseShape.prototype);
@@ -27,7 +27,7 @@ define([
       x: 0,
       width: 0,
       height: view.height,
-      opacity:0.4
+      opacity: 0.4
     });
 
     return shape;

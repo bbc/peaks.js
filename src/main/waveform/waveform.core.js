@@ -11,14 +11,14 @@ define([
   "peaks/views/waveform.zoomview",
   "peaks/markers/waveform.segments",
   "peaks/markers/waveform.points"
-  ], function (WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
+  ], function(WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
 
-  return function (peaks) {
+  return function(peaks) {
     return {
-      init: function (ui) {
+      init: function(ui) {
         this.ui = ui; // See buildUi in main.js
         var that = this;
 
@@ -45,7 +45,7 @@ define([
             options.dataUri = dataUri;
           }
 
-          if(typeof options.dataUri === 'object') {
+          if (typeof options.dataUri === 'object') {
             ['ArrayBuffer', 'JSON'].some(function(connector) {
               if (window[connector]) {
                 requestType = connector.toLowerCase();
@@ -64,14 +64,14 @@ define([
           builder = 'webaudio';
         }
 
-        if(!uri) {
+        if (!uri) {
           throw new Error("Unable to determine a compatible dataUri format for this browser.");
         }
 
         // open an XHR request to the data source file
         xhr.open('GET', uri, true);
 
-        if(isXhr2) {
+        if (isXhr2) {
           try {
             xhr.responseType = requestType;
           }
@@ -106,7 +106,7 @@ define([
        * @param remoteData {WaveformData|ProgressEvent}
        * @param xhr {XMLHttpRequest}
        */
-      handleRemoteData: function (err, remoteData, xhr) {
+      handleRemoteData: function(err, remoteData, xhr) {
         if (err) {
           return peaks.emit('error', err);
         }
@@ -124,12 +124,11 @@ define([
           return peaks.emit('error', e);
         }
 
-
         peaks.emit("waveformOverviewReady", this.waveformOverview);
         this.bindResize();
       },
 
-      openZoomView: function () {
+      openZoomView: function() {
         var that = this;
 
         that.waveformZoomView = new WaveformZoomView(that.origWaveformData, that.ui.zoom, peaks);
@@ -146,10 +145,10 @@ define([
       /**
        * Deal with window resize event over both waveform views.
        */
-      bindResize: function () {
+      bindResize: function() {
         var that = this;
 
-        window.addEventListener("resize", function () {
+        window.addEventListener("resize", function() {
           that.ui.overview.hidden = true;
           that.ui.zoom.hidden = true;
 
@@ -166,11 +165,11 @@ define([
           }, 500);
         });
 
-        peaks.on("overview_resized", function () {
+        peaks.on("overview_resized", function() {
           that.ui.overview.removeAttribute('hidden');
         });
 
-        peaks.on("zoomview_resized", function () {
+        peaks.on("zoomview_resized", function() {
           that.ui.zoom.removeAttribute('hidden');
         });
 

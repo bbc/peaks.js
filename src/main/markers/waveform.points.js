@@ -7,10 +7,10 @@
 define([
   "peaks/waveform/waveform.mixins",
   "konva"
-], function (mixins, Konva) {
+], function(mixins, Konva) {
   'use strict';
 
-  return function (peaks) {
+  return function(peaks) {
     var self = this;
     var waveformView = peaks.waveform;
 
@@ -121,17 +121,17 @@ define([
       self.render();
     }
 
-    this.init = function () {
+    this.init = function() {
       peaks.on("waveform_zoom_displaying", self.updatePoints.bind(self));
       peaks.emit("points.ready");
     };
 
-    this.updatePoints = function () {
+    this.updatePoints = function() {
       self.points.forEach(updatePoint);
       self.render();
     };
 
-    this.createPoint = function (point) {
+    this.createPoint = function(point) {
       if (typeof point.timestamp !== 'number') {
         throw new TypeError("[waveform.points.createPoint] timestamp should be a numeric value '" + typeof point.timestamp + "': " + point.typestamp);
       }

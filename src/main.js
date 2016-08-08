@@ -4,7 +4,7 @@ define('peaks', [
   'peaks/waveform/waveform.core',
   'peaks/waveform/waveform.mixins',
   'peaks/player/player.keyboard'
-], function (EventEmitter, AudioPlayer, Waveform, mixins, keyboard) {
+], function(EventEmitter, AudioPlayer, Waveform, mixins, keyboard) {
   'use strict';
 
   function buildUi(container) {
@@ -25,7 +25,7 @@ define('peaks', [
 
   var ee = (EventEmitter.EventEmitter2 || EventEmitter);
 
-  function Peaks (container) {
+  function Peaks(container) {
     ee.call(this, { wildcard: true });
 
     this.options = {
@@ -197,7 +197,7 @@ define('peaks', [
     this.logger = console.error.bind(console);
   }
 
-  Peaks.init = function init (opts) {
+  Peaks.init = function init(opts) {
     opts = opts || {};
     opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
 
@@ -274,7 +274,7 @@ define('peaks', [
     // TODO maybe to move in the player object
     instance.seeking = false;
 
-    instance.on("waveformOverviewReady", function () {
+    instance.on("waveformOverviewReady", function() {
       instance.waveform.openZoomView();
 
       // Any initial segments to be displayed?
@@ -294,10 +294,10 @@ define('peaks', [
   // Temporary workaround while https://github.com/asyncly/EventEmitter2/pull/122
   Peaks.prototype = Object.create(ee.prototype, {
     segments: {
-      get: function () {
+      get: function() {
         var self = this;
 
-        function addSegment (segmentOrSegments) {
+        function addSegment(segmentOrSegments) {
           var segments = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
 
           if (typeof segments[0] === "number") {
@@ -334,7 +334,7 @@ define('peaks', [
           addSegment: addSegment,
           add:        addSegment,
 
-          remove: function (segment) {
+          remove: function(segment) {
             var index = self.waveform.segments.remove(segment);
 
             if (index === null) {
@@ -354,25 +354,25 @@ define('peaks', [
            * @api
            * @since 0.5.0
            */
-          removeById: function (segmentId) {
+          removeById: function(segmentId) {
             self.waveform.segments.segments
-              .filter(function (segment) {
+              .filter(function(segment) {
                 return segment.id === segmentId;
               }).forEach(this.remove.bind(this));
           },
 
-          removeByTime: function (startTime, endTime) {
+          removeByTime: function(startTime, endTime) {
             endTime = (typeof endTime === 'number') ? endTime : 0;
 
             var fnFilter;
 
             if (endTime > 0) {
-              fnFilter = function (segment) {
+              fnFilter = function(segment) {
                 return segment.startTime === startTime && segment.endTime === endTime;
               };
             }
             else {
-              fnFilter = function (segment) {
+              fnFilter = function(segment) {
                 return segment.startTime === startTime;
               };
             }
@@ -384,11 +384,11 @@ define('peaks', [
             return matchingSegments.length;
           },
 
-          removeAll: function () {
+          removeAll: function() {
             self.waveform.segments.removeAll();
           },
 
-          getSegments: function () {
+          getSegments: function() {
             return self.waveform.segments.segments;
           }
         };
@@ -400,7 +400,7 @@ define('peaks', [
      */
 
     points: {
-      get: function () {
+      get: function() {
         var self = this;
 
         return {
@@ -415,7 +415,7 @@ define('peaks', [
            * @param {String=} pointOrPoints[].labelText
            * @param {Number=} pointOrPoints[].id
            */
-          add: function (pointOrPoints) {
+          add: function(pointOrPoints) {
             var points = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
 
             if (typeof points[0] === "number") {
@@ -433,7 +433,7 @@ define('peaks', [
             self.waveform.points.render();
           },
 
-          remove: function (point) {
+          remove: function(point) {
             var index = self.waveform.points.remove(point);
 
             if (index === null) {
@@ -450,7 +450,7 @@ define('peaks', [
            *
            * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
            */
-          getPoints: function () {
+          getPoints: function() {
             return self.waveform.points.points;
           },
 
@@ -459,7 +459,7 @@ define('peaks', [
            *
            * @param {Number} timestamp
            */
-          removeByTime: function (timestamp) {
+          removeByTime: function(timestamp) {
             var matchingPoints = self.waveform.points.points
               .filter(function(point) {
                 return point.timestamp === timestamp;
@@ -478,9 +478,9 @@ define('peaks', [
            * @api
            * @since 0.5.0
            */
-          removeById: function (pointId) {
+          removeById: function(pointId) {
             self.waveform.points.points
-              .filter(function (point) {
+              .filter(function(point) {
                 return point.id === pointId;
               }).forEach(this.remove.bind(this));
           },
@@ -503,7 +503,7 @@ define('peaks', [
      */
 
     time: {
-      get: function () {
+      get: function() {
         var self = this;
 
         return {
@@ -518,7 +518,7 @@ define('peaks', [
            *
            * @param {Number} time
            */
-          setCurrentTime: function setCurrentTime (time) {
+          setCurrentTime: function setCurrentTime(time) {
             return self.player.seekBySeconds(time);
           },
           /**
@@ -532,7 +532,7 @@ define('peaks', [
            * @returns {Number}
            */
 
-          getCurrentTime: function () {
+          getCurrentTime: function() {
             return self.player.getTime();
           }
         };
@@ -544,7 +544,7 @@ define('peaks', [
      */
 
     zoom: {
-      get: function () {
+      get: function() {
         var self = this;
 
         return {
@@ -552,14 +552,14 @@ define('peaks', [
           /**
            * Zoom in one level
            */
-          zoomIn: function () {
+          zoomIn: function() {
             self.zoom.setZoom(self.currentZoomLevel - 1);
           },
 
           /**
            * Zoom out one level
            */
-          zoomOut: function () {
+          zoomOut: function() {
             self.zoom.setZoom(self.currentZoomLevel + 1);
           },
 
@@ -568,7 +568,7 @@ define('peaks', [
            *
            * @param {number} zoomLevelIndex
            */
-          setZoom: function (zoomLevelIndex) { // Set zoom level to index of current zoom levels
+          setZoom: function(zoomLevelIndex) { // Set zoom level to index of current zoom levels
             if (zoomLevelIndex >= self.options.zoomLevels.length) {
               zoomLevelIndex = self.options.zoomLevels.length - 1;
             }
@@ -588,7 +588,7 @@ define('peaks', [
            *
            * @returns {number}
            */
-          getZoom: function () {
+          getZoom: function() {
             return self.currentZoomLevel;
           },
 

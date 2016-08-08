@@ -1,4 +1,4 @@
-define([], function () {
+define([], function() {
   'use strict';
 
   var SPACE = 32,
@@ -6,12 +6,12 @@ define([], function () {
     LEFT_ARROW = 37,
     RIGHT_ARROW = 39;
 
-  function handleKeyEventGenerator (peaksInstance) {
+  function handleKeyEventGenerator(peaksInstance) {
 
     /**
      * Arrow keys only triggered on keydown, not keypress
      */
-    return function handleKeyEvent (event) {
+    return function handleKeyEvent(event) {
       var c = event.keyCode;
       var t = event.type;
 
@@ -58,7 +58,7 @@ define([], function () {
   }
 
   return {
-    init: function (peaks) {
+    init: function(peaks) {
       document.addEventListener("keydown", handleKeyEventGenerator(peaks));
       document.addEventListener("keypress", handleKeyEventGenerator(peaks));
       document.addEventListener("keyup", handleKeyEventGenerator(peaks));

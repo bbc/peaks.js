@@ -8,10 +8,10 @@ define([
   "konva",
   "peaks/waveform/waveform.mixins",
   "peaks/markers/shapes/wave"
-], function (Konva, mixins, SegmentShape) {
+], function(Konva, mixins, SegmentShape) {
   'use strict';
 
-  return function (peaks) {
+  return function(peaks) {
     var self = this;
 
     self.segments = [];
@@ -28,7 +28,7 @@ define([
 
     var segmentId = 0;
 
-    var createSegmentWaveform = function (options) {
+    var createSegmentWaveform = function(options) {
       var segment = {
         startTime: options.startTime,
         endTime: options.endTime,
@@ -49,12 +49,12 @@ define([
 
       var segmentGroups = [segmentZoomGroup, segmentOverviewGroup];
 
-      var menter = function (event) {
+      var onMouseEnter = function(event) {
         this.parent.label.show();
         this.parent.view.segmentLayer.draw();
       };
 
-      var mleave = function (event) {
+      var onMouseLeave = function(event) {
         this.parent.label.hide();
         this.parent.view.segmentLayer.draw();
       };
@@ -64,8 +64,8 @@ define([
 
         segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
-        segmentGroup.waveformShape.on("mouseenter", menter);
-        segmentGroup.waveformShape.on("mouseleave", mleave);
+        segmentGroup.waveformShape.on("mouseenter", onMouseEnter);
+        segmentGroup.waveformShape.on("mouseleave", onMouseLeave);
 
         segmentGroup.add(segmentGroup.waveformShape);
 
@@ -93,7 +93,7 @@ define([
       return segment;
     };
 
-    var updateSegmentWaveform = function (segment) {
+    function updateSegmentWaveform(segment) {
       // Binding with data
       peaks.waveform.waveformOverview.data.set_segment(peaks.waveform.waveformOverview.data.at_time(segment.startTime), peaks.waveform.waveformOverview.data.at_time(segment.endTime), segment.id);
       peaks.waveform.waveformZoomView.data.set_segment(peaks.waveform.waveformZoomView.data.at_time(segment.startTime), peaks.waveform.waveformZoomView.data.at_time(segment.endTime), segment.id);
@@ -163,9 +163,9 @@ define([
       else {
         segment.zoom.hide();
       }
-    };
+    }
 
-    var segmentHandleDrag = function (thisSeg, segment) {
+    var segmentHandleDrag = function(thisSeg, segment) {
       if (thisSeg.inMarker.getX() > 0) {
         var inOffset = thisSeg.view.frameOffset +
                        thisSeg.inMarker.getX() +
@@ -190,7 +190,7 @@ define([
       if (peaks.options.randomizeSegmentColor) {
         var g = function() {
           return Math.floor(Math.random() * 255);
-        };
+        }
 
         return 'rgba(' + g() + ', ' + g() + ', ' + g() + ', 1)';
       }
@@ -199,7 +199,7 @@ define([
       }
     }
 
-    this.init = function () {
+    this.init = function() {
       peaks.on("waveform_zoom_displaying", this.updateSegments.bind(this));
 
       peaks.emit("segments.ready");
@@ -212,7 +212,7 @@ define([
      *
      * @api
      */
-    this.updateSegments = function () {
+    this.updateSegments = function() {
       this.segments.forEach(updateSegmentWaveform);
       this.render();
     };
@@ -230,7 +230,7 @@ define([
      * @param {Number=} options.id
      * @return {Object}
      */
-    this.createSegment = function (options) {
+    this.createSegment = function(options) {
       // Watch for anyone still trying to use the old createSegment(startTime, endTime, ...) API
       if (typeof options === 'number') {
         throw new TypeError("[waveform.segments.createSegment] `options` should be a Segment object");
