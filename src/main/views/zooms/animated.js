@@ -31,12 +31,15 @@ define(['konva'], function(Konva) {
         numOfFrames = 15;
       }
 
-      // Create array with resampled data for each animation frame (need to know duration, resample points per frame)
+      // Create array with resampled data for each animation frame (need to
+      // know duration, resample points per frame)
       for (var i = 0; i < numOfFrames; i++) {
-        // Work out interpolated resample scale using currentSampleRate and previousSampleRate
+        // Work out interpolated resample scale using currentSampleRate
+        // and previousSampleRate
         var frame_sample_rate = Math.round(previousSampleRate + ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames));
 
-        // Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
+        // Determine the timeframe for the zoom animation (start and end of
+        // dataset for zooming animation)
         var newWidthSeconds = that.width * frame_sample_rate / that.rootData.adapter.sample_rate;
 
         if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds / 2)) {
@@ -50,7 +53,8 @@ define(['konva'], function(Konva) {
           output_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
         }
         else {
-          // This way calculates the index of the start time at the scale we are coming from and the scale we are going to
+          // This way calculates the index of the start time at the scale we
+          // are coming from and the scale we are going to
           var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / previousSampleRate;
           var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
 
@@ -62,7 +66,8 @@ define(['konva'], function(Konva) {
           input_index = 0;
         }
 
-        var resampled = that.rootData.resample({ // rootData should be swapped for your resampled dataset
+        // rootData should be swapped for your resampled dataset:
+        var resampled = that.rootData.resample({
           scale:        frame_sample_rate,
           input_index:  Math.floor(input_index),
           output_index: Math.floor(output_index),

@@ -125,7 +125,12 @@ define([
     /*
     this.refWaveformShape = new Konva.Shape({
       drawFunc: function(canvas) {
-        mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
+        mixins.waveformDrawFunction.call(
+          this,
+          that.data,
+          canvas,
+          mixins.interpolateHeight(that.height)
+        );
       },
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0

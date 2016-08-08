@@ -15,7 +15,9 @@ define([], function() {
       var c = event.keyCode;
       var t = event.type;
 
-      if (['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'].indexOf(event.target.nodeName) === -1) {
+      var nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
+
+      if (nodes.indexOf(event.target.nodeName) === -1) {
 
         if ([SPACE, TAB, LEFT_ARROW, RIGHT_ARROW].indexOf(event.type) > -1) {
           event.preventDefault();

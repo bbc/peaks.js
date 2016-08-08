@@ -16,7 +16,12 @@ define([
 
     self.segments = [];
 
-    self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view) {
+    var views = [
+      peaks.waveform.waveformZoomView,
+      peaks.waveform.waveformOverview
+    ];
+
+    self.views = views.map(function(view) {
       if (!view.segmentLayer) {
         view.segmentLayer = new Konva.Layer();
         view.stage.add(view.segmentLayer);
@@ -75,10 +80,22 @@ define([
         if (segment.editable) {
           var draggable = true;
 
-          segmentGroup.inMarker = new peaks.options.segmentInMarker(draggable, segmentGroup, segment, segmentHandleDrag);
+          segmentGroup.inMarker = new peaks.options.segmentInMarker(
+            draggable,
+            segmentGroup,
+            segment,
+            segmentHandleDrag
+          );
+
           segmentGroup.add(segmentGroup.inMarker);
 
-          segmentGroup.outMarker = new peaks.options.segmentOutMarker(draggable, segmentGroup, segment, segmentHandleDrag);
+          segmentGroup.outMarker = new peaks.options.segmentOutMarker(
+            draggable,
+            segmentGroup,
+            segment,
+            segmentHandleDrag
+          );
+
           segmentGroup.add(segmentGroup.outMarker);
         }
 
@@ -95,8 +112,17 @@ define([
 
     function updateSegmentWaveform(segment) {
       // Binding with data
-      peaks.waveform.waveformOverview.data.set_segment(peaks.waveform.waveformOverview.data.at_time(segment.startTime), peaks.waveform.waveformOverview.data.at_time(segment.endTime), segment.id);
-      peaks.waveform.waveformZoomView.data.set_segment(peaks.waveform.waveformZoomView.data.at_time(segment.startTime), peaks.waveform.waveformZoomView.data.at_time(segment.endTime), segment.id);
+      peaks.waveform.waveformOverview.data.set_segment(
+        peaks.waveform.waveformOverview.data.at_time(segment.startTime),
+        peaks.waveform.waveformOverview.data.at_time(segment.endTime),
+        segment.id
+      );
+
+      peaks.waveform.waveformZoomView.data.set_segment(
+        peaks.waveform.waveformZoomView.data.at_time(segment.startTime),
+        peaks.waveform.waveformZoomView.data.at_time(segment.endTime),
+        segment.id
+      );
 
       // Overview
       var overviewStartOffset = peaks.waveform.waveformOverview.data.at_time(segment.startTime);
@@ -158,7 +184,11 @@ define([
           segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
         }
 
-        SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
+        SegmentShape.update.call(
+          segment.zoom.waveformShape,
+          peaks.waveform.waveformZoomView,
+          segment.id
+        );
       }
       else {
         segment.zoom.hide();

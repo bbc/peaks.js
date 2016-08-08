@@ -29,14 +29,18 @@ define('peaks', [
     ee.call(this, { wildcard: true });
 
     this.options = {
+
       /**
-       * Array of scale factors (samples per pixel) for the zoom levels (big >> small)
+       * Array of scale factors (samples per pixel) for the zoom levels
+       * (big >> small)
        */
       zoomLevels:            [512, 1024, 2048, 4096],
+
       /**
        * Data URI where to get the waveform data.
        *
-       * If a string, we assume that `this.dataUriDefaultFormat` is the default `xhr.responseType` value.
+       * If a string, we assume that `this.dataUriDefaultFormat` is the default
+       * `xhr.responseType` value.
        *
        * @since 0.0.1
        *
@@ -44,7 +48,8 @@ define('peaks', [
        * dataUri: 'url/to/data.json?waveformId=1337'
        * ```
        *
-       * If an object, each key is an `xhr.responseType` which will contain its associated source URI.
+       * If an object, each key is an `xhr.responseType` which will contain its
+       * associated source URI.
        *
        * @since 0.3.0
        *
@@ -56,13 +61,15 @@ define('peaks', [
        * ```
        */
       dataUri:               null,
+
       /**
-       * Will be used as a `xhr.responseType` if `dataUri` is a string, and not an object.
-       * Here for backward compatibility purpose only.
+       * Will be used as a `xhr.responseType` if `dataUri` is a string, and not
+       * an object. Here for backward compatibility purpose only.
        *
        * @since 0.3.0
        */
       dataUriDefaultFormat:  'json',
+
       /**
        * Will report errors to that function
        *
@@ -70,6 +77,7 @@ define('peaks', [
        * @since 0.4.4
        */
       logger:                null,
+
       /**
        * Deprecation messages logger.
        *
@@ -77,63 +85,78 @@ define('peaks', [
        * @since 0.4.8
        */
       deprecationLogger:     console.log.bind(console),
+
       /**
        * Bind keyboard controls
        */
       keyboard:              false,
+
       /**
        * Keyboard nudge increment in seconds (left arrow/right arrow)
        */
       nudgeIncrement:        0.01,
+
       /**
        * Colour for the in marker of segments
        */
       inMarkerColor:         '#a0a0a0',
+
       /**
        * Colour for the out marker of segments
        */
       outMarkerColor:        '#a0a0a0',
+
       /**
        * Colour for the zoomed in waveform
        */
       zoomWaveformColor:     'rgba(0, 225, 128, 1)',
+
       /**
        * Colour for the overview waveform
        */
       overviewWaveformColor: 'rgba(0,0,0,0.2)',
+
       /**
        * Colour for the overview waveform highlight rectangle, which shows
        * you what you see in the zoom view.
        */
       overviewHighlightRectangleColor: 'grey',
+
       /**
        * Random colour per segment (overrides segmentColor)
        */
       randomizeSegmentColor: true,
+
       /**
        * Height of the waveform canvases in pixels
        */
       height:                200,
+
       /**
        * Colour for segments on the waveform
        */
       segmentColor:          'rgba(255, 161, 39, 1)',
+
       /**
        * Colour of the play head
        */
       playheadColor:         'rgba(0, 0, 0, 1)',
+
       /**
        * Colour of the play head text
        */
       playheadTextColor:     '#aaa',
+
       /**
        * Colour of the axis gridlines
-      */
+       */
       axisGridlineColor:     '#ccc',
+
       /**
        * Colour of the axis labels
        */
       axisLabelColor:        '#aaa',
+
       /**
        *
        */
@@ -298,7 +321,9 @@ define('peaks', [
         var self = this;
 
         function addSegment(segmentOrSegments) {
-          var segments = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
+          var segments = Array.isArray(arguments[0]) ?
+                         arguments[0] :
+                         Array.prototype.slice.call(arguments);
 
           if (typeof segments[0] === 'number') {
             self.options.deprecationLogger('[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object.');
@@ -416,7 +441,9 @@ define('peaks', [
            * @param {Number=} pointOrPoints[].id
            */
           add: function(pointOrPoints) {
-            var points = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
+            var points = Array.isArray(arguments[0]) ?
+                         arguments[0] :
+                         Array.prototype.slice.call(arguments);
 
             if (typeof points[0] === 'number') {
               self.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
@@ -580,7 +607,12 @@ define('peaks', [
             var previousZoomLevel = self.currentZoomLevel;
 
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit('zoom.update', self.options.zoomLevels[zoomLevelIndex], self.options.zoomLevels[previousZoomLevel]);
+
+            self.emit(
+              'zoom.update',
+              self.options.zoomLevels[zoomLevelIndex],
+              self.options.zoomLevels[previousZoomLevel]
+            );
           },
 
           /**

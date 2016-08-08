@@ -11,7 +11,13 @@ define([
   'peaks/views/waveform.zoomview',
   'peaks/markers/waveform.segments',
   'peaks/markers/waveform.points'
-  ], function(WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
+  ], function(
+    WaveformData,
+    WaveformOverview,
+    WaveformZoomView,
+    WaveformSegments,
+    WaveformPoints) {
+
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
@@ -76,8 +82,8 @@ define([
             xhr.responseType = requestType;
           }
           catch (e) {
-            // some browsers like Safari 6 do handle XHR2 but not the json response type
-            // doing only a try/catch fails in IE9
+            // some browsers like Safari 6 do handle XHR2 but not the json
+            // response type, doing only a try/catch fails in IE9
           }
         }
 
@@ -85,14 +91,20 @@ define([
           if (this.readyState === 4) {
             if (this.status === 200) {
               if (builder) {
-                WaveformData.builders[builder](response.target.response, options.waveformBuilderOptions, that.handleRemoteData.bind(that, null));
+                WaveformData.builders[builder](
+                  response.target.response,
+                  options.waveformBuilderOptions,
+                  that.handleRemoteData.bind(that, null)
+                );
               }
               else {
                 that.handleRemoteData(null, response.target, xhr);
               }
             }
             else {
-              that.handleRemoteData(new Error('Unable to fetch remote data. HTTP Status ' + this.status));
+              that.handleRemoteData(
+                new Error('Unable to fetch remote data. HTTP Status ' + this.status)
+              );
             }
           }
         };
@@ -114,11 +126,19 @@ define([
         this.origWaveformData = null;
 
         try {
-          this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
+          this.origWaveformData = remoteData instanceof WaveformData ?
+                                  remoteData :
+                                  WaveformData.create(remoteData);
 
-          var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
+          var overviewWaveformData = this.origWaveformData.resample(
+            this.ui.player.clientWidth
+          );
 
-          this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
+          this.waveformOverview = new WaveformOverview(
+            overviewWaveformData,
+            this.ui.overview,
+            peaks
+          );
         }
         catch (e) {
           return peaks.emit('error', e);
@@ -131,7 +151,11 @@ define([
       openZoomView: function() {
         var that = this;
 
-        that.waveformZoomView = new WaveformZoomView(that.origWaveformData, that.ui.zoom, peaks);
+        that.waveformZoomView = new WaveformZoomView(
+          that.origWaveformData,
+          that.ui.zoom,
+          peaks
+        );
 
         that.segments = new WaveformSegments(peaks);
         that.segments.init();

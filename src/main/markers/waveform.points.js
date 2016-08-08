@@ -68,15 +68,24 @@ define([
 
     function updatePoint(point) {
       // Binding with data
-      waveformView.waveformOverview.data.set_point(waveformView.waveformOverview.data.at_time(point.timestamp), point.id);
-      waveformView.waveformZoomView.data.set_point(waveformView.waveformZoomView.data.at_time(point.timestamp), point.id);
+      waveformView.waveformOverview.data.set_point(
+        waveformView.waveformOverview.data.at_time(point.timestamp),
+        point.id
+      );
+
+      waveformView.waveformZoomView.data.set_point(
+        waveformView.waveformZoomView.data.at_time(point.timestamp),
+        point.id
+      );
 
       // Overview
       var overviewtimestampOffset = waveformView.waveformOverview.data.at_time(point.timestamp);
 
       if (point.editable) {
         if (point.overview.marker) {
-          point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
+          point.overview.marker.show().setX(
+            overviewtimestampOffset - point.overview.marker.getWidth()
+          );
         }
 
         // Change Text
@@ -112,7 +121,9 @@ define([
 
     function pointHandleDrag(thisPoint, point) {
       if (thisPoint.marker.getX() > 0) {
-        var inOffset = thisPoint.view.frameOffset + thisPoint.marker.getX() + thisPoint.marker.getWidth();
+        var inOffset = thisPoint.view.frameOffset +
+                       thisPoint.marker.getX() +
+                       thisPoint.marker.getWidth();
 
         point.timestamp = thisPoint.view.data.time(inOffset);
       }
@@ -135,9 +146,11 @@ define([
       if (typeof point.timestamp !== 'number') {
         throw new TypeError('[waveform.points.createPoint] timestamp should be a numeric value \'' + typeof point.timestamp + '\': ' + point.typestamp);
       }
+
       if ((point.timestamp >= 0) === false) {
         throw new RangeError('[waveform.points.createPoint] timestamp should be a >=0 value');
       }
+
       point = constructPoint(point);
       updatePoint(point);
       self.points.push(point);

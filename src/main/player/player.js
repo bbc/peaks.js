@@ -11,7 +11,8 @@
  *
  * player.seek - seek to a certain percentage
  *
- * player.timeUpdate - assignable function that is called on player update during playback (normalised)
+ * player.timeUpdate - assignable function that is called on player update
+ *                     during playback (normalised)
  *
  * player.getPercentage - get the percentage playthrough
  *
@@ -19,7 +20,8 @@
  *
  * player.getDuration - get a nice formatted time representing the clip duration
  *
- * player.getTimeFromPercentage - get the time in track of a percentage playthrough without setting
+ * player.getTimeFromPercentage - get the time in track of a percentage
+ *                                playthrough without setting
  *
  * player.setVolume
  */

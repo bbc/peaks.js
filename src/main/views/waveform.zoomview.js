@@ -82,7 +82,13 @@ define([
             dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX) * 1;
             x = event.evt.layerX;
             p = that.frameOffset + dX;
-            p = p < 0 ? 0 : p > (that.pixelLength - that.width) ? (that.pixelLength - that.width) : p;
+
+            if (p < 0) {
+              p = 0;
+            }
+            else if (p > (that.pixelLength - that.width)) {
+              p = that.pixelLength - that.width;
+            }
 
             that.updateZoomWaveform(p);
           });
@@ -306,9 +312,13 @@ define([
 
     that.playheadLineAnimation = new Konva.Animation(function(frame) {
       var time = frame.time;
-
       var seconds = time / 1000;
-      var positionInFrame = Math.round(startPosition - that.frameOffset + (pixelsPerSecond * (seconds - frameSeconds)));
+
+      var positionInFrame = Math.round(
+        startPosition -
+        that.frameOffset +
+        (pixelsPerSecond * (seconds - frameSeconds))
+      );
 
       that.syncPlayhead(that.frameOffset + positionInFrame);
     }, that.uiLayer);
