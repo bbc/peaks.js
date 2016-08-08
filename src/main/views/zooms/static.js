@@ -16,6 +16,6 @@ define([], function () {
           view.seekFrame(view.data.at_time(view.peaks.time.getCurrentTime()));
         }
       };
-    },
+    }
   };
 });

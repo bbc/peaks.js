@@ -66,27 +66,31 @@ define([
       var overviewtimestampOffset = waveformView.waveformOverview.data.at_time(point.timestamp);
 
       if (point.editable) {
-        if (point.overview.marker) point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
+        if (point.overview.marker) {
+          point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
+        }
 
         // Change Text
         point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
       }
 
       // Zoom
-      var zoomtimestampOffset = waveformView.waveformZoomView.data.at_time(point.timestamp);
+      var zoomTimestampOffset = waveformView.waveformZoomView.data.at_time(point.timestamp);
       var frameStartOffset = waveformView.waveformZoomView.frameOffset;
 
-      if (zoomtimestampOffset < frameStartOffset) {
-        zoomStartOffset = frameStartOffset;
+      if (zoomTimestampOffset < frameStartOffset) {
+        zoomTimestampOffset = frameStartOffset;
       }
 
       if (waveformView.waveformZoomView.data.points[point.id].visible) {
-        var startPixel = zoomtimestampOffset - frameStartOffset;
+        var startPixel = zoomTimestampOffset - frameStartOffset;
 
         point.zoom.show();
 
         if (point.editable) {
-          if (point.zoom.marker) point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
+          if (point.zoom.marker) {
+            point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
+          }
 
           // Change Text
           point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
@@ -100,6 +104,7 @@ define([
     function pointHandleDrag(thisPoint, point) {
       if (thisPoint.marker.getX() > 0) {
         var inOffset = thisPoint.view.frameOffset + thisPoint.marker.getX() + thisPoint.marker.getWidth();
+
         point.timestamp = thisPoint.view.data.time(inOffset);
       }
 
@@ -135,6 +140,7 @@ define([
       this.points.some(function(p, i){
         if (p === point){
           index = i;
+
           return true;
         }
       });

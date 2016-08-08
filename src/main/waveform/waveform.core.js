@@ -151,7 +151,10 @@ define([
           that.ui.overview.hidden = true;
           that.ui.zoom.hidden = true;
 
-          if (that.resizeTimeoutId) clearTimeout(that.resizeTimeoutId);
+          if (that.resizeTimeoutId) {
+            clearTimeout(that.resizeTimeoutId);
+          }
+
           that.resizeTimeoutId = setTimeout(function(){
             var w = that.ui.player.clientWidth;
             var overviewWaveformData = that.origWaveformData.resample(w);

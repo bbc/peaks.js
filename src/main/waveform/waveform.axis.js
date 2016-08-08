@@ -60,7 +60,7 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
       secs = baseSecs * steps[index];
       var pixels = this.view.data.at_time(secs);
       if (pixels < minSpacing) {
-        if (++index == steps.length) {
+        if (++index === steps.length) {
           baseSecs *= 60; // seconds -> minutes -> hours
           index = 0;
         }

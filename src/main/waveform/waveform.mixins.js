@@ -300,7 +300,9 @@ define(['konva'], function(Konva) {
       var minutes = Math.floor(seconds / 60);
       var hours = Math.floor(minutes / 60);
 
-      if (hours > 0) result.push(hours); // Hours
+      if (hours > 0) {
+        result.push(hours); // Hours
+      }
       result.push(minutes % 60); // Mins
       result.push(seconds % 60); // Seconds
 
