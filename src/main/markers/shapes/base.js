@@ -7,11 +7,11 @@
 define(function () {
   'use strict';
 
-  function BaseShape(){}
+  function BaseShape() {}
 
-  function noop(){}
+  function noop() {}
 
-  function throwUndefined(){
+  function throwUndefined() {
     throw new Error('You should extend this method in your parent class.');
   }
 

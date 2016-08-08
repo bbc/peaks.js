@@ -72,6 +72,7 @@ define([
         !event.target.parent.attrs.draggable) {
         if (event.type === "mousedown") {
           var x = event.evt.layerX, dX, p;
+
           peaks.seeking = true;
 
           // enable drag if necessary
@@ -87,7 +88,7 @@ define([
           });
 
           that.stage.on("mouseup", function () {
-            if (peaks.seeking){
+            if (peaks.seeking) {
               // Set playhead position only on click release, when not dragging
               that.peaks.emit("user_seek.zoomview", that.data.time(that.frameOffset + x), that.frameOffset + x);
             }
@@ -213,7 +214,7 @@ define([
     });
 
     that.zoomPlayheadText = new Konva.Text({
-      x:2,
+      x: 2,
       y: 12,
       text: "00:00:00",
       fontSize: 11,
@@ -282,7 +283,7 @@ define([
 
     // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
 
-    that.peaks.emit("waveform_zoom_displaying", pixelOffset * that.data.seconds_per_pixel, (pixelOffset+that.width) * that.data.seconds_per_pixel);
+    that.peaks.emit("waveform_zoom_displaying", pixelOffset * that.data.seconds_per_pixel, (pixelOffset + that.width) * that.data.seconds_per_pixel);
   };
 
   // UI functions ==============================
@@ -307,7 +308,7 @@ define([
       var time = frame.time;
 
       var seconds = time / 1000;
-      var positionInFrame = Math.round(startPosition - that.frameOffset + (pixelsPerSecond * (seconds-frameSeconds)));
+      var positionInFrame = Math.round(startPosition - that.frameOffset + (pixelsPerSecond * (seconds - frameSeconds)));
 
       that.syncPlayhead(that.frameOffset + positionInFrame);
     }, that.uiLayer);
@@ -322,7 +323,7 @@ define([
 
     var nextOffset = frameOffset + this.width;
 
-    if (nextOffset < this.data.adapter.length){
+    if (nextOffset < this.data.adapter.length) {
       this.frameOffset = nextOffset;
       this.updateZoomWaveform(nextOffset);
 
@@ -345,6 +346,7 @@ define([
     if (display) {
       // Place playhead at centre of zoom frame i.e. remPixels = 500
       var remPixels = that.playheadPixel - that.frameOffset;
+
       that.zoomPlayheadGroup.show().setAttr("x", remPixels);
       that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
     }

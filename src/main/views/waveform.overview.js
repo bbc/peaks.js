@@ -76,7 +76,7 @@ define([
 
     // EVENTS ====================================================
 
-    function trackPlayheadPosition(time, frame){
+    function trackPlayheadPosition(time, frame) {
       if (!peaks.seeking) {
         that.playheadPixel = that.data.at_time(time);
         that.updateUi(that.playheadPixel);
@@ -95,7 +95,7 @@ define([
       that.width = width;
       that.data = newWaveformData;
       that.stage.setWidth(that.width);
-      //that.updateWaveform();
+      // that.updateWaveform();
       peaks.emit("overview_resized");
     });
   }

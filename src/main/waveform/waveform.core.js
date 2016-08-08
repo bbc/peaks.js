@@ -29,7 +29,7 @@ define([
         that.getRemoteData(peaks.options);
       },
 
-      getRemoteData: function(options){
+      getRemoteData: function(options) {
         var that = this;
         var xhr = new XMLHttpRequest();
         var uri = null;
@@ -45,9 +45,9 @@ define([
             options.dataUri = dataUri;
           }
 
-          if(typeof options.dataUri === 'object'){
-            ['ArrayBuffer', 'JSON'].some(function(connector){
-              if (window[connector]){
+          if(typeof options.dataUri === 'object') {
+            ['ArrayBuffer', 'JSON'].some(function(connector) {
+              if (window[connector]) {
                 requestType = connector.toLowerCase();
                 uri = options.dataUri[requestType];
 
@@ -75,15 +75,16 @@ define([
           try {
             xhr.responseType = requestType;
           }
+          catch (e) {
             // some browsers like Safari 6 do handle XHR2 but not the json response type
             // doing only a try/catch fails in IE9
-          catch (e){}
+          }
         }
 
         xhr.onload = function(response) {
           if (this.readyState === 4) {
             if (this.status === 200) {
-              if (builder){
+              if (builder) {
                 WaveformData.builders[builder](response.target.response, options.waveformBuilderOptions, that.handleRemoteData.bind(that, null));
               }
               else {
@@ -156,7 +157,7 @@ define([
             clearTimeout(that.resizeTimeoutId);
           }
 
-          that.resizeTimeoutId = setTimeout(function(){
+          that.resizeTimeoutId = setTimeout(function() {
             var w = that.ui.player.clientWidth;
             var overviewWaveformData = that.origWaveformData.resample(w);
 
@@ -173,11 +174,11 @@ define([
           that.ui.zoom.removeAttribute('hidden');
         });
 
-        peaks.on("user_seek.*", function(time){
+        peaks.on("user_seek.*", function(time) {
           peaks.player.seekBySeconds(time);
         });
 
-        peaks.on("user_scrub.*", function(time){
+        peaks.on("user_scrub.*", function(time) {
           peaks.player.seekBySeconds(time);
         });
       }

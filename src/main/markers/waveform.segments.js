@@ -16,7 +16,7 @@ define([
 
     self.segments = [];
 
-    self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view){
+    self.views = [peaks.waveform.waveformZoomView, peaks.waveform.waveformOverview].map(function(view) {
       if (!view.segmentLayer) {
         view.segmentLayer = new Konva.Layer();
         view.stage.add(view.segmentLayer);
@@ -59,7 +59,7 @@ define([
         this.parent.view.segmentLayer.draw();
       };
 
-      segmentGroups.forEach(function(segmentGroup, i){
+      segmentGroups.forEach(function(segmentGroup, i) {
         var view = self.views[i];
 
         segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
@@ -231,19 +231,20 @@ define([
      * @return {Object}
      */
     this.createSegment = function (options) {
-      if (typeof options === 'number'){ // watch for anyone still trying to use the old createSegment(startTime, endTime ... ) API
+      // Watch for anyone still trying to use the old createSegment(startTime, endTime, ...) API
+      if (typeof options === 'number') {
         throw new TypeError("[waveform.segments.createSegment] `options` should be a Segment object");
       }
 
-      if ((options.startTime >= 0) === false){
+      if ((options.startTime >= 0) === false) {
         throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");
       }
 
-      if ((options.endTime > 0) === false){
+      if ((options.endTime > 0) === false) {
         throw new TypeError("[waveform.segments.createSegment] endTime should be a positive value");
       }
 
-      if ((options.endTime > options.startTime) === false){
+      if ((options.endTime > options.startTime) === false) {
         throw new RangeError("[waveform.segments.createSegment] endTime should be higher than startTime");
       }
 
@@ -255,18 +256,18 @@ define([
       return segment;
     };
 
-    this.remove = function removeSegment(segment){
+    this.remove = function removeSegment(segment) {
       var index = null;
 
-      this.segments.some(function(s, i){
-        if (s === segment){
+      this.segments.some(function(s, i) {
+        if (s === segment) {
           index = i;
 
           return true;
         }
       });
 
-      if (typeof index === 'number'){
+      if (typeof index === 'number') {
         segment = this.segments[index];
 
         segment.overview.destroy();
@@ -276,8 +277,8 @@ define([
       return index;
     };
 
-    this.removeAll = function removeAllSegments(){
-      this.views.forEach(function(view){
+    this.removeAll = function removeAllSegments() {
+      this.views.forEach(function(view) {
         view.segmentLayer.removeChildren();
       });
 
@@ -293,8 +294,8 @@ define([
      * @see https://github.com/bbcrd/peaks.js/pull/5
      * @since 0.0.2
      */
-    this.render = function renderSegments(){
-      this.views.forEach(function(view){
+    this.render = function renderSegments() {
+      this.views.forEach(function(view) {
         view.segmentLayer.draw();
       });
     };

@@ -16,7 +16,7 @@ define([
 
     self.points = [];
 
-    self.views = [waveformView.waveformZoomView, waveformView.waveformOverview].map(function(view){
+    self.views = [waveformView.waveformZoomView, waveformView.waveformOverview].map(function(view) {
       if (!view.pointLayer) {
         view.pointLayer = new Konva.Layer();
         view.stage.add(view.pointLayer);
@@ -39,7 +39,7 @@ define([
       var pointOverviewGroup = new Konva.Group();
       var pointGroups = [pointZoomGroup, pointOverviewGroup];
 
-      pointGroups.forEach(function(pointGroup, i){
+      pointGroups.forEach(function(pointGroup, i) {
         var view = self.views[i];
 
         if (point.editable) {
@@ -146,15 +146,15 @@ define([
     this.remove = function removePoint(point) {
       var index = null;
 
-      this.points.some(function(p, i){
-        if (p === point){
+      this.points.some(function(p, i) {
+        if (p === point) {
           index = i;
 
           return true;
         }
       });
 
-      if (typeof index === 'number'){
+      if (typeof index === 'number') {
         point.overview.destroy();
         point.zoom.destroy();
       }
@@ -162,8 +162,8 @@ define([
       return index;
     };
 
-    this.removeAll = function removeAllPoints(){
-      this.views.forEach(function(view){
+    this.removeAll = function removeAllPoints() {
+      this.views.forEach(function(view) {
         view.pointLayer.removeChildren();
       });
 
@@ -178,8 +178,8 @@ define([
      * @api
      * @since 0.3.0
      */
-    this.render = function renderPoints(){
-      self.views.forEach(function(view){
+    this.render = function renderPoints() {
+      self.views.forEach(function(view) {
         view.pointLayer.draw();
       });
     };

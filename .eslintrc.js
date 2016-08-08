@@ -5,6 +5,7 @@ module.exports = {
   },
   "extends": "eslint:recommended",
   "rules": {
+    "array-bracket-spacing": ["error", "never"],
     "brace-style": ["error", "stroustrup"],
     "block-scoped-var": "error",
     "comma-dangle": ["error", "never"],
@@ -16,6 +17,7 @@ module.exports = {
     "func-style": ["error", "declaration"],
     "guard-for-in": "error",
     "indent": ["off", 2],
+    "key-spacing": ["error", { "beforeColon": false, "afterColon": true, "mode": "minimum" }],
     "linebreak-style": ["error", "unix"],
     "max-len": ["warn", 100],
     "new-cap": "error",
@@ -59,6 +61,7 @@ module.exports = {
     "quotes": ["error", "single"],
     "radix": "error",
     "semi": ["error", "always"],
+    "space-before-blocks": "error",
     "space-infix-ops": "error",
     "space-unary-ops": "error",
     "spaced-comment": ["error", "always", { "block": { "balanced": true } }],

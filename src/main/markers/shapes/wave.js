@@ -19,7 +19,7 @@ define([
    * @param view
    * @returns {Konva.Shape}
    */
-  WaveShape.createShape = function createShape(segmentData, view){
+  WaveShape.createShape = function createShape(segmentData, view) {
     var shape = new Konva.Shape({
       fill: segmentData.color,
       strokeWidth: 0,
@@ -38,10 +38,10 @@ define([
    * @param {Konva.Context} context
    * @param {interpolateHeight} y
    */
-  WaveShape.drawFunc = function WaveShapedrawFunc(view, segmentId, context){
+  WaveShape.drawFunc = function WaveShapedrawFunc(view, segmentId, context) {
     var waveformData = view.data;
 
-    if (waveformData.segments[segmentId] === undefined){
+    if (waveformData.segments[segmentId] === undefined) {
       return;
     }
 

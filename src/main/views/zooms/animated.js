@@ -18,9 +18,9 @@ define(["konva"], function (Konva) {
       var output_index;
       var lastFrameOffsetTime;
 
-      //Fade out the time axis and the segments
-      //that.axis.axisShape.setAttr('opacity', 0);
-      //Fade out segments
+      // Fade out the time axis and the segments
+      // that.axis.axisShape.setAttr('opacity', 0);
+      // Fade out segments
       if (that.segmentLayer) {
         that.segmentLayer.setVisible(false);
         that.pointLayer.setVisible(false);
@@ -35,11 +35,11 @@ define(["konva"], function (Konva) {
       for (var i = 0; i < numOfFrames; i++) {
         // Work out interpolated resample scale using currentSampleRate and previousSampleRate
         var frame_sample_rate = Math.round(previousSampleRate + ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames));
-        //Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
 
+        // Determine the timeframe for the zoom animation (start and end of dataset for zooming animation)
         var newWidthSeconds = that.width * frame_sample_rate / that.rootData.adapter.sample_rate;
 
-        if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds / 2)){
+        if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds / 2)) {
           input_index = 0;
           output_index = 0;
         }
@@ -50,11 +50,11 @@ define(["konva"], function (Konva) {
           output_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
         }
         else {
-          //This way calculates the index of the start time at the scale we are coming from and the scale we are going to
+          // This way calculates the index of the start time at the scale we are coming from and the scale we are going to
           var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / previousSampleRate;
-          input_index = oldPixelIndex - (that.width / 2);
-
           var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
+
+          input_index  = oldPixelIndex - (that.width / 2);
           output_index = newPixelIndex - (that.width / 2);
         }
 
