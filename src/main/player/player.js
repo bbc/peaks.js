@@ -27,37 +27,36 @@
 define(["peaks/waveform/waveform.mixins"], function (mixins) {
   'use strict';
 
-  var radio = function (peaks) {
-
+  function Player(peaks) {
     function timeFromPercentage(time, percentage) {
       return time * (percentage / 100);
     }
 
     return {
       init: function (mediaElement) {
-        var that = this;
+        var self = this;
 
         this.mediaElement = mediaElement;
         this.duration = this.mediaElement.duration;
 
         if (this.mediaElement.readyState === 4) {
-          peaks.emit("player_load", that);
+          peaks.emit("player_load", this);
         }
 
         this.mediaElement.addEventListener("timeupdate", function () {
-          peaks.emit("player_time_update", that.getTime());
+          peaks.emit("player_time_update", self.getTime());
         });
 
         this.mediaElement.addEventListener("play", function () {
-          peaks.emit("player_play", that.getTime());
+          peaks.emit("player_play", self.getTime());
         });
 
         this.mediaElement.addEventListener("pause", function () {
-          peaks.emit("player_pause", that.getTime());
+          peaks.emit("player_pause", self.getTime());
         });
 
         this.mediaElement.addEventListener("seeked", function () {
-          peaks.emit("player_seek", that.getTime());
+          peaks.emit("player_seek", self.getTime());
         });
       },
 
@@ -101,6 +100,7 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
 
       getPercentageFromSeconds: function (s) {
         var percentage = (s / this.duration) * 100;
+
         return Math.round(percentage * 100) / 100; // 2DP
       },
 
@@ -112,7 +112,7 @@ define(["peaks/waveform/waveform.mixins"], function (mixins) {
         this.mediaElement.currentTime = seconds;
       }
     };
-  };
+  }
 
-  return radio;
+  return Player;
 });

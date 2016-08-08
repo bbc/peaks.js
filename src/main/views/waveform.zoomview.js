@@ -78,9 +78,9 @@ define([
           that.stage.on("mousemove", function (event) {
             peaks.seeking = false;
 
-            dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX)*1;
+            dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX) * 1;
             x = event.evt.layerX;
-            p = that.frameOffset+dX;
+            p = that.frameOffset + dX;
             p = p < 0 ? 0 : p > (that.pixelLength - that.width) ? (that.pixelLength - that.width) : p;
 
             that.updateZoomWaveform(p);
@@ -101,16 +101,16 @@ define([
 
     // EVENTS ====================================================
 
-    var userSeekHandler = function userSeekHandler (options, time) {
+    function userSeekHandler(options, time) {
       options = options || { withOffset: true };
       var frameIndex = that.data.at_time(time);
 
       that.seekFrame(frameIndex, options.withOffset ? Math.round(that.width / 2) : 0);
 
-      if (that.playing){
+      if (that.playing) {
         that.playFrom(time, frameIndex);
       }
-    };
+    }
 
     that.peaks.on("player_time_update", function (time) {
       if (!peaks.seeking) {
@@ -172,12 +172,13 @@ define([
     });
 
     // KEYBOARD EVENTS =========================================
-    var nudgeFrame = function nudgeFrame(step){
+
+    function nudgeFrame(step) {
       var time = that.options.mediaElement.currentTime;
 
-      time += (that.options.nudgeIncrement * step);
+      time += that.options.nudgeIncrement * step;
       that.seekFrame(that.data.at_time(time));
-    };
+    }
 
     that.peaks.on("kybrd_left", nudgeFrame.bind(that, -1));
     that.peaks.on("kybrd_right", nudgeFrame.bind(that, 1));
@@ -224,7 +225,10 @@ define([
     that.zoomPlayheadGroup = new Konva.Group({
       x: 0,
       y: 0
-    }).add(that.zoomPlayheadLine).add(that.zoomPlayheadText);
+    });
+
+    that.zoomPlayheadGroup.add(that.zoomPlayheadLine)
+                          .add(that.zoomPlayheadText);
 
     that.uiLayer.add(that.zoomPlayheadGroup);
     that.stage.add(that.uiLayer);
@@ -259,7 +263,9 @@ define([
     that.frameOffset = pixelOffset;
     that.data.offset(pixelOffset, Math.min(pixelOffset + that.width, that.pixelLength));
 
-    var display = (that.playheadPixel >= pixelOffset) && (that.playheadPixel <= pixelOffset + that.width); //i.e. playhead is within the zoom frame width
+    // Display playhead if it is within the zoom frame width
+    var display = (that.playheadPixel >= pixelOffset) &&
+                  (that.playheadPixel <= pixelOffset + that.width);
 
     if (display) {
       var remPixels = that.playheadPixel - pixelOffset;
@@ -337,7 +343,8 @@ define([
     that.playheadPixel = pixelIndex;
 
     if (display) {
-      var remPixels = that.playheadPixel - that.frameOffset; //places playhead at centre of zoom frame i.e. remPixels = 500
+      // Place playhead at centre of zoom frame i.e. remPixels = 500
+      var remPixels = that.playheadPixel - that.frameOffset;
       that.zoomPlayheadGroup.show().setAttr("x", remPixels);
       that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
     }
@@ -358,9 +365,11 @@ define([
 
     if (!that.data.in_offset(pixelIndex)) {
       that.frameOffset = pixelIndex - Math.round(that.width / 2);
+
       if (that.frameOffset <= 0) {
         that.frameOffset = 0;
-      } else if (that.frameOffset + that.width >= that.data.adapter.length) {
+      }
+      else if (that.frameOffset + that.width >= that.data.adapter.length) {
         that.frameOffset = upperLimit;
       }
     }

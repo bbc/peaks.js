@@ -8,6 +8,7 @@ define([
   "peaks/waveform/waveform.mixins",
   "konva"
 ], function (mixins, Konva) {
+  'use strict';
 
   return function (peaks) {
     var self = this;
@@ -42,7 +43,15 @@ define([
         var view = self.views[i];
 
         if (point.editable) {
-          pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
+          pointGroup.marker = new peaks.options.pointMarker(
+            true,
+            pointGroup,
+            point,
+            pointHandleDrag,
+            peaks.options.pointDblClickHandler,
+            peaks.options.pointDragEndHandler
+          );
+
           pointGroup.add(pointGroup.marker);
         }
 

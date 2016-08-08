@@ -7,21 +7,21 @@ define('peaks', [
 ], function (EventEmitter, AudioPlayer, Waveform, mixins, keyboard) {
   'use strict';
 
-  var buildUi = function (container) {
+  function buildUi(container) {
     return {
-      'player':   container.querySelector(".waveform"),
-      'zoom':     container.querySelector(".zoom-container"),
-      'overview': container.querySelector(".overview-container")
+      player:   container.querySelector('.waveform'),
+      zoom:     container.querySelector('.zoom-container'),
+      overview: container.querySelector('.overview-container')
     };
-  };
+  }
 
-  var extend = function (to, from) {
+  function extend(to, from) {
     for (var key in from) {
       to[key] = from[key];
     }
 
     return to;
-  };
+  }
 
   var ee = (EventEmitter.EventEmitter2 || EventEmitter);
 
@@ -258,7 +258,9 @@ define('peaks', [
       throw new TypeError("Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: " + instance.options.template);
     }
 
-    if (instance.options.keyboard) keyboard.init(instance);
+    if (instance.options.keyboard) {
+      keyboard.init(instance);
+    }
 
     instance.player = new AudioPlayer(instance);
     instance.player.init(instance.options.mediaElement);
@@ -376,7 +378,9 @@ define('peaks', [
             }
 
             var matchingSegments = self.waveform.segments.segments.filter(fnFilter);
+
             matchingSegments.forEach(this.remove.bind(this));
+
             return matchingSegments.length;
           },
 
@@ -460,7 +464,9 @@ define('peaks', [
               .filter(function(point) {
                 return point.timestamp === timestamp;
               });
+
             matchingPoints.forEach(this.remove.bind(this));
+
             return matchingPoints.length;
           },
 
@@ -540,6 +546,7 @@ define('peaks', [
     zoom: {
       get: function () {
         var self = this;
+
         return {
 
           /**

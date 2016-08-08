@@ -105,8 +105,13 @@ define([
       segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
       if (segment.editable) {
-        if (segment.overview.inMarker) segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
-        if (segment.overview.outMarker) segment.overview.outMarker.show().setX(overviewEndOffset);
+        if (segment.overview.inMarker) {
+          segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
+        }
+
+        if (segment.overview.outMarker) {
+          segment.overview.outMarker.show().setX(overviewEndOffset);
+        }
 
         // Change Text
         segment.overview.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
@@ -125,8 +130,13 @@ define([
       var frameStartOffset = peaks.waveform.waveformZoomView.frameOffset;
       var frameEndOffset = peaks.waveform.waveformZoomView.frameOffset + peaks.waveform.waveformZoomView.width;
 
-      if (zoomStartOffset < frameStartOffset) zoomStartOffset = frameStartOffset;
-      if (zoomEndOffset > frameEndOffset) zoomEndOffset = frameEndOffset;
+      if (zoomStartOffset < frameStartOffset) {
+        zoomStartOffset = frameStartOffset;
+      }
+
+      if (zoomEndOffset > frameEndOffset) {
+        zoomEndOffset = frameEndOffset;
+      }
 
       if (peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
         var startPixel = zoomStartOffset - frameStartOffset;
@@ -135,8 +145,13 @@ define([
         segment.zoom.show();
 
         if (segment.editable) {
-          if (segment.zoom.inMarker) segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
-          if (segment.zoom.outMarker) segment.zoom.outMarker.show().setX(endPixel);
+          if (segment.zoom.inMarker) {
+            segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
+          }
+
+          if (segment.zoom.outMarker) {
+            segment.zoom.outMarker.show().setX(endPixel);
+          }
 
           // Change Text
           segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
@@ -144,19 +159,24 @@ define([
         }
 
         SegmentShape.update.call(segment.zoom.waveformShape, peaks.waveform.waveformZoomView, segment.id);
-      } else {
+      }
+      else {
         segment.zoom.hide();
       }
     };
 
     var segmentHandleDrag = function (thisSeg, segment) {
       if (thisSeg.inMarker.getX() > 0) {
-        var inOffset = thisSeg.view.frameOffset + thisSeg.inMarker.getX() + thisSeg.inMarker.getWidth();
+        var inOffset = thisSeg.view.frameOffset +
+                       thisSeg.inMarker.getX() +
+                       thisSeg.inMarker.getWidth();
+
         segment.startTime = thisSeg.view.data.time(inOffset);
       }
 
       if (thisSeg.outMarker.getX() < thisSeg.view.width) {
         var outOffset = thisSeg.view.frameOffset + thisSeg.outMarker.getX();
+
         segment.endTime = thisSeg.view.data.time(outOffset);
       }
 
@@ -166,16 +186,18 @@ define([
       this.render();
     }.bind(this);
 
-    var getSegmentColor = function () {
-      var c;
+    function getSegmentColor() {
       if (peaks.options.randomizeSegmentColor) {
-        var g = function () { return Math.floor(Math.random()*255); };
-        c = 'rgba('+g()+', '+g()+', '+g()+', 1)';
-      } else {
-        c = peaks.options.segmentColor;
+        var g = function() {
+          return Math.floor(Math.random() * 255);
+        };
+
+        return 'rgba(' + g() + ', ' + g() + ', ' + g() + ', 1)';
       }
-      return c;
-    };
+      else {
+        return peaks.options.segmentColor;
+      }
+    }
 
     this.init = function () {
       peaks.on("waveform_zoom_displaying", this.updateSegments.bind(this));
@@ -239,6 +261,7 @@ define([
       this.segments.some(function(s, i){
         if (s === segment){
           index = i;
+
           return true;
         }
       });

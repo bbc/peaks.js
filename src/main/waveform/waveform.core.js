@@ -12,7 +12,6 @@ define([
   "peaks/markers/waveform.segments",
   "peaks/markers/waveform.points"
   ], function (WaveformData, WaveformOverview, WaveformZoomView, WaveformSegments, WaveformPoints) {
-
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
@@ -115,7 +114,9 @@ define([
 
         try {
           this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
+
           var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
+
           this.waveformOverview = new WaveformOverview(overviewWaveformData, this.ui.overview, peaks);
         }
         catch (e) {
@@ -158,6 +159,7 @@ define([
           that.resizeTimeoutId = setTimeout(function(){
             var w = that.ui.player.clientWidth;
             var overviewWaveformData = that.origWaveformData.resample(w);
+
             peaks.emit("resizeEndOverview", w, overviewWaveformData);
             peaks.emit("window_resized", w, that.origWaveformData);
           }, 500);

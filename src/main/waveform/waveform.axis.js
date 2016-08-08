@@ -18,6 +18,7 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
 
   function roundUpToNearest(value, multiple) {
     var remainder = value % multiple;
+
     if (remainder === 0) {
       return value;
     }
@@ -59,6 +60,7 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
     for (;;) {
       secs = baseSecs * steps[index];
       var pixels = this.view.data.at_time(secs);
+
       if (pixels < minSpacing) {
         if (++index === steps.length) {
           baseSecs *= 60; // seconds -> minutes -> hours
@@ -69,6 +71,7 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
         break;
       }
     }
+
     return secs;
   };
 
@@ -125,7 +128,8 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
       context.stroke();
 
       var label      = mixins.niceTime(secs, true);
-      var labelWidth = context._context.measureText(label).width; // todo handle this with Konva.Text
+      // TODO: handle this with Konva.Text:
+      var labelWidth = context._context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
       var labelY     = this.view.height - 1 - markerHeight;
 

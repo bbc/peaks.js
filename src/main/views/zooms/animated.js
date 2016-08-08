@@ -39,23 +39,23 @@ define(["konva"], function (Konva) {
 
         var newWidthSeconds = that.width * frame_sample_rate / that.rootData.adapter.sample_rate;
 
-        if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds/2)){
+        if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds / 2)){
           input_index = 0;
           output_index = 0;
         }
-        else if ((currentTime <= that.rootData.duration) && (currentTime >= that.rootData.duration - newWidthSeconds/2)) {
+        else if ((currentTime <= that.rootData.duration) && (currentTime >= that.rootData.duration - newWidthSeconds / 2)) {
           lastFrameOffsetTime = that.rootData.duration - newWidthSeconds;
 
           input_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / previousSampleRate;
-          output_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / frame_sample_rate; //sample rate = 44100
+          output_index = (lastFrameOffsetTime * that.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
         }
         else {
           //This way calculates the index of the start time at the scale we are coming from and the scale we are going to
           var oldPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / previousSampleRate;
-          input_index = oldPixelIndex - (that.width/2);
+          input_index = oldPixelIndex - (that.width / 2);
 
-          var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; //sample rate = 44100
-          output_index = newPixelIndex - (that.width/2);
+          var newPixelIndex = (currentTime * that.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
+          output_index = newPixelIndex - (that.width / 2);
         }
 
         if (input_index < 0) {
@@ -76,26 +76,26 @@ define(["konva"], function (Konva) {
 
       return new Konva.Animation(this.onFrameData(view, frameData), view);
     },
-    onFrameData: function(view, frameData){
-      var that = view;
-      that.intermediateData = null;
+
+    onFrameData: function(view, frameData) {
+      view.intermediateData = null;
 
       /**
        * @param {Object} frame
        * @this {Konva.Animation}
        */
-      return function(frame){
+      return function(frame) {
         if (frameData.length) {
-          //Send correct resampled waveform data object to drawFunc and draw it
-          that.intermediateData = frameData.shift();
-          that.zoomWaveformLayer.draw();
+          // Send correct resampled waveform data object to drawFunc and draw it
+          view.intermediateData = frameData.shift();
+          view.zoomWaveformLayer.draw();
         }
         else {
           this.stop();
-          that.intermediateData = null;
-          that.segmentLayer.setVisible(true);
-          that.pointLayer.setVisible(true);
-          that.seekFrame(that.data.at_time(that.peaks.time.getCurrentTime()));
+          view.intermediateData = null;
+          view.segmentLayer.setVisible(true);
+          view.pointLayer.setVisible(true);
+          view.seekFrame(view.data.at_time(view.peaks.time.getCurrentTime()));
         }
       };
     }

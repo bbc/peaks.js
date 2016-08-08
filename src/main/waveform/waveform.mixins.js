@@ -16,7 +16,7 @@ define(['konva'], function(Konva) {
    * @param  {Boolean}  inMarker  Is this marker the inMarker (LHS) or outMarker (RHS)
    * @return {Function}
    */
-  var createHandle = function(height, color, inMarker) {
+  function createHandle(height, color, inMarker) {
 
     /**
      * @param  {Boolean}  draggable If true, marker is draggable
@@ -73,6 +73,7 @@ define(['konva'], function(Konva) {
         fill:       '#000',
         textAlign:  'center'
       });
+
       text.hide();
       group.label = text;
 
@@ -117,7 +118,7 @@ define(['konva'], function(Konva) {
 
       return group;
     };
-  };
+  }
 
   /**
    * Create a point handle group in Konva based on given options.
@@ -182,6 +183,7 @@ define(['konva'], function(Konva) {
         fontFamily: 'sans-serif',
         fill:       '#000'
       });
+
       text.hide();
       group.label = text;
 
@@ -256,6 +258,7 @@ define(['konva'], function(Konva) {
    */
   function interpolateHeightGenerator(total_height) {
     var amplitude = 256;
+
     return function interpolateHeight(size) {
       return total_height - ((size + 128) * total_height) / amplitude;
     };
@@ -308,6 +311,7 @@ define(['konva'], function(Konva) {
 
       for (var i = 0; i < result.length; i++) {
         var x = result[i];
+
         if (x < 10) {
           result[i] = '0' + x;
         }

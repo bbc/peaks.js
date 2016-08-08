@@ -47,10 +47,11 @@ define([
     that.createUi();
 
     // INTERACTION ===============================================
-    var cancelSeeking = function(){
+
+    function cancelSeeking() {
       that.stage.off("mousemove mouseup");
       peaks.seeking = false;
-    };
+    }
 
     that.stage.on("mousedown", function (event) {
       if (event.target &&
@@ -101,6 +102,7 @@ define([
 
   WaveformOverview.prototype.createWaveform = function() {
     var that = this;
+
     this.waveformShape = new Konva.Shape({
       fill: that.options.overviewWaveformColor,
       strokeWidth: 0
@@ -112,19 +114,23 @@ define([
     this.stage.add(this.waveformLayer);
   };
 
-  //Green Reference Waveform to inform users where they are in overview waveform based on current zoom level
+  // Green Reference Waveform to inform users where they are in overview
+  // waveform based on current zoom level
+
   WaveformOverview.prototype.createRefWaveform = function () {
     var that = this;
 
     this.refLayer = new Konva.Layer();
 
-    /*this.refWaveformShape = new Konva.Shape({
+    /*
+    this.refWaveformShape = new Konva.Shape({
       drawFunc: function(canvas) {
         mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
       },
       fill: that.options.zoomWaveformColor,
       strokeWidth: 0
-    });*/
+    });
+    */
 
     this.refWaveformRect = new Konva.Rect({
       x: 0,
@@ -132,7 +138,7 @@ define([
       width: 0,
       stroke: that.options.overviewHighlightRectangleColor,
       strokeWidth: 1,
-      height: this.height - (11*2),
+      height: this.height - (11 * 2),
       fill: that.options.overviewHighlightRectangleColor,
       opacity: 0.3,
       cornerRadius: 2
@@ -160,7 +166,8 @@ define([
     this.uiLayer.moveToTop();
   };
 
-  /*WaveformOverview.prototype.updateWaveform = function () {
+  /*
+  WaveformOverview.prototype.updateWaveform = function () {
     var that = this;
     that.waveformShape.sceneFunc(function(canvas) {
       mixins.waveformDrawFunction.call(this, that.data, canvas, mixins.interpolateHeight(that.height));
@@ -182,7 +189,8 @@ define([
 
     that.refWaveformShape.setWidth(that.data.at_time(time_out) - that.data.at_time(time_in));
     that.refLayer.draw();
-  };*/
+  };
+  */
 
   WaveformOverview.prototype.updateRefWaveform = function (time_in, time_out) {
     if (isNaN(time_in)) {
