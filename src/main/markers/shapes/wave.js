@@ -5,9 +5,9 @@
  * removing and manipulation of segments
  */
 define([
-  "peaks/markers/shapes/base",
-  "peaks/waveform/waveform.mixins",
-  "konva"
+  'peaks/markers/shapes/base',
+  'peaks/waveform/waveform.mixins',
+  'konva'
 ], function(BaseShape, mixins, Konva) {
   'use strict';
 

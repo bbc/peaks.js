@@ -7,11 +7,11 @@
  *
  */
 define([
-  "peaks/waveform/waveform.axis",
-  "peaks/waveform/waveform.mixins",
-  "peaks/views/zooms/animated",
-  "peaks/views/zooms/static",
-  "konva"
+  'peaks/waveform/waveform.axis',
+  'peaks/waveform/waveform.mixins',
+  'peaks/views/zooms/animated',
+  'peaks/views/zooms/static',
+  'konva'
   ], function(WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
   'use strict';
 
@@ -66,17 +66,17 @@ define([
 
     // INTERACTION ===============================================
 
-    that.stage.on("mousedown", function(event) {
+    that.stage.on('mousedown', function(event) {
       if (event.target &&
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
-        if (event.type === "mousedown") {
+        if (event.type === 'mousedown') {
           var x = event.evt.layerX, dX, p;
 
           peaks.seeking = true;
 
           // enable drag if necessary
-          that.stage.on("mousemove", function(event) {
+          that.stage.on('mousemove', function(event) {
             peaks.seeking = false;
 
             dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX) * 1;
@@ -87,13 +87,13 @@ define([
             that.updateZoomWaveform(p);
           });
 
-          that.stage.on("mouseup", function() {
+          that.stage.on('mouseup', function() {
             if (peaks.seeking) {
               // Set playhead position only on click release, when not dragging
-              that.peaks.emit("user_seek.zoomview", that.data.time(that.frameOffset + x), that.frameOffset + x);
+              that.peaks.emit('user_seek.zoomview', that.data.time(that.frameOffset + x), that.frameOffset + x);
             }
 
-            that.stage.off("mousemove mouseup");
+            that.stage.off('mousemove mouseup');
             peaks.seeking = false;
           });
         }
@@ -113,22 +113,22 @@ define([
       }
     }
 
-    that.peaks.on("player_time_update", function(time) {
+    that.peaks.on('player_time_update', function(time) {
       if (!peaks.seeking) {
         that.seekFrame(that.data.at_time(time));
       }
     });
 
-    that.peaks.on("player_seek", userSeekHandler.bind(null, { withOffset: true }));
-    that.peaks.on("user_seek.*", userSeekHandler.bind(null, { withOffset: true }));
-    that.peaks.on("user_scrub.*", userSeekHandler.bind(null, { withOffset: false }));
+    that.peaks.on('player_seek', userSeekHandler.bind(null, { withOffset: true }));
+    that.peaks.on('user_seek.*', userSeekHandler.bind(null, { withOffset: true }));
+    that.peaks.on('user_scrub.*', userSeekHandler.bind(null, { withOffset: false }));
 
-    that.peaks.on("player_play", function(time) {
+    that.peaks.on('player_play', function(time) {
       that.playing = true;
       that.playFrom(time, that.data.at_time(time));
     });
 
-    that.peaks.on("player_pause", function(time) {
+    that.peaks.on('player_pause', function(time) {
       that.playing = false;
 
       if (that.playheadLineAnimation) {
@@ -138,9 +138,7 @@ define([
       that.syncPlayhead(that.data.at_time(time));
     });
 
-    that.peaks.on("zoom.update", function(current_scale, previous_scale) {
-      var adapter, zoomAdapterMap;
-
+    that.peaks.on('zoom.update', function(current_scale, previous_scale) {
       if (that.playing) {
         return;
       }
@@ -150,26 +148,27 @@ define([
           scale: current_scale
         });
 
-        zoomAdapterMap = {
+        var zoomAdapterMap = {
           'animated': AnimatedZoomAdapter,
           'static': StaticZoomAdapter
         };
 
         if (zoomAdapterMap[that.peaks.options.zoomAdapter] === undefined) {
-          throw new Error("Invalid zoomAdapter: " + that.peaks.options.zoomAdapter);
+          throw new Error('Invalid zoomAdapter: ' + that.peaks.options.zoomAdapter);
         }
 
-        adapter = zoomAdapterMap[that.peaks.options.zoomAdapter].init(current_scale, previous_scale, that);
+        var adapter = zoomAdapterMap[that.peaks.options.zoomAdapter].init(current_scale, previous_scale, that);
+
         adapter.start();
       }
     });
 
-    that.peaks.on("window_resized", function(width, newWaveformData) {
+    that.peaks.on('window_resized', function(width, newWaveformData) {
       that.width = width;
       that.data = newWaveformData;
       that.stage.setWidth(that.width);
       that.updateZoomWaveform(that.frameOffset);
-      that.peaks.emit("zoomview_resized");
+      that.peaks.emit('zoomview_resized');
     });
 
     // KEYBOARD EVENTS =========================================
@@ -181,10 +180,10 @@ define([
       that.seekFrame(that.data.at_time(time));
     }
 
-    that.peaks.on("kybrd_left", nudgeFrame.bind(that, -1));
-    that.peaks.on("kybrd_right", nudgeFrame.bind(that, 1));
-    that.peaks.on("kybrd_shift_left", nudgeFrame.bind(that, -10));
-    that.peaks.on("kybrd_shift_right", nudgeFrame.bind(that, 10));
+    that.peaks.on('kybrd_left', nudgeFrame.bind(that, -1));
+    that.peaks.on('kybrd_right', nudgeFrame.bind(that, 1));
+    that.peaks.on('kybrd_shift_left', nudgeFrame.bind(that, -10));
+    that.peaks.on('kybrd_shift_right', nudgeFrame.bind(that, 10));
   }
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
@@ -201,7 +200,7 @@ define([
 
     that.zoomWaveformLayer.add(that.zoomWaveformShape);
     that.stage.add(that.zoomWaveformLayer);
-    that.peaks.emit("waveform_zoom_displaying", 0 * that.data.seconds_per_pixel, that.width * that.data.seconds_per_pixel);
+    that.peaks.emit('waveform_zoom_displaying', 0 * that.data.seconds_per_pixel, that.width * that.data.seconds_per_pixel);
   };
 
   WaveformZoomView.prototype.createUi = function() {
@@ -216,7 +215,7 @@ define([
     that.zoomPlayheadText = new Konva.Text({
       x: 2,
       y: 12,
-      text: "00:00:00",
+      text: '00:00:00',
       fontSize: 11,
       fontFamily: 'sans-serif',
       fill: that.options.playheadTextColor,
@@ -239,7 +238,7 @@ define([
 
   WaveformZoomView.prototype.updateZoomWaveform = function(pixelOffset) {
     if (isNaN(pixelOffset)) {
-      throw new Error("WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: " + pixelOffset);
+      throw new Error('WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: ' + pixelOffset);
     }
 
     var that = this;
@@ -251,7 +250,8 @@ define([
       pixelOffset = 0;
     }
 
-    // new position is beyond the size of the waveform, so set it to the very last possible position
+    // new position is beyond the size of the waveform, so set it to the very
+    // last possible position
     if (pixelOffset > that.pixelLength) {
       pixelOffset = that.pixelLength - that.width;
     }
@@ -271,7 +271,7 @@ define([
     if (display) {
       var remPixels = that.playheadPixel - pixelOffset;
 
-      that.zoomPlayheadGroup.show().setAttr("x", remPixels);
+      that.zoomPlayheadGroup.show().setAttr('x', remPixels);
       that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
     }
     else {
@@ -283,7 +283,7 @@ define([
 
     // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
 
-    that.peaks.emit("waveform_zoom_displaying", pixelOffset * that.data.seconds_per_pixel, (pixelOffset + that.width) * that.data.seconds_per_pixel);
+    that.peaks.emit('waveform_zoom_displaying', pixelOffset * that.data.seconds_per_pixel, (pixelOffset + that.width) * that.data.seconds_per_pixel);
   };
 
   // UI functions ==============================
@@ -318,7 +318,7 @@ define([
 
   WaveformZoomView.prototype.newFrame = function(frameOffset) {
     if (isNaN(frameOffset)) {
-      throw new Error("WaveformZoomView#newFrame passed a frame offset that is not a number: " + frameOffset);
+      throw new Error('WaveformZoomView#newFrame passed a frame offset that is not a number: ' + frameOffset);
     }
 
     var nextOffset = frameOffset + this.width;
@@ -335,7 +335,7 @@ define([
 
   WaveformZoomView.prototype.syncPlayhead = function(pixelIndex) {
     if (isNaN(pixelIndex)) {
-      throw new Error("WaveformZoomView#syncPlayhead passed a pixel index that is not a number: " + pixelIndex);
+      throw new Error('WaveformZoomView#syncPlayhead passed a pixel index that is not a number: ' + pixelIndex);
     }
 
     var that = this;
@@ -347,7 +347,7 @@ define([
       // Place playhead at centre of zoom frame i.e. remPixels = 500
       var remPixels = that.playheadPixel - that.frameOffset;
 
-      that.zoomPlayheadGroup.show().setAttr("x", remPixels);
+      that.zoomPlayheadGroup.show().setAttr('x', remPixels);
       that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
     }
     else {
@@ -359,7 +359,7 @@ define([
 
   WaveformZoomView.prototype.seekFrame = function(pixelIndex, offset) {
     if (isNaN(pixelIndex)) {
-      throw new Error("WaveformZoomView#seekFrame passed a pixel index that is not a number: " + pixelIndex);
+      throw new Error('WaveformZoomView#seekFrame passed a pixel index that is not a number: ' + pixelIndex);
     }
 
     var that = this;

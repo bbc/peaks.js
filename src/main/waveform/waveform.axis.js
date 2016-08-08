@@ -6,7 +6,7 @@
  * instantiated meaning this code is reused multiple times.
  *
  */
-define(["peaks/waveform/waveform.mixins", "konva"], function(mixins, Konva) {
+define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
   'use strict';
 
   /*
@@ -102,10 +102,10 @@ define(["peaks/waveform/waveform.mixins", "konva"], function(mixins, Konva) {
     context.setAttr('lineWidth', 1);
 
     // Set text style
-    context.setAttr('font', "11px sans-serif");
+    context.setAttr('font', '11px sans-serif');
     context.setAttr('fillStyle', this.view.options.axisLabelColor);
-    context.setAttr('textAlign', "left");
-    context.setAttr('textBaseline', "bottom");
+    context.setAttr('textAlign', 'left');
+    context.setAttr('textBaseline', 'bottom');
 
     var secs = firstAxisLabelSecs;
     var x;

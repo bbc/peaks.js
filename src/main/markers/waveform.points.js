@@ -5,8 +5,8 @@
  * removing and manipulation of points. A point in a segment of zero length
  */
 define([
-  "peaks/waveform/waveform.mixins",
-  "konva"
+  'peaks/waveform/waveform.mixins',
+  'konva'
 ], function(mixins, Konva) {
   'use strict';
 
@@ -30,7 +30,7 @@ define([
 
     function constructPoint(point) {
       if (point.id === undefined || point.id === null) {
-        point.id = "peaks.point." + pointId++;
+        point.id = 'peaks.point.' + pointId++;
       }
 
       point.editable = Boolean(point.editable);
@@ -122,8 +122,8 @@ define([
     }
 
     this.init = function() {
-      peaks.on("waveform_zoom_displaying", self.updatePoints.bind(self));
-      peaks.emit("points.ready");
+      peaks.on('waveform_zoom_displaying', self.updatePoints.bind(self));
+      peaks.emit('points.ready');
     };
 
     this.updatePoints = function() {
@@ -133,10 +133,10 @@ define([
 
     this.createPoint = function(point) {
       if (typeof point.timestamp !== 'number') {
-        throw new TypeError("[waveform.points.createPoint] timestamp should be a numeric value '" + typeof point.timestamp + "': " + point.typestamp);
+        throw new TypeError('[waveform.points.createPoint] timestamp should be a numeric value \'' + typeof point.timestamp + '\': ' + point.typestamp);
       }
       if ((point.timestamp >= 0) === false) {
-        throw new RangeError("[waveform.points.createPoint] timestamp should be a >=0 value");
+        throw new RangeError('[waveform.points.createPoint] timestamp should be a >=0 value');
       }
       point = constructPoint(point);
       updatePoint(point);

@@ -5,9 +5,9 @@
  * removing and manipulation of segments
  */
 define([
-  "konva",
-  "peaks/waveform/waveform.mixins",
-  "peaks/markers/shapes/wave"
+  'konva',
+  'peaks/waveform/waveform.mixins',
+  'peaks/markers/shapes/wave'
 ], function(Konva, mixins, SegmentShape) {
   'use strict';
 
@@ -32,7 +32,7 @@ define([
       var segment = {
         startTime: options.startTime,
         endTime: options.endTime,
-        labelText: options.labelText || "",
+        labelText: options.labelText || '',
         color: options.color || getSegmentColor(),
         editable: options.editable || false
       };
@@ -64,8 +64,8 @@ define([
 
         segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
-        segmentGroup.waveformShape.on("mouseenter", onMouseEnter);
-        segmentGroup.waveformShape.on("mouseleave", onMouseLeave);
+        segmentGroup.waveformShape.on('mouseenter', onMouseEnter);
+        segmentGroup.waveformShape.on('mouseleave', onMouseLeave);
 
         segmentGroup.add(segmentGroup.waveformShape);
 
@@ -180,7 +180,7 @@ define([
         segment.endTime = thisSeg.view.data.time(outOffset);
       }
 
-      peaks.emit("segments.dragged", segment);
+      peaks.emit('segments.dragged', segment);
 
       updateSegmentWaveform(segment);
       this.render();
@@ -200,9 +200,9 @@ define([
     }
 
     this.init = function() {
-      peaks.on("waveform_zoom_displaying", this.updateSegments.bind(this));
+      peaks.on('waveform_zoom_displaying', this.updateSegments.bind(this));
 
-      peaks.emit("segments.ready");
+      peaks.emit('segments.ready');
     };
 
     /**
@@ -233,19 +233,19 @@ define([
     this.createSegment = function(options) {
       // Watch for anyone still trying to use the old createSegment(startTime, endTime, ...) API
       if (typeof options === 'number') {
-        throw new TypeError("[waveform.segments.createSegment] `options` should be a Segment object");
+        throw new TypeError('[waveform.segments.createSegment] `options` should be a Segment object');
       }
 
       if ((options.startTime >= 0) === false) {
-        throw new TypeError("[waveform.segments.createSegment] startTime should be a positive value");
+        throw new TypeError('[waveform.segments.createSegment] startTime should be a positive value');
       }
 
       if ((options.endTime > 0) === false) {
-        throw new TypeError("[waveform.segments.createSegment] endTime should be a positive value");
+        throw new TypeError('[waveform.segments.createSegment] endTime should be a positive value');
       }
 
       if ((options.endTime > options.startTime) === false) {
-        throw new RangeError("[waveform.segments.createSegment] endTime should be higher than startTime");
+        throw new RangeError('[waveform.segments.createSegment] endTime should be higher than startTime');
       }
 
       var segment = createSegmentWaveform(options);

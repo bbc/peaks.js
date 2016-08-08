@@ -4,7 +4,7 @@
  * This module handles all functionality related to the adding,
  * removing and manipulation of segments
  */
-define(["konva"], function(Konva) {
+define(['konva'], function(Konva) {
   'use strict';
 
   return {

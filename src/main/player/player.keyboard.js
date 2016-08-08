@@ -21,34 +21,34 @@ define([], function() {
           event.preventDefault();
         }
 
-        if (t === "keydown" || t === "keypress") {
+        if (t === 'keydown' || t === 'keypress') {
           switch (c) {
             case SPACE:
-              peaksInstance.emit("kybrd_space");
+              peaksInstance.emit('kybrd_space');
               break;
 
             case TAB:
-              peaksInstance.emit("kybrd_tab");
+              peaksInstance.emit('kybrd_tab');
               break;
           }
         }
-        else if (t === "keyup") {
+        else if (t === 'keyup') {
           switch (c) {
             case LEFT_ARROW:
               if (event.shiftKey) {
-                peaksInstance.emit("kybrd_shift_left");
+                peaksInstance.emit('kybrd_shift_left');
               }
               else {
-                peaksInstance.emit("kybrd_left");
+                peaksInstance.emit('kybrd_left');
               }
               break;
 
             case RIGHT_ARROW:
               if (event.shiftKey) {
-                peaksInstance.emit("kybrd_shift_right");
+                peaksInstance.emit('kybrd_shift_right');
               }
               else {
-                peaksInstance.emit("kybrd_right");
+                peaksInstance.emit('kybrd_right');
               }
               break;
           }
@@ -59,9 +59,9 @@ define([], function() {
 
   return {
     init: function(peaks) {
-      document.addEventListener("keydown", handleKeyEventGenerator(peaks));
-      document.addEventListener("keypress", handleKeyEventGenerator(peaks));
-      document.addEventListener("keyup", handleKeyEventGenerator(peaks));
+      document.addEventListener('keydown', handleKeyEventGenerator(peaks));
+      document.addEventListener('keypress', handleKeyEventGenerator(peaks));
+      document.addEventListener('keyup', handleKeyEventGenerator(peaks));
     }
   };
 });

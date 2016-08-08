@@ -207,23 +207,23 @@ define('peaks', [
     }
 
     if (!opts.mediaElement) {
-      throw new Error("[Peaks.init] Please provide an audio element.");
+      throw new Error('[Peaks.init] Please provide an audio element.');
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
-      throw new TypeError("[Peaks.init] The mediaElement option should be an HTMLMediaElement.");
+      throw new TypeError('[Peaks.init] The mediaElement option should be an HTMLMediaElement.');
     }
 
     if (!opts.container) {
-      throw new Error("[Peaks.init] Please provide a container object.");
+      throw new Error('[Peaks.init] Please provide a container object.');
     }
 
     if ((opts.container.clientWidth > 0) === false) {
-      throw new TypeError("[Peaks.init] Please ensure that the container has a width.");
+      throw new TypeError('[Peaks.init] Please ensure that the container has a width.');
     }
 
     if (opts.logger && typeof opts.logger !== 'function') {
-      throw new TypeError("[Peaks.init] The `logger` option should be a function.");
+      throw new TypeError('[Peaks.init] The `logger` option should be a function.');
     }
 
     var instance = new Peaks(opts.container);
@@ -255,7 +255,7 @@ define('peaks', [
       instance.container.appendChild(instance.options.template);
     }
     else {
-      throw new TypeError("Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: " + instance.options.template);
+      throw new TypeError('Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: ' + instance.options.template);
     }
 
     if (instance.options.keyboard) {
@@ -274,7 +274,7 @@ define('peaks', [
     // TODO maybe to move in the player object
     instance.seeking = false;
 
-    instance.on("waveformOverviewReady", function() {
+    instance.on('waveformOverviewReady', function() {
       instance.waveform.openZoomView();
 
       // Any initial segments to be displayed?
@@ -300,8 +300,8 @@ define('peaks', [
         function addSegment(segmentOrSegments) {
           var segments = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
 
-          if (typeof segments[0] === "number") {
-            self.options.deprecationLogger("[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object");
+          if (typeof segments[0] === 'number') {
+            self.options.deprecationLogger('[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object.');
 
             segments = [
               {
@@ -418,8 +418,8 @@ define('peaks', [
           add: function(pointOrPoints) {
             var points = Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments);
 
-            if (typeof points[0] === "number") {
-              self.options.deprecationLogger("[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object");
+            if (typeof points[0] === 'number') {
+              self.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
 
               points = [{
                 timestamp: arguments[0],
@@ -580,7 +580,7 @@ define('peaks', [
             var previousZoomLevel = self.currentZoomLevel;
 
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit("zoom.update", self.options.zoomLevels[zoomLevelIndex], self.options.zoomLevels[previousZoomLevel]);
+            self.emit('zoom.update', self.options.zoomLevels[zoomLevelIndex], self.options.zoomLevels[previousZoomLevel]);
           },
 
           /**
@@ -598,7 +598,11 @@ define('peaks', [
            * @since 0.3
            */
           overview: function zoomToOverview() {
-            self.emit("zoom.update", self.waveform.waveformOverview.data.adapter.scale, self.options.zoomLevels[ self.currentZoomLevel ]);
+            self.emit(
+              'zoom.update',
+              self.waveform.waveformOverview.data.adapter.scale,
+              self.options.zoomLevels[self.currentZoomLevel]
+            );
           },
 
           /**
@@ -607,7 +611,11 @@ define('peaks', [
            * @since 0.3
            */
           reset: function resetOverview() {
-            self.emit("zoom.update", self.options.zoomLevels[ self.currentZoomLevel ], self.waveform.waveformOverview.data.adapter.scale);
+            self.emit(
+              'zoom.update',
+              self.options.zoomLevels[self.currentZoomLevel],
+              self.waveform.waveformOverview.data.adapter.scale
+            );
           }
         };
       }

@@ -24,7 +24,7 @@
  * player.setVolume
  */
 
-define(["peaks/waveform/waveform.mixins"], function(mixins) {
+define(['peaks/waveform/waveform.mixins'], function(mixins) {
   'use strict';
 
   function Player(peaks) {
@@ -40,23 +40,23 @@ define(["peaks/waveform/waveform.mixins"], function(mixins) {
         this.duration = this.mediaElement.duration;
 
         if (this.mediaElement.readyState === 4) {
-          peaks.emit("player_load", this);
+          peaks.emit('player_load', this);
         }
 
-        this.mediaElement.addEventListener("timeupdate", function() {
-          peaks.emit("player_time_update", self.getTime());
+        this.mediaElement.addEventListener('timeupdate', function() {
+          peaks.emit('player_time_update', self.getTime());
         });
 
-        this.mediaElement.addEventListener("play", function() {
-          peaks.emit("player_play", self.getTime());
+        this.mediaElement.addEventListener('play', function() {
+          peaks.emit('player_play', self.getTime());
         });
 
-        this.mediaElement.addEventListener("pause", function() {
-          peaks.emit("player_pause", self.getTime());
+        this.mediaElement.addEventListener('pause', function() {
+          peaks.emit('player_pause', self.getTime());
         });
 
-        this.mediaElement.addEventListener("seeked", function() {
-          peaks.emit("player_seek", self.getTime());
+        this.mediaElement.addEventListener('seeked', function() {
+          peaks.emit('player_seek', self.getTime());
         });
       },
 
@@ -70,12 +70,12 @@ define(["peaks/waveform/waveform.mixins"], function(mixins) {
 
       play: function() {
         this.mediaElement.play();
-        peaks.emit("radio_play", this.getTime());
+        peaks.emit('radio_play', this.getTime());
       },
 
       pause: function() {
         this.mediaElement.pause();
-        peaks.emit("radio_pause", this.getTime());
+        peaks.emit('radio_pause', this.getTime());
       },
 
       getTime: function() {
