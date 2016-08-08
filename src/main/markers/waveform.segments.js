@@ -190,7 +190,7 @@ define([
       if (peaks.options.randomizeSegmentColor) {
         var g = function() {
           return Math.floor(Math.random() * 255);
-        }
+        };
 
         return 'rgba(' + g() + ', ' + g() + ', ' + g() + ', 1)';
       }
