@@ -7,7 +7,7 @@ define([], function() {
   'use strict';
 
   return {
-    init: function(currentSampleRate, previousSampleRate, view) {
+    create: function(currentSampleRate, previousSampleRate, view) {
       return {
         start: function() {
           view.segmentLayer.draw();

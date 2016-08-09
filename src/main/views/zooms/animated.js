@@ -8,7 +8,7 @@ define(['konva'], function(Konva) {
   'use strict';
 
   return {
-    init: function(currentSampleRate, previousSampleRate, view) {
+    create: function(currentSampleRate, previousSampleRate, view) {
       var currentTime = view.peaks.time.getCurrentTime();
       var frameData = [];
 

@@ -148,14 +148,14 @@ define([
       self.syncPlayhead(self.data.at_time(time));
     });
 
-    self.peaks.on('zoom.update', function(current_scale, previous_scale) {
+    self.peaks.on('zoom.update', function(currentScale, previousScale) {
       if (self.playing) {
         return;
       }
 
-      if (current_scale !== previous_scale) {
+      if (currentScale !== previousScale) {
         self.data = self.rootData.resample({
-          scale: current_scale
+          scale: currentScale
         });
 
         var zoomAdapterMap = {
@@ -163,13 +163,13 @@ define([
           'static': StaticZoomAdapter
         };
 
-        if (zoomAdapterMap[self.peaks.options.zoomAdapter] === undefined) {
+        var zoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
+
+        if (!zoomAdapter) {
           throw new Error('Invalid zoomAdapter: ' + self.peaks.options.zoomAdapter);
         }
 
-        var ZoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
-
-        var adapter = ZoomAdapter.init(current_scale, previous_scale, self);
+        var adapter = zoomAdapter.create(currentScale, previousScale, self);
 
         adapter.start();
       }
