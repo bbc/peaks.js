@@ -359,7 +359,8 @@ define([
       throw new Error('WaveformZoomView#syncPlayhead passed a pixel index that is not a number: ' + pixelIndex);
     }
 
-    var display = (pixelIndex >= this.frameOffset) && (pixelIndex <= this.frameOffset + this.width);
+    var display = (pixelIndex >= this.frameOffset) &&
+                  (pixelIndex <= this.frameOffset + this.width);
 
     this.playheadPixel = pixelIndex;
 

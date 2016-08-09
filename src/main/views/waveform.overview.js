@@ -200,23 +200,23 @@ define([
   };
   */
 
-  WaveformOverview.prototype.updateRefWaveform = function(time_in, time_out) {
-    if (isNaN(time_in)) {
-      throw new Error('WaveformOverview#updateRefWaveform passed a time in that is not a number: ' + time_in);
+  WaveformOverview.prototype.updateRefWaveform = function(timeIn, timeOut) {
+    if (isNaN(timeIn)) {
+      throw new Error('WaveformOverview#updateRefWaveform timeIn parameter is not a number: ' + timeIn);
     }
 
-    if (isNaN(time_out)) {
-      throw new Error('WaveformOverview#updateRefWaveform passed a time out that is not a number: ' + time_out);
+    if (isNaN(timeOut)) {
+      throw new Error('WaveformOverview#updateRefWaveform timeOut parameter is not a number: ' + timeOut);
     }
 
-    var offset_in = this.data.at_time(time_in);
-    var offset_out = this.data.at_time(time_out);
+    var offsetIn = this.data.at_time(timeIn);
+    var offsetOut = this.data.at_time(timeOut);
 
-    this.data.set_segment(offset_in, offset_out, 'zoom');
+    this.data.set_segment(offsetIn, offsetOut, 'zoom');
 
     this.refWaveformRect.setAttrs({
       x: this.data.segments.zoom.offset_start - this.data.offset_start,
-      width: this.data.at_time(time_out) - this.data.at_time(time_in)
+      width: this.data.at_time(timeOut) - this.data.at_time(timeIn)
     });
 
     this.refLayer.draw();
