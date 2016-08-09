@@ -297,7 +297,7 @@ define([
         }
       });
 
-      if (typeof index === 'number') {
+      if (index !== null) {
         segment = this.segments[index];
 
         segment.overview.destroy();

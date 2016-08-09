@@ -172,7 +172,7 @@ define([
         }
       });
 
-      if (typeof index === 'number') {
+      if (index !== null) {
         point.overview.destroy();
         point.zoom.destroy();
       }
