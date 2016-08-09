@@ -26,17 +26,16 @@ define([
     return {
       init: function(ui) {
         this.ui = ui; // See buildUi in main.js
-        var that = this;
 
         /**
          * Handle data provided by our waveform data module after parsing the XHR request
          * @param  {Object} origWaveformData Parsed ArrayBuffer or JSON response
          */
-        that.getRemoteData(peaks.options);
+        this.getRemoteData(peaks.options);
       },
 
       getRemoteData: function(options) {
-        var that = this;
+        var self = this;
         var xhr = new XMLHttpRequest();
         var uri = null;
         var requestType = null;
@@ -94,15 +93,15 @@ define([
                 WaveformData.builders[builder](
                   response.target.response,
                   options.waveformBuilderOptions,
-                  that.handleRemoteData.bind(that, null)
+                  self.handleRemoteData.bind(self, null)
                 );
               }
               else {
-                that.handleRemoteData(null, response.target, xhr);
+                self.handleRemoteData(null, response.target, xhr);
               }
             }
             else {
-              that.handleRemoteData(
+              self.handleRemoteData(
                 new Error('Unable to fetch remote data. HTTP Status ' + this.status)
               );
             }
@@ -149,52 +148,50 @@ define([
       },
 
       openZoomView: function() {
-        var that = this;
-
-        that.waveformZoomView = new WaveformZoomView(
-          that.origWaveformData,
-          that.ui.zoom,
+        this.waveformZoomView = new WaveformZoomView(
+          this.origWaveformData,
+          this.ui.zoom,
           peaks
         );
 
-        that.segments = new WaveformSegments(peaks);
-        that.segments.init();
+        this.segments = new WaveformSegments(peaks);
+        this.segments.init();
 
-        that.points = new WaveformPoints(peaks);
-        that.points.init();
+        this.points = new WaveformPoints(peaks);
+        this.points.init();
 
-        peaks.emit('waveformZoomReady', that.waveformZoomView);
+        peaks.emit('waveformZoomReady', this.waveformZoomView);
       },
 
       /**
        * Deal with window resize event over both waveform views.
        */
       bindResize: function() {
-        var that = this;
+        var self = this;
 
         window.addEventListener('resize', function() {
-          that.ui.overview.hidden = true;
-          that.ui.zoom.hidden = true;
+          self.ui.overview.hidden = true;
+          self.ui.zoom.hidden = true;
 
-          if (that.resizeTimeoutId) {
-            clearTimeout(that.resizeTimeoutId);
+          if (self.resizeTimeoutId) {
+            clearTimeout(self.resizeTimeoutId);
           }
 
-          that.resizeTimeoutId = setTimeout(function() {
-            var w = that.ui.player.clientWidth;
-            var overviewWaveformData = that.origWaveformData.resample(w);
+          self.resizeTimeoutId = setTimeout(function() {
+            var w = self.ui.player.clientWidth;
+            var overviewWaveformData = self.origWaveformData.resample(w);
 
             peaks.emit('resizeEndOverview', w, overviewWaveformData);
-            peaks.emit('window_resized', w, that.origWaveformData);
+            peaks.emit('window_resized', w, self.origWaveformData);
           }, 500);
         });
 
         peaks.on('overview_resized', function() {
-          that.ui.overview.removeAttribute('hidden');
+          self.ui.overview.removeAttribute('hidden');
         });
 
         peaks.on('zoomview_resized', function() {
-          that.ui.zoom.removeAttribute('hidden');
+          self.ui.zoom.removeAttribute('hidden');
         });
 
         peaks.on('user_seek.*', function(time) {
