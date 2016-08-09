@@ -18,8 +18,6 @@ define([
   function WaveformZoomView(waveformData, container, peaks) {
     var self = this;
 
-    self.cur_scale = 0;
-
     self.peaks = peaks;
     self.options = peaks.options;
     self.rootData = waveformData;
