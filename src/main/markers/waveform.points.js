@@ -16,7 +16,12 @@ define([
 
     self.points = [];
 
-    self.views = [waveformView.waveformZoomView, waveformView.waveformOverview].map(function(view) {
+    var views = [
+      waveformView.waveformZoomView,
+      waveformView.waveformOverview
+    ];
+
+    self.views = views.map(function(view) {
       if (!view.pointLayer) {
         view.pointLayer = new Konva.Layer();
         view.stage.add(view.pointLayer);

@@ -96,7 +96,11 @@ define([
           self.stage.on('mouseup', function() {
             if (peaks.seeking) {
               // Set playhead position only on click release, when not dragging
-              self.peaks.emit('user_seek.zoomview', self.data.time(self.frameOffset + x), self.frameOffset + x);
+              self.peaks.emit(
+                'user_seek.zoomview',
+                self.data.time(self.frameOffset + x),
+                self.frameOffset + x
+              );
             }
 
             self.stage.off('mousemove mouseup');
@@ -163,7 +167,9 @@ define([
           throw new Error('Invalid zoomAdapter: ' + self.peaks.options.zoomAdapter);
         }
 
-        var adapter = zoomAdapterMap[self.peaks.options.zoomAdapter].init(current_scale, previous_scale, self);
+        var ZoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
+
+        var adapter = ZoomAdapter.init(current_scale, previous_scale, self);
 
         adapter.start();
       }
@@ -200,11 +206,18 @@ define([
       strokeWidth: 0
     });
 
-    this.zoomWaveformShape.sceneFunc(mixins.waveformDrawFunction.bind(this.zoomWaveformShape, this));
+    this.zoomWaveformShape.sceneFunc(
+      mixins.waveformDrawFunction.bind(this.zoomWaveformShape, this)
+    );
 
     this.zoomWaveformLayer.add(this.zoomWaveformShape);
     this.stage.add(this.zoomWaveformLayer);
-    this.peaks.emit('waveform_zoom_displaying', 0 * this.data.seconds_per_pixel, this.width * this.data.seconds_per_pixel);
+
+    this.peaks.emit(
+      'waveform_zoom_displaying',
+      0 * this.data.seconds_per_pixel,
+      this.width * this.data.seconds_per_pixel
+    );
   };
 
   WaveformZoomView.prototype.createUi = function() {
@@ -281,9 +294,15 @@ define([
     this.uiLayer.draw();
     this.zoomWaveformLayer.draw();
 
-    // if (this.snipWaveformShape) this.updateSnipWaveform(this.currentSnipStartTime, this.currentSnipEndTime);
+    // if (this.snipWaveformShape) {
+    //   this.updateSnipWaveform(this.currentSnipStartTime, this.currentSnipEndTime);
+    // }
 
-    this.peaks.emit('waveform_zoom_displaying', pixelOffset * this.data.seconds_per_pixel, (pixelOffset + this.width) * this.data.seconds_per_pixel);
+    this.peaks.emit(
+      'waveform_zoom_displaying',
+      pixelOffset * this.data.seconds_per_pixel,
+      (pixelOffset + this.width) * this.data.seconds_per_pixel
+    );
   };
 
   // UI functions ==============================

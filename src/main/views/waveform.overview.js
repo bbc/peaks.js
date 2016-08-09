@@ -169,7 +169,12 @@ define([
   WaveformOverview.prototype.updateWaveform = function() {
     var self = this;
     self.waveformShape.sceneFunc(function(canvas) {
-      mixins.waveformDrawFunction.call(this, self.data, canvas, mixins.interpolateHeight(self.height));
+      mixins.waveformDrawFunction.call(
+        this,
+        self.data,
+        canvas,
+        mixins.interpolateHeight(self.height)
+      );
     });
     self.waveformLayer.draw();
   };
@@ -183,7 +188,11 @@ define([
     self.refWaveformShape.sceneFunc(function(canvas) {
       self.data.set_segment(offset_in, offset_out, "zoom");
 
-      mixins.waveformOffsetDrawFunction.call(this, self.data, canvas, mixins.interpolateHeight(self.height));
+      mixins.waveformOffsetDrawFunction.call(
+        this,
+        self.data,
+        canvas,
+        mixins.interpolateHeight(self.height));
     });
 
     self.refWaveformShape.setWidth(self.data.at_time(time_out) - self.data.at_time(time_in));

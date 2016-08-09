@@ -35,7 +35,10 @@ define(['konva'], function(Konva) {
       for (var i = 0; i < numOfFrames; i++) {
         // Work out interpolated resample scale using currentSampleRate
         // and previousSampleRate
-        var frame_sample_rate = Math.round(previousSampleRate + ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames));
+        var frame_sample_rate = Math.round(
+          previousSampleRate +
+          ((i + 1) * (currentSampleRate - previousSampleRate) / numOfFrames)
+        );
 
         // Determine the timeframe for the zoom animation (start and end of
         // dataset for zooming animation)
@@ -45,17 +48,21 @@ define(['konva'], function(Konva) {
           input_index = 0;
           output_index = 0;
         }
-        else if ((currentTime <= view.rootData.duration) && (currentTime >= view.rootData.duration - newWidthSeconds / 2)) {
+        else if ((currentTime <= view.rootData.duration) &&
+                 (currentTime >= view.rootData.duration - newWidthSeconds / 2)) {
           lastFrameOffsetTime = view.rootData.duration - newWidthSeconds;
 
-          input_index = (lastFrameOffsetTime * view.rootData.adapter.sample_rate) / previousSampleRate;
-          output_index = (lastFrameOffsetTime * view.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
+          // sample rate = 44100
+          input_index  = (lastFrameOffsetTime * view.rootData.adapter.sample_rate) / previousSampleRate;
+          output_index = (lastFrameOffsetTime * view.rootData.adapter.sample_rate) / frame_sample_rate;
         }
         else {
           // This way calculates the index of the start time at the scale we
           // are coming from and the scale we are going to
+
+          // sample rate = 44100
           var oldPixelIndex = (currentTime * view.rootData.adapter.sample_rate) / previousSampleRate;
-          var newPixelIndex = (currentTime * view.rootData.adapter.sample_rate) / frame_sample_rate; // sample rate = 44100
+          var newPixelIndex = (currentTime * view.rootData.adapter.sample_rate) / frame_sample_rate;
 
           input_index  = oldPixelIndex - (view.width / 2);
           output_index = newPixelIndex - (view.width / 2);
