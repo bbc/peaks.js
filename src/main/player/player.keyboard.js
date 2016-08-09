@@ -2,9 +2,9 @@ define([], function() {
   'use strict';
 
   var SPACE = 32,
-    TAB = 9,
-    LEFT_ARROW = 37,
-    RIGHT_ARROW = 39;
+      TAB = 9,
+      LEFT_ARROW = 37,
+      RIGHT_ARROW = 39;
 
   function handleKeyEventGenerator(peaksInstance) {
 
@@ -12,19 +12,15 @@ define([], function() {
      * Arrow keys only triggered on keydown, not keypress
      */
     return function handleKeyEvent(event) {
-      var c = event.keyCode;
-      var t = event.type;
-
       var nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
 
       if (nodes.indexOf(event.target.nodeName) === -1) {
-
         if ([SPACE, TAB, LEFT_ARROW, RIGHT_ARROW].indexOf(event.type) > -1) {
           event.preventDefault();
         }
 
-        if (t === 'keydown' || t === 'keypress') {
-          switch (c) {
+        if (event.type === 'keydown' || event.type === 'keypress') {
+          switch (event.keyCode) {
             case SPACE:
               peaksInstance.emit('kybrd_space');
               break;
@@ -34,8 +30,8 @@ define([], function() {
               break;
           }
         }
-        else if (t === 'keyup') {
-          switch (c) {
+        else if (event.type === 'keyup') {
+          switch (event.keyCode) {
             case LEFT_ARROW:
               if (event.shiftKey) {
                 peaksInstance.emit('kybrd_shift_left');
