@@ -69,6 +69,7 @@
     "karma-mocha": "^1.0.0",
     "karma-safari-launcher": "^1.0.0",
     "karma-sinon-chai": "^1.0.0",
+    "karma-spec-reporter": "~0.0.26",
     "mocha": "^2.5.0",
     "serve": "^1.4.0",
     "sinon": "^1.17.2",
