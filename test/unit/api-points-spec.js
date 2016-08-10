@@ -89,11 +89,11 @@
         expect(function () {
           p.options.deprecationLogger = function() {}
           p.points.add(NaN);
-        }).to.throw(RangeError);
+        }).to.throw(TypeError);
 
         expect(function () {
           p.points.add({timestamp: NaN});
-        }).to.throw(RangeError);
+        }).to.throw(TypeError);
       });
 
       it("should throw an exception if the timestamp argument is missing", function () {

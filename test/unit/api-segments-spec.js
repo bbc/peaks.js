@@ -91,6 +91,13 @@
         expect(p.segments.getSegments()[1]).to.include.keys('startTime', 'endTime');
       });
 
+      it("should accept an optional segment id", function(){
+        p.segments.addSegment({ startTime: 0, endTime: 10, id: 123 });
+
+        expect(p.segments.getSegments()).to.have.length.of(1);
+        expect(p.segments.getSegments()[0].id).to.eq(123);
+      });
+
       it("should throw an exception if arguments are not matching any previous accepted signature form", function(){
         p.options.deprecationLogger = function() {}
         expect(function(){ p.segments.addSegment({}); }).to.throw(TypeError);
@@ -99,11 +106,20 @@
         expect(function(){ p.segments.addSegment(NaN, NaN); }).to.throw(TypeError);
       });
 
-      it("should accept an optional segment id", function(){
-        p.segments.addSegment({ startTime: 0, endTime: 10, id: 123 });
+      it("should throw an exception if the startTime is NaN", function() {
+        p.options.deprecationLogger = function() {};
 
-        expect(p.segments.getSegments()).to.have.length.of(1);
-        expect(p.segments.getSegments()[0].id).to.eq(123);
+        expect(function () {
+          p.segments.add({ startTime: 1.0, endTime: NaN });
+        }).to.throw(TypeError);
+      });
+
+      it("should throw an exception if the endTime is NaN", function() {
+        p.options.deprecationLogger = function() {};
+
+        expect(function () {
+          p.points.add({ startTime: NaN, endTime: 1.0 });
+        }).to.throw(TypeError);
       });
     });
 

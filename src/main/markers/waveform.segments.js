@@ -266,15 +266,19 @@ define([
         throw new TypeError('[waveform.segments.createSegment] `options` should be a Segment object');
       }
 
-      if ((options.startTime >= 0) === false) {
-        throw new TypeError('[waveform.segments.createSegment] startTime should be a positive value');
+      if (isNaN(options.startTime) || isNaN(options.endTime)) {
+        throw new TypeError('[waveform.segments.createSegment] startTime an endTime must both be numbers');
       }
 
-      if ((options.endTime > 0) === false) {
-        throw new TypeError('[waveform.segments.createSegment] endTime should be a positive value');
+      if (options.startTime < 0) {
+        throw new RangeError('[waveform.segments.createSegment] startTime should be a positive value');
       }
 
-      if ((options.endTime > options.startTime) === false) {
+      if (options.endTime <= 0) {
+        throw new RangeError('[waveform.segments.createSegment] endTime should be a positive value');
+      }
+
+      if (options.endTime <= options.startTime) {
         throw new RangeError('[waveform.segments.createSegment] endTime should be higher than startTime');
       }
 

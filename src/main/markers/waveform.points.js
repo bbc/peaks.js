@@ -84,12 +84,13 @@ define([
       );
 
       // Overview
-      var overviewtimestampOffset = waveformView.waveformOverview.data.at_time(point.timestamp);
+      var overviewTimestampOffset =
+        waveformView.waveformOverview.data.at_time(point.timestamp);
 
       if (point.editable) {
         if (point.overview.marker) {
           point.overview.marker.show().setX(
-            overviewtimestampOffset - point.overview.marker.getWidth()
+            overviewTimestampOffset - point.overview.marker.getWidth()
           );
         }
 
@@ -152,7 +153,11 @@ define([
         throw new TypeError('[waveform.points.createPoint] timestamp should be a numeric value \'' + typeof point.timestamp + '\': ' + point.typestamp);
       }
 
-      if ((point.timestamp >= 0) === false) {
+      if (isNaN(point.timestamp)) {
+        throw new TypeError('[waveform.points.createPoint] timestamp must be a numeric value');
+      }
+
+      if (point.timestamp < 0) {
         throw new RangeError('[waveform.points.createPoint] timestamp should be a >=0 value');
       }
 
