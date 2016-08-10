@@ -1,7 +1,5 @@
-(function(Peaks){
-
-  describe("player/waveform/waveform.segments", function () {
-
+(function(Peaks) {
+  describe('player/waveform/waveform.segments', function() {
     var sandbox, p;
 
     beforeEach(function beforeEach(done) {
@@ -20,51 +18,63 @@
       p.on('segments.ready', done);
     });
 
-    afterEach(function(){
+    afterEach(function() {
       sandbox.restore();
     });
 
-    describe("addSegment", function(){
-      it("should accept a single Segment object", function(){
+    describe('addSegment', function() {
+      it('should accept a single Segment object', function() {
         var spy = sandbox.spy(p.waveform.segments, 'createSegment');
-        p.segments.addSegment({ startTime: 0, endTime: 10, editable: false })
+
+        p.segments.addSegment({ startTime: 0, endTime: 10, editable: false });
         expect(spy.callCount).to.equal(1);
         expect(spy.args[0][0]).to.deep.equal({ startTime: 0, endTime: 10, editable: false });
       });
 
-      it("should accept spreaded arguments (deprecated)", function(){
-        p.options.deprecationLogger = function() {}
+      it('should accept spreaded arguments (deprecated)', function() {
+        p.options.deprecationLogger = function() {};
         var stub = sandbox.stub(p.waveform.segments, 'createSegment');
 
         p.segments.addSegment(0, 10, false);
 
         expect(stub.callCount).to.equal(1);
-        expect(stub.args[0][0]).to.deep.equal({startTime: 0, endTime: 10, editable: false, color: undefined, labelText: undefined});
+        expect(stub.args[0][0]).to.deep.equal({
+          startTime: 0,
+          endTime: 10,
+          editable: false,
+          color: undefined,
+          labelText: undefined
+        });
       });
 
-      it("should accept an array of Segment objects", function(){
+      it('should accept an array of Segment objects', function() {
         var spy = sandbox.spy(p.waveform.segments, 'createSegment');
 
         p.segments.addSegment([
           { startTime: 0, endTime: 10, editable: false },
-          { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'}
+          { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text' }
         ]);
 
         expect(spy.callCount).to.equal(2);
-        expect(spy.args[1][0]).to.deep.equal({startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'});
+        expect(spy.args[1][0]).to.deep.equal({
+          startTime: 10,
+          endTime: 20,
+          editable: true,
+          color: 'rgba(255, 161, 39, 1)',
+          labelText: 'dummy text'
+        });
       });
 
-      it("should paint once, and not after each segment addition", function(){
+      it('should paint once, and not after each segment addition', function() {
         var spy = sandbox.spy(p.waveform.segments.views[0].segmentLayer, 'draw');
 
         p.segments.addSegment([
           { startTime: 0, endTime: 10, editable: false },
-          { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text'}
+          { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text' }
         ]);
 
         expect(spy.callCount).to.equal(1);    // currently called as many times as we have segments
       });
     });
   });
-
 })(peaks);

@@ -536,8 +536,9 @@ define('peaks', [
         var self = this;
 
         return {
+
           /**
-           * Seeks the media player to that exat time.
+           * Seeks the media player to that exact time.
            * Infers the playhead position to that same time.
            *
            * ```js
@@ -550,6 +551,7 @@ define('peaks', [
           setCurrentTime: function setCurrentTime(time) {
             return self.player.seekBySeconds(time);
           },
+
           /**
            * Returns the actual time of the media element, in seconds.
            *
@@ -560,7 +562,6 @@ define('peaks', [
            *
            * @returns {Number}
            */
-
           getCurrentTime: function() {
             return self.player.getTime();
           }

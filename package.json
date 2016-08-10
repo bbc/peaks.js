@@ -43,7 +43,7 @@
     "build": "npm run build:main && npm run build:standalone",
     "build:main": "browserify -e ./src/main.js -t deamdify -o index.js",
     "build:standalone": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map > peaks.js",
-    "eslint": "eslint src/**/*.js",
+    "eslint": "eslint src/**/*.js test/**/*.js",
     "test": "./node_modules/karma/bin/karma start --single-run",
     "pretest": "jshint ./src",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run",

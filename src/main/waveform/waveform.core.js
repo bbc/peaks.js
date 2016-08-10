@@ -17,7 +17,6 @@ define([
     WaveformZoomView,
     WaveformSegments,
     WaveformPoints) {
-
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
