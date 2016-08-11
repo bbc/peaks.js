@@ -20,6 +20,9 @@ module.exports = function (config) {
     client: {
       chai: {
         includeStack: true
+      },
+      mocha: {
+        timeout: 5000
       }
     },
 
@@ -134,8 +137,6 @@ module.exports = function (config) {
         os_version: '8.1'
       }
     },
-
-    timeout: 6000,
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout : 120000,
