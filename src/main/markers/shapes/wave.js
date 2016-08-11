@@ -15,18 +15,18 @@ define([
 
   /**
    *
-   * @param segmentData
-   * @param view
+   * @param {object} segment
+   * @param {WaveformZoomView|WaveformOverview} view
    * @returns {Konva.Shape}
    */
-  WaveShape.createShape = function createShape(segmentData, view) {
+  WaveShape.createShape = function createShape(segment, view) {
     var shape = new Konva.Shape({
-      fill: segmentData.color,
+      fill: segment.color,
       strokeWidth: 0,
       opacity: 1
     });
 
-    shape.sceneFunc(WaveShape.drawFunc.bind(shape, view, segmentData.id));
+    shape.sceneFunc(WaveShape.drawFunc.bind(shape, view, segment.id));
 
     return shape;
   };
@@ -34,11 +34,11 @@ define([
   /**
    *
    * @this  {Konva.Shape}
-   * @param {WaveformData} waveform
+   * @param {WaveformZoomView|WaveformOverview} view
+   * @param {String|Number} segmentId
    * @param {Konva.Context} context
-   * @param {interpolateHeight} y
    */
-  WaveShape.drawFunc = function WaveShapedrawFunc(view, segmentId, context) {
+  WaveShape.drawFunc = function WaveShapeDrawFunc(view, segmentId, context) {
     var waveformData = view.data;
 
     if (waveformData.segments[segmentId] === undefined) {
@@ -46,11 +46,11 @@ define([
     }
 
     var segment = waveformData.segments[segmentId];
-    var offset_length = segment.offset_length;
-    var offset_start = segment.offset_start - waveformData.offset_start;
+    var offsetLength = segment.offset_length;
+    var offsetStart = segment.offset_start - waveformData.offset_start;
     var y = mixins.interpolateHeight(view.height);
 
-    mixins.drawWaveform(context, segment.min, segment.max, offset_start, offset_length, y);
+    mixins.drawWaveform(context, segment.min, segment.max, offsetStart, offsetLength, y);
     context.fillStrokeShape(this);
   };
 

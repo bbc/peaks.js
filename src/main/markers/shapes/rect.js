@@ -15,13 +15,13 @@ define([
 
   /**
    *
-   * @param segmentData
-   * @param view
+   * @param {object} segment
+   * @param {WaveformZoomView|WaveformOverview} view
    * @returns {Konva.Rect}
    */
-  WaveShape.createShape = function createShape(segmentData, view) {
+  WaveShape.createShape = function createShape(segment, view) {
     var shape = new Konva.Rect({
-      fill: segmentData.color,
+      fill: segment.color,
       strokeWidth: 0,
       y: 0,
       x: 0,
@@ -35,9 +35,8 @@ define([
 
   /**
    *
-   * @param {WaveformData} waveform
-   * @param {Canvas} canvas
-   * @param {interpolateHeight} y
+   * @param view
+   * @param {String|Number} segmentId
    */
   WaveShape.update = function updateRectShape(view, segmentId) {
     var waveformData = view.data;
@@ -47,12 +46,12 @@ define([
     }
 
     var segment = waveformData.segments[segmentId];
-    var offset_length = segment.offset_length;
-    var offset_start = segment.offset_start - waveformData.offset_start;
+    var offsetLength = segment.offset_length;
+    var offsetStart = segment.offset_start - waveformData.offset_start;
 
     this.setAttrs({
-      x: offset_start,
-      width: offset_length
+      x: offsetStart,
+      width: offsetLength
     });
   };
 
