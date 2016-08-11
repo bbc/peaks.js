@@ -32,7 +32,7 @@
       });
 
       it('should accept spreaded arguments (deprecated)', function() {
-        p.options.deprecationLogger = function() {};
+        p.options.deprecationLogger = sinon.spy();
         var stub = sandbox.stub(p.waveform.segments, 'createSegment');
 
         p.segments.addSegment(0, 10, false);
@@ -45,6 +45,8 @@
           color: undefined,
           labelText: undefined
         });
+
+        expect(p.options.deprecationLogger).to.be.calledOnce;
       });
 
       it('should accept an array of Segment objects', function() {
@@ -73,7 +75,7 @@
           { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text' }
         ]);
 
-        expect(spy.callCount).to.equal(1);    // currently called as many times as we have segments
+        expect(spy.callCount).to.equal(1); // currently called as many times as we have segments
       });
     });
   });

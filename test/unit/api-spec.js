@@ -54,8 +54,8 @@
       it('should thrown an exception if the container has no layout', function() {
         expect(function() {
           Peaks.init({
-            mediaElement: document.querySelector('audio'),
             container: document.createElement('div'),
+            mediaElement: document.querySelector('audio'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/width/);

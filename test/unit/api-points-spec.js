@@ -1,18 +1,21 @@
 (function(Peaks) {
   describe('Peaks.points', function() {
-    var p;
+    var p, deprecationLogger;
 
     /**
      * SETUP =========================================================
      */
 
     beforeEach(function(done) {
+      deprecationLogger = sinon.spy();
+
       p = Peaks.init({
         container:    document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
         dataUri:      'base/test_data/sample.json',
         keyboard:     true,
-        height:       240
+        height:       240,
+        deprecationLogger: deprecationLogger
       });
 
       p.on('points.ready', done);
@@ -56,24 +59,27 @@
       });
 
       it('should accept spread-arguments (deprecated)', function() {
-        p.options.deprecationLogger = function() {};
         p.points.add(10, true, '#ff0000', 'A point');
 
         expect(p.points.getPoints())
           .to.have.a.lengthOf(1)
           .and.to.have.deep.property('[0].timestamp', 10);
+
+        expect(deprecationLogger).to.have.been.calledOnce;
       });
 
       it('should accept a point id if passed', function() {
         p.points.add({ timestamp: 10, id: 500 });
 
-        expect(p.points.getPoints()).to.have.a.lengthOf(1).and.to.have.deep.property('[0].id', 500);
+        expect(p.points.getPoints()).to.have.a.lengthOf(1)
+          .and.to.have.deep.property('[0].id', 500);
       });
 
       it('should allow 0 for a point id', function() {
         p.points.add({ timestamp: 10, id: 0 });
 
-        expect(p.points.getPoints()).to.have.a.lengthOf(1).and.to.have.deep.property('[0].id', 0);
+        expect(p.points.getPoints()).to.have.a.lengthOf(1)
+          .and.to.have.deep.property('[0].id', 0);
       });
 
       it('should throw an exception if timestamp argument is undefined', function() {
@@ -89,8 +95,6 @@
       });
 
       it('should throw an exception if the timestamp argument is NaN', function() {
-        p.options.deprecationLogger = function() {};
-
         expect(function() {
           p.points.add(NaN);
         }).to.throw(TypeError);
@@ -119,13 +123,13 @@
         p.points.add({ timestamp: 12, editable: false, id: 456 });
       });
 
-      it('should remove one of the point', function() {
+      it('should remove one of the points', function() {
         p.points.removeByTime(10);
 
         expect(p.points.getPoints()).to.have.length.of(1);
       });
 
-      it('should let the other point intact', function() {
+      it('should leave the other point intact', function() {
         p.points.removeByTime(10);
 
         expect(p.points.getPoints()).to.have.deep.property('[0].id', 456);
@@ -134,17 +138,29 @@
     });
 
     describe('removeById', function() {
-      beforeEach(function() {
+      it('should remove the point by matching id', function() {
         p.points.add([
           { timestamp: 0,  endTime: 10, id: 123 },
           { timestamp: 15, endTime: 25, id: 456 }
         ]);
-      });
 
-      it('should remove the point by matching id', function() {
         p.points.removeById(123);
+
         expect(p.points.getPoints()).to.have.a.lengthOf(1);
         expect(p.points.getPoints()[0].id).to.eq(456);
+      });
+
+      it('should remove all points with the given id', function() {
+        p.points.add([
+          { timestamp: 0,  endTime: 10, id: 123 },
+          { timestamp: 15, endTime: 25, id: 456 },
+          { timestamp: 30, endTime: 40, id: 456 }
+        ]);
+
+        p.points.removeById(456);
+
+        expect(p.points.getPoints()).to.have.a.lengthOf(1);
+        expect(p.points.getPoints()[0].id).to.eq(123);
       });
     });
   });
