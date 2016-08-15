@@ -22,11 +22,11 @@ define([], function() {
         if (event.type === 'keydown' || event.type === 'keypress') {
           switch (event.keyCode) {
             case SPACE:
-              peaksInstance.emit('kybrd_space');
+              peaksInstance.emit('keyboard.space');
               break;
 
             case TAB:
-              peaksInstance.emit('kybrd_tab');
+              peaksInstance.emit('keyboard.tab');
               break;
           }
         }
@@ -34,19 +34,19 @@ define([], function() {
           switch (event.keyCode) {
             case LEFT_ARROW:
               if (event.shiftKey) {
-                peaksInstance.emit('kybrd_shift_left');
+                peaksInstance.emit('keyboard.shift_left');
               }
               else {
-                peaksInstance.emit('kybrd_left');
+                peaksInstance.emit('keyboard.left');
               }
               break;
 
             case RIGHT_ARROW:
               if (event.shiftKey) {
-                peaksInstance.emit('kybrd_shift_right');
+                peaksInstance.emit('keyboard.shift_right');
               }
               else {
-                peaksInstance.emit('kybrd_right');
+                peaksInstance.emit('keyboard.right');
               }
               break;
           }
