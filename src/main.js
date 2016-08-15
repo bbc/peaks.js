@@ -25,10 +25,8 @@ define('peaks', [
     return to;
   }
 
-  var ee = (EventEmitter.EventEmitter2 || EventEmitter);
-
   function Peaks(container) {
-    ee.call(this, { wildcard: true });
+    EventEmitter.call(this, { wildcard: true });
 
     this.options = {
 
@@ -316,8 +314,7 @@ define('peaks', [
     return instance;
   };
 
-  // Temporary workaround while https://github.com/asyncly/EventEmitter2/pull/122
-  Peaks.prototype = Object.create(ee.prototype, {
+  Peaks.prototype = Object.create(EventEmitter.prototype, {
     segments: {
       get: function() {
         var self = this;

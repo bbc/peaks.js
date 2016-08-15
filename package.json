@@ -76,7 +76,7 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "eventemitter2": "^0.4.14",
+    "eventemitter2": "~1.0.0",
     "konva": "~1.0.0",
     "waveform-data": "git://github.com/bbcrd/waveform-data.js.git#v1.5.2"
   }
