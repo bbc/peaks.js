@@ -72,12 +72,10 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
 
       play: function() {
         this.mediaElement.play();
-        peaks.emit('radio_play', this.getTime());
       },
 
       pause: function() {
         this.mediaElement.pause();
-        peaks.emit('radio_pause', this.getTime());
       },
 
       getTime: function() {
