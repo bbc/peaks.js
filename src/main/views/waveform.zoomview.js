@@ -190,10 +190,10 @@ define([
       self.seekFrame(self.data.at_time(time));
     }
 
-    self.peaks.on('kybrd_left', nudgeFrame.bind(self, -1));
-    self.peaks.on('kybrd_right', nudgeFrame.bind(self, 1));
-    self.peaks.on('kybrd_shift_left', nudgeFrame.bind(self, -10));
-    self.peaks.on('kybrd_shift_right', nudgeFrame.bind(self, 10));
+    self.peaks.on('keyboard.left', nudgeFrame.bind(self, -1));
+    self.peaks.on('keyboard.right', nudgeFrame.bind(self, 1));
+    self.peaks.on('keyboard.shift_left', nudgeFrame.bind(self, -10));
+    self.peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 10));
   }
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
