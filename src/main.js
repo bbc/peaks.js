@@ -319,30 +319,10 @@ define('peaks', [
       get: function() {
         var self = this;
 
-        function addSegment(segmentOrSegments) {
-          var segments = Array.isArray(arguments[0]) ?
-                         arguments[0] :
-                         Array.prototype.slice.call(arguments);
-
-          if (typeof segments[0] === 'number') {
-            self.options.deprecationLogger('[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object.');
-
-            segments = [
-              {
-                startTime: arguments[0],
-                endTime:   arguments[1],
-                editable:  arguments[2],
-                color:     arguments[3],
-                labelText: arguments[4]
-              }
-            ];
-          }
-
-          segments.forEach(self.waveform.segments.createSegment.bind(self.waveform.segments));
-          self.waveform.segments.render();
-        }
-
         return {
+          getSegments: function() {
+            return self.waveform.segments.getSegments();
+          },
 
           /**
            * Add one or more segments to the timeline
@@ -355,19 +335,12 @@ define('peaks', [
            * @param {String=} segmentOrSegments[].labelText
            * @param {Number=} segmentOrSegments[].id
            */
-          addSegment: addSegment,
-          add:        addSegment,
+          add: function(segmentOrSegments) {
+            return self.waveform.segments.add.apply(self.waveform.segments, arguments);
+          },
 
           remove: function(segment) {
-            var index = self.waveform.segments.remove(segment);
-
-            if (index === null) {
-              throw new RangeError('Unable to find the requested segment' + String(segment));
-            }
-
-            self.waveform.segments.updateSegments();
-
-            return self.waveform.segments.segments.splice(index, 1).pop();
+            return self.waveform.segments.remove(segment);
           },
 
           /**
@@ -379,41 +352,15 @@ define('peaks', [
            * @since 0.5.0
            */
           removeById: function(segmentId) {
-            self.waveform.segments.segments
-              .filter(function(segment) {
-                return segment.id === segmentId;
-              }).forEach(this.remove.bind(this));
+            return self.waveform.segments.removeById(segmentId);
           },
 
           removeByTime: function(startTime, endTime) {
-            endTime = (typeof endTime === 'number') ? endTime : 0;
-
-            var fnFilter;
-
-            if (endTime > 0) {
-              fnFilter = function(segment) {
-                return segment.startTime === startTime && segment.endTime === endTime;
-              };
-            }
-            else {
-              fnFilter = function(segment) {
-                return segment.startTime === startTime;
-              };
-            }
-
-            var matchingSegments = self.waveform.segments.segments.filter(fnFilter);
-
-            matchingSegments.forEach(this.remove.bind(this));
-
-            return matchingSegments.length;
+            return self.waveform.segments.removeByTime(startTime, endTime);
           },
 
           removeAll: function() {
-            self.waveform.segments.removeAll();
-          },
-
-          getSegments: function() {
-            return self.waveform.segments.segments;
+            return self.waveform.segments.removeAll();
           }
         };
       }
@@ -430,6 +377,15 @@ define('peaks', [
         return {
 
           /**
+           * Return all points
+           *
+           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
+           */
+          getPoints: function() {
+            return self.waveform.points.getPoints();
+          },
+
+          /**
            * Add one or more points to the timeline
            *
            * @param {(...Object|Object[])} pointOrPoints
@@ -440,44 +396,11 @@ define('peaks', [
            * @param {Number=} pointOrPoints[].id
            */
           add: function(pointOrPoints) {
-            var points = Array.isArray(arguments[0]) ?
-                         arguments[0] :
-                         Array.prototype.slice.call(arguments);
-
-            if (typeof points[0] === 'number') {
-              self.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
-
-              points = [{
-                timestamp: arguments[0],
-                editable:  arguments[1],
-                color:     arguments[2],
-                labelText: arguments[3]
-              }];
-            }
-
-            points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
-            self.waveform.points.render();
+            return self.waveform.points.add.apply(self.waveform.points, arguments);
           },
 
           remove: function(point) {
-            var index = self.waveform.points.remove(point);
-
-            if (index === null) {
-              throw new RangeError('Unable to find the requested point' + String(point));
-            }
-
-            self.waveform.points.render();
-
-            return self.waveform.points.points.splice(index, 1).pop();
-          },
-
-          /**
-           * Return all points
-           *
-           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
-           */
-          getPoints: function() {
-            return self.waveform.points.points;
+            return self.waveform.points.remove(point);
           },
 
           /**
@@ -486,14 +409,7 @@ define('peaks', [
            * @param {Number} timestamp
            */
           removeByTime: function(timestamp) {
-            var matchingPoints = self.waveform.points.points
-              .filter(function(point) {
-                return point.timestamp === timestamp;
-              });
-
-            matchingPoints.forEach(this.remove.bind(this));
-
-            return matchingPoints.length;
+            return self.waveform.points.removeByTime(timestamp);
           },
 
           /**
@@ -505,10 +421,7 @@ define('peaks', [
            * @since 0.5.0
            */
           removeById: function(pointId) {
-            self.waveform.points.points
-              .filter(function(point) {
-                return point.id === pointId;
-              }).forEach(this.remove.bind(this));
+            return self.waveform.points.removeById(pointId);
           },
 
           /**
@@ -518,7 +431,7 @@ define('peaks', [
            * @since 0.3.2
            */
           removeAll: function removeAll() {
-            self.waveform.points.removeAll();
+            return self.waveform.points.removeAll();
           }
         };
       }

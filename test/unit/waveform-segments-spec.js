@@ -22,11 +22,11 @@
       sandbox.restore();
     });
 
-    describe('addSegment', function() {
+    describe('segments.add', function() {
       it('should accept a single Segment object', function() {
         var spy = sandbox.spy(p.waveform.segments, 'createSegment');
 
-        p.segments.addSegment({ startTime: 0, endTime: 10, editable: false });
+        p.segments.add({ startTime: 0, endTime: 10, editable: false });
         expect(spy.callCount).to.equal(1);
         expect(spy.args[0][0]).to.deep.equal({ startTime: 0, endTime: 10, editable: false });
       });
@@ -35,7 +35,7 @@
         p.options.deprecationLogger = sinon.spy();
         var stub = sandbox.stub(p.waveform.segments, 'createSegment');
 
-        p.segments.addSegment(0, 10, false);
+        p.segments.add(0, 10, false);
 
         expect(stub.callCount).to.equal(1);
         expect(stub.args[0][0]).to.deep.equal({
@@ -52,7 +52,7 @@
       it('should accept an array of Segment objects', function() {
         var spy = sandbox.spy(p.waveform.segments, 'createSegment');
 
-        p.segments.addSegment([
+        p.segments.add([
           { startTime: 0, endTime: 10, editable: false },
           { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text' }
         ]);
@@ -70,7 +70,7 @@
       it('should paint once, and not after each segment addition', function() {
         var spy = sandbox.spy(p.waveform.segments.views[0].segmentLayer, 'draw');
 
-        p.segments.addSegment([
+        p.segments.add([
           { startTime: 0, endTime: 10, editable: false },
           { startTime: 10, endTime: 20, editable: true, color: 'rgba(255, 161, 39, 1)', labelText: 'dummy text' }
         ]);

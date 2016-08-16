@@ -166,7 +166,34 @@ define([
       self.points.push(point);
     };
 
-    this.remove = function removePoint(point) {
+    this.getPoints = function getPoints() {
+      return this.points;
+    };
+
+    this.add = function addPoint(pointOrPoints) {
+      var points = Array.isArray(arguments[0]) ?
+                   arguments[0] :
+                   Array.prototype.slice.call(arguments);
+
+      if (typeof points[0] === 'number') {
+        peaks.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
+
+        points = [{
+          timestamp: arguments[0],
+          editable:  arguments[1],
+          color:     arguments[2],
+          labelText: arguments[3]
+        }];
+      }
+
+      points.forEach(this.createPoint.bind(this));
+      this.render();
+    };
+
+    /**
+     * @private
+     */
+    this._remove = function _removePoint(point) {
       var index = null;
 
       this.points.some(function(p, i) {
@@ -183,6 +210,34 @@ define([
       }
 
       return index;
+    };
+
+    this.remove = function removePoint(point) {
+      var index = this._remove(point);
+
+      if (index === null) {
+        throw new RangeError('Unable to find the requested point' + String(point));
+      }
+
+      this.render();
+
+      return this.points.splice(index, 1).pop();
+    };
+
+    this.removeByTime = function removePointByTime(timestamp) {
+      var matchingPoints = this.points.filter(function(point) {
+        return point.timestamp === timestamp;
+      });
+
+      matchingPoints.forEach(this.remove.bind(this));
+
+      return matchingPoints.length;
+    };
+
+    this.removeById = function removePointById(pointId) {
+      this.points.filter(function(point) {
+        return point.id === pointId;
+      }).forEach(this.remove.bind(this));
     };
 
     this.removeAll = function removeAllPoints() {

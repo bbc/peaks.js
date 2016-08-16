@@ -290,7 +290,37 @@ define([
       return segment;
     };
 
-    this.remove = function removeSegment(segment) {
+    this.getSegments = function getSegments() {
+      return this.segments;
+    };
+
+    this.add = function addSegment(segmentOrSegments) {
+      var segments = Array.isArray(arguments[0]) ?
+                     arguments[0] :
+                     Array.prototype.slice.call(arguments);
+
+      if (typeof segments[0] === 'number') {
+        peaks.options.deprecationLogger('[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object.');
+
+        segments = [
+          {
+            startTime: arguments[0],
+            endTime:   arguments[1],
+            editable:  arguments[2],
+            color:     arguments[3],
+            labelText: arguments[4]
+          }
+        ];
+      }
+
+      segments.forEach(this.createSegment.bind(this));
+      this.render();
+    };
+
+    /**
+     * @private
+     */
+    this._remove = function _removeSegment(segment) {
       var index = null;
 
       this.segments.some(function(s, i) {
@@ -309,6 +339,47 @@ define([
       }
 
       return index;
+    };
+
+    this.remove = function removeSegment(segment) {
+      var index = this._remove(segment);
+
+      if (index === null) {
+        throw new RangeError('Unable to find the requested segment' + String(segment));
+      }
+
+      this.updateSegments();
+
+      return this.segments.splice(index, 1).pop();
+    };
+
+    this.removeById = function removeSegmentById(segmentId) {
+      this.segments.filter(function(segment) {
+        return segment.id === segmentId;
+      }).forEach(this.remove.bind(this));
+    };
+
+    this.removeByTime = function removeSegmentByTime(startTime, endTime) {
+      endTime = (typeof endTime === 'number') ? endTime : 0;
+
+      var fnFilter;
+
+      if (endTime > 0) {
+        fnFilter = function(segment) {
+          return segment.startTime === startTime && segment.endTime === endTime;
+        };
+      }
+      else {
+        fnFilter = function(segment) {
+          return segment.startTime === startTime;
+        };
+      }
+
+      var matchingSegments = this.segments.filter(fnFilter);
+
+      matchingSegments.forEach(this.remove.bind(this));
+
+      return matchingSegments.length;
     };
 
     this.removeAll = function removeAllSegments() {
