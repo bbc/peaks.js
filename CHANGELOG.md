@@ -1,5 +1,11 @@
 ## Change Log
 
+### 0.4.8 (2016/08/18 22:23 +00:00)
+- [#144](https://github.com/bbcrd/peaks.js/pull/144) Use Konva.FastLayer for drawing waveforms (@jdelStrother)
+- [#141](https://github.com/bbcrd/peaks.js/pull/141) Add & remove points & segments by id (@jdelStrother)
+- [#143](https://github.com/bbcrd/peaks.js/pull/143) Improve `addSegment` signature (@jdelStrother)
+- [#142](https://github.com/bbcrd/peaks.js/pull/142) Serve media from Karma during tests (@jdelStrother)
+
 ### v0.4.6 (2015/09/29 10:57 +00:00)
 - [#127](https://github.com/bbcrd/peaks.js/pull/127) Bugfix: Don't add waveform layer to the overview stage twice and ensure the UI layer is on top (@johvet)
 - [#125](https://github.com/bbcrd/peaks.js/pull/125) Node 0.12 and iojs compability (@oncletom)
