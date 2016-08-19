@@ -107,6 +107,10 @@ define([
           }
         };
 
+        xhr.onerror = function() {
+          peaks.emit('error', new Error('XHR Failed'));
+        };
+
         xhr.send();
       },
 
