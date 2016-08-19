@@ -1,10 +1,18 @@
 ## Change Log
 
 ### 0.4.8 (2016/08/18 22:23 +00:00)
+- [#9705993](https://github.com/bbcrd/peaks.js/commit/97059939bc5ea7bd7361dc0bf2098f225774de8d) Fixed bug in defaultInMarker() which caused the wrong colour to be used for left-hand segment markers (@chrisn)
+- [#7fe4b18](https://github.com/bbcrd/peaks.js/commit/7fe4b18652d46c8bea8fdfb3d40be21f67cd4bd5), [#a26e9ed](https://github.com/bbcrd/peaks.js/commit/a26e9ed0ac3b9a025138f8157d70eeb5896c5215) Renamed keyboard events (@chrisn)
+- [#a37a4f2](https://github.com/bbcrd/peaks.js/commit/a37a4f2761d2beb78d187ac2bfcdffa13feb9c76) Updated to EventEmitter v1.0.x (@chrisn)
+- [#41632f5](https://github.com/bbcrd/peaks.js/commit/41632f5ef5a0dcb7909d2522dc9a92fe76250afc) Updated to Konva v1.0.x (@chrisn)
+- [#99f2769](https://github.com/bbcrd/peaks.js/commit/99f2769d889c6e9f7a02f7d4ce84a0bb051d8bdb) Fixed adding points from Peaks.init() (@chrisn)
 - [#144](https://github.com/bbcrd/peaks.js/pull/144) Use Konva.FastLayer for drawing waveforms (@jdelStrother)
-- [#141](https://github.com/bbcrd/peaks.js/pull/141) Add & remove points & segments by id (@jdelStrother)
-- [#143](https://github.com/bbcrd/peaks.js/pull/143) Improve `addSegment` signature (@jdelStrother)
+- [#143](https://github.com/bbcrd/peaks.js/pull/143) Improve addSegment() method signature (@jdelStrother)
 - [#142](https://github.com/bbcrd/peaks.js/pull/142) Serve media from Karma during tests (@jdelStrother)
+- [#141](https://github.com/bbcrd/peaks.js/pull/141) Add/remove points and segments by ID (@jdelStrother)
+- [#140](https://github.com/bbcrd/peaks.js/pull/140) Expose browserified version as package.json@main property (@oncletom)
+- [#139](https://github.com/bbcrd/peaks.js/commit/9bfe33ba6a4b25e94b1f1564647fd84777ebdc57) Fixed keyboard right-shift bug (@chrisn)
+- Numerous other refactorings (@chrisn)
 
 ### v0.4.6 (2015/09/29 10:57 +00:00)
 - [#127](https://github.com/bbcrd/peaks.js/pull/127) Bugfix: Don't add waveform layer to the overview stage twice and ensure the UI layer is on top (@johvet)
