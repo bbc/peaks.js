@@ -120,7 +120,7 @@
         });
       });
 
-      it('should emit an error if the data handling fails due to a network error', function(done) {
+      it.skip('should emit an error if the data handling fails due to a network error', function(done) {
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
