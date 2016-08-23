@@ -120,6 +120,20 @@
         });
       });
 
+      it('should emit an error if the data handling fails due to a network error', function(done) {
+        var p = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'file:///test.json'
+        });
+
+        p.on('error', function(err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('XHR Failed');
+          done();
+        });
+      });
+
       it('should use the JSON dataUri connector', function(done) {
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),

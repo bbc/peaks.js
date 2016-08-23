@@ -108,7 +108,11 @@ define([
         };
 
         xhr.onerror = function() {
-          peaks.emit('error', new Error('XHR Failed'));
+          // Allow the application to call instance.on('error') before
+          // emitting the event.
+          setTimeout(function() {
+            peaks.emit('error', new Error('XHR Failed'));
+          });
         };
 
         xhr.send();
