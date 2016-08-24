@@ -41,8 +41,8 @@
   "license": "LGPL-3.0",
   "scripts": {
     "build": "npm run build:main && npm run build:standalone",
-    "build:main": "browserify -e ./src/main.js -t deamdify -o index.js",
-    "build:standalone": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map > peaks.js",
+    "build:main": "browserify -e ./src/main.js -t deamdify | derequire - > index.js",
+    "build:standalone": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
     "eslint": "eslint src/**/*.js test/**/*.js",
     "test": "./node_modules/karma/bin/karma start --single-run",
     "pretest": "jshint ./src",
@@ -56,6 +56,7 @@
     "browserify": "^13.0.0",
     "chai": "^3.0.0",
     "deamdify": "^0.2.0",
+    "derequire": "^2.0.3",
     "eslint": "^3.2.2",
     "exorcist": "^0.4.0",
     "github-changes": "^1.0.0",
