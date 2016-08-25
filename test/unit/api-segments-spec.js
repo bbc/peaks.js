@@ -22,9 +22,10 @@
 
       p.on('segments.ready', done);
     });
-    afterEach(function () {
+
+    afterEach(function() {
       p.destroy();
-    })
+    });
 
     /**
      * TESTS =========================================================

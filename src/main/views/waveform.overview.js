@@ -231,7 +231,7 @@ define([
     this.uiLayer.draw();
   };
 
-  WaveformOverview.prototype.destroy = function () {
+  WaveformOverview.prototype.destroy = function() {
     this.stage.destroy();
     this.stage = null;
   };

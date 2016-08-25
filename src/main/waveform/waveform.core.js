@@ -185,7 +185,7 @@ define([
   Waveform.prototype.bindResize = function() {
     var self = this;
 
-    window.addEventListener("resize", this.onResize);
+    window.addEventListener('resize', this.onResize);
 
     self.peaks.on('overview_resized', function() {
       self.ui.overview.removeAttribute('hidden');
@@ -205,18 +205,25 @@ define([
   };
 
   Waveform.prototype.destroy = function() {
-    if (this.waveformOverview) this.waveformOverview.destroy();
-    if (this.waveformZoomView) this.waveformZoomView.destroy();
+    if (this.waveformOverview) {
+      this.waveformOverview.destroy();
+    }
+
+    if (this.waveformZoomView) {
+      this.waveformZoomView.destroy();
+    }
+
     window.removeEventListener('resize', this.onResize);
+
     if (this.resizeTimeoutId) {
       clearTimeout(this.resizeTimeoutId);
       this.resizeTimeoutId = null;
     }
   };
 
-
   Waveform.prototype.onResize = function() {
     var self = this;
+
     self.ui.overview.hidden = true;
     self.ui.zoom.hidden = true;
 

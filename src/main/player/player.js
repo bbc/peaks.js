@@ -68,10 +68,11 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
         this.mediaElement.addEventListener(type, callback);
       },
 
-      destroy: function () {
-        for (var i=0; i<this.listeners.length; i++) {
+      destroy: function() {
+        for (var i = 0; i < this.listeners.length; i++) {
           this.mediaElement.removeEventListener(this.listeners[i][0], this.listeners[i][1]);
         }
+
         this.listeners = [];
       },
 

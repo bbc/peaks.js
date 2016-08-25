@@ -91,30 +91,33 @@
 
     describe('destroy', function() {
       var container;
+
       beforeEach(function() {
-        var regularContainer =  document.getElementById('waveform-visualiser-container');
+        var regularContainer = document.getElementById('waveform-visualiser-container');
         container = document.createElement('div');
         container.style.width = '400px';
         container.style.height = '100px';
         regularContainer.parentNode.appendChild(container);
       });
+
       afterEach(function() {
-        container.parentNode && container.parentNode.removeChild(container);
-      })
+        if (container.parentNode) {
+          container.parentNode.removeChild(container);
+        }
+      });
 
       it('should clean up event listeners', function(done) {
-        var errorOccurred = false;
-        var resizeCalled = false;
-        function errorCollector(e) { errorOccurred = true; }
+        var errorSpy = sinon.spy().named('window.onerror');
+        var resizeSpy = sinon.spy().named('window_resized');
         var oldOnError = window.onerror;
-        window.onerror = errorCollector;
+        window.onerror = errorSpy;
 
         var p = Peaks.init({
           container: container,
           mediaElement: document.querySelector('audio')
         });
 
-        p.on('window_resized', function() { resizeCalled = true; });
+        p.on('window_resized', resizeSpy);
 
         p.on('waveformOverviewReady', function() {
           container.parentNode.removeChild(container);
@@ -124,19 +127,19 @@
             p.destroy();
 
             // Fire a resize event, which would normally cause peaks to redraw
-            var e = document.createEvent("HTMLEvents");
+            var e = document.createEvent('HTMLEvents');
             e.initEvent('resize', true, false);
             window.dispatchEvent(e);
 
             // Our resize handler is asynchronously throttled, so give it a little time to settle.
             setTimeout(function() {
               window.onerror = oldOnError;
-              expect(resizeCalled).to.equal(false);
-              expect(errorOccurred).to.equal(false);
+              expect(resizeSpy).to.not.have.been.called;
+              expect(errorSpy).to.not.have.been.called;
               done();
             }, 600);
           }, 1);
-        })
+        });
       });
     });
 
