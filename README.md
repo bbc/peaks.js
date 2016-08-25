@@ -273,11 +273,13 @@ and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
 
 # API
 
+## Initialisation
+
 The top level `peaks` object exposes a factory to create new `peaks` instances.
 
-## `peaks.init(options)`
+### `peaks.init(options)`
 
-Start a instance of peaks with the [assigned options](#Configuration). It enables you do deal with several instances
+Starts an instance of Peaks with the [assigned options](#Configuration). It enables you do deal with several instances
 of Peaks within a single page with one or several configurations.
 
 ```js
@@ -437,6 +439,17 @@ Remove all the segments from the waveforms.
 var instance = peaks.init({ … });
 
 instance.segments.removeAll();
+```
+
+## Destruction
+
+### `instance.destroy()`
+
+Call this function to release resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
+
+```js
+var peaksInstance = peaks.init({ … });
+var peaksInstance.destroy();
 ```
 
 ## Events
