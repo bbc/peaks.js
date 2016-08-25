@@ -567,5 +567,14 @@ define('peaks', [
     }
   });
 
+  /**
+   * Clean up event listeners when you're no longer using a Peaks instance
+   */
+  Peaks.prototype.destroy = function() {
+    this.removeAllListeners();
+    this.waveform.destroy();
+    this.player.destroy();
+  };
+
   return Peaks;
 });

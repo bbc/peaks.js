@@ -89,6 +89,57 @@
       });
     });
 
+    describe('destroy', function() {
+      var container;
+      beforeEach(function() {
+        var regularContainer =  document.getElementById('waveform-visualiser-container');
+        container = document.createElement('div');
+        container.style.width = '400px';
+        container.style.height = '100px';
+        regularContainer.parentNode.appendChild(container);
+      });
+      afterEach(function() {
+        container.parentNode && container.parentNode.removeChild(container);
+      })
+
+      it('should clean up event listeners', function(done) {
+        var errorOccurred = false;
+        var resizeCalled = false;
+        function errorCollector(e) { errorOccurred = true; }
+        var oldOnError = window.onerror;
+        window.onerror = errorCollector;
+
+        var p = Peaks.init({
+          container: container,
+          mediaElement: document.querySelector('audio')
+        });
+
+        p.on('window_resized', function() { resizeCalled = true; });
+
+        p.on('waveformOverviewReady', function() {
+          container.parentNode.removeChild(container);
+
+          // Give peaks chance to bind its resize listener:
+          setTimeout(function() {
+            p.destroy();
+
+            // Fire a resize event, which would normally cause peaks to redraw
+            var e = document.createEvent("HTMLEvents");
+            e.initEvent('resize', true, false);
+            window.dispatchEvent(e);
+
+            // Our resize handler is asynchronously throttled, so give it a little time to settle.
+            setTimeout(function() {
+              window.onerror = oldOnError;
+              expect(resizeCalled).to.equal(false);
+              expect(errorOccurred).to.equal(false);
+              done();
+            }, 600);
+          }, 1);
+        })
+      });
+    });
+
     describe('core#getRemoteData', function() {
       it('should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string', function(done) {
         var p = Peaks.init({
