@@ -50,6 +50,7 @@
     "version": "npm run changelog && npm run build && git add CHANGELOG.md",
     "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} --only-pulls --use-commit-body",
     "prestart": "npm run build",
+    "prepublish": "npm run build",
     "start": "serve --cors -p 9000"
   },
   "devDependencies": {
