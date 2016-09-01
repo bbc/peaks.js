@@ -30,6 +30,7 @@ module.exports = {
     "no-continue": "error",
     "no-eval": "error",
     "no-extra-bind": "error",
+    "no-extra-semi": "error",
     "no-floating-decimal": "error",
     "no-implicit-coercion": "error",
     "no-implicit-globals": "error",
