@@ -29,104 +29,104 @@
 define(['peaks/waveform/waveform.mixins'], function(mixins) {
   'use strict';
 
+  function timeFromPercentage(time, percentage) {
+    return time * (percentage / 100);
+  }
+
   function Player(peaks) {
-    function timeFromPercentage(time, percentage) {
-      return time * (percentage / 100);
+    this.peaks = peaks;
+  }
+
+  Player.prototype.init = function(mediaElement) {
+    var self = this;
+
+    self.listeners = [];
+    self.mediaElement = mediaElement;
+    self.duration = self.getDuration();
+
+    if (self.mediaElement.readyState === 4) {
+      self.peaks.emit('player_load', self);
     }
 
-    return {
-      init: function(mediaElement) {
-        var self = this;
+    self._addMediaListener('timeupdate', function() {
+      self.peaks.emit('player_time_update', self.getTime());
+    });
 
-        this.listeners = [];
-        this.mediaElement = mediaElement;
-        this.duration = this.mediaElement.duration;
+    self._addMediaListener('play', function() {
+      self.peaks.emit('player_play', self.getTime());
+    });
 
-        if (this.mediaElement.readyState === 4) {
-          peaks.emit('player_load', this);
-        }
+    self._addMediaListener('pause', function() {
+      self.peaks.emit('player_pause', self.getTime());
+    });
 
-        this._addMediaListener('timeupdate', function() {
-          peaks.emit('player_time_update', self.getTime());
-        });
+    self._addMediaListener('seeked', function() {
+      self.peaks.emit('player_seek', self.getTime());
+    });
+  };
 
-        this._addMediaListener('play', function() {
-          peaks.emit('player_play', self.getTime());
-        });
+  Player.prototype._addMediaListener = function(type, callback) {
+    this.listeners.push([type, callback]);
+    this.mediaElement.addEventListener(type, callback);
+  };
 
-        this._addMediaListener('pause', function() {
-          peaks.emit('player_pause', self.getTime());
-        });
+  Player.prototype.destroy = function() {
+    for (var i = 0; i < this.listeners.length; i++) {
+      this.mediaElement.removeEventListener(this.listeners[i][0], this.listeners[i][1]);
+    }
 
-        this._addMediaListener('seeked', function() {
-          peaks.emit('player_seek', self.getTime());
-        });
-      },
+    this.listeners = [];
+  };
 
-      _addMediaListener: function(type, callback) {
-        this.listeners.push([type, callback]);
-        this.mediaElement.addEventListener(type, callback);
-      },
+  Player.prototype.setSource = function(source) {
+    this.mediaElement.setAttribute('src', source);
+  };
 
-      destroy: function() {
-        for (var i = 0; i < this.listeners.length; i++) {
-          this.mediaElement.removeEventListener(this.listeners[i][0], this.listeners[i][1]);
-        }
+  Player.prototype.getSource = function() {
+    return this.mediaElement.src;
+  };
 
-        this.listeners = [];
-      },
+  Player.prototype.play = function() {
+    this.mediaElement.play();
+  };
 
-      setSource: function(source) {
-        this.mediaElement.setAttribute('src', source);
-      },
+  Player.prototype.pause = function() {
+    this.mediaElement.pause();
+  };
 
-      getSource: function() {
-        return this.mediaElement.src;
-      },
+  Player.prototype.getTime = function() {
+    return this.mediaElement.currentTime;
+  };
 
-      play: function() {
-        this.mediaElement.play();
-      },
+  Player.prototype.getTimeFromPercentage = function(p) {
+    return mixins.niceTime(this.duration * p / 100, false);
+  };
 
-      pause: function() {
-        this.mediaElement.pause();
-      },
+  Player.prototype.getSecsFromPercentage = function(p) {
+    return Math.floor(this.duration * p / 100);
+  };
 
-      getTime: function() {
-        return this.mediaElement.currentTime;
-      },
+  Player.prototype.getDuration = function() {
+    return this.mediaElement.duration;
+  };
 
-      getTimeFromPercentage: function(p) {
-        return mixins.niceTime(this.duration * p / 100, false);
-      },
+  Player.prototype.getPercentage = function() {
+    return this.getPercentageFromSeconds(this.mediaElement.currentTime);
+  };
 
-      getSecsFromPercentage: function(p) {
-        return Math.floor(this.duration * p / 100);
-      },
+  Player.prototype.getPercentageFromSeconds = function(s) {
+    var percentage = (s / this.duration) * 100;
 
-      getDuration: function() {
-        return this.mediaElement.duration;
-      },
+    return Math.round(percentage * 100) / 100; // 2DP
+  };
 
-      getPercentage: function() {
-        return this.getPercentageFromSeconds(this.mediaElement.currentTime);
-      },
+  Player.prototype.seek = function(percentage) {
+    this.mediaElement.currentTime = timeFromPercentage(this.duration, percentage);
+  };
 
-      getPercentageFromSeconds: function(s) {
-        var percentage = (s / this.duration) * 100;
-
-        return Math.round(percentage * 100) / 100; // 2DP
-      },
-
-      seek: function(percentage) {
-        this.mediaElement.currentTime = timeFromPercentage(this.duration, percentage);
-      },
-
-      seekBySeconds: function(seconds) {
-        this.mediaElement.currentTime = seconds;
-      }
-    };
-  }
+  Player.prototype.seekBySeconds = function(seconds) {
+    this.mediaElement.currentTime = seconds;
+  };
 
   return Player;
 });

@@ -4,7 +4,7 @@ define('peaks', [
   'peaks/waveform/waveform.core',
   'peaks/waveform/waveform.mixins',
   'peaks/player/player.keyboard'
-], function(EventEmitter, AudioPlayer, Waveform, mixins, keyboard) {
+], function(EventEmitter, Player, Waveform, mixins, KeyboardHandler) {
   'use strict';
 
   function buildUi(container) {
@@ -282,10 +282,10 @@ define('peaks', [
     }
 
     if (instance.options.keyboard) {
-      keyboard.init(instance);
+      instance.keyboardHandler = new KeyboardHandler(instance);
     }
 
-    instance.player = new AudioPlayer(instance);
+    instance.player = new Player(instance);
     instance.player.init(instance.options.mediaElement);
 
     /*

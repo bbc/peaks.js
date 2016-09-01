@@ -1,65 +1,69 @@
 define([], function() {
   'use strict';
 
+  var nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
+
   var SPACE = 32,
       TAB = 9,
       LEFT_ARROW = 37,
       RIGHT_ARROW = 39;
 
-  function handleKeyEventGenerator(peaksInstance) {
+  var keys = [SPACE, TAB, LEFT_ARROW, RIGHT_ARROW];
 
-    /**
-     * Arrow keys only triggered on keydown, not keypress
-     */
-    return function handleKeyEvent(event) {
-      var nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
+  /**
+   * @param {EventEmitter} eventEmitter
+   */
+  function KeyboardHandler(eventEmitter) {
+    this.eventEmitter = eventEmitter;
 
-      if (nodes.indexOf(event.target.nodeName) === -1) {
-        if ([SPACE, TAB, LEFT_ARROW, RIGHT_ARROW].indexOf(event.type) > -1) {
-          event.preventDefault();
-        }
-
-        if (event.type === 'keydown' || event.type === 'keypress') {
-          switch (event.keyCode) {
-            case SPACE:
-              peaksInstance.emit('keyboard.space');
-              break;
-
-            case TAB:
-              peaksInstance.emit('keyboard.tab');
-              break;
-          }
-        }
-        else if (event.type === 'keyup') {
-          switch (event.keyCode) {
-            case LEFT_ARROW:
-              if (event.shiftKey) {
-                peaksInstance.emit('keyboard.shift_left');
-              }
-              else {
-                peaksInstance.emit('keyboard.left');
-              }
-              break;
-
-            case RIGHT_ARROW:
-              if (event.shiftKey) {
-                peaksInstance.emit('keyboard.shift_right');
-              }
-              else {
-                peaksInstance.emit('keyboard.right');
-              }
-              break;
-          }
-        }
-      }
-    };
+    document.addEventListener('keydown', this.handleKeyEvent.bind(this));
+    document.addEventListener('keypress', this.handleKeyEvent.bind(this));
+    document.addEventListener('keyup', this.handleKeyEvent.bind(this));
   }
 
-  return {
-    init: function(peaks) {
-      document.addEventListener('keydown', handleKeyEventGenerator(peaks));
-      document.addEventListener('keypress', handleKeyEventGenerator(peaks));
-      document.addEventListener('keyup', handleKeyEventGenerator(peaks));
+  /**
+   * Arrow keys only triggered on keydown, not keypress
+   */
+  KeyboardHandler.prototype.handleKeyEvent = function handleKeyEvent(event) {
+    if (nodes.indexOf(event.target.nodeName) === -1) {
+      if (keys.indexOf(event.type) > -1) {
+        event.preventDefault();
+      }
+
+      if (event.type === 'keydown' || event.type === 'keypress') {
+        switch (event.keyCode) {
+          case SPACE:
+            this.eventEmitter.emit('keyboard.space');
+            break;
+
+          case TAB:
+            this.eventEmitter.emit('keyboard.tab');
+            break;
+        }
+      }
+      else if (event.type === 'keyup') {
+        switch (event.keyCode) {
+          case LEFT_ARROW:
+            if (event.shiftKey) {
+              this.eventEmitter.emit('keyboard.shift_left');
+            }
+            else {
+              this.eventEmitter.emit('keyboard.left');
+            }
+            break;
+
+          case RIGHT_ARROW:
+            if (event.shiftKey) {
+              this.eventEmitter.emit('keyboard.shift_right');
+            }
+            else {
+              this.eventEmitter.emit('keyboard.right');
+            }
+            break;
+        }
+      }
     }
   };
+
+  return KeyboardHandler;
 });
