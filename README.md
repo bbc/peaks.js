@@ -484,7 +484,8 @@ Peaks.js emits events to enable you to extend its behaviour according to your ne
 ---------------------------|----------------
 `segments.ready`           | N/A
 `points.ready`             | N/A
-`segment.dragged`          | `Segment segment`
+`segments.dragged`         | `Segment segment`
+`points.dragged`           | `Point point`
 
 # Building Peaks.js
 
