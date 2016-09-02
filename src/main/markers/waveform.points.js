@@ -141,8 +141,9 @@ define([
       point.timestamp = thisPoint.view.data.time(inOffset);
     }
 
+    this.peaks.emit('points.dragged', point);
     this.updatePoint(point);
-    self.render();
+    this.render();
   };
 
   WaveformPoints.prototype.init = function() {

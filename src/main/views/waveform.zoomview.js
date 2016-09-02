@@ -69,16 +69,16 @@ define([
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
         if (event.type === 'mousedown') {
-          var x = event.evt.layerX, dX, p;
+          var x = event.evt.clientX, dX, p;
 
           peaks.seeking = true;
 
           // enable drag if necessary
-          self.stage.on('mousemove', function(event) {
+          var mouseMove = function(event) {
             peaks.seeking = false;
 
-            dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX) * 1;
-            x = event.evt.layerX;
+            dX = x - event.clientX;
+            x = event.clientX;
             p = self.frameOffset + dX;
 
             if (p < 0) {
@@ -89,9 +89,9 @@ define([
             }
 
             self.updateZoomWaveform(p);
-          });
+          };
 
-          self.stage.on('mouseup', function() {
+          var mouseUp = function() {
             if (peaks.seeking) {
               // Set playhead position only on click release, when not dragging
               self.peaks.emit(
@@ -101,9 +101,16 @@ define([
               );
             }
 
-            self.stage.off('mousemove mouseup');
+            window.removeEventListener('mousemove', mouseMove, false);
+            window.removeEventListener('mouseup', mouseUp, false);
+            window.removeEventListener('blur', mouseUp, false);
+
             peaks.seeking = false;
-          });
+          };
+
+          window.addEventListener('mousemove', mouseMove, false);
+          window.addEventListener('mouseup', mouseUp, false);
+          window.addEventListener('blur', mouseUp, false);
         }
       }
     });
