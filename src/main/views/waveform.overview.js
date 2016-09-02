@@ -49,8 +49,15 @@ define([
     // INTERACTION ===============================================
 
     function cancelSeeking() {
-      self.stage.off('mousemove mouseup');
+      window.removeEventListener('mousemove', mouseMove, false);
+      window.removeEventListener('mouseup', cancelSeeking, false);
+      window.removeEventListener('blur', cancelSeeking, false);
       peaks.seeking = false;
+    }
+
+    function mouseMove(event) {
+      var x = event.clientX - container.getBoundingClientRect().left;
+      peaks.emit('user_scrub.overview', self.data.time(x), x);
     }
 
     self.stage.on('mousedown', function(event) {
@@ -60,13 +67,11 @@ define([
         if (event.type === 'mousedown') {
           peaks.seeking = true;
 
-          peaks.emit('user_seek.overview', self.data.time(event.evt.layerX), event.evt.layerX);
+          mouseMove(event.evt);
 
-          self.stage.on('mousemove', function(event) {
-            peaks.emit('user_scrub.overview', self.data.time(event.evt.layerX), event.evt.layerX);
-          });
-
-          self.stage.on('mouseup', cancelSeeking);
+          window.addEventListener('mousemove', mouseMove, false);
+          window.addEventListener('mouseup', cancelSeeking, false);
+          window.addEventListener('blur', cancelSeeking, false);
         }
         else {
           cancelSeeking();
