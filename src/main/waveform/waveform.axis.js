@@ -6,7 +6,7 @@
  * instantiated meaning this code is reused multiple times.
  *
  */
-define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
+define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
   'use strict';
 
   /*
@@ -18,6 +18,7 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
 
   function roundUpToNearest(value, multiple) {
     var remainder = value % multiple;
+
     if (remainder === 0) {
       return value;
     }
@@ -59,8 +60,9 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
     for (;;) {
       secs = baseSecs * steps[index];
       var pixels = this.view.data.at_time(secs);
+
       if (pixels < minSpacing) {
-        if (++index == steps.length) {
+        if (++index === steps.length) {
           baseSecs *= 60; // seconds -> minutes -> hours
           index = 0;
         }
@@ -69,18 +71,20 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
         break;
       }
     }
+
     return secs;
   };
-
 
   /**
    *
    * @param {WaveformOverview|WaveformZoomview} view
    * @param {Konva.Context} context
    */
-  WaveformAxis.prototype.axisDrawFunction = function (view, context) {
+  WaveformAxis.prototype.axisDrawFunction = function(view, context) {
     // allow a view to override the time it reports to the axis
-    var currentFrameStartTime = (typeof view.getDataTime === "function") ? view.getDataTime () : view.data.time(view.frameOffset);
+    var currentFrameStartTime = (typeof view.getDataTime === 'function') ?
+                                view.getDataTime() :
+                                view.data.time(view.frameOffset);
 
     // Draw axis markers
     var markerHeight = 10;
@@ -96,16 +100,18 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
 
     // Distance between waveform start time and first axis marker (pixels)
     // // addlow a view to override the time it reports to the axis
-    var axisLabelOffsetPixels = (typeof this.view.atDataTime === "function") ? this.view.atDataTime(axisLabelOffsetSecs) : this.view.data.at_time(axisLabelOffsetSecs);
+    var axisLabelOffsetPixels = (typeof this.view.atDataTime === 'function') ?
+                                this.view.atDataTime(axisLabelOffsetSecs) :
+                                this.view.data.at_time(axisLabelOffsetSecs);
 
     context.setAttr('strokeStyle', this.view.options.axisGridlineColor);
     context.setAttr('lineWidth', 1);
 
     // Set text style
-    context.setAttr('font', "11px sans-serif");
+    context.setAttr('font', '11px sans-serif');
     context.setAttr('fillStyle', this.view.options.axisLabelColor);
-    context.setAttr('textAlign', "left");
-    context.setAttr('textBaseline', "bottom");
+    context.setAttr('textAlign', 'left');
+    context.setAttr('textBaseline', 'bottom');
 
     var secs = firstAxisLabelSecs;
     var x;
@@ -116,7 +122,10 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
     for (;;) {
       // Position of axis marker (pixels)
       // allow a view to override the time it reports to the axis
-      x = axisLabelOffsetPixels + (typeof this.view.atDataTime === "function" ? this.view.atDataTime (secs - firstAxisLabelSecs) : this.view.data.at_time(secs - firstAxisLabelSecs));
+      x = axisLabelOffsetPixels + (typeof this.view.atDataTime === 'function' ?
+                                   this.view.atDataTime (secs - firstAxisLabelSecs) :
+                                   this.view.data.at_time(secs - firstAxisLabelSecs));
+
       if (x >= this.view.width) {
         break;
       }
@@ -137,7 +146,8 @@ define(["peaks/waveform/waveform.mixins", "konva"], function (mixins, Konva) {
       context.stroke();
 
       var label      = mixins.niceTime(secs, true);
-      var labelWidth = context._context.measureText(label).width; // todo handle this with Konva.Text
+      // TODO: handle this with Konva.Text:
+      var labelWidth = context._context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
       var labelY     = this.view.height - 1 - markerHeight;
 

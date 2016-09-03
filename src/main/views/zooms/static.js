@@ -3,11 +3,11 @@
  *
  * This module is a zoom view adapter with no animations.
  */
-define([], function () {
+define([], function() {
   'use strict';
 
   return {
-    init: function (currentSampleRate, previousSampleRate, view) {
+    create: function(currentScale, previousScale, view) {
       return {
         start: function() {
           view.segmentLayer.draw();
@@ -16,6 +16,6 @@ define([], function () {
           view.seekFrame(view.data.at_time(view.peaks.time.getCurrentTime()));
         }
       };
-    },
+    }
   };
 });

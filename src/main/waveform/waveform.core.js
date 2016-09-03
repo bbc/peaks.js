@@ -6,190 +6,261 @@
  * viewport resizing.
  */
 define([
-  "waveform-data",
-  "peaks/views/waveform.overview",
-  "peaks/views/waveform.editable-overview",
-  "peaks/views/waveform.zoomview",
-  "peaks/views/waveform.continuous-zoomview",
-  "peaks/markers/waveform.segments",
-  "peaks/markers/waveform.points"
-  ], function (WaveformData, WaveformOverview, WaveformEditableOverview,WaveformZoomView, WaveformContinuousZoomView, WaveformSegments, WaveformPoints) {
-
+  'waveform-data',
+  'peaks/views/waveform.overview',
+  'peaks/views/waveform.editable-overview',
+  'peaks/views/waveform.zoomview',
+  'peaks/views/waveform.continuous-zoomview',
+  'peaks/markers/waveform.segments',
+  'peaks/markers/waveform.points'
+  ], function(
+    WaveformData,
+    WaveformOverview,
+    WaveformEditableOverview,
+    WaveformZoomView,
+    WaveformContinuousZoomView,
+    WaveformSegments,
+    WaveformPoints) {
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
 
-  return function (peaks) {
-    return {
-      init: function (ui) {
-        this.ui = ui; // See buildUi in main.js
-        var that = this;
+  /**
+   * @param {Peaks} peaks
+   */
+  function Waveform(peaks) {
+    this.peaks = peaks;
+  }
 
-        /**
-         * Handle data provided by our waveform data module after parsing the XHR request
-         * @param  {Object} origWaveformData Parsed ArrayBuffer or JSON response
-         */
-        that.getRemoteData(peaks.options);
-      },
+  /**
+   * @param {Object} ui
+   */
+  Waveform.prototype.init = function(ui) {
+    this.ui = ui; // See getUiElements in main.js
+    this.onResize = this.onResize.bind(this);
 
-      getRemoteData: function(options){
-        var that = this;
-        var xhr = new XMLHttpRequest();
-        var uri = null;
-        var requestType = null;
-        var builder = null;
+    /**
+     * Handle data provided by our waveform data module after parsing the XHR request
+     * @param  {Object} origWaveformData Parsed ArrayBuffer or JSON response
+     */
+    this.getRemoteData(this.peaks.options);
+  };
 
-        // Backward compatibility
-        if (options.dataUri) {
-          if (typeof options.dataUri === 'string') {
-            var dataUri = {};
+  Waveform.prototype.getRemoteData = function(options) {
+    var self = this;
+    var xhr = new XMLHttpRequest();
+    var uri = null;
+    var requestType = null;
+    var builder = null;
 
-            dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
-            options.dataUri = dataUri;
+    // Backward compatibility
+    if (options.dataUri) {
+      if (typeof options.dataUri === 'string') {
+        var dataUri = {};
+
+        dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
+        options.dataUri = dataUri;
+      }
+
+      if (typeof options.dataUri === 'object') {
+        ['ArrayBuffer', 'JSON'].some(function(connector) {
+          if (window[connector]) {
+            requestType = connector.toLowerCase();
+            uri = options.dataUri[requestType];
+
+            return Boolean(uri);
           }
-
-          if(typeof options.dataUri === 'object'){
-            ['ArrayBuffer', 'JSON'].some(function(connector){
-              if (window[connector]){
-                requestType = connector.toLowerCase();
-                uri = options.dataUri[requestType];
-
-                return Boolean(uri);
-              }
-            });
-          }
-        }
-
-        // WebAudio Builder
-        if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
-          requestType = 'arraybuffer';
-          uri = options.mediaElement.currentSrc || options.mediaElement.src;
-          builder = 'webaudio';
-        }
-
-        if(!uri) {
-          throw new Error("Unable to determine a compatible dataUri format for this browser.");
-        }
-
-        // open an XHR request to the data source file
-        xhr.open('GET', uri, true);
-
-        if(isXhr2) {
-          try {
-            xhr.responseType = requestType;
-          }
-            // some browsers like Safari 6 do handle XHR2 but not the json response type
-            // doing only a try/catch fails in IE9
-          catch (e){}
-        }
-
-        xhr.onload = function(response) {
-          if (this.readyState === 4) {
-            if (this.status === 200) {
-              if (builder){
-                WaveformData.builders[builder](response.target.response, options.waveformBuilderOptions, that.handleRemoteData.bind(that, null));
-              }
-              else {
-                that.handleRemoteData(null, response.target, xhr);
-              }
-            }
-            else {
-              that.handleRemoteData(new Error('Unable to fetch remote data. HTTP Status ' + this.status));
-            }
-          }
-        };
-
-        xhr.send();
-      },
-
-      /**
-       *
-       * @param err {Error}
-       * @param remoteData {WaveformData|ProgressEvent}
-       * @param xhr {XMLHttpRequest}
-       */
-      handleRemoteData: function (err, remoteData, xhr) {
-        if (err) {
-          return peaks.emit('error', err);
-        }
-
-        this.origWaveformData = null;
-
-        try {
-          this.origWaveformData = remoteData instanceof WaveformData ? remoteData : WaveformData.create(remoteData);
-          var overviewWaveformData = this.origWaveformData.resample(this.ui.player.clientWidth);
-          var OverviewClass = peaks.options.showEditableOverview ? WaveformEditableOverview : WaveformOverview;
-          this.waveformOverview = new OverviewClass(overviewWaveformData, this.ui.overview, peaks);
-        }
-        catch (e) {
-          return peaks.emit('error', e);
-        }
-
-
-        peaks.emit("waveformOverviewReady", this.waveformOverview);
-        this.bindResize();
-      },
-
-      openZoomView: function () {
-        var that = this;
-
-        switch (peaks.options.zoomMode) {
-          case 'continuous':
-            that.waveformZoomView = new WaveformContinuousZoomView(that.origWaveformData, that.ui.zoom, peaks);
-          break;
-          case 'stepped':
-            that.waveformZoomView = new WaveformZoomView(that.origWaveformData, that.ui.zoom, peaks);
-          break;
-          default:
-            throw new Error("Invalid zoomModel: " + peaks.options.zoomMode);
-          
-        }
-        
-
-        that.segments = new WaveformSegments(peaks);
-        that.segments.init();
-
-        that.points = new WaveformPoints(peaks);
-        that.points.init();
-
-        peaks.emit('waveformZoomReady', that.waveformZoomView);
-      },
-
-      /**
-       * Deal with window resize event over both waveform views.
-       */
-      bindResize: function () {
-        var that = this;
-
-        window.addEventListener("resize", function () {
-          that.ui.overview.hidden = true;
-          that.ui.zoom.hidden = true;
-
-          if (that.resizeTimeoutId) clearTimeout(that.resizeTimeoutId);
-          that.resizeTimeoutId = setTimeout(function(){
-            var w = that.ui.player.clientWidth;
-            var overviewWaveformData = that.origWaveformData.resample(w);
-            peaks.emit("resizeEndOverview", w, overviewWaveformData);
-            peaks.emit("window_resized", w, that.origWaveformData);
-          }, 500);
-        });
-
-        peaks.on("overview_resized", function () {
-          that.ui.overview.removeAttribute('hidden');
-        });
-
-        peaks.on("zoomview_resized", function () {
-          that.ui.zoom.removeAttribute('hidden');
-        });
-
-        peaks.on("user_seek.*", function(time){
-          peaks.player.seekBySeconds(time);
-        });
-
-        peaks.on("user_scrub.*", function(time){
-          peaks.player.seekBySeconds(time);
         });
       }
+    }
+
+    // WebAudio Builder
+    if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
+      requestType = 'arraybuffer';
+      uri = options.mediaElement.currentSrc || options.mediaElement.src;
+      builder = 'webaudio';
+    }
+
+    if (!uri) {
+      throw new Error('Unable to determine a compatible dataUri format for this browser.');
+    }
+
+    // open an XHR request to the data source file
+    xhr.open('GET', uri, true);
+
+    if (isXhr2) {
+      try {
+        xhr.responseType = requestType;
+      }
+      catch (e) {
+        // some browsers like Safari 6 do handle XHR2 but not the json
+        // response type, doing only a try/catch fails in IE9
+      }
+    }
+
+    xhr.onload = function(response) {
+      if (this.readyState === 4) {
+        if (this.status === 200) {
+          if (builder) {
+            WaveformData.builders[builder](
+              response.target.response,
+              options.waveformBuilderOptions,
+              self.handleRemoteData.bind(self, null)
+            );
+          }
+          else {
+            self.handleRemoteData(null, response.target, xhr);
+          }
+        }
+        else {
+          self.handleRemoteData(
+            new Error('Unable to fetch remote data. HTTP Status ' + this.status)
+          );
+        }
+      }
     };
+
+    xhr.onerror = function(err) {
+      // Allow the application to call instance.on('error') before
+      // emitting the event.
+      setTimeout(function() {
+        self.peaks.emit('error', new Error('XHR Failed'));
+      }, 0);
+    };
+
+    xhr.send();
   };
+
+  /**
+   *
+   * @param err {Error}
+   * @param remoteData {WaveformData|ProgressEvent}
+   * @param xhr {XMLHttpRequest}
+   */
+  Waveform.prototype.handleRemoteData = function(err, remoteData, xhr) {
+    if (err) {
+      return this.peaks.emit('error', err);
+    }
+
+    this.origWaveformData = null;
+
+    try {
+      this.origWaveformData = remoteData instanceof WaveformData ?
+                              remoteData :
+                              WaveformData.create(remoteData);
+
+      var overviewWaveformData = this.origWaveformData.resample(
+        this.ui.player.clientWidth
+      );
+
+      var OverviewClass = this.peaks.options.showEditableOverview ?
+                          WaveformEditableOverview : WaveformOverview;
+
+      this.waveformOverview = new OverviewClass(
+        overviewWaveformData,
+        this.ui.overview,
+        this.peaks
+      );
+    }
+    catch (e) {
+      return this.peaks.emit('error', e);
+    }
+
+    this.peaks.emit('waveformOverviewReady', this.waveformOverview);
+    this.bindResize();
+  };
+
+  Waveform.prototype.openZoomView = function() {
+    switch (this.peaks.options.zoomMode) {
+      case 'continuous':
+        this.waveformZoomView = new WaveformContinuousZoomView(
+          this.origWaveformData,
+          this.ui.zoom,
+          this.peaks
+        );
+        break;
+
+      case 'stepped':
+        this.waveformZoomView = new WaveformZoomView(
+          this.origWaveformData,
+          this.ui.zoom,
+          this.peaks
+        );
+        break;
+
+      default:
+        throw new Error('Invalid zoomMode: ' + this.peaks.options.zoomMode);
+    }
+
+    this.segments = new WaveformSegments(this.peaks);
+    this.segments.init();
+
+    this.points = new WaveformPoints(this.peaks);
+    this.points.init();
+
+    this.peaks.emit('waveformZoomReady', this.waveformZoomView);
+  };
+
+  /**
+   * Deal with window resize event over both waveform views.
+   */
+  Waveform.prototype.bindResize = function() {
+    var self = this;
+
+    window.addEventListener('resize', this.onResize);
+
+    self.peaks.on('overview_resized', function() {
+      self.ui.overview.removeAttribute('hidden');
+    });
+
+    self.peaks.on('zoomview_resized', function() {
+      self.ui.zoom.removeAttribute('hidden');
+    });
+
+    self.peaks.on('user_seek.*', function(time) {
+      self.peaks.player.seekBySeconds(time);
+    });
+
+    self.peaks.on('user_scrub.*', function(time) {
+      self.peaks.player.seekBySeconds(time);
+    });
+  };
+
+  Waveform.prototype.destroy = function() {
+    if (this.waveformOverview) {
+      this.waveformOverview.destroy();
+    }
+
+    if (this.waveformZoomView) {
+      this.waveformZoomView.destroy();
+    }
+
+    window.removeEventListener('resize', this.onResize);
+
+    if (this.resizeTimeoutId) {
+      clearTimeout(this.resizeTimeoutId);
+      this.resizeTimeoutId = null;
+    }
+  };
+
+  Waveform.prototype.onResize = function() {
+    var self = this;
+
+    self.ui.overview.hidden = true;
+    self.ui.zoom.hidden = true;
+
+    if (self.resizeTimeoutId) {
+      clearTimeout(self.resizeTimeoutId);
+    }
+
+    self.resizeTimeoutId = setTimeout(function() {
+      var width = self.ui.player.clientWidth;
+      var overviewWaveformData = self.origWaveformData.resample(width);
+
+      self.peaks.emit('resizeEndOverview', width, overviewWaveformData);
+      self.peaks.emit('window_resized', width, self.origWaveformData);
+    }, 500);
+  };
+
+  return Waveform;
 });

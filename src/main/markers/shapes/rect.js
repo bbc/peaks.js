@@ -5,29 +5,29 @@
  * removing and manipulation of segments
  */
 define([
-  "peaks/markers/shapes/base",
-  "peaks/waveform/waveform.mixins",
-  "konva"
-], function (BaseShape, mixins, Konva) {
+  'peaks/markers/shapes/base',
+  'peaks/waveform/waveform.mixins',
+  'konva'
+], function(BaseShape, mixins, Konva) {
   'use strict';
 
   var WaveShape = Object.create(BaseShape.prototype);
 
   /**
    *
-   * @param segmentData
-   * @param view
+   * @param {object} segment
+   * @param {WaveformZoomView|WaveformOverview} view
    * @returns {Konva.Rect}
    */
-  WaveShape.createShape = function createShape(segmentData, view){
+  WaveShape.createShape = function createShape(segment, view) {
     var shape = new Konva.Rect({
-      fill: segmentData.color,
+      fill: segment.color,
       strokeWidth: 0,
       y: 0,
       x: 0,
       width: 0,
       height: view.height,
-      opacity:0.4
+      opacity: 0.4
     });
 
     return shape;
@@ -35,24 +35,23 @@ define([
 
   /**
    *
-   * @param {WaveformData} waveform
-   * @param {Canvas} canvas
-   * @param {interpolateHeight} y
+   * @param view
+   * @param {String|Number} segmentId
    */
-  WaveShape.update = function updateRectShape(view, segmentId){
+  WaveShape.update = function updateRectShape(view, segmentId) {
     var waveformData = view.data;
 
-    if (waveformData.segments[segmentId] === undefined){
+    if (waveformData.segments[segmentId] === undefined) {
       return;
     }
 
     var segment = waveformData.segments[segmentId];
-    var offset_length = segment.offset_length;
-    var offset_start = segment.offset_start - waveformData.offset_start;
+    var offsetLength = segment.offset_length;
+    var offsetStart = segment.offset_start - waveformData.offset_start;
 
     this.setAttrs({
-      x: offset_start,
-      width: offset_length
+      x: offsetStart,
+      width: offsetLength
     });
   };
 

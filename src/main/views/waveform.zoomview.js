@@ -7,242 +7,271 @@
  *
  */
 define([
-  "peaks/waveform/waveform.axis",
-  "peaks/waveform/waveform.mixins",
-  "peaks/views/zooms/animated",
-  "peaks/views/zooms/static",
-  "konva"
-  ], function (WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
+  'peaks/waveform/waveform.axis',
+  'peaks/waveform/waveform.mixins',
+  'peaks/views/zooms/animated',
+  'peaks/views/zooms/static',
+  'konva'
+  ], function(WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
   'use strict';
 
   function WaveformZoomView(waveformData, container, peaks) {
-    var that = this;
+    var self = this;
 
-    that.cur_scale = 0;
+    self.peaks = peaks;
+    self.options = peaks.options;
+    self.rootData = waveformData;
 
-    that.peaks = peaks;
-    that.options = peaks.options;
-    that.rootData = waveformData;
+    self.playing = false;
 
-    that.playing = false;
-
-    that.intermediateData = null;
-    that.data = that.rootData.resample({
-      scale: that.options.zoomLevels[peaks.zoom.getZoom()]
+    self.intermediateData = null;
+    self.data = self.rootData.resample({
+      scale: self.options.zoomLevels[peaks.zoom.getZoom()]
     });
-    that.playheadPixel = that.data.at_time(that.options.mediaElement.currentTime);
-    that.pixelLength = that.data.adapter.length;
-    that.frameOffset = 0; // the pixel offset of the current frame being displayed
+    self.playheadPixel = self.data.at_time(self.options.mediaElement.currentTime);
+    self.pixelLength = self.data.adapter.length;
+    self.frameOffset = 0; // the pixel offset of the current frame being displayed
 
-    that.width = container.clientWidth;
-    that.height = container.clientHeight || that.options.height;
+    self.width = container.clientWidth;
+    self.height = container.clientHeight || self.options.height;
 
-    that.data.offset(that.frameOffset, that.frameOffset + that.width);
+    self.data.offset(self.frameOffset, self.frameOffset + self.width);
 
-    that.stage = new Konva.Stage({
+    self.stage = new Konva.Stage({
       container: container,
-      width: that.width,
-      height: that.height
+      width: self.width,
+      height: self.height
     });
 
-    that.zoomWaveformLayer = new Konva.Layer();
-    that.uiLayer = new Konva.Layer();
+    self.backgroundLayer = new Konva.Layer();
+    self.zoomWaveformLayer = new Konva.FastLayer();
+    self.uiLayer = new Konva.Layer();
 
-    that.background = new Konva.Rect({
+    self.background = new Konva.Rect({
       x: 0,
       y: 0,
-      width: that.width,
-      height: that.height
+      width: self.width,
+      height: self.height
     });
 
-    that.zoomWaveformLayer.add(that.background);
+    self.backgroundLayer.add(self.background);
+    self.stage.add(self.backgroundLayer);
 
-    that.axis = new WaveformAxis(that);
+    self.axis = new WaveformAxis(self);
 
-    that.createZoomWaveform();
-    that.createUi();
+    self.createZoomWaveform();
+    self.createUi();
 
     // INTERACTION ===============================================
 
-    that.stage.on("mousedown", function (event) {
+    self.stage.on('mousedown', function(event) {
       if (event.target &&
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
-        if (event.type === "mousedown") {
-          var x = event.evt.layerX, dX, p;
+        if (event.type === 'mousedown') {
+          var x = event.evt.clientX, dX, p;
+
           peaks.seeking = true;
 
           // enable drag if necessary
-          that.stage.on("mousemove", function (event) {
+          var mouseMove = function(event) {
             peaks.seeking = false;
 
-            dX = event.evt.layerX > x ? x - event.evt.layerX : (x - event.evt.layerX)*1;
-            x = event.evt.layerX;
-            p = that.frameOffset+dX;
-            p = p < 0 ? 0 : p > (that.pixelLength - that.width) ? (that.pixelLength - that.width) : p;
+            dX = x - event.clientX;
+            x = event.clientX;
+            p = self.frameOffset + dX;
 
-            that.updateZoomWaveform(p);
-          });
-
-          that.stage.on("mouseup", function () {
-            if (peaks.seeking){
-              // Set playhead position only on click release, when not dragging
-              that.peaks.emit("user_seek.zoomview", that.data.time(that.frameOffset + x), that.frameOffset + x);
+            if (p < 0) {
+              p = 0;
+            }
+            else if (p > (self.pixelLength - self.width)) {
+              p = self.pixelLength - self.width;
             }
 
-            that.stage.off("mousemove mouseup");
+            self.updateZoomWaveform(p);
+          };
+
+          var mouseUp = function() {
+            if (peaks.seeking) {
+              // Set playhead position only on click release, when not dragging
+              self.peaks.emit(
+                'user_seek.zoomview',
+                self.data.time(self.frameOffset + x),
+                self.frameOffset + x
+              );
+            }
+
+            window.removeEventListener('mousemove', mouseMove, false);
+            window.removeEventListener('mouseup', mouseUp, false);
+            window.removeEventListener('blur', mouseUp, false);
+
             peaks.seeking = false;
-          });
+          };
+
+          window.addEventListener('mousemove', mouseMove, false);
+          window.addEventListener('mouseup', mouseUp, false);
+          window.addEventListener('blur', mouseUp, false);
         }
       }
     });
 
     // EVENTS ====================================================
 
-    var userSeekHandler = function userSeekHandler (options, time) {
+    function userSeekHandler(options, time) {
       options = options || { withOffset: true };
-      var frameIndex = that.data.at_time(time);
+      var frameIndex = self.data.at_time(time);
 
-      that.seekFrame(frameIndex, options.withOffset ? Math.round(that.width / 2) : 0);
+      self.seekFrame(frameIndex, options.withOffset ? Math.round(self.width / 2) : 0);
 
-      if (that.playing){
-        that.playFrom(time, frameIndex);
+      if (self.playing) {
+        self.playFrom(time, frameIndex);
       }
-    };
+    }
 
-    that.peaks.on("player_time_update", function (time) {
+    self.peaks.on('player_time_update', function(time) {
       if (!peaks.seeking) {
-        that.seekFrame(that.data.at_time(time));
+        self.seekFrame(self.data.at_time(time));
       }
     });
 
-    that.peaks.on("player_seek", userSeekHandler.bind(null, { withOffset: true }));
-    that.peaks.on("user_seek.*", userSeekHandler.bind(null, { withOffset: true }));
-    that.peaks.on("user_scrub.*", userSeekHandler.bind(null, { withOffset: false }));
+    self.peaks.on('player_seek', userSeekHandler.bind(null, { withOffset: true }));
+    self.peaks.on('user_seek.*', userSeekHandler.bind(null, { withOffset: true }));
+    self.peaks.on('user_scrub.*', userSeekHandler.bind(null, { withOffset: false }));
 
-    that.peaks.on("player_play", function (time) {
-      that.playing = true;
-      that.playFrom(time, that.data.at_time(time));
+    self.peaks.on('player_play', function(time) {
+      self.playing = true;
+      self.playFrom(time, self.data.at_time(time));
     });
 
-    that.peaks.on("player_pause", function (time) {
-      that.playing = false;
+    self.peaks.on('player_pause', function(time) {
+      self.playing = false;
 
-      if (that.playheadLineAnimation) {
-        that.playheadLineAnimation.stop();
+      if (self.playheadLineAnimation) {
+        self.playheadLineAnimation.stop();
       }
 
-      that.syncPlayhead(that.data.at_time(time));
+      self.syncPlayhead(self.data.at_time(time));
     });
 
-    that.peaks.on("zoom.update", function (current_scale, previous_scale) {
-      var adapter, zoomAdapterMap;
-
-      if (that.playing) {
+    self.peaks.on('zoom.update', function(currentScale, previousScale) {
+      if (self.playing) {
         return;
       }
 
-      if (current_scale !== previous_scale) {
-        that.data = that.rootData.resample({
-          scale: current_scale
+      if (currentScale !== previousScale) {
+        self.data = self.rootData.resample({
+          scale: currentScale
         });
 
-        zoomAdapterMap = {
+        var zoomAdapterMap = {
           'animated': AnimatedZoomAdapter,
           'static': StaticZoomAdapter
         };
 
-        if (zoomAdapterMap[that.peaks.options.zoomAdapter] === undefined) {
-          throw new Error("Invalid zoomAdapter: " + that.peaks.options.zoomAdapter);
+        var zoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
+
+        if (!zoomAdapter) {
+          throw new Error('Invalid zoomAdapter: ' + self.peaks.options.zoomAdapter);
         }
 
-        adapter = zoomAdapterMap[that.peaks.options.zoomAdapter].init(current_scale, previous_scale, that);
+        var adapter = zoomAdapter.create(currentScale, previousScale, self);
+
         adapter.start();
       }
     });
 
-    that.peaks.on("window_resized", function (width, newWaveformData) {
-      that.width = width;
-      that.data = newWaveformData;
-      that.stage.setWidth(that.width);
-      that.updateZoomWaveform(that.frameOffset);
-      that.peaks.emit("zoomview_resized");
+    self.peaks.on('window_resized', function(width, newWaveformData) {
+      self.width = width;
+      self.data = newWaveformData;
+      self.stage.setWidth(self.width);
+      self.updateZoomWaveform(self.frameOffset);
+      self.peaks.emit('zoomview_resized');
     });
 
     // KEYBOARD EVENTS =========================================
-    var nudgeFrame = function nudgeFrame(step){
-      var time = that.options.mediaElement.currentTime;
 
-      time += (that.options.nudgeIncrement * step);
-      that.seekFrame(that.data.at_time(time));
-    };
+    function nudgeFrame(step) {
+      var time = self.options.mediaElement.currentTime;
 
-    that.peaks.on("kybrd_left", nudgeFrame.bind(that, -1));
-    that.peaks.on("kybrd_right", nudgeFrame.bind(that, 1));
-    that.peaks.on("kybrd_shift_left", nudgeFrame.bind(that, -10));
-    that.peaks.on("kybrd_shift_right", nudgeFrame.bind(that, 10));
+      time += self.options.nudgeIncrement * step;
+      self.seekFrame(self.data.at_time(time));
+    }
+
+    self.peaks.on('keyboard.left', nudgeFrame.bind(self, -1));
+    self.peaks.on('keyboard.right', nudgeFrame.bind(self, 1));
+    self.peaks.on('keyboard.shift_left', nudgeFrame.bind(self, -10));
+    self.peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 10));
   }
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
 
   WaveformZoomView.prototype.createZoomWaveform = function() {
-    var that = this;
-    that.zoomWaveformShape = new Konva.Shape({
-      fill: that.options.zoomWaveformColor,
+    this.zoomWaveformShape = new Konva.Shape({
+      fill: this.options.zoomWaveformColor,
       strokeWidth: 0
     });
 
-    that.zoomWaveformShape.sceneFunc(mixins.waveformDrawFunction.bind(that.zoomWaveformShape, that));
+    this.zoomWaveformShape.sceneFunc(
+      mixins.waveformDrawFunction.bind(this.zoomWaveformShape, this)
+    );
 
-    that.zoomWaveformLayer.add(that.zoomWaveformShape);
-    that.stage.add(that.zoomWaveformLayer);
-    that.peaks.emit("waveform_zoom_displaying", 0 * that.data.seconds_per_pixel, that.width * that.data.seconds_per_pixel);
+    this.zoomWaveformLayer.add(this.zoomWaveformShape);
+    this.stage.add(this.zoomWaveformLayer);
+
+    this.peaks.emit(
+      'waveform_zoom_displaying',
+      0 * this.data.seconds_per_pixel,
+      this.width * this.data.seconds_per_pixel
+    );
   };
 
   WaveformZoomView.prototype.createUi = function() {
-    var that = this;
-
-    that.zoomPlayheadLine = new Konva.Line({
-      points: [0.5, 0, 0.5, that.height],
-      stroke: that.options.playheadColor,
+    this.zoomPlayheadLine = new Konva.Line({
+      points: [0.5, 0, 0.5, this.height],
+      stroke: this.options.playheadColor,
       strokeWidth: 1
     });
 
-    that.zoomPlayheadText = new Konva.Text({
-      x:2,
+    this.zoomPlayheadText = new Konva.Text({
+      x: 2,
       y: 12,
-      text: "00:00:00",
+      text: '00:00:00',
       fontSize: 11,
       fontFamily: 'sans-serif',
-      fill: that.options.playheadTextColor,
+      fill: this.options.playheadTextColor,
       align: 'right'
     });
 
-    that.zoomPlayheadGroup = new Konva.Group({
+    this.zoomPlayheadGroup = new Konva.Group({
       x: 0,
       y: 0
-    }).add(that.zoomPlayheadLine).add(that.zoomPlayheadText);
+    });
 
-    that.uiLayer.add(that.zoomPlayheadGroup);
-    that.stage.add(that.uiLayer);
+    this.zoomPlayheadGroup.add(this.zoomPlayheadLine)
+                          .add(this.zoomPlayheadText);
 
-    that.zoomPlayheadGroup.moveToTop();
+    this.uiLayer.add(this.zoomPlayheadGroup);
+    this.stage.add(this.uiLayer);
+
+    this.zoomPlayheadGroup.moveToTop();
   };
 
-  WaveformZoomView.prototype.updateZoomWaveform = function (pixelOffset) {
-    if (isNaN(pixelOffset)) throw new Error("WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: " + pixelOffset);
-    var that = this;
+  WaveformZoomView.prototype.updateZoomWaveform = function(pixelOffset) {
+    if (isNaN(pixelOffset)) {
+      throw new Error('WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: ' + pixelOffset);
+    }
 
-    that.pixelLength = that.data.adapter.length;
+    this.pixelLength = this.data.adapter.length;
 
     // total waveform is shorter than viewport, so reset the offset to 0
-    if (that.pixelLength < that.width) {
+    if (this.pixelLength < this.width) {
       pixelOffset = 0;
     }
 
-    // new position is beyond the size of the waveform, so set it to the very last possible position
-    if (pixelOffset > that.pixelLength) {
-      pixelOffset = that.pixelLength - that.width;
+    // new position is beyond the size of the waveform, so set it to the very
+    // last possible position
+    if (pixelOffset > this.pixelLength) {
+      pixelOffset = this.pixelLength - this.width;
     }
 
     // we must not have a negative pixelOffset
@@ -250,27 +279,35 @@ define([
       pixelOffset = 0;
     }
 
-    that.frameOffset = pixelOffset;
-    that.data.offset(pixelOffset, Math.min(pixelOffset + that.width, that.pixelLength));
+    this.frameOffset = pixelOffset;
+    this.data.offset(pixelOffset, Math.min(pixelOffset + this.width, this.pixelLength));
 
-    var display = (that.playheadPixel >= pixelOffset) && (that.playheadPixel <= pixelOffset + that.width); //i.e. playhead is within the zoom frame width
+    // Display playhead if it is within the zoom frame width
+    var display = (this.playheadPixel >= pixelOffset) &&
+                  (this.playheadPixel <= pixelOffset + this.width);
 
     if (display) {
-      var remPixels = that.playheadPixel - pixelOffset;
+      var remPixels = this.playheadPixel - pixelOffset;
 
-      that.zoomPlayheadGroup.show().setAttr("x", remPixels);
-      that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
+      this.zoomPlayheadGroup.show().setAttr('x', remPixels);
+      this.zoomPlayheadText.setText(mixins.niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
-      that.zoomPlayheadGroup.hide();
+      this.zoomPlayheadGroup.hide();
     }
 
-    that.uiLayer.draw();
-    that.zoomWaveformLayer.draw();
+    this.uiLayer.draw();
+    this.zoomWaveformLayer.draw();
 
-    // if (that.snipWaveformShape) that.updateSnipWaveform(that.currentSnipStartTime, that.currentSnipEndTime);
+    // if (this.snipWaveformShape) {
+    //   this.updateSnipWaveform(this.currentSnipStartTime, this.currentSnipEndTime);
+    // }
 
-    that.peaks.emit("waveform_zoom_displaying", pixelOffset * that.data.seconds_per_pixel, (pixelOffset+that.width) * that.data.seconds_per_pixel);
+    this.peaks.emit(
+      'waveform_zoom_displaying',
+      pixelOffset * this.data.seconds_per_pixel,
+      (pixelOffset + this.width) * this.data.seconds_per_pixel
+    );
   };
 
   // UI functions ==============================
@@ -281,34 +318,40 @@ define([
    * @param {Number} time Position in time where the playhead starts
    * @param {Integer} startPosition Position in frame index where the playhead starts
    */
-  WaveformZoomView.prototype.playFrom = function (time, startPosition) {
-    var that = this;
+  WaveformZoomView.prototype.playFrom = function(time, startPosition) {
+    var self = this;
 
-    if (that.playheadLineAnimation) {
-      that.playheadLineAnimation.stop();
+    if (self.playheadLineAnimation) {
+      self.playheadLineAnimation.stop();
     }
 
     var frameSeconds = 0;
-    var pixelsPerSecond = that.data.pixels_per_second;
+    var pixelsPerSecond = self.data.pixels_per_second;
 
-    that.playheadLineAnimation = new Konva.Animation(function (frame) {
+    self.playheadLineAnimation = new Konva.Animation(function(frame) {
       var time = frame.time;
-
       var seconds = time / 1000;
-      var positionInFrame = Math.round(startPosition - that.frameOffset + (pixelsPerSecond * (seconds-frameSeconds)));
 
-      that.syncPlayhead(that.frameOffset + positionInFrame);
-    }, that.uiLayer);
+      var positionInFrame = Math.round(
+        startPosition -
+        self.frameOffset +
+        (pixelsPerSecond * (seconds - frameSeconds))
+      );
 
-    that.playheadLineAnimation.start();
+      self.syncPlayhead(self.frameOffset + positionInFrame);
+    }, self.uiLayer);
+
+    self.playheadLineAnimation.start();
   };
 
-  WaveformZoomView.prototype.newFrame = function (frameOffset) {
-    if (isNaN(frameOffset)) throw new Error("WaveformZoomView#newFrame passed a frame offset that is not a number: " + frameOffset);
+  WaveformZoomView.prototype.newFrame = function(frameOffset) {
+    if (isNaN(frameOffset)) {
+      throw new Error('WaveformZoomView#newFrame passed a frame offset that is not a number: ' + frameOffset);
+    }
 
     var nextOffset = frameOffset + this.width;
 
-    if (nextOffset < this.data.adapter.length){
+    if (nextOffset < this.data.adapter.length) {
       this.frameOffset = nextOffset;
       this.updateZoomWaveform(nextOffset);
 
@@ -318,44 +361,55 @@ define([
     return false;
   };
 
-  WaveformZoomView.prototype.syncPlayhead = function (pixelIndex) {
-    if (isNaN(pixelIndex)) throw new Error("WaveformZoomView#syncPlayhead passed a pixel index that is not a number: " + pixelIndex);
+  WaveformZoomView.prototype.syncPlayhead = function(pixelIndex) {
+    if (isNaN(pixelIndex)) {
+      throw new Error('WaveformZoomView#syncPlayhead passed a pixel index that is not a number: ' + pixelIndex);
+    }
 
-    var that = this;
-    var display = (pixelIndex >= that.frameOffset) && (pixelIndex <= that.frameOffset + that.width);
+    var display = (pixelIndex >= this.frameOffset) &&
+                  (pixelIndex <= this.frameOffset + this.width);
 
-    that.playheadPixel = pixelIndex;
+    this.playheadPixel = pixelIndex;
 
     if (display) {
-      var remPixels = that.playheadPixel - that.frameOffset; //places playhead at centre of zoom frame i.e. remPixels = 500
-      that.zoomPlayheadGroup.show().setAttr("x", remPixels);
-      that.zoomPlayheadText.setText(mixins.niceTime(that.data.time(that.playheadPixel), false));
+      // Place playhead at centre of zoom frame i.e. remPixels = 500
+      var remPixels = this.playheadPixel - this.frameOffset;
+
+      this.zoomPlayheadGroup.show().setAttr('x', remPixels);
+      this.zoomPlayheadText.setText(mixins.niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
-      that.zoomPlayheadGroup.hide();
+      this.zoomPlayheadGroup.hide();
     }
 
-    that.uiLayer.draw();
+    this.uiLayer.draw();
   };
 
-  WaveformZoomView.prototype.seekFrame = function (pixelIndex, offset) {
-    if (isNaN(pixelIndex)) throw new Error("WaveformZoomView#seekFrame passed a pixel index that is not a number: " + pixelIndex);
+  WaveformZoomView.prototype.seekFrame = function(pixelIndex, offset) {
+    if (isNaN(pixelIndex)) {
+      throw new Error('WaveformZoomView#seekFrame passed a pixel index that is not a number: ' + pixelIndex);
+    }
 
-    var that = this;
-    var upperLimit = that.data.adapter.length - that.width;
-    var direction = pixelIndex < that.data.offset_start ? 'backwards' : 'onwards';
+    var upperLimit = this.data.adapter.length - this.width;
 
-    if (!that.data.in_offset(pixelIndex)) {
-      that.frameOffset = pixelIndex - Math.round(that.width / 2);
-      if (that.frameOffset <= 0) {
-        that.frameOffset = 0;
-      } else if (that.frameOffset + that.width >= that.data.adapter.length) {
-        that.frameOffset = upperLimit;
+    if (!this.data.in_offset(pixelIndex)) {
+      this.frameOffset = pixelIndex - Math.round(this.width / 2);
+
+      if (this.frameOffset <= 0) {
+        this.frameOffset = 0;
+      }
+      else if (this.frameOffset + this.width >= this.data.adapter.length) {
+        this.frameOffset = upperLimit;
       }
     }
 
-    that.syncPlayhead(pixelIndex);
-    that.updateZoomWaveform(that.frameOffset);
+    this.syncPlayhead(pixelIndex);
+    this.updateZoomWaveform(this.frameOffset);
+  };
+
+  WaveformZoomView.prototype.destroy = function() {
+    this.stage.destroy();
+    this.stage = null;
   };
 
   return WaveformZoomView;

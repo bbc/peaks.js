@@ -2,7 +2,8 @@ language: node_js
 node_js:
   - '0.10'
   - '0.12'
-  - 'iojs'
+  - 'v4'
+  - 'v6'
 sudo: false
 cache:
   directories:
@@ -27,6 +28,4 @@ before_script:
 - sh -e /etc/init.d/xvfb start
 - npm run build
 script:
-- npm start & sleep 2
-- npm run test-pre
-- ./node_modules/karma/bin/karma start --browsers Firefox --single-run
+- npm test -- --browsers Firefox --single-run

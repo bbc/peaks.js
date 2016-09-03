@@ -2,29 +2,30 @@
 
 > A browser based audio waveform visualisation frontend component from BBC R&D.
 
-Peaks is a modular frontend component designed for the display of and interaction with audio waveform material in the browser.
+Peaks.js is a modular client-side JavaScript component designed for the display of and interaction with audio waveform material in the browser.
 
 ![](https://github.com/bbcrd/peaks.js/blob/master/peaks.png?raw=1)
 
-Peaks is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
+Peaks.js is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
 
-Peaks utilizes HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
+Peaks.js uses HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
-[More informations about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
+[More information about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
 
 # Installation
 
 - **npm**: `npm install --save peaks.js`
 - *bower*: `bower install --save peaks.js`
+- [Browserify CDN](http://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
 - *old school*: [download zip file](https://github.com/bbcrd/peaks.js/archive/master.zip)
 
 # Using Peaks.js in your own project
 
-Peaks can be included in any web page by following these steps:
+Peaks.js can be included in any web page by following these steps:
 
 1. include it your web page
 1. include a media element and its [waveform data file](https://github.com/bbcrd/audiowaveform)
-1. initialise Peaks
+1. initialise Peaks.js
 
 ```html
 <div id="peaks-container"></div>
@@ -35,9 +36,9 @@ Peaks can be included in any web page by following these steps:
 <script src="bower_components/requirejs/require.js" data-main="app.js"></script>
 ```
 
-## Start using [require.js](http://requirejs.org/)
+## Start using AMD and [require.js](http://requirejs.org/)
 
-AMD modules are working out of the box without any optimiser.
+AMD modules work out of the box without any optimiser.
 
 ```javascript
 // in app.js
@@ -46,12 +47,12 @@ requirejs.config({
   paths: {
     peaks: 'bower_components/peaks.js/src/main',
     EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
-    Kinetic: 'bower_components/kineticjs/kinetic',
+    Konva: 'bower_components/konvajs/konva',
     'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
   }
 });
 
-// requires it
+// require it
 require(['peaks'], function (Peaks) {
   var p = Peaks.init({
     container: document.querySelector('#peaks-container'),
@@ -65,22 +66,38 @@ require(['peaks'], function (Peaks) {
 });
 ```
 
-A working examples is provided in [`index.html`](index.html).
+A working example is provided in [`index.html`](index.html).
+
+## Start using ES2015 module loader
+
+This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/) (with [babelify transform](https://github.com/babel/babelify)).
+
+```js
+import Peaks from 'peaks.js';
+
+const p = Peaks.init({ … });
+```
+
+## Start using CommonJS module loader
+
+This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/).
+
+```js
+var Peaks = require('peaks.js');
+
+var p = Peaks.init({ … });
+```
 
 ## Start using vanilla JavaScript
 
 ```html
-<script src="http://wzrd.in/standalone/peaks.js"></script>
+<script src="node_modules/peaks.js/peaks.js"></script>
 <script>
 (function(Peaks){
-    var p = Peaks.init({ … });
+  var p = Peaks.init({ … });
 })(peaks.js);
 </script>
 ```
-
-**Notice**: this examples uses [Browserify CDN](http://wzrd.in/): save it as a local copy or build your own.
-
-Please [refer to the *Building Peaks* section](#building-peaks) to learn more about how to build Peaks for development or production purpose.
 
 ## Generate waveform data
 
@@ -100,12 +117,12 @@ To generate a JSON format waveform data file:
 audiowaveform -i sample.mp3 -o sample.json -b 8
 ```
 
-Refer to audiowaveform(1) for full details of the available command line options.
+Refer to the man page audiowaveform(1) for full details of the available command line options.
 
 ## Web Audio based waveforms
 
-Since `0.3.0`, Peaks can rely on Web Audio to generate waveforms.
-Which means you would not have to pre-generate a `dat` or `json` beforehand.
+Since `0.3.0`, Peaks.js can use Web Audio to generate waveforms, which means you would not have to
+pre-generate a `dat` or `json` file beforehand.
 
 To do so, skip the `dataUri` option and make sure [your browser is compatible with Web Audio](http://caniuse.com/#feat=audio-api).
 
@@ -218,30 +235,33 @@ var options = {
 
 ## Segment Format
 
-Segments provided from peaks.js use the following format:
+Segments provided from Peaks.js use the following format:
 
 ```javascript
 [{
-   // Assigned colour of the segment
+  // Assigned colour of the segment
   color: "rgba(123, 2, 61, 1)",
-   // Editable state of the segment
+  // Editable state of the segment
   editable: true,
-   // End time in seconds of the segment
+  // End time in seconds of the segment
   endTime: 588.986667,
-   // Unique ID of the segment
+  // Unique ID of the segment
   id: "segment0",
-   // Kinetics.js Element group of segment canvas objects for overview waveform
-  overview: Kinetic.Group,
-   // End time in seconds of the segment
+  // Konva.js Element group of segment canvas objects for overview waveform
+  overview: Konva.Group,
+  // End time in seconds of the segment
   startTime: 578.986667,
-   // Kinetics.js Element group of segment canvas objects for overview waveform
-  zoom: Kinetic.Group
+  // Konva.js Element group of segment canvas objects for overview waveform
+  zoom: Konva.Group
 }]
 ```
 
 ## Advanced configuration
 
-The marker and label Kinetic.js objects may be overridden to give the segment markers or label your own custom appearance (see main.js / waveform.mixins.js, [Kinetic Polygon Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-polygon-tutorial/) and [Kinetic Text Example](http://www.html5canvastutorials.com/kineticjs/html5-canvas-kineticjs-text-tutorial/)) :
+The marker and label Konva.js objects may be overridden to give the segment
+markers or label your own custom appearance (see main.js / waveform.mixins.js,
+[Konva Polygon Example](http://konvajs.github.io/docs/shapes/Line_-_Polygon.html)
+and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
 
 ```javascript
 {
@@ -253,11 +273,13 @@ The marker and label Kinetic.js objects may be overridden to give the segment ma
 
 # API
 
+## Initialisation
+
 The top level `peaks` object exposes a factory to create new `peaks` instances.
 
-## `peaks.init(options)`
+### `peaks.init(options)`
 
-Start a instance of peaks with the [assigned options](#Configuration). It enables you do deal with several instances
+Starts an instance of Peaks with the [assigned options](#Configuration). It enables you do deal with several instances
 of Peaks within a single page with one or several configurations.
 
 ```js
@@ -339,19 +361,26 @@ console.log(instance.zoom.getZoom()); // -> 1
 **Segments** give the ability to visually tag timed portions of a media object.
 This is a great way to provide visual cues to your users.
 
-### `instance.segments.add(startTime, endTime, editable, color, labelText)`
+### `instance.segments.add({startTime, endTime, editable, color, labelText, id})`
 ### `instance.segments.add(segment[])`
 
-Add a segment to the waveform timeline with starting time `startTime` (seconds), ending time `endTime` (seconds)
-and set whether the segment is user editable with `editable` (boolean, defaults to `false`).
+Add a segment to the waveform timeline. Accepts the following parameters:
+
+* `startTime`: the segment start time (seconds)
+* `endTime`: the segment end time (seconds)
+* `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
+* `color`: (optional) the segment color. If not specified, the segment is given a default color (see the `segmentColor` and
+`randomizeSegmentColor` [options](#Configuration)).
+* `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
 
 ```js
 var instance = peaks.init({ … });
 
-instance.segments.add(0, 10.5); //adds a 0 to 10.5 seconds non-editable segment with a random color
+// Add non-editable segment, from 0 to 10.5 seconds, with a random color
+instance.segments.add({startTime: 0, endTime: 10.5});
 ```
 
-Alternatively, provide an array of segment objects as shown above in the config options as the first and only argument to add all those segments at once.
+Alternatively, provide an array of segment objects to add all those segments at once.
 
 ```js
 var instance = peaks.init({ … });
@@ -360,7 +389,7 @@ instance.segments.add([
   {
     startTime: 0,
     endTime: 10.5,
-    labelText: '0 to 10 seconds non-editable demo segment'
+    labelText: '0 to 10.5 seconds non-editable demo segment'
   },
   {
     startTime: 3.14,
@@ -374,11 +403,11 @@ instance.segments.add([
 
 Returns an array of objects representing all displayed segments present on the timeline in the segment format.
 
-### `instance.segments.removeByTime(timeStart, timeEnd)`
+### `instance.segments.removeByTime(startTime, endTime)`
 
-Remove any segment which start at `timeStart`, and which optionally finish at `timeEnd`.
+Remove any segment which start at `startTime` (seconds), and which optionally finish at `endTime` (seconds).
 
-The returned value corresponds to the number of deleted segments.
+The return value indicates the number of deleted segments.
 
 ```js
 var instance = peaks.init({ … });
@@ -390,7 +419,16 @@ instance.segments.removeByTime(10);
 
 // remove only the first segment
 instance.segments.removeByTime(10, 12);
+```
 
+### `instance.segments.removeById(segmentId)`
+
+Remove segments with the given identifier.
+
+```js
+var instance = peaks.init({ … });
+
+instance.segments.removeById('peaks.segment.3');
 ```
 
 ### `instance.segments.removeAll()`
@@ -403,9 +441,20 @@ var instance = peaks.init({ … });
 instance.segments.removeAll();
 ```
 
+## Destruction
+
+### `instance.destroy()`
+
+Call this function to release resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
+
+```js
+var peaksInstance = peaks.init({ … });
+var peaksInstance.destroy();
+```
+
 ## Events
 
-Peaks emit events to enable you to extend its behaviour according to your needs.
+Peaks.js emits events to enable you to extend its behaviour according to your needs.
 
 ### General
 
@@ -435,11 +484,12 @@ Peaks emit events to enable you to extend its behaviour according to your needs.
 ---------------------------|----------------
 `segments.ready`           | N/A
 `points.ready`             | N/A
-`segment.dragged`          | `Segment segment`
+`segments.dragged`         | `Segment segment`
+`points.dragged`           | `Point point`
 
-# Building Peaks
+# Building Peaks.js
 
-You might want to build a minified standalone version of Peaks, to test a contribution or to run additional tests.
+You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests.
 The project *bundles* everything you need to do so.
 
 ## Prerequisite
@@ -452,18 +502,18 @@ npm install
 
 ## Building
 
-This command will produce a minified standalone version of Peaks.
-It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as Vanilla JavaScript.
+This command will produce a minified standalone version of Peaks.js.
+It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as vanilla JavaScript.
 
 ```bash
 npm run build
 ```
 
-The output of the build will be located as `peaks.min.js`, alongside its associated [Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+The output of the build is a file named `peaks.js`, alongside its associated [source map](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
 ## Live Demo
 
-This command will serve a working version of Peaks to reflect your local updates.
+This command will serve a working version of Peaks.js to reflect your local updates.
 
 ```bash
 npm start
@@ -477,7 +527,6 @@ Then open http://localhost:9000 in a Web browser.
 
 If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
 
-
 # License
 
 See [COPYING](COPYING)
@@ -490,6 +539,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](http://github.com/chrisn)
 
-Copyright 2015, British Broadcasting Corporation.
-
-
+Copyright 2016, British Broadcasting Corporation.

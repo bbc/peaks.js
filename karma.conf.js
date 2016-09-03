@@ -1,36 +1,40 @@
 'use strict';
 
-function filterBrowsers(browsers, re){
-  return Object.keys(browsers).filter(function(key){
+function filterBrowsers(browsers, re) {
+  return Object.keys(browsers).filter(function(key) {
     return re.test(key);
   });
 }
 
 module.exports = function (config) {
-
-  var isCI = (Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY)) === true;
+  var isCI   = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
   var isFast = Boolean(process.env.FAST);
 
+  // Karma configuration
   config.set({
-    // Karma configuration
-
     // base path, that will be used to resolve files and exclude
-    basePath : '',
+    basePath: '',
 
-    frameworks : ['mocha', 'requirejs', 'sinon-chai'],
+    frameworks: ['mocha', 'sinon-chai'],
+
+    client: {
+      chai: {
+        includeStack: true
+      },
+      mocha: {
+        timeout: 5000
+      }
+    },
 
     // list of files / patterns to load in the browser
-    files : [
+    files: [
+      'peaks.js',
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'node_modules/eventemitter2/lib/*.js', included: false },
-      { pattern: 'node_modules/waveform-data/dist/*.js', included: false },
-      { pattern: 'node_modules/konva/*.js', included: false },
-      { pattern: 'test/*.html' },
-      { pattern: 'src/**/*.js', included: false },
-      { pattern: 'test/unit/**/*.js', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
-      'test/test-main.js'
+      { pattern: 'test/*.html' },
+      'test/load-fixtures.js',
+      'test/unit/**/*.js',
     ],
 
     preprocessors: {
@@ -38,27 +42,27 @@ module.exports = function (config) {
     },
 
     // list of files to exclude
-    //exclude : ['lib/js/main.js'],
+    //exclude: ['lib/js/main.js'],
 
     // test results reporter to use
-    // possible values: dots || progress || growl
-    reporters : isCI ? ['dots'] : ['progress'],
+    // possible values: dots || progress || growl || spec
+    reporters : isCI ? ['dots'] : ['spec'],
 
     // web server port
-    port : 8080,
+    port: 8080,
 
-    // cli runner port
-    runnerPort : 9100,
+    // CLI runner port
+    runnerPort: 9100,
 
     // enable / disable colors in the output (reporters and logs)
-    colors : true,
+    colors: true,
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-    logLevel : config.LOG_INFO,
+    logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch : false,
+    autoWatch: false,
 
     browserDisconnectTolerance: isCI ? 3 : 1,
     browserNoActivityTimeout: isCI ? 120000 : null,
@@ -140,10 +144,11 @@ module.exports = function (config) {
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun : true
-
   });
 
   config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : (isFast ? ['Chrome', 'Firefox'] : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7'])
+    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) :
+                     (isFast ? ['Chrome', 'Firefox'] :
+                               ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7'])
   });
 };

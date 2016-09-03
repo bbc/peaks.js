@@ -4,39 +4,43 @@ define('peaks', [
   'peaks/waveform/waveform.core',
   'peaks/waveform/waveform.mixins',
   'peaks/player/player.keyboard'
-], function (EventEmitter, AudioPlayer, Waveform, mixins, keyboard) {
+], function(EventEmitter, Player, Waveform, mixins, KeyboardHandler) {
   'use strict';
 
-  var buildUi = function (container) {
+  function buildUi(container) {
     return {
-      'player':   container.querySelector(".waveform"),
-      'zoom':     container.querySelector(".zoom-container"),
-      'overview': container.querySelector(".overview-container")
+      player:   container.querySelector('.waveform'),
+      zoom:     container.querySelector('.zoom-container'),
+      overview: container.querySelector('.overview-container')
     };
-  };
+  }
 
-  var extend = function (to, from) {
+  function extend(to, from) {
     for (var key in from) {
-      to[key] = from[key];
+      if (from.hasOwnProperty(key)) {
+        to[key] = from[key];
+      }
     }
 
     return to;
-  };
+  }
 
-  var ee = (EventEmitter.EventEmitter2 || EventEmitter);
-
-  function Peaks (container) {
-    ee.call(this, { wildcard: true });
+  function Peaks(container) {
+    EventEmitter.call(this, { wildcard: true });
 
     this.options = {
+
       /**
-       * Array of scale factors (samples per pixel) for the stepped zoom levels (big >> small)
+       * Array of scale factors (samples per pixel) for the stepped zoom levels
+       * (big >> small)
        */
       zoomLevels:            [512, 1024, 2048, 4096],
+
       /**
        * Data URI where to get the waveform data.
        *
-       * If a string, we assume that `this.dataUriDefaultFormat` is the default `xhr.responseType` value.
+       * If a string, we assume that `this.dataUriDefaultFormat` is the default
+       * `xhr.responseType` value.
        *
        * @since 0.0.1
        *
@@ -44,7 +48,8 @@ define('peaks', [
        * dataUri: 'url/to/data.json?waveformId=1337'
        * ```
        *
-       * If an object, each key is an `xhr.responseType` which will contain its associated source URI.
+       * If an object, each key is an `xhr.responseType` which will contain its
+       * associated source URI.
        *
        * @since 0.3.0
        *
@@ -56,77 +61,102 @@ define('peaks', [
        * ```
        */
       dataUri:               null,
+
       /**
-       * Will be used as a `xhr.responseType` if `dataUri` is a string, and not an object.
-       * Here for backward compatibility purpose only.
+       * Will be used as a `xhr.responseType` if `dataUri` is a string, and not
+       * an object. Here for backward compatibility purpose only.
        *
        * @since 0.3.0
        */
       dataUriDefaultFormat:  'json',
+
       /**
        * Will report errors to that function
        *
        * @type {Function=}
-       * @since 0.5.0
+       * @since 0.4.4
        */
       logger:                null,
+
+      /**
+       * Deprecation messages logger.
+       *
+       * @type {Function}
+       * @since 0.4.8
+       */
+      deprecationLogger:     console.log.bind(console),
+
       /**
        * Bind keyboard controls
        */
       keyboard:              false,
+
       /**
        * Keyboard nudge increment in seconds (left arrow/right arrow)
        */
       nudgeIncrement:        0.01,
+
       /**
        * Colour for the in marker of segments
        */
       inMarkerColor:         '#a0a0a0',
+
       /**
        * Colour for the out marker of segments
        */
       outMarkerColor:        '#a0a0a0',
+
       /**
        * Colour for the zoomed in waveform
        */
       zoomWaveformColor:     'rgba(0, 225, 128, 1)',
+
       /**
        * Colour for the overview waveform
        */
       overviewWaveformColor: 'rgba(0,0,0,0.2)',
+
       /**
        * Colour for the overview waveform highlight rectangle, which shows
        * you what you see in the zoom view.
        */
       overviewHighlightRectangleColor: 'grey',
+
       /**
        * Random colour per segment (overrides segmentColor)
        */
       randomizeSegmentColor: true,
+
       /**
        * Height of the waveform canvases in pixels
        */
       height:                200,
+
       /**
        * Colour for segments on the waveform
        */
       segmentColor:          'rgba(255, 161, 39, 1)',
+
       /**
        * Colour of the play head
        */
       playheadColor:         'rgba(0, 0, 0, 1)',
+
       /**
        * Colour of the play head text
        */
       playheadTextColor:     '#aaa',
+
       /**
        * Colour of the axis gridlines
-      */
+       */
       axisGridlineColor:     '#ccc',
+
       /**
        * Colour of the axis labels
        */
       axisLabelColor:        '#aaa',
+
       /**
        *
        */
@@ -138,11 +168,19 @@ define('peaks', [
                              ].join(''),
 
       /**
-       * Related to points
+       * Color for point markers
        */
-      pointMarkerColor:     '#FF0000', //Color for the point marker
-      pointDblClickHandler: null, //Handler called when point handle double clicked.
-      pointDragEndHandler:  null, // Called when the point handle has finished dragging
+      pointMarkerColor:     '#FF0000',
+
+      /**
+       * Handler function called when point handle double clicked
+       */
+      pointDblClickHandler: null,
+
+      /*
+       * Handler function called when the point handle has finished dragging
+       */
+      pointDragEndHandler:  null,
 
       /**
        * WaveformData WebAudio Decoder Options
@@ -151,10 +189,10 @@ define('peaks', [
        *
        * @see https://github.com/bbcrd/waveform-data.js/blob/master/lib/builders/webaudio.js
        */
-       waveformBuilderOptions: {
+      waveformBuilderOptions: {
         scale: 512,
         scale_adjuster: 127
-       },
+      },
 
       /**
        * Use animation on zoom - only relevant if zoom mode is 'stepped'
@@ -162,17 +200,17 @@ define('peaks', [
       zoomAdapter: 'animated',
 
       /**
-       * Which mode of zoom to use? 
+       * Which mode of zoom to use?
        *
        * The default is 'stepped', which tells Peaks to use the original ZoomView (with static or animated adapters)
-       * A value of 'continuous' tells Peaks to use the new continuous ZoomView 
-       * 
+       * A value of 'continuous' tells Peaks to use the new continuous ZoomView
+       *
        */
       zoomMode: 'stepped',
 
       /**
        * The initial zoom level to work with
-       * 
+       *
        */
       initialZoomLevel: 0,
 
@@ -183,25 +221,23 @@ define('peaks', [
        * If choosing to specify a value, 15 would be a sensible minimum
        */
       continuousZoomCacheSize: null,
-      
-     /**
-      * Should we use the new editable overview that allows the user to adjust the zoom level with drag handles
-      */
-     showEditableOverview: false,
 
-     /**
-      * Whether the editable overview should start in maximized state
-      */
-     editableOverviewIsMaximized: true,
+      /**
+       * Should we use the new editable overview that allows the user to adjust the zoom level with drag handles
+       */
+      showEditableOverview: false,
 
-     /**
-      * How segment shapes should be drawn - defaults to wave, other option is 'rect'
-      *
-      * 'wave' is slightly inaccurate when using the continuous zoom style
-      */
-     segmentStyle: 'wave'
+      /**
+       * Whether the editable overview should start in maximized state
+       */
+      editableOverviewIsMaximized: true,
 
-     
+      /**
+       * How segment shapes should be drawn - defaults to wave, other option is 'rect'
+       *
+       * 'wave' is slightly inaccurate when using the continuous zoom style
+       */
+      segmentStyle: 'wave'
     };
 
     /**
@@ -226,35 +262,33 @@ define('peaks', [
     this.logger = console.error.bind(console);
   }
 
-  Peaks.init = function init (opts) {
+  Peaks.init = function init(opts) {
     opts = opts || {};
+    opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
 
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
-
-      if (console && typeof console.log === 'function') {
-        console.log('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
-      }
+      opts.deprecationLogger('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
     }
 
     if (!opts.mediaElement) {
-      throw new Error("[Peaks.init] Please provide an audio element.");
+      throw new Error('[Peaks.init] Please provide an audio element.');
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
-      throw new TypeError("[Peaks.init] The mediaElement option should be an HTMLMediaElement.");
+      throw new TypeError('[Peaks.init] The mediaElement option should be an HTMLMediaElement.');
     }
 
     if (!opts.container) {
-      throw new Error("[Peaks.init] Please provide a container object.");
+      throw new Error('[Peaks.init] Please provide a container object.');
     }
 
     if ((opts.container.clientWidth > 0) === false) {
-      throw new TypeError("[Peaks.init] Please ensure that the container has a width.");
+      throw new TypeError('[Peaks.init] Please ensure that the container has a width.');
     }
 
     if (opts.logger && typeof opts.logger !== 'function') {
-      throw new TypeError("[Peaks.init] The `logger` option should be a function.");
+      throw new TypeError('[Peaks.init] The `logger` option should be a function.');
     }
 
     var instance = new Peaks(opts.container);
@@ -289,12 +323,14 @@ define('peaks', [
       instance.container.appendChild(instance.options.template);
     }
     else {
-      throw new TypeError("Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: " + instance.options.template);
+      throw new TypeError('Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: ' + instance.options.template);
     }
 
-    if (instance.options.keyboard) keyboard.init(instance);
+    if (instance.options.keyboard) {
+      instance.keyboardHandler = new KeyboardHandler(instance);
+    }
 
-    instance.player = new AudioPlayer(instance);
+    instance.player = new Player(instance);
     instance.player.init(instance.options.mediaElement);
 
     /*
@@ -306,184 +342,131 @@ define('peaks', [
     // TODO maybe to move in the player object
     instance.seeking = false;
 
-    instance.on("waveformOverviewReady", function () {
+    instance.on('waveformOverviewReady', function() {
       instance.waveform.openZoomView();
 
-      if (instance.options.segments) { // Any initial segments to be displayed?
-        instance.segments.addSegment(instance.options.segments);
+      // Any initial segments to be displayed?
+      if (instance.options.segments) {
+        instance.segments.add(instance.options.segments);
       }
 
-      if (instance.options.points) { //Any initial points to be displayed?
-        instance.points.addPoint(instance.options.points);
+      // Any initial points to be displayed?
+      if (instance.options.points) {
+        instance.points.add(instance.options.points);
       }
-
     });
 
     return instance;
   };
 
-  // Temporary workaround while https://github.com/asyncly/EventEmitter2/pull/122
-  Peaks.prototype = Object.create(ee.prototype, {
+  Peaks.prototype = Object.create(EventEmitter.prototype, {
     segments: {
-      get: function () {
+      get: function() {
         var self = this;
 
-        function addSegment (startTime, endTime, editable, color, labelText) {
-          var segments = arguments[0];
-
-          if (typeof segments === "number") {
-            segments = [
-              {
-                startTime: startTime,
-                endTime:   endTime,
-                editable:  editable,
-                color:     color,
-                labelText: labelText
-              }
-            ];
-          }
-
-          if (Array.isArray(segments)) {
-            segments.forEach(function (segment) {
-              self.waveform.segments.createSegment(segment.startTime, segment.endTime, segment.editable, segment.color, segment.labelText);
-            });
-
-            self.waveform.segments.render();
-          }
-          else {
-            throw new TypeError("[Peaks.segments.addSegment] Unrecognized segment parameters.");
-          }
-        }
-
         return {
-          addSegment: addSegment,
-          add:        addSegment,
-
-          remove: function (segment) {
-            var index = self.waveform.segments.remove(segment);
-
-            if (index === null) {
-              throw new RangeError('Unable to find the requested segment' + String(segment));
-            }
-
-            self.waveform.segments.updateSegments();
-
-            return self.waveform.segments.segments.splice(index, 1).pop();
+          getSegments: function() {
+            return self.waveform.segments.getSegments();
           },
 
-          removeByTime: function (startTime, endTime) {
-            endTime = (typeof endTime === 'number') ? endTime : 0;
-            var fnFilter;
-
-            if (endTime > 0) {
-              fnFilter = function (segment) {
-                return segment.startTime === startTime && segment.endTime === endTime;
-              };
-            }
-            else {
-              fnFilter = function (segment) {
-                return segment.startTime === startTime;
-              };
-            }
-
-            var indexes = self.waveform.segments.segments
-              .filter(fnFilter)
-              .map(function (segment, i) {
-                self.waveform.segments.remove(segment);
-
-                return i;
-              })
-              .sort(function (a, b) {
-                return b - a;
-              })
-              .map(function (index) {
-                self.waveform.segments.segments.splice(index, 1);
-
-                return index;
-              });
-
-            self.waveform.segments.updateSegments();
-
-            return indexes.length;
+          /**
+           * Add one or more segments to the timeline
+           *
+           * @param {(...Object|Object[])} segmentOrSegments
+           * @param {Number} segmentOrSegments[].startTime
+           * @param {Number} segmentOrSegments[].endTime
+           * @param {Boolean=} segmentOrSegments[].editable
+           * @param {String=} segmentOrSegments[].color
+           * @param {String=} segmentOrSegments[].labelText
+           * @param {Number=} segmentOrSegments[].id
+           */
+          add: function(segmentOrSegments) {
+            return self.waveform.segments.add.apply(self.waveform.segments, arguments);
           },
 
-          removeAll: function () {
-            self.waveform.segments.removeAll();
+          remove: function(segment) {
+            return self.waveform.segments.remove(segment);
           },
 
-          getSegments: function () {
-            return self.waveform.segments.segments;
+          /**
+           * Remove segments with the given id
+           *
+           * @param {Number|String} id
+           *
+           * @api
+           * @since 0.5.0
+           */
+          removeById: function(segmentId) {
+            return self.waveform.segments.removeById(segmentId);
+          },
+
+          removeByTime: function(startTime, endTime) {
+            return self.waveform.segments.removeByTime(startTime, endTime);
+          },
+
+          removeAll: function() {
+            return self.waveform.segments.removeAll();
           }
         };
       }
     },
+
     /**
      * Points API
      */
-    points:   {
-      get: function () {
+
+    points: {
+      get: function() {
         var self = this;
+
         return {
-          /**
-           *
-           * @param timeStamp
-           * @param editable
-           * @param color
-           * @param labelText
-           */
-          add: function (timestamp, editable, color, labelText) {
-            var points = arguments[0];
 
-            if (typeof points === "number") {
-              points = [{
-                timestamp: timestamp,
-                editable:  editable,
-                color:     color,
-                labelText: labelText
-              }];
-            }
-
-            if (Array.isArray(points)) {
-              points.forEach(self.waveform.points.createPoint.bind(self.waveform.points));
-              self.waveform.points.render();
-            }
-            else {
-              throw new TypeError("[Peaks.points.addPoint] Unrecognized point parameters.");
-            }
-          },
           /**
+           * Return all points
            *
            * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
            */
-          getPoints: function () {
-            return self.waveform.points.points;
+          getPoints: function() {
+            return self.waveform.points.getPoints();
           },
+
           /**
+           * Add one or more points to the timeline
            *
-           * @param id
+           * @param {(...Object|Object[])} pointOrPoints
+           * @param {Number} pointOrPoints[].timestamp
+           * @param {Boolean=} pointOrPoints[].editable
+           * @param {String=} pointOrPoints[].color
+           * @param {String=} pointOrPoints[].labelText
+           * @param {Number=} pointOrPoints[].id
            */
-          removeByTime: function (timestamp) {
-            var indexes = self.waveform.points.points
-              .filter(function(point){
-                return point.timestamp === timestamp;
-              })
-              .map(function (point, i) {
-                self.waveform.points.remove(point);
+          add: function(pointOrPoints) {
+            return self.waveform.points.add.apply(self.waveform.points, arguments);
+          },
 
-                return i;
-              })
-              .sort(function (a, b) {
-                return b - a;
-              })
-              .map(function (index) {
-                self.waveform.points.points.splice(index, 1);
+          remove: function(point) {
+            return self.waveform.points.remove(point);
+          },
 
-                return index;
-              });
+          /**
+           * Remove points at the given time
+           *
+           * @param {Number} timestamp
+           */
+          removeByTime: function(timestamp) {
+            return self.waveform.points.removeByTime(timestamp);
+          },
 
-            self.waveform.points.render();
-
-            return indexes.length;
+          /**
+           * Remove points with the given id
+           *
+           * @param {Number|String} id
+           *
+           * @api
+           * @since 0.5.0
+           */
+          removeById: function(pointId) {
+            return self.waveform.points.removeById(pointId);
           },
 
           /**
@@ -492,22 +475,25 @@ define('peaks', [
            * @api
            * @since 0.3.2
            */
-          removeAll: function removeAll(){
-            self.waveform.points.removeAll();
+          removeAll: function removeAll() {
+            return self.waveform.points.removeAll();
           }
         };
       }
     },
+
     /**
      * Time API
      */
-    time:     {
-      get: function () {
+
+    time: {
+      get: function() {
         var self = this;
 
         return {
+
           /**
-           * Seeks the media player to that exat time.
+           * Seeks the media player to that exact time.
            * Infers the playhead position to that same time.
            *
            * ```js
@@ -517,9 +503,10 @@ define('peaks', [
            *
            * @param {Number} time
            */
-          setCurrentTime: function setCurrentTime (time) {
+          setCurrentTime: function setCurrentTime(time) {
             return self.player.seekBySeconds(time);
           },
+
           /**
            * Returns the actual time of the media element, in seconds.
            *
@@ -530,8 +517,7 @@ define('peaks', [
            *
            * @returns {Number}
            */
-
-          getCurrentTime: function () {
+          getCurrentTime: function() {
             return self.player.getTime();
           }
         };
@@ -539,41 +525,42 @@ define('peaks', [
     },
 
     /**
-     * Zoom API - a proxy for the currently user zoom mode
-     * 
+     * Zoom API - a proxy for the current user zoom mode
      */
     zoom: {
-      get: function () {
+      get: function() {
         // should current be one of 'stepped' or 'continuous'
         var zoomMode = this.options.zoomMode;
 
         // check to see if an invalid zoom mode was specified
-        if (this[zoomMode + "_zoom"] === undefined) {
-          throw new Error("Invalid zoomModel: " + zoomMode);
+        if (this[zoomMode + '_zoom'] === undefined) {
+          throw new Error('Invalid zoomMode: ' + zoomMode);
         }
-        return this[zoomMode + "_zoom"];
+
+        return this[zoomMode + '_zoom'];
       }
     },
 
     /**
      * Continuous Zoom API
      */
-    continuous_zoom:     {
-      get: function () {
+    continuous_zoom: {
+      get: function() {
         var self = this;
+
         return {
 
           /**
            * Zoom in one level
            */
-          zoomIn: function () {
+          zoomIn: function() {
             self.continuous_zoom.zoomTo(self.currentZoomLevel + 0.1, true);
           },
 
           /**
            * Zoom out one level
            */
-          zoomOut: function () {
+          zoomOut: function() {
             self.continuous_zoom.zoomTo(self.currentZoomLevel - 0.1, true);
           },
 
@@ -581,10 +568,10 @@ define('peaks', [
            * Sets the current zoom value
            *
            * @param {number} zoomValue - between 0 and 1
-           * @param {bool} ease - whether or not the zoom should ease into position (true), or whether it should be instant (false)
+           * @param {bool} ease - whether or not the zoom should ease into position (true),
+           * or whether it should be instant (false)
            */
-          zoomTo: function (zoomValue, ease) { 
-
+          zoomTo: function(zoomValue, ease) {
             // clamp the input
             if (zoomValue > 1) {
               zoomValue = 1;
@@ -594,47 +581,45 @@ define('peaks', [
               zoomValue = 0;
             }
 
-
             // if we want to ease the transition...
             if (ease) {
-
               var EASE_VALUE = 3;
 
               // we're easing, so we need to requestAnimationFrame and move in steps
-              
-               // start and end points of the zoom
-              var finalZoomValue = zoomValue; 
+
+              // start and end points of the zoom
+              var finalZoomValue = zoomValue;
               var currentZoomValue = self.currentZoomLevel;
 
               // store the zoom value we're moving to
               self.currentZoomLevel = zoomValue;
 
-              var step = function () {
+              function step() {
                 currentZoomValue += (finalZoomValue - currentZoomValue) / EASE_VALUE;
+
                 // send out the interim zoom value
-                // 
-                self.emit("zoom.change", currentZoomValue);
+                self.emit('zoom.change', currentZoomValue);
 
                 // if we're not close enough to the final position,
                 // repeat the process next frame
                 if (Math.abs(currentZoomValue - finalZoomValue) > 0.001) {
                   self.rafPointer = window.requestAnimationFrame(step);
                 }
-              
-              };
+              }
+
               // cancel any existing requests...
               window.cancelAnimationFrame(self.rafPointer);
               // call the first step of the ease
-              step ();
-            } else {
+              step();
+            }
+            else {
               // change immediately
               self.currentZoomLevel = zoomValue;
-              self.emit("zoom.change", zoomValue);
+              self.emit('zoom.change', zoomValue);
             }
-
           },
 
-          getMaximumScaleFactor: function () {
+          getMaximumScaleFactor: function() {
             return 512;
           },
 
@@ -643,10 +628,9 @@ define('peaks', [
            *
            * @returns {number}
            */
-          getZoom: function () {
+          getZoom: function() {
             return self.currentZoomLevel;
           }
-
         };
       }
     },
@@ -654,22 +638,23 @@ define('peaks', [
     /**
      * Stepped Zoom API
      */
-    stepped_zoom:     {
-      get: function () {
+    stepped_zoom: {
+      get: function() {
         var self = this;
+
         return {
 
           /**
            * Zoom in one level
            */
-          zoomIn: function () {
+          zoomIn: function() {
             self.stepped_zoom.setZoom(self.currentZoomLevel - 1);
           },
 
           /**
            * Zoom out one level
            */
-          zoomOut: function () {
+          zoomOut: function() {
             self.stepped_zoom.setZoom(self.currentZoomLevel + 1);
           },
 
@@ -678,7 +663,7 @@ define('peaks', [
            *
            * @param {number} zoomLevelIndex
            */
-          setZoom: function (zoomLevelIndex) { // Set zoom level to index of current zoom levels
+          setZoom: function(zoomLevelIndex) { // Set zoom level to index of current zoom levels
             if (zoomLevelIndex >= self.options.zoomLevels.length) {
               zoomLevelIndex = self.options.zoomLevels.length - 1;
             }
@@ -690,7 +675,12 @@ define('peaks', [
             var previousZoomLevel = self.currentZoomLevel;
 
             self.currentZoomLevel = zoomLevelIndex;
-            self.emit("zoom.update", self.options.zoomLevels[zoomLevelIndex], self.options.zoomLevels[previousZoomLevel]);
+
+            self.emit(
+              'zoom.update',
+              self.options.zoomLevels[zoomLevelIndex],
+              self.options.zoomLevels[previousZoomLevel]
+            );
           },
 
           /**
@@ -698,7 +688,7 @@ define('peaks', [
            *
            * @returns {number}
            */
-          getZoom: function () {
+          getZoom: function() {
             return self.currentZoomLevel;
           },
 
@@ -708,7 +698,11 @@ define('peaks', [
            * @since 0.3
            */
           overview: function zoomToOverview() {
-            self.emit("zoom.update", self.waveform.waveformOverview.data.adapter.scale, self.options.zoomLevels[ self.currentZoomLevel ]);
+            self.emit(
+              'zoom.update',
+              self.waveform.waveformOverview.data.adapter.scale,
+              self.options.zoomLevels[self.currentZoomLevel]
+            );
           },
 
           /**
@@ -717,12 +711,25 @@ define('peaks', [
            * @since 0.3
            */
           reset: function resetOverview() {
-            self.emit("zoom.update", self.options.zoomLevels[ self.currentZoomLevel ], self.waveform.waveformOverview.data.adapter.scale);
+            self.emit(
+              'zoom.update',
+              self.options.zoomLevels[self.currentZoomLevel],
+              self.waveform.waveformOverview.data.adapter.scale
+            );
           }
         };
       }
     }
   });
+
+  /**
+   * Clean up event listeners when you're no longer using a Peaks instance
+   */
+  Peaks.prototype.destroy = function() {
+    this.removeAllListeners();
+    this.waveform.destroy();
+    this.player.destroy();
+  };
 
   return Peaks;
 });

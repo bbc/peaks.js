@@ -5,17 +5,23 @@
  * removing and manipulation of points. A point in a segment of zero length
  */
 define([
-  "peaks/waveform/waveform.mixins",
-  "konva"
-], function (mixins, Konva) {
+  'peaks/waveform/waveform.mixins',
+  'konva'
+], function(mixins, Konva) {
+  'use strict';
 
-  return function (peaks) {
+  function WaveformPoints(peaks) {
     var self = this;
-    var waveformView = peaks.waveform;
 
+    self.peaks = peaks;
     self.points = [];
 
-    self.views = [waveformView.waveformZoomView, waveformView.waveformOverview].map(function(view){
+    var views = [
+      self.peaks.waveform.waveformZoomView,
+      self.peaks.waveform.waveformOverview
+    ];
+
+    self.views = views.map(function(view) {
       if (!view.pointLayer) {
         view.pointLayer = new Konva.Layer();
         view.stage.add(view.pointLayer);
@@ -25,149 +31,248 @@ define([
       return view;
     });
 
-    function constructPoint(point) {
-      var pointZoomGroup = new Konva.Group();
-      var pointOverviewGroup = new Konva.Group();
-      var pointGroups = [pointZoomGroup, pointOverviewGroup];
+    self.pointId = 0;
+  }
 
-      point.editable = Boolean(point.editable);
+  WaveformPoints.prototype.getNextPointId = function() {
+    return this.pointId++;
+  };
 
-      pointGroups.forEach(function(pointGroup, i){
-        var view = self.views[i];
+  WaveformPoints.prototype.constructPoint = function(point) {
+    var self = this;
 
-        if (point.editable) {
-          pointGroup.marker = new peaks.options.pointMarker(true, pointGroup, point, pointHandleDrag, peaks.options.pointDblClickHandler, peaks.options.pointDragEndHandler);
-          pointGroup.add(pointGroup.marker);
-        }
-
-        view.pointLayer.add(pointGroup);
-      });
-
-      point.zoom = pointZoomGroup;
-      point.zoom.view = waveformView.waveformZoomView;
-      point.overview = pointOverviewGroup;
-      point.overview.view = waveformView.waveformOverview;
-
-      return point;
+    if (point.id === undefined || point.id === null) {
+      point.id = 'peaks.point.' + this.getNextPointId();
     }
 
-    function updatePoint(point) {
+    point.editable = Boolean(point.editable);
 
+    var pointZoomGroup = new Konva.Group();
+    var pointOverviewGroup = new Konva.Group();
+    var pointGroups = [pointZoomGroup, pointOverviewGroup];
 
-      // Binding with data
-      waveformView.waveformOverview.data.set_point(waveformView.waveformOverview.data.at_time(point.timestamp), point.id);
-      waveformView.waveformZoomView.data.set_point(waveformView.waveformZoomView.data.at_time(point.timestamp), point.id);
-
-      // Overview
-      var overviewtimestampOffset = waveformView.waveformOverview.data.at_time(point.timestamp);
+    pointGroups.forEach(function(pointGroup, i) {
+      var view = self.views[i];
 
       if (point.editable) {
-        if (point.overview.marker) point.overview.marker.show().setX(overviewtimestampOffset - point.overview.marker.getWidth());
+        pointGroup.marker = new self.peaks.options.pointMarker(
+          true,
+          pointGroup,
+          point,
+          self.pointHandleDrag.bind(self),
+          self.peaks.options.pointDblClickHandler,
+          self.peaks.options.pointDragEndHandler
+        );
 
-        // Change Text
-        point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
+        pointGroup.add(pointGroup.marker);
       }
 
-      // Zoom - 
-      // allow the view to override the position it reports
-      var zoomtimestampOffset = (typeof waveformView.waveformZoomView.atDataTime === 'function') ?  waveformView.waveformZoomView.atDataTime (point.timestamp) :  waveformView.waveformZoomView.data.at_time(point.timestamp);
-      var frameStartOffset = waveformView.waveformZoomView.frameOffset;
+      view.pointLayer.add(pointGroup);
+    });
 
-      if (zoomtimestampOffset < frameStartOffset) {
-        zoomStartOffset = frameStartOffset;
-      }
+    point.zoom = pointZoomGroup;
+    point.zoom.view = this.peaks.waveform.waveformZoomView;
+    point.overview = pointOverviewGroup;
+    point.overview.view = this.peaks.waveform.waveformOverview;
 
-      if (waveformView.waveformZoomView.data.points[point.id].visible) {
-        var startPixel = zoomtimestampOffset - frameStartOffset;
-
-        point.zoom.show();
-
-        if (point.zoom.marker) point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
-
-
-        if (point.editable) {
-          
-          // Change Text
-          point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
-        }
-      }
-      else {
-        point.zoom.hide();
-      }
-    }
-
-    function pointHandleDrag(thisPoint, point) {
-      if (thisPoint.marker.getX() > 0) {
-        var inOffset = thisPoint.view.frameOffset + thisPoint.marker.getX() + thisPoint.marker.getWidth();
-        point.timestamp = thisPoint.view.data.time(inOffset);
-      }
-
-      updatePoint(point);
-      self.render();
-    }
-
-    this.init = function () {
-      peaks.on("waveform_zoom_displaying", self.updatePoints.bind(self));
-      peaks.on("waveform_zoom_updating", self.updatePoints.bind(self));
-      peaks.emit("points.ready");
-    };
-
-    this.updatePoints = function () {
-      self.points.forEach(updatePoint);
-      self.render();
-    };
-
-    this.createPoint = function (point) {
-
-      if ((point.timestamp >= 0) === false) {
-        throw new RangeError("[waveform.points.createPoint] timestamp should be a >=0 value");
-      }
-
-      point.id = "point" + self.points.length;
-
-      point = constructPoint(point);
-      updatePoint(point);
-      self.points.push(point);
-    };
-
-    this.remove = function removePoint(point) {
-      var index = null;
-
-      this.points.some(function(p, i){
-        if (p === point){
-          index = i;
-          return true;
-        }
-      });
-
-      if (typeof index === 'number'){
-        point.overview.destroy();
-        point.zoom.destroy();
-      }
-
-      return index;
-    };
-
-    this.removeAll = function removeAllPoints(){
-      this.views.forEach(function(view){
-        view.pointLayer.removeChildren();
-      });
-
-      this.points = [];
-
-      this.render();
-    };
-
-    /**
-     * Performs the rendering of the segments on screen
-     *
-     * @api
-     * @since 0.3.0
-     */
-    this.render = function renderPoints(){
-      self.views.forEach(function(view){
-        view.pointLayer.draw();
-      });
-    };
+    return point;
   };
+
+  WaveformPoints.prototype.updatePoint = function(point) {
+    // Binding with data
+    this.peaks.waveform.waveformOverview.data.set_point(
+      this.peaks.waveform.waveformOverview.data.at_time(point.timestamp),
+      point.id
+    );
+
+    this.peaks.waveform.waveformZoomView.data.set_point(
+      this.peaks.waveform.waveformZoomView.data.at_time(point.timestamp),
+      point.id
+    );
+
+    // Overview
+    var overviewTimestampOffset =
+      this.peaks.waveform.waveformOverview.data.at_time(point.timestamp);
+
+    if (point.editable) {
+      if (point.overview.marker) {
+        point.overview.marker.show().setX(
+          overviewTimestampOffset - point.overview.marker.getWidth()
+        );
+      }
+
+      // Change Text
+      point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
+    }
+
+    // Zoom - allow the view to override the position it reports
+    var zoomTimestampOffset = (typeof this.peaks.waveform.waveformZoomView.atDataTime === 'function') ?
+                              this.peaks.waveform.waveformZoomView.atDataTime(point.timestamp) :
+                              this.peaks.waveform.waveformZoomView.data.at_time(point.timestamp);
+    var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
+
+    if (zoomTimestampOffset < frameStartOffset) {
+      zoomTimestampOffset = frameStartOffset;
+    }
+
+    if (this.peaks.waveform.waveformZoomView.data.points[point.id].visible) {
+      var startPixel = zoomTimestampOffset - frameStartOffset;
+
+      point.zoom.show();
+
+      if (point.zoom.marker) {
+        point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
+      }
+
+      if (point.editable) {
+        // Change Text
+        //point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
+        point.zoom.marker.label.setText(point.labelText);
+      }
+    }
+    else {
+      point.zoom.hide();
+    }
+  };
+
+  WaveformPoints.prototype.pointHandleDrag = function(thisPoint, point) {
+    if (thisPoint.marker.getX() > 0) {
+      var inOffset = thisPoint.view.frameOffset +
+                     thisPoint.marker.getX() +
+                     thisPoint.marker.getWidth();
+
+      point.timestamp = thisPoint.view.data.time(inOffset);
+    }
+
+    this.peaks.emit('points.dragged', point);
+    this.updatePoint(point);
+    this.render();
+  };
+
+  WaveformPoints.prototype.init = function() {
+    this.peaks.on('waveform_zoom_displaying', this.updatePoints.bind(this));
+    this.peaks.on('waveform_zoom_updating', this.updatePoints.bind(this));
+    this.peaks.emit('points.ready');
+  };
+
+  WaveformPoints.prototype.updatePoints = function() {
+    this.points.forEach(this.updatePoint.bind(this));
+    this.render();
+  };
+
+  WaveformPoints.prototype.createPoint = function(point) {
+    if (typeof point.timestamp !== 'number') {
+      throw new TypeError('[waveform.points.createPoint] timestamp should be a numeric value \'' + typeof point.timestamp + '\': ' + point.typestamp);
+    }
+
+    if (isNaN(point.timestamp)) {
+      throw new TypeError('[waveform.points.createPoint] timestamp must be a numeric value');
+    }
+
+    if (point.timestamp < 0) {
+      throw new RangeError('[waveform.points.createPoint] timestamp should be a >=0 value');
+    }
+
+    point = this.constructPoint(point);
+    this.updatePoint(point);
+    this.points.push(point);
+  };
+
+  WaveformPoints.prototype.getPoints = function() {
+    return this.points;
+  };
+
+  WaveformPoints.prototype.add = function(pointOrPoints) {
+    var points = Array.isArray(arguments[0]) ?
+                 arguments[0] :
+                 Array.prototype.slice.call(arguments);
+
+    if (typeof points[0] === 'number') {
+      this.peaks.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
+
+      points = [{
+        timestamp: arguments[0],
+        editable:  arguments[1],
+        color:     arguments[2],
+        labelText: arguments[3]
+      }];
+    }
+
+    points.forEach(this.createPoint.bind(this));
+    this.render();
+  };
+
+  /**
+   * @private
+   */
+  WaveformPoints.prototype._remove = function(point) {
+    var index = null;
+
+    this.points.some(function(p, i) {
+      if (p === point) {
+        index = i;
+
+        return true;
+      }
+    });
+
+    if (index !== null) {
+      point.overview.destroy();
+      point.zoom.destroy();
+    }
+
+    return index;
+  };
+
+  WaveformPoints.prototype.remove = function(point) {
+    var index = this._remove(point);
+
+    if (index === null) {
+      throw new RangeError('Unable to find the requested point' + String(point));
+    }
+
+    this.render();
+
+    return this.points.splice(index, 1).pop();
+  };
+
+  WaveformPoints.prototype.removeByTime = function(timestamp) {
+    var matchingPoints = this.points.filter(function(point) {
+      return point.timestamp === timestamp;
+    });
+
+    matchingPoints.forEach(this.remove.bind(this));
+
+    return matchingPoints.length;
+  };
+
+  WaveformPoints.prototype.removeById = function(pointId) {
+    this.points.filter(function(point) {
+      return point.id === pointId;
+    }).forEach(this.remove.bind(this));
+  };
+
+  WaveformPoints.prototype.removeAll = function() {
+    this.views.forEach(function(view) {
+      view.pointLayer.removeChildren();
+    });
+
+    this.points = [];
+
+    this.render();
+  };
+
+  /**
+   * Performs the rendering of the segments on screen
+   *
+   * @api
+   * @since 0.3.0
+   */
+  WaveformPoints.prototype.render = function() {
+    this.views.forEach(function(view) {
+      view.pointLayer.draw();
+    });
+  };
+
+  return WaveformPoints;
 });
