@@ -594,7 +594,7 @@ define('peaks', [
               // store the zoom value we're moving to
               self.currentZoomLevel = zoomValue;
 
-              function step() {
+              var step = function() {
                 currentZoomValue += (finalZoomValue - currentZoomValue) / EASE_VALUE;
 
                 // send out the interim zoom value
@@ -605,7 +605,7 @@ define('peaks', [
                 if (Math.abs(currentZoomValue - finalZoomValue) > 0.001) {
                   self.rafPointer = window.requestAnimationFrame(step);
                 }
-              }
+              };
 
               // cancel any existing requests...
               window.cancelAnimationFrame(self.rafPointer);

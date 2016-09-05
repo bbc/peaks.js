@@ -126,8 +126,7 @@ define([
 
       if (point.editable) {
         // Change Text
-        //point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
-        point.zoom.marker.label.setText(point.labelText);
+        point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
       }
     }
     else {

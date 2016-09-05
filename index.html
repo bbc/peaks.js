@@ -87,15 +87,14 @@
         <div id="first-waveform-visualiser-container"></div>
 
         <div id="demo-controls">
-          <audio controls=controls>
+          <audio controls="controls">
             <source src="test_data/sample.mp3" type="audio/mpeg">
             <source src="test_data/sample.ogg" type="audio/ogg">
             Your browser does not support the audio element.
           </audio>
-
           <p>
             <button data-action="zoom-out">Zoom out</button>
-            <input tabindex=-1 type=range min=0 max=1000 value=1000 id="zoom-slider" step="0.1">
+            <input tabindex="-1" type="range" min="0" max="1000" value="1000" id="zoom-slider" step="0.1">
             <button data-action="zoom-in">Zoom in</button>
             <button data-action="toggle-overview">Toggle overview state</button>
           </p>
@@ -132,11 +131,11 @@
 
             // change the default markup
             template: [
-               '<div class="waveform">',
-               '<div class="overview-container"></div>',
-               '<div class="zoom-container"></div>',
-               '</div>'
-             ].join(''),
+              '<div class="waveform">',
+              '<div class="overview-container"></div>',
+              '<div class="zoom-container"></div>',
+              '</div>'
+            ].join(''),
           };
 
           var peaksInstance = Peaks.init(options);
@@ -155,6 +154,7 @@
           }
 
           document.querySelector('[data-action="zoom-in"]').addEventListener('click', peaksInstance.zoom.zoomIn.bind(peaksInstance));
+
           document.querySelector('[data-action="zoom-out"]').addEventListener('click', peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
           document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
@@ -173,6 +173,9 @@
           });
 
           document.querySelector('[data-action="toggle-overview"]').addEventListener('click', function() {
+            // TODO: Should not be using events for this. Events are either for
+            // internal use orfor communicating from Peaks to the outside world
+            // (not vice versa). Use a method call instead.
             peaksInstance.emit('overview.toggleMinimizedState');
             document.querySelector('.overview-container').classList.toggle('maximized');
           });
@@ -182,9 +185,9 @@
             console.log('Points', peaksInstance.points.getPoints());
           });
 
-          peaksInstance.on("zoom.preload-progress", function (currentStep, totalSteps) {
-            document.getElementById("peaks-loading").innerHTML =
-              "<p>Initialising - " + Math.round(100 * currentStep / totalSteps) + "%</p>";
+          peaksInstance.on('zoom.preload-progress', function(currentStep, totalSteps) {
+            document.getElementById('peaks-loading').innerHTML =
+              '<p>Initialising - ' + Math.round(100 * currentStep / totalSteps) + '%</p>';
           });
 
           peaksInstance.on('zoomview.ready', function() {
