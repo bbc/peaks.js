@@ -3,43 +3,26 @@
   <head>
     <title>Peaks.js Demo Page</title>
     <style>
-      #titles,#peaks-loading {
+      #titles {
         font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
       }
 
       #titles, [id*="waveform-visualiser"] {
         margin: 24px auto;
-        width: 1000px
+        width: 1000px;
       }
 
-      .zoom-container {
+      [id*="waveform-visualiser"] [class*="-container"] {
+        box-shadow: 3px 3px 20px #919191;
         margin: 0 0 24px 0;
-        border:1px solid #ccc;
+        -moz-box-shadow: 3px 3px 20px #919191;
+        -webkit-box-shadow: 3px 3px 20px #919191;
         line-height: 0;
       }
 
       .overview-container {
-        height: 25px;
-        background:white;
-        border:1px solid #ccc;
-        border-bottom:none;
-        overflow: hidden;
+        height: 85px;
       }
-
-      .overview-container.maximized {
-        height:85px;
-      }
-
-      /* Loading stuff */
-      #peaks-loading {
-        text-align: center;
-      }
-
-      #peaks-ready {
-        visibility:hidden;
-      }
-
-      /*.overvoew-*/
 
       #second-waveform-visualiser-container [class*="-container"] {
         background: #111;
@@ -80,30 +63,20 @@
         from speech or identifying different music tracks.</p>
       </div>
 
-      <div id="peaks-loading">
-      </div>
+      <div id="first-waveform-visualiser-container"></div>
 
-      <div id="peaks-ready">
-        <div id="first-waveform-visualiser-container"></div>
+      <div id="demo-controls">
+        <audio controls=controls>
+          <source src="test_data/sample.mp3" type="audio/mpeg">
+          <source src="test_data/sample.ogg" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
 
-        <div id="demo-controls">
-          <audio controls="controls">
-            <source src="test_data/sample.mp3" type="audio/mpeg">
-            <source src="test_data/sample.ogg" type="audio/ogg">
-            Your browser does not support the audio element.
-          </audio>
-          <p>
-            <button data-action="zoom-out">Zoom out</button>
-            <input tabindex="-1" type="range" min="0" max="1000" value="1000" id="zoom-slider" step="0.1">
-            <button data-action="zoom-in">Zoom in</button>
-            <button data-action="toggle-overview">Toggle overview state</button>
-          </p>
-          <p>
-            <button data-action="add-segment">Add Segment</button>
-            <button data-action="add-point">Add Point</button>
-            <button data-action="log-data">Log segments/points</button>
-          </p>
-        </div>
+        <button data-action="zoom-in">Zoom in</button>
+        <button data-action="zoom-out">Zoom out</button>
+        <button data-action="add-segment">Add a Segment at current time</button>
+        <button data-action="add-point">Add a Point at current time</button>
+        <button data-action="log-data">Log segments/points</button>
       </div>
 
       <script src="peaks.js"></script>
@@ -113,51 +86,18 @@
             container: document.getElementById('first-waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: {
-              arraybuffer: 'test_data/test.dat',
-              json: 'test_data/test.json'
+              arraybuffer: '/test_data/sample.dat',
+              json: '/test_data/sample.json'
             },
-            // use the new continuous zoom mode
-            zoomMode: 'continuous',
-            // specify the initial zoom mode - in this case, fully zoomed in
-            initialZoomLevel: 1,
-            // show the editable version of the overview
-            showEditableOverview: true,
-            // use rectangles for segment shapes
-            segmentStyle: 'rect',
-            // hide the overview panel initially
-            editableOverviewIsMaximized: false,
-            overviewHeight: 85,
-            keyboard: false,
-
-            // change the default markup
-            template: [
-              '<div class="waveform">',
-              '<div class="overview-container"></div>',
-              '<div class="zoom-container"></div>',
-              '</div>'
-            ].join(''),
+            keyboard: false
           };
 
           var peaksInstance = Peaks.init(options);
 
-          // sort out the slider functionality
-          var slider = document.querySelector('#zoom-slider');
+          document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
+          document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
-          if (slider) {
-            slider.addEventListener('input',function() {
-              peaksInstance.zoom.zoomTo(this.value / 1000);
-            });
-
-            peaksInstance.on('zoom.change', function(zoomValue) {
-              slider.value = 1000 * zoomValue;
-            });
-          }
-
-          document.querySelector('[data-action="zoom-in"]').addEventListener('click', peaksInstance.zoom.zoomIn.bind(peaksInstance));
-
-          document.querySelector('[data-action="zoom-out"]').addEventListener('click', peaksInstance.zoom.zoomOut.bind(peaksInstance));
-
-          document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
+          document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
             peaksInstance.segments.add({
               startTime: peaksInstance.time.getCurrentTime(),
               endTime: peaksInstance.time.getCurrentTime() + 10,
@@ -165,34 +105,16 @@
             });
           });
 
-          document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
+          document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
             peaksInstance.points.add({
               timestamp: peaksInstance.time.getCurrentTime(),
               editable: true
             });
           });
 
-          document.querySelector('[data-action="toggle-overview"]').addEventListener('click', function() {
-            // TODO: Should not be using events for this. Events are either for
-            // internal use orfor communicating from Peaks to the outside world
-            // (not vice versa). Use a method call instead.
-            peaksInstance.emit('overview.toggleMinimizedState');
-            document.querySelector('.overview-container').classList.toggle('maximized');
-          });
-
-          document.querySelector('button[data-action="log-data"]').addEventListener('click', function(event) {
+          document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
             console.log('Segments', peaksInstance.segments.getSegments());
             console.log('Points', peaksInstance.points.getPoints());
-          });
-
-          peaksInstance.on('zoom.preload-progress', function(currentStep, totalSteps) {
-            document.getElementById('peaks-loading').innerHTML =
-              '<p>Initialising - ' + Math.round(100 * currentStep / totalSteps) + '%</p>';
-          });
-
-          peaksInstance.on('zoomview.ready', function() {
-            document.getElementById('peaks-loading').style.display = 'none';
-            document.getElementById('peaks-ready').style.visibility = 'visible';
           });
         })(peaks);
       </script>
