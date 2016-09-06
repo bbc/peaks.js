@@ -4,7 +4,6 @@
  * This module handles all functionality related to the zoomed in
  * waveform view canvas and initialises its own instance of the axis
  * object.
- *
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -69,7 +68,7 @@ define([
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
         if (event.type === 'mousedown') {
-          var x = event.evt.clientX, dX, p;
+          var x = event.evt.layerX, dX, p;
 
           peaks.seeking = true;
 
@@ -77,8 +76,9 @@ define([
           var mouseMove = function(event) {
             peaks.seeking = false;
 
-            dX = x - event.clientX;
-            x = event.clientX;
+            dX = x - event.layerX;
+            x = event.layerX;
+
             p = self.frameOffset + dX;
 
             if (p < 0) {

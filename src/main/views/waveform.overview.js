@@ -4,7 +4,6 @@
  * This module handles all functionality related to the overview
  * timeline canvas and initialises its own instance of the axis
  * object.
- *
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -56,7 +55,8 @@ define([
     }
 
     function mouseMove(event) {
-      var x = event.clientX - container.getBoundingClientRect().left;
+      var x = event.layerX;
+
       peaks.emit('user_scrub.overview', self.data.time(x), x);
     }
 
