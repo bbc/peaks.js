@@ -170,27 +170,29 @@ define([
     this.bindResize();
   };
 
-  Waveform.prototype.openZoomView = function() {
-    switch (this.peaks.options.zoomMode) {
+  Waveform.prototype._getZoomViewClass = function() {
+    var zoomMode = this.peaks.options.zoomMode;
+
+    switch (zoomMode) {
       case 'continuous':
-        this.waveformZoomView = new WaveformContinuousZoomView(
-          this.origWaveformData,
-          this.ui.zoom,
-          this.peaks
-        );
-        break;
+        return WaveformContinuousZoomView;
 
       case 'stepped':
-        this.waveformZoomView = new WaveformZoomView(
-          this.origWaveformData,
-          this.ui.zoom,
-          this.peaks
-        );
-        break;
+        return WaveformZoomView;
 
       default:
-        throw new Error('Invalid zoomMode: ' + this.peaks.options.zoomMode);
+        throw new Error('Invalid zoomMode: ' + zoomMode);
     }
+  };
+
+  Waveform.prototype.openZoomView = function() {
+    var ZoomView = this._getZoomViewClass();
+
+    this.waveformZoomView = new ZoomView(
+      this.origWaveformData,
+      this.ui.zoom,
+      this.peaks
+    );
 
     this.segments = new WaveformSegments(this.peaks);
     this.segments.init();

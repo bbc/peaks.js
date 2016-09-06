@@ -15,21 +15,10 @@ define([
   function WaveformSegments(peaks) {
     var self = this;
 
-    switch (peaks.options.segmentStyle) {
-      case 'wave':
-        this.SegmentShape = WaveShape;
-        break;
-
-      case 'rect':
-        this.SegmentShape = RectangleShape;
-        break;
-
-      default:
-        throw new Error('Invalid segmentStyle: ' + peaks.options.segmentStyle);
-    }
-
     self.peaks = peaks;
     self.segments = [];
+
+    self.SegmentShape = this._getSegmentShape();
 
     var views = [
       peaks.waveform.waveformZoomView,
@@ -53,6 +42,21 @@ define([
     });
 
     self.segmentId = 0;
+  }
+
+  WaveformSegments.prototype._getSegmentShape = function() {
+    var segmentStyle = this.peaks.options.segmentStyle;
+
+    switch (segmentStyle) {
+      case 'wave':
+        return WaveShape;
+
+      case 'rect':
+        return RectangleShape;
+
+      default:
+        throw new Error('Invalid segmentStyle: ' + segmentStyle);
+    }
   }
 
   WaveformSegments.prototype.getNextSegmentId = function() {
