@@ -202,20 +202,20 @@ define('peaks', [
       /**
        * Which mode of zoom to use?
        *
-       * The default is 'stepped', which tells Peaks to use the original ZoomView (with static or animated adapters)
-       * A value of 'continuous' tells Peaks to use the new continuous ZoomView
-       *
+       * The default is 'stepped', which tells Peaks to use the original
+       * ZoomView (with static or animated adapters). A value of
+       * 'continuous' tells Peaks to use the new continuous ZoomView
        */
       zoomMode: 'stepped',
 
       /**
        * The initial zoom level to work with
-       *
        */
       initialZoomLevel: 0,
 
       /**
-       * We can specify the number of different breakpoints that should be pre-sampled. Passing a value of null here will leave the decision
+       * We can specify the number of different breakpoints that should be
+       * pre-sampled. Passing a value of null here will leave the decision
        * to the zoom view, which is recommended.
        *
        * If choosing to specify a value, 15 would be a sensible minimum
@@ -223,7 +223,8 @@ define('peaks', [
       continuousZoomCacheSize: null,
 
       /**
-       * Should we use the new editable overview that allows the user to adjust the zoom level with drag handles
+       * Should we use the new editable overview that allows the user to adjust
+       * the zoom level with drag handles
        */
       showEditableOverview: false,
 
@@ -233,7 +234,8 @@ define('peaks', [
       editableOverviewIsMaximized: true,
 
       /**
-       * How segment shapes should be drawn - defaults to wave, other option is 'rect'
+       * How segment shapes should be drawn - defaults to 'wave', the other
+       * option is 'rect'
        *
        * 'wave' is slightly inaccurate when using the continuous zoom style
        */
@@ -247,10 +249,10 @@ define('peaks', [
     this.container = container;
 
     /**
-     *
      * In 'stepped' zoom mode, this holds the current index of the zoomLevels array.
-     * In 'continuous' zoom mode, this holds the current zoom level as a number between 0 (zoomed fully out) and 1 (zoomed fully in)
-     * @type {number}
+     * In 'continuous' zoom mode, this holds the current zoom level as a number
+     * between 0 (zoomed fully out) and 1 (zoomed fully in)
+     * @type {Number}
      */
     this.currentZoomLevel = 0;
 
@@ -533,7 +535,7 @@ define('peaks', [
         var zoomMode = this.options.zoomMode;
 
         // check to see if an invalid zoom mode was specified
-        if (this[zoomMode + '_zoom'] === undefined) {
+        if (!this[zoomMode + '_zoom']) {
           throw new Error('Invalid zoomMode: ' + zoomMode);
         }
 

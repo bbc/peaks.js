@@ -47,17 +47,17 @@ define([
 
     // INTERACTION ===============================================
 
+    function mouseMove(event) {
+      var x = event.layerX;
+
+      peaks.emit('user_scrub.overview', self.data.time(x), x);
+    }
+
     function cancelSeeking() {
       window.removeEventListener('mousemove', mouseMove, false);
       window.removeEventListener('mouseup', cancelSeeking, false);
       window.removeEventListener('blur', cancelSeeking, false);
       peaks.seeking = false;
-    }
-
-    function mouseMove(event) {
-      var x = event.layerX;
-
-      peaks.emit('user_scrub.overview', self.data.time(x), x);
     }
 
     self.stage.on('mousedown', function(event) {

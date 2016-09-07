@@ -57,7 +57,7 @@ define([
       default:
         throw new Error('Invalid segmentStyle: ' + segmentStyle);
     }
-  }
+  };
 
   WaveformSegments.prototype.getNextSegmentId = function() {
     return this.segmentId++;

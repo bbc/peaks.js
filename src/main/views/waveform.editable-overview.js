@@ -4,7 +4,6 @@
  * This module handles all functionality related to the editable overview
  * timeline canvas and initialises its own instance of the axis
  * object.
- *
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -54,24 +53,24 @@ define([
     self.stage.add(self.waveformLayer);
 
     // INTERACTION ===============================================
-    var cancelSeeking = function() {
+    function cancelSeeking() {
       self.stage.off('mousemove');
       document.removeEventListener('mousemove mouseup', cancelSeeking);
-    };
+    }
 
     self.stage.on('mousedown', function(event) {
       if (event.target &&
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
         if (event.type === 'mousedown') {
-          // if we're not dragging, send out a user seek event. Basically this tells peaks to jump to
-          // a particular place in the audio
-          if (!peaks.dragseeking) {
+          // if we're not dragging, send out a user seek event. Basically
+          // this tells peaks to jump to a particular place in the audio
+          if (!peaks.dragSeeking) {
             peaks.emit('user_seek.overview', self.data.time(event.evt.layerX), event.evt.layerX);
           }
 
           self.stage.on('mousemove', function(event) {
-            if (!peaks.dragseeking) {
+            if (!peaks.dragSeeking) {
               peaks.emit('user_seek.overview', self.data.time(event.evt.layerX), event.evt.layerX);
             }
           });
@@ -104,7 +103,7 @@ define([
     peaks.on('user_scrub.*', trackPlayheadPosition);
 
     peaks.on('waveform_zoom_displaying', function(start, end) {
-      if (!peaks.dragseeking) {
+      if (!peaks.dragSeeking) {
         self.updateRefWaveform(start, end);
       }
     });
@@ -117,7 +116,7 @@ define([
       self.maximize();
     });
 
-    peaks.on('overview.toggleMinimizedState', function () {
+    peaks.on('overview.toggleMinimizedState', function() {
       self.toggleMinimizedState();
     });
 
@@ -131,12 +130,13 @@ define([
     });
   }
 
-  // called when the segment layer has been added, allowing us to tidy up the UI a bit
+  // called when the segment layer has been added, allowing us to
+  // tidy up the UI a bit
   WaveformEditableOverview.prototype.segmentLayerAdded = function() {
     this.waveformLayer.moveToBottom();
     this.refLayer.moveToTop();
     this.uiLayer.moveToTop();
-    this.updateState ();
+    this.updateState();
   };
 
   WaveformEditableOverview.prototype.getDataTime = function() {
@@ -160,9 +160,9 @@ define([
     this.stage.add(this.waveformLayer);
   };
 
-  // Reference Waveform to inform users where they are in overview waveform based on current zoom level
-  // Also sets up the other parts of the UI
-  // todo - this is quite messy!
+  // Reference Waveform to inform users where they are in overview waveform
+  // based on current zoom level. Also sets up the other parts of the UI
+  // TODO: this is quite messy!
   WaveformEditableOverview.prototype.createRefWaveform = function() {
     var self = this;
 
@@ -196,7 +196,7 @@ define([
     });
 
     // short cut function that will draw a line at a particular X position
-    var makeLine = function(pos) {
+    function makeLine(pos) {
       return new Konva.Line({
         points: [pos, (self.height / 2) - 6, pos, (self.height / 2) + 6],
         stroke: 'white',
@@ -204,15 +204,17 @@ define([
         listening: false,
         strokeWidth: 1
       });
-    };
+    }
 
-    // a short cut function that will create a group and add 4 new lines to that group
-    var addLinesToGroup = function(group) {
+    // a short cut function that will create a group and add 4 new lines
+    // to that group
+    function addLinesToGroup(group) {
       var xs = [3, 5, 7, 9];
       var lineGroup = new Konva.Group({
         offsetX: 0.5,
         offsetY: 0.5
       });
+
       group.add(lineGroup);
 
       xs.map(function(pos) {
@@ -220,7 +222,7 @@ define([
       });
 
       group.lines = lineGroup;
-    };
+    }
 
     // this is the left-hand edge of the editable window
     this.leftGroup = new Konva.Group({
@@ -343,19 +345,28 @@ define([
       });
 
       // force the updating of positions, sizes etc
-      self.forceUpdateRefWaveform(self.refWaveformRect.x(), self.refWaveformRect.x() + self.refWaveformRect.width());
+      self.forceUpdateRefWaveform(
+        self.refWaveformRect.x(),
+        self.refWaveformRect.x() + self.refWaveformRect.width()
+      );
     });
 
     // when dragging the right hand box (which will resize the active area)
     this.rightGroup.on('dragmove', function(event) {
       // force the updating of positions, sizes etc
-      self.forceUpdateRefWaveform(self.leftGroup.x(), self.rightGroup.x() + (self.rightGroup.scaleX() * 11));
+      self.forceUpdateRefWaveform(
+        self.leftGroup.x(),
+        self.rightGroup.x() + (self.rightGroup.scaleX() * 11)
+      );
     });
 
     // when dragging the right hand box (which will resize the active area)
     this.leftGroup.on('dragmove', function(event) {
       // force the updating of positions, sizes etc
-      self.forceUpdateRefWaveform(self.leftGroup.x(), self.rightGroup.x() + (self.rightGroup.scaleX() * 11));
+      self.forceUpdateRefWaveform(
+        self.leftGroup.x(),
+        self.rightGroup.x() + (self.rightGroup.scaleX() * 11)
+      );
     });
 
     // darken the rectangle on hover
@@ -369,31 +380,32 @@ define([
       this.draw();
     });
 
-    // when we begin dragging the big rectangle or the edges, tell peaks what we're doing so that other views can change behaviour accordingly
+    // when we begin dragging the big rectangle or the edges, tell peaks what
+    // we're doing so that other views can change behaviour accordingly
     // similarly, when we stop dragging, we want to unset that flag
     this.refWaveformRect.on('dragstart', function() {
-      self.peaks.dragseeking = true;
+      self.peaks.dragSeeking = true;
       // self.peaks.seeking = true;
     });
 
     this.refWaveformRect.on('dragend', function(event) {
-      self.peaks.dragseeking = false;
+      self.peaks.dragSeeking = false;
     });
 
     this.leftGroup.on('dragstart', function() {
-      self.peaks.dragseeking = true;
+      self.peaks.dragSeeking = true;
     });
 
     this.rightGroup.on('dragstart', function() {
-      self.peaks.dragseeking = true;
+      self.peaks.dragSeeking = true;
     });
 
     this.leftGroup.on('dragend', function(event) {
-      self.peaks.dragseeking = false;
+      self.peaks.dragSeeking = false;
     });
 
     this.rightGroup.on('dragend', function(event) {
-      self.peaks.dragseeking = false;
+      self.peaks.dragSeeking = false;
     });
   };
 
@@ -588,24 +600,25 @@ define([
   };
 
   // Update when we drag or resize
-  WaveformEditableOverview.prototype.forceUpdateRefWaveform = function(offset_in, offset_out) {
+  WaveformEditableOverview.prototype.forceUpdateRefWaveform = function(offsetIn, offsetOut) {
     var self = this;
 
-    var xPos = offset_in,
-        width = offset_out - offset_in;
+    var xPos = offsetIn,
+        width = offsetOut - offsetIn;
 
-    // we need to store the original width of the editable area so we can use it as a 'minimum'.
-    // This is needed for relatively short audio files
+    // we need to store the original width of the editable area so we can use
+    // it as a 'minimum'. This is needed for relatively short audio files
     if (!this.initialWidth) {
       this.initialWidth = width;
     }
 
-    // work out the new percentage, based on the percentage of the audio that is covered by the editable box
-    var zoomPercentage = (width - this.initialWidth) / (this.width - this.initialWidth );
+    // work out the new percentage, based on the percentage of the audio that
+    // is covered by the editable box
+    var zoomPercentage = (width - this.initialWidth) / (this.width - this.initialWidth);
 
     // tell peaks about the change
     this.peaks.emit('zoom.change.left', (xPos / this.width) * this.data.duration);
-    this.peaks.emit('zoom.change', 1 - zoomPercentage,true);
+    this.peaks.emit('zoom.change', 1 - zoomPercentage, true);
     this.peaks.emit('zoom.change.left', (xPos / this.width) * this.data.duration);
 
     // reposition the box
@@ -629,7 +642,7 @@ define([
 
     // update the various bits
     this.refWaveformShape.sceneFunc(function(canvas) {
-      self.data.set_segment(offset_in, offset_out, 'zoom');
+      self.data.set_segment(offsetIn, offsetOut, 'zoom');
 
       mixins.waveformOffsetDrawFunction.call(
         this,
@@ -645,16 +658,16 @@ define([
   };
 
   // Called when we need to reposition, not triggered by drag or resize
-  WaveformEditableOverview.prototype.updateRefWaveform = function(time_in, time_out) {
+  WaveformEditableOverview.prototype.updateRefWaveform = function(timeIn, timeOut) {
     var self = this;
 
-    var offset_in  = this.data.at_time(time_in);
-    var offset_out = this.data.at_time(time_out);
+    var offsetIn  = this.data.at_time(timeIn);
+    var offsetOut = this.data.at_time(timeOut);
 
-    this.data.set_segment(offset_in, offset_out, 'zoom');
+    this.data.set_segment(offsetIn, offsetOut, 'zoom');
 
     var xPos = this.data.segments.zoom.offset_start - this.data.offset_start,
-        width = this.data.at_time(time_out) - this.data.at_time(time_in);
+        width = this.data.at_time(timeOut) - this.data.at_time(timeIn);
 
     // store the initial width in case we haven't before...
     if (!this.initialWidth) {
@@ -669,7 +682,7 @@ define([
 
     // redraw the box
     this.refWaveformShape.sceneFunc(function(canvas) {
-      self.data.set_segment(offset_in, offset_out, 'zoom');
+      self.data.set_segment(offsetIn, offsetOut, 'zoom');
 
       mixins.waveformOffsetDrawFunction.call(
         this,

@@ -36,48 +36,59 @@ define([
     // store the duration of the audio
     this.totalDuration = this.rootData.duration;
 
-    // these properties always tell us how many seconds of audio are displayed per pixel on the screen, and how many
-    // pixels of screen width are required to display 1 second of audio. They are kept up to date throughout the
-    // continuous zoom and form the basis of many of the calculations
-    this.seconds_per_pixel = this.data.seconds_per_pixel;
-    this.pixels_per_second = this.data.pixels_per_second;
+    // these properties always tell us how many seconds of audio are displayed
+    // per pixel on the screen, and how many pixels of screen width are
+    // required to display 1 second of audio. They are kept up to date
+    // throughout the continuous zoom and form the basis of many of the
+    // calculations
+    this.secondsPerPixel = this.data.seconds_per_pixel;
+    this.pixelsPerSecond = this.data.pixels_per_second;
 
-    // when the audio is playing we keep track of the number of milliseconds that have elapsed since the last draw.
-    // This lets us move the playhead more smoothly than if it were entirely synced to the audio player's time
+    // when the audio is playing we keep track of the number of milliseconds
+    // that have elapsed since the last draw. This lets us move the playhead
+    // more smoothly than if it were entirely synced to the audio player's
+    // time
     this.lastTimeDelta = null;
 
-    // ...however, sometimes we don't want to automatically move the playhead. For example, immediately following
-    // the repositioning of the playhead based on the current time reported by the audio player
+    // ...however, sometimes we don't want to automatically move the playhead.
+    // For example, immediately following the repositioning of the playhead
+    // based on the current time reported by the audio player
     this.justUpdatedTime = false;
 
     // stores the last time of the playhead
     this.lastTime = 0;
 
-    // a property which keeps track of the position of the audio that's currently displayed on the very left edge of
-    // the container. Used to quickly determine if we are 'out of bounds'
+    // a property which keeps track of the position of the audio that's
+    // currently displayed on the very left edge of the container.
+    // Used to quickly determine if we are 'out of bounds'
     this.leftEdgeTime = 0;
 
-    // when click-dragging the waveform, this lets us keep track of the amount that the waveform has currently been dragged.
-    // This is used to update various positions during the drag to keep things looking accurate
+    // when click-dragging the waveform, this lets us keep track of the amount
+    // that the waveform has currently been dragged. This is used to update
+    // various positions during the drag to keep things looking accurate
     this.seekMovement = 0;
 
-    // a flag that lets us explicity tell the rendering loop that we want the content to be drawn, even if it otherwise
-    // woudln't be drawn.
+    // a flag that lets us explicity tell the rendering loop that we want the
+    // content to be drawn, even if it otherwise wouldn't be drawn.
     this.dirty = true;
 
     // a cache of pre-sampled data at different breakpoints
-    this.data_cache = [];
+    this.dataCache = [];
 
-    // decide how many different sets of pre-sampled data should be created. If specificed in the options, use that
-    // value - otherwise work out a number based on the duration of the audio.
-    var maxcount = peaks.options.continuousZoomCacheSize || Math.max(20, Math.round(this.totalDuration / 20));
+    // decide how many different sets of pre-sampled data should be created.
+    // If specificed in the options, use that value - otherwise work out a
+    // number based on the duration of the audio.
+    var maxCount = peaks.options.continuousZoomCacheSize ||
+                   Math.max(20, Math.round(this.totalDuration / 20));
 
-    // we are going to iterate through a process 'maxcount' times to generate some data, so keep a counter to tell us
-    // how many more times we need to complete this process
-    var currentStep = maxcount;
+    // we are going to iterate through a process 'maxCount' times to generate
+    // some data, so keep a counter to tell us how many more times we need to
+    // complete this process
+    var currentStep = maxCount;
 
-    // the number of seconds of data that will be visible onscreen when totally zoomed in, and therefore the
-    // number of seconds of data that will be offscreen when totally zoomed in
+    // the number of seconds of data that will be visible onscreen when totally
+    // zoomed in, and therefore the number of seconds of data that will be
+    // offscreen when totally zoomed in
     var visibleZoomedIn = this.width * this.data.seconds_per_pixel,
         notVisibleZoomedIn = this.totalDuration - visibleZoomedIn;
 
@@ -103,14 +114,19 @@ define([
 
     this.zoomWaveformLayer.add(this.background);
 
-    // declare a function that will be called mulitple times to generate each piece of pre-sampled data
-    var doNext = function() {
-      // work out the ratio of the current iteraion. The first iteration will have ratio of 1, the final iteration will be 0
-      var ratio = currentStep / maxcount;
+    // declare a function that will be called mulitple times to generate each
+    // piece of pre-sampled data
+    // var doNext = function() {
+    function doNext() {
+      // work out the ratio of the current iteraion. The first iteration will
+      // have ratio of 1, the final iteration will be 0
+      var ratio = currentStep / maxCount;
 
-      // work out the number of seconds of data that will be visible at this breakpoint
+      // work out the number of seconds of data that will be visible at this
+      // breakpoint
       var visibleSeconds = visibleZoomedIn + (notVisibleZoomedIn * ratio);
-      // now use that to work out how many pixels the audio would take up at this breakpoint
+      // now use that to work out how many pixels the audio would take up at
+      // this breakpoint
       var pixelRatio = (self.totalDuration / visibleSeconds) * self.width;
 
       // now resample the data with these settings...
@@ -118,7 +134,7 @@ define([
       // ... and offset the data to the width of the container
       newData.offset(0, self.width);
       // ... and put the data in the cache for later...
-      self.data_cache.push(newData);
+      self.dataCache.push(newData);
 
       currentStep--;
 
@@ -131,15 +147,16 @@ define([
         // Doing it this way lets us at least show a progress indicator
         // if we want to.
         //
-        peaks.emit('zoom.preload-progress', maxcount - currentStep, maxcount);
+        peaks.emit('zoom.preload-progress', maxCount - currentStep, maxCount);
 
         setTimeout(function() {
           doNext();
         }, 10);
       }
       else {
-        // we've finished - put an extra copy of the final data in the cache, and get started!
-        self.data_cache.push(newData);
+        // we've finished - put an extra copy of the final data in the cache,
+        // and get started!
+        self.dataCache.push(newData);
         ready();
       }
     };
@@ -148,9 +165,10 @@ define([
     doNext();
 
     // called when the data has been pre-sampled and cached
-    var ready = function() {
-      // set the current index - in other words, which pre-sampled data are we currently using
-      self.currentIndex = self.data_cache.length - 1;
+    function ready() {
+      // set the current index - in other words, which pre-sampled data are we
+      // currently using
+      self.currentIndex = self.dataCache.length - 1;
 
       // create the axis now we're ready
       self.axis = new WaveformAxis(self);
@@ -178,7 +196,7 @@ define([
 
             document.addEventListener('mouseup', function _upHandler() {
               if (!peaks.seeking) {
-                self.jumpTo(self.leftEdgeTime + (x / self.pixels_per_second));
+                self.jumpTo(self.leftEdgeTime + (x / self.pixelsPerSecond));
               }
 
               if (peaks.seeking) {
@@ -206,7 +224,8 @@ define([
       self.peaks.on('player_time_update', function(time) {
         // store the last time of the player
         self.lastTime = time;
-        // tell our render function that we've just updated the time, and don't need to add on the current time delta
+        // tell our render function that we've just updated the time,
+        // and don't need to add on the current time delta
         self.justUpdatedTime = true;
         // force a re-render
         self.dirty = true;
@@ -230,8 +249,8 @@ define([
         self.playing = false;
       });
 
-      // handles the case where the user is dragging the left-edge of the viewport box within the
-      // WaveformEditableOverview box
+      // handles the case where the user is dragging the left-edge of the
+      // viewport box within the WaveformEditableOverview box
       self.peaks.on('zoom.change.left', function(left) {
         self.leftEdgeTime = left;
         self.adjustOffset(true);
@@ -240,21 +259,21 @@ define([
       // the main handler that responds to changes in zoom level...
       //
       // this is fiddly!
-      self.peaks.on('zoom.change', function(new_ratio,was_from_overview) {
-        new_ratio = Math.min(1, Math.max(0, new_ratio));
+      self.peaks.on('zoom.change', function(newRatio, wasFromOverview) {
+        newRatio = Math.min(1, Math.max(0, newRatio));
 
         // cache the current X position of the playhead
-        var oldPlayheadX = (self.lastTime - self.leftEdgeTime) * self.pixels_per_second;
+        var oldPlayheadX = (self.lastTime - self.leftEdgeTime) * self.pixelsPerSecond;
 
         // cache the length of the cache array
-        var max = self.data_cache.length - 1;
+        var max = self.dataCache.length - 1;
 
-        // a flag to say whether we've changed breakpoint or not. If we do, we need
-        // to make some adjustments later on
+        // a flag to say whether we've changed breakpoint or not.
+        // If we do, we need to make some adjustments later on
         var changedBreakpoint = false;
 
         // decide which pre-sampled data we should be using from the cache
-        var newIndex = Math.floor(new_ratio * max);
+        var newIndex = Math.floor(newRatio * max);
 
         if (newIndex >= max) {
           newIndex = max - 1;
@@ -269,38 +288,42 @@ define([
           // update the current index
           self.currentIndex = newIndex;
           // grab the value from the cache
-          self.data = self.data_cache[self.currentIndex];
+          self.data = self.dataCache[self.currentIndex];
           // update the flag
           changedBreakpoint = true;
         }
 
-        // above, we 'floor'ed the calculation to work out which index of the cache array we should be using
-        // here, we find out the value that was lost when we 'floor'ed so we can make the intermediate adjustments
-        var proportionAboveIndex = (new_ratio * max) - newIndex;
+        // above, we 'floor'ed the calculation to work out which index of the
+        // cache array we should be using here, we find out the value that was
+        // lost when we 'floor'ed so we can make the intermediate adjustments
+        var proportionAboveIndex = (newRatio * max) - newIndex;
 
-        // to make these intermediate adjustments, we need to knoe the different in 'pixels per second' between the
-        // current pre-sampled, and the next highest pre-sampled data. So get the pixels_per_second value for both
+        // to make these intermediate adjustments, we need to knoe the different
+        // in 'pixels per second' between the current pre-sampled, and the next
+        // highest pre-sampled data. So get the pixels_per_second value for both
         // sets of data
-        var currentRatio = self.data_cache[self.currentIndex + 1].pixels_per_second;
-        var lowerRatio = self.data_cache[self.currentIndex].pixels_per_second;
+        var currentRatio = self.dataCache[self.currentIndex + 1].pixels_per_second;
+        var lowerRatio = self.dataCache[self.currentIndex].pixels_per_second;
 
         // and now work out the ratio of the two pixels_per_second values
         var divider = (currentRatio / lowerRatio);
-        // finally, we can work out how to adjust between the two breakpoints using this calculation
+        // finally, we can work out how to adjust between the two breakpoints
+        // using this calculation
         var multiplier = (divider * proportionAboveIndex) + (1 - proportionAboveIndex);
         // the value from this calculation will become our new zoom ratio
         self.zoomRatio = multiplier;
 
-        // update the seconds_per_pixel and pixels_per_second values that we use throughout
-        self.seconds_per_pixel = self.data_cache[self.currentIndex].seconds_per_pixel * self.zoomRatio;
-        self.pixels_per_second = self.data_cache[self.currentIndex].pixels_per_second * self.zoomRatio;
+        // update the seconds_per_pixel and pixels_per_second values that we use
+        // throughout
+        self.secondsPerPixel = self.dataCache[self.currentIndex].seconds_per_pixel * self.zoomRatio;
+        self.pixelsPerSecond = self.dataCache[self.currentIndex].pixels_per_second * self.zoomRatio;
 
         // do some work to make sure that the position of the playhead doesn't
         // move during the zoom. This seems to be the least jarring behaviour
         // for the user. Note that if we're currently dragging the audio,
         // we skip this step
-        if (!self.peaks.dragseeking) {
-          var newLeftEdgeTime = (self.lastTime - (oldPlayheadX / self.pixels_per_second));
+        if (!self.peaks.dragSeeking) {
+          var newLeftEdgeTime = (self.lastTime - (oldPlayheadX / self.pixelsPerSecond));
           self.leftEdgeTime = newLeftEdgeTime;
         }
 
@@ -325,7 +348,8 @@ define([
         // set the flag to ensure a redraw
         self.dirty = true;
 
-        // if we changed breakpoints, we need to redraw the layer and send out notification
+        // if we changed breakpoints, we need to redraw the layer and send out
+        // notification
         if (changedBreakpoint) {
           self.zoomWaveformLayer.draw();
           self.peaks.emit('waveform_zoom_updating');
@@ -406,7 +430,7 @@ define([
    */
   WaveformContinuousZoomView.prototype.getRightEdgeTime = function() {
     var rightEdgeTime = this.leftEdgeTime +
-                        (this.seconds_per_pixel * this.width / (this.zoomRatio * this.zoomRatio));
+                        (this.secondsPerPixel * this.width / (this.zoomRatio * this.zoomRatio));
 
     return rightEdgeTime;
   };
@@ -434,7 +458,7 @@ define([
    * Returns the pixel position for a particuilar position in the audio
    */
   WaveformContinuousZoomView.prototype.atDataTime = function(axisLabelOffsetSecs) {
-    return axisLabelOffsetSecs * this.pixels_per_second;
+    return axisLabelOffsetSecs * this.pixelsPerSecond;
   };
 
   /* Sets up the waveform etc */
@@ -495,10 +519,12 @@ define([
       this.adjustOffset();
     }
 
-    // adjust the position of the playhead to match the current position in the audio
-    this.zoomPlayheadGroup.setAttr('x', (this.lastTime - this.leftEdgeTime) * this.pixels_per_second);
-    // store the current position of the left edge of the screen, in pixels. This is used by other classes
-    this.frameOffset = this.leftEdgeTime * this.pixels_per_second;
+    // adjust the position of the playhead to match the current position
+    // in the audio
+    this.zoomPlayheadGroup.setAttr('x', (this.lastTime - this.leftEdgeTime) * this.pixelsPerSecond);
+    // store the current position of the left edge of the screen, in pixels.
+    // This is used by other classes
+    this.frameOffset = this.leftEdgeTime * this.pixelsPerSecond;
     // update the time displayed on the playhead
     this.zoomPlayheadText.setText(mixins.niceTime(this.lastTime, false));
 
@@ -508,9 +534,9 @@ define([
   // Clamp the left and right edges of the display to make sure we don't
   // go out of bounds.
   WaveformContinuousZoomView.prototype.clamp = function() {
-    this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (this.width * this.seconds_per_pixel), this.leftEdgeTime));
+    this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (this.width * this.secondsPerPixel), this.leftEdgeTime));
 
-    var start = Math.floor(this.leftEdgeTime * this.pixels_per_second),
+    var start = Math.floor(this.leftEdgeTime * this.pixelsPerSecond),
         end = start + (this.width / this.zoomRatio);
 
     this.data.offset(start, end);
@@ -525,14 +551,14 @@ define([
     // cache the current left edge time
     var leftEdgeTime = this.leftEdgeTime;
     // work out how many seconds of audio are visible on the screen
-    var secondsOnScreen = this.width * this.seconds_per_pixel / (this.zoomRatio * this.zoomRatio);
+    var secondsOnScreen = this.width * this.secondsPerPixel / (this.zoomRatio * this.zoomRatio);
     // adjust the current left edge based on the amount we have seeked
-    this.leftEdgeTime += this.seekMovement * this.seconds_per_pixel / (this.zoomRatio * this.zoomRatio);
+    this.leftEdgeTime += this.seekMovement * this.secondsPerPixel / (this.zoomRatio * this.zoomRatio);
     // and clamp
     this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - secondsOnScreen, this.leftEdgeTime));
 
     // now adjust the offset
-    var start = Math.floor(this.leftEdgeTime * this.pixels_per_second / (this.zoomRatio)),
+    var start = Math.floor(this.leftEdgeTime * this.pixelsPerSecond / (this.zoomRatio)),
         end = start + (this.width / this.zoomRatio);
 
     this.data.offset(start, end);
@@ -556,19 +582,20 @@ define([
     var leftEdgeTime = this.leftEdgeTime;
 
     // work out how many seconds of audio are visible on the screen
-    var secondsOnScreen = this.width * this.seconds_per_pixel / (this.zoomRatio * this.zoomRatio);
+    var secondsOnScreen = this.width * this.secondsPerPixel / (this.zoomRatio * this.zoomRatio);
 
     // if we've not opted to only change the offset, and we're not dragging
     // (in which case we wouldn't want the position of the audio to change)
-    // adjust the left edge as necessary, keeping the playhead in the middle of the screen
-    if (!offsetOnly && !this.peaks.dragseeking) {
+    // adjust the left edge as necessary, keeping the playhead in the middle
+    // of the screen
+    if (!offsetOnly && !this.peaks.dragSeeking) {
       this.leftEdgeTime = this.lastTime - (secondsOnScreen * 0.5);
     }
 
     // clamp the position
     this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (secondsOnScreen), this.leftEdgeTime));
 
-    var start = Math.floor(this.leftEdgeTime * this.pixels_per_second / (this.zoomRatio)),
+    var start = Math.floor(this.leftEdgeTime * this.pixelsPerSecond / (this.zoomRatio)),
         end = start + (this.width / this.zoomRatio);
 
     this.data.offset(start, end);
