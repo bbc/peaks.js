@@ -205,6 +205,18 @@ define([
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
 
+  /**
+   * Returns the position of the audio found at the very left hand edge
+   * of the screen at the current zoom level
+   */
+  WaveformZoomView.prototype.getDataTime = function() {
+    return this.data.time(this.frameOffset);
+  };
+
+  WaveformZoomView.prototype.atDataTime = function(axisLabelOffsetSecs) {
+    return this.data.at_time(axisLabelOffsetSecs);
+  };
+
   WaveformZoomView.prototype.createZoomWaveform = function() {
     this.zoomWaveformShape = new Konva.Shape({
       fill: this.options.zoomWaveformColor,
@@ -405,6 +417,10 @@ define([
 
     this.syncPlayhead(pixelIndex);
     this.updateZoomWaveform(this.frameOffset);
+  };
+
+  WaveformZoomView.prototype.segmentLayerAdded = function() {
+    // nothing
   };
 
   WaveformZoomView.prototype.destroy = function() {

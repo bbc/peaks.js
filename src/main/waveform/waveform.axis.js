@@ -81,10 +81,7 @@ define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
    * @param {Konva.Context} context
    */
   WaveformAxis.prototype.axisDrawFunction = function(view, context) {
-    // allow a view to override the time it reports to the axis
-    var currentFrameStartTime = (typeof view.getDataTime === 'function') ?
-                                view.getDataTime() :
-                                view.data.time(view.frameOffset);
+    var currentFrameStartTime = view.getDataTime();
 
     // Draw axis markers
     var markerHeight = 10;
@@ -99,10 +96,7 @@ define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
     var axisLabelOffsetSecs = firstAxisLabelSecs - currentFrameStartTime;
 
     // Distance between waveform start time and first axis marker (pixels)
-    // // addlow a view to override the time it reports to the axis
-    var axisLabelOffsetPixels = (typeof this.view.atDataTime === 'function') ?
-                                this.view.atDataTime(axisLabelOffsetSecs) :
-                                this.view.data.at_time(axisLabelOffsetSecs);
+    var axisLabelOffsetPixels = this.view.atDataTime(axisLabelOffsetSecs);
 
     context.setAttr('strokeStyle', this.view.options.axisGridlineColor);
     context.setAttr('lineWidth', 1);
@@ -121,10 +115,7 @@ define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
 
     for (;;) {
       // Position of axis marker (pixels)
-      // allow a view to override the time it reports to the axis
-      x = axisLabelOffsetPixels + (typeof this.view.atDataTime === 'function' ?
-                                   this.view.atDataTime (secs - firstAxisLabelSecs) :
-                                   this.view.data.at_time(secs - firstAxisLabelSecs));
+      x = axisLabelOffsetPixels + this.view.atDataTime(secs - firstAxisLabelSecs);
 
       if (x >= this.view.width) {
         break;

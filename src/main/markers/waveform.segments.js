@@ -31,11 +31,9 @@ define([
         view.stage.add(view.segmentLayer);
         view.segmentLayer.moveToTop();
 
-        // If the view's public API supports it, let it know that it the
-        // segment layer has been added so that it may reorganise its layers
-        if (typeof view.segmentLayerAdded === 'function') {
-          view.segmentLayerAdded();
-        }
+        // Let the view know that it the segment layer has been added
+        // so that it may reorganise its layers
+        view.segmentLayerAdded();
       }
 
       return view;
@@ -238,17 +236,13 @@ define([
                      thisSeg.inMarker.getX() +
                      thisSeg.inMarker.getWidth();
 
-      segment.startTime = (typeof thisSeg.view.atDataTime === 'function') ?
-                          thisSeg.view.atDataTime(inOffset) :
-                          thisSeg.data.time(inOffset);
+      segment.startTime = thisSeg.view.atDataTime(inOffset);
     }
 
     if (thisSeg.outMarker.getX() < thisSeg.view.width) {
       var outOffset = thisSeg.view.frameOffset + thisSeg.outMarker.getX();
 
-      segment.endTime = (typeof thisSeg.view.atDataTime === 'function') ?
-                        thisSeg.view.atDataTime(outOffset) :
-                        thisSeg.view.data.time(outOffset);
+      segment.endTime = thisSeg.view.atDataTime(outOffset);
     }
 
     this.peaks.emit('segments.dragged', segment);

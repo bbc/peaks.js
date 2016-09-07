@@ -105,10 +105,7 @@ define([
       point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
     }
 
-    // Zoom - allow the view to override the position it reports
-    var zoomTimestampOffset = (typeof this.peaks.waveform.waveformZoomView.atDataTime === 'function') ?
-                              this.peaks.waveform.waveformZoomView.atDataTime(point.timestamp) :
-                              this.peaks.waveform.waveformZoomView.data.at_time(point.timestamp);
+    var zoomTimestampOffset = this.peaks.waveform.waveformZoomView.atDataTime(point.timestamp);
     var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
 
     if (zoomTimestampOffset < frameStartOffset) {

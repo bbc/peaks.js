@@ -105,6 +105,18 @@ define([
     });
   }
 
+  /**
+   * Returns the position of the audio found at the very left hand edge
+   * of the screen at the current zoom level
+   */
+  WaveformOverview.prototype.getDataTime = function() {
+    return this.data.time(this.frameOffset);
+  };
+
+  WaveformOverview.prototype.atDataTime = function(axisLabelOffsetSecs) {
+    return this.data.at_time(axisLabelOffsetSecs);
+  };
+
   WaveformOverview.prototype.createWaveform = function() {
     this.waveformShape = new Konva.Shape({
       fill: this.options.overviewWaveformColor,
@@ -234,6 +246,10 @@ define([
 
     this.playheadLine.setAttr('x', pixel);
     this.uiLayer.draw();
+  };
+
+  WaveformOverview.prototype.segmentLayerAdded = function() {
+    // nothing
   };
 
   WaveformOverview.prototype.destroy = function() {
