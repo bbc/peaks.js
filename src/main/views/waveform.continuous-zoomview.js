@@ -131,6 +131,7 @@ define([
 
       // now resample the data with these settings...
       var newData = self.rootData.resample(pixelRatio);
+
       // ... and offset the data to the width of the container
       newData.offset(0, self.width);
       // ... and put the data in the cache for later...
@@ -159,7 +160,7 @@ define([
         self.dataCache.push(newData);
         ready();
       }
-    };
+    }
 
     // being the pre-loading phase
     doNext();
@@ -310,6 +311,7 @@ define([
         // finally, we can work out how to adjust between the two breakpoints
         // using this calculation
         var multiplier = (divider * proportionAboveIndex) + (1 - proportionAboveIndex);
+
         // the value from this calculation will become our new zoom ratio
         self.zoomRatio = multiplier;
 
@@ -324,6 +326,7 @@ define([
         // we skip this step
         if (!self.peaks.dragSeeking) {
           var newLeftEdgeTime = (self.lastTime - (oldPlayheadX / self.pixelsPerSecond));
+
           self.leftEdgeTime = newLeftEdgeTime;
         }
 
@@ -362,8 +365,9 @@ define([
 
       // KEYBOARD EVENTS =========================================
       var nudgeFrame = function nudgeFrame(step) {
-        var time = self.options.mediaElement.currentTime;
-        time += (self.options.nudgeIncrement * step);
+        var time = self.options.mediaElement.currentTime +
+                   self.options.nudgeIncrement * step;
+
         self.peaks.emit('user_seek.zoomview', time, 999);
       };
 
@@ -398,7 +402,7 @@ define([
 
       // and finally, send out notification that we're ready to go
       self.peaks.emit('zoomview.ready');
-    };
+    }
   }
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
@@ -513,6 +517,7 @@ define([
     // get the current time that would be displayed at the right hand edge
     // of the screen
     var rightEdgeTime = this.getRightEdgeTime();
+
     // if we're not seeking, and the playhead is off the left or right hand edges...
     if (!this.peaks.seeking && (this.lastTime > rightEdgeTime || this.lastTime < this.leftEdgeTime)) {
       // adjust the offset
@@ -552,6 +557,7 @@ define([
     var leftEdgeTime = this.leftEdgeTime;
     // work out how many seconds of audio are visible on the screen
     var secondsOnScreen = this.width * this.secondsPerPixel / (this.zoomRatio * this.zoomRatio);
+
     // adjust the current left edge based on the amount we have seeked
     this.leftEdgeTime += this.seekMovement * this.secondsPerPixel / (this.zoomRatio * this.zoomRatio);
     // and clamp
