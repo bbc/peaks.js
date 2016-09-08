@@ -196,7 +196,7 @@ define([
 
             document.addEventListener('mouseup', function _upHandler() {
               if (!peaks.seeking) {
-                self.jumpTo(self.leftEdgeTime + (x / self.pixelsPerSecond));
+                self.seekTo(self.leftEdgeTime + (x / self.pixelsPerSecond));
               }
 
               if (peaks.seeking) {
@@ -436,11 +436,11 @@ define([
   };
 
   /**
-   * Jumps to a certain position in the audio - sets the 'dirty' flag
+   * Seeks to a certain position in the audio - sets the 'dirty' flag
    * ensuring a redraw
-   * @param  {[type]} time [description]
+   * @param {Number} time The time position to seek to, in seconds
    */
-  WaveformContinuousZoomView.prototype.jumpTo = function(time) {
+  WaveformContinuousZoomView.prototype.seekTo = function(time) {
     this.peaks.emit('user_seek.zoomview', time);
     this.dirty = true;
     this.lastTime = time;

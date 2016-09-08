@@ -64,7 +64,7 @@ define([
         !event.target.parent.attrs.draggable) {
         if (event.type === 'mousedown') {
           // if we're not dragging, send out a user seek event. Basically
-          // this tells peaks to jump to a particular place in the audio
+          // this tells peaks to seek to a particular place in the audio
           if (!peaks.dragSeeking) {
             peaks.emit('user_seek.overview', self.data.time(event.evt.layerX), event.evt.layerX);
           }
