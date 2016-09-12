@@ -1,9 +1,9 @@
 /**
- * WAVEFORM.ZOOMVIEW.JS
+ * @file
  *
- * This module handles all functionality related to the zoomed in
- * waveform view canvas and initialises its own instance of the axis
- * object.
+ * Defines the {@link WaveformZoomView} class.
+ *
+ * @module peaks/views/waveform.zoomview
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -14,6 +14,12 @@ define([
   ], function(WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
   'use strict';
 
+  /**
+   * Creates the zoomed-in waveform view canvas.
+   *
+   * @class
+   * @alias WaveformZoomView
+   */
   function WaveformZoomView(waveformData, container, peaks) {
     var self = this;
 
@@ -325,10 +331,10 @@ define([
   // UI functions ==============================
 
   /**
-   * Create a playhead animation in sync with the audio playback.
+   * Creates a playhead animation in sync with the media playback.
    *
    * @param {Number} time Position in time where the playhead starts
-   * @param {Integer} startPosition Position in frame index where the playhead starts
+   * @param {Integer} start Position Position in frame index where the playhead starts
    */
   WaveformZoomView.prototype.playFrom = function(time, startPosition) {
     var self = this;

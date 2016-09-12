@@ -1,11 +1,11 @@
 /**
- * WAVEFORM.CORE.JS
+ * @file
  *
- * This module bootstraps all our waveform components and manages
- * initialisation as well as some component-wide events such as
- * viewport resizing.
+ * Defines the {@link Waveform} class.
+ *
+ * @module peaks/waveform/waveform.core
  */
-define([
+ define([
   'waveform-data',
   'peaks/views/waveform.overview',
   'peaks/views/waveform.editable-overview',
@@ -26,6 +26,12 @@ define([
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
 
   /**
+   * Bootstraps all our waveform components and manages initialisation as well
+   * as some component-wide events such as viewport resizing.
+   *
+   * @class
+   * @alias Waveform
+   *
    * @param {Peaks} peaks
    */
   function Waveform(peaks) {
@@ -136,6 +142,7 @@ define([
    * @param err {Error}
    * @param remoteData {WaveformData|ProgressEvent}
    * @param xhr {XMLHttpRequest}
+   * @private
    */
   Waveform.prototype.handleRemoteData = function(err, remoteData, xhr) {
     if (err) {
@@ -205,6 +212,8 @@ define([
 
   /**
    * Deal with window resize event over both waveform views.
+   *
+   * @private
    */
   Waveform.prototype.bindResize = function() {
     var self = this;

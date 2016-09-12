@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * Defines the {@link KeyboardHandler} class.
+ *
+ * @module peaks/player/player.keyboard
+ */
 define([], function() {
   'use strict';
 
@@ -11,6 +18,11 @@ define([], function() {
   var keys = [SPACE, TAB, LEFT_ARROW, RIGHT_ARROW];
 
   /**
+   * Configures keyboard event handling.
+   *
+   * @class
+   * @alias KeyboardHandler
+   *
    * @param {EventEmitter} eventEmitter
    */
   function KeyboardHandler(eventEmitter) {
@@ -22,7 +34,12 @@ define([], function() {
   }
 
   /**
-   * Arrow keys only triggered on keydown, not keypress
+   * Keyboard event handler function.
+   *
+   * @note Arrow keys only triggered on keydown, not keypress
+   *
+   * @param {KeyboardEvent} event
+   * @private
    */
   KeyboardHandler.prototype.handleKeyEvent = function handleKeyEvent(event) {
     if (nodes.indexOf(event.target.nodeName) === -1) {

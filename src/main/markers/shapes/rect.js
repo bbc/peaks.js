@@ -1,8 +1,9 @@
 /**
- * WAVEFORM.SEGMENTS.JS
+ * @file
  *
- * This module handles all functionality related to the adding,
- * removing and manipulation of segments
+ * Defines the {@link RectShape} class.
+ *
+ * @module peaks/markers/shapes/rect
  */
 define([
   'peaks/markers/shapes/base',
@@ -11,15 +12,20 @@ define([
 ], function(BaseShape, mixins, Konva) {
   'use strict';
 
-  var WaveShape = Object.create(BaseShape.prototype);
+  /**
+   * @class
+   * @alias RectShape
+   */
+  var RectShape = Object.create(BaseShape.prototype);
 
   /**
+   * Returns a new RectShape object.
    *
    * @param {object} segment
    * @param {WaveformZoomView|WaveformOverview} view
    * @returns {Konva.Rect}
    */
-  WaveShape.createShape = function createShape(segment, view) {
+  RectShape.createShape = function createShape(segment, view) {
     var shape = new Konva.Rect({
       fill: segment.color,
       strokeWidth: 0,
@@ -37,8 +43,9 @@ define([
    *
    * @param view
    * @param {String|Number} segmentId
+   * @private
    */
-  WaveShape.update = function updateRectShape(view, segmentId) {
+  RectShape.update = function updateRectShape(view, segmentId) {
     var waveformData = view.data;
 
     if (waveformData.segments[segmentId] === undefined) {
@@ -55,5 +62,5 @@ define([
     });
   };
 
-  return WaveShape;
+  return RectShape;
 });

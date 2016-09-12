@@ -1,8 +1,9 @@
 /**
- * WAVEFORM.SEGMENTS.JS
+ * @file
  *
- * This module handles all functionality related to the adding,
- * removing and manipulation of segments
+ * Defines an animated zoom view adapter.
+ *
+ * @module peaks/views/zooms/animated
  */
 define(['konva'], function(Konva) {
   'use strict';

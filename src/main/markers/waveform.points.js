@@ -1,8 +1,9 @@
 /**
- * WAVEFORM.POINTS.JS
+ * @file
  *
- * This module handles all functionality related to the adding,
- * removing and manipulation of points. A point in a segment of zero length
+ * Defines the {@link WaveformPoints} class.
+ *
+ * @module peaks/markers/waveform.points
  */
 define([
   'peaks/waveform/waveform.mixins',
@@ -10,6 +11,15 @@ define([
 ], function(mixins, Konva) {
   'use strict';
 
+  /**
+   * Handles all functionality related to the adding, removing and manipulation
+   * of points. A point is a segment of zero length.
+   *
+   * @class
+   * @alias WaveformPoints
+   *
+   * @param {Peaks} peaks The parent Peaks object.
+   */
   function WaveformPoints(peaks) {
     var self = this;
 

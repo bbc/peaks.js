@@ -1,21 +1,21 @@
 /**
- * WAVEFORM.AXIS.JS
+ * @file
  *
- * This module handles all functionality related to drawing the
- * visualisations. Only a sigle object of this type is
- * instantiated meaning this code is reused multiple times.
+ * Defines the {@link WaveformAxis} class.
  *
+ * @module peaks/waveform/waveform.axis
  */
 define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
   'use strict';
 
-  /*
+  /**
    * Rounds the given value up to the nearest given multiple.
-   * e.g: roundUpToNearest(5.5, 3) returns 6
-   *      roundUpToNearest(141.0, 10) returns 150
-   *      roundUpToNearest(-5.5, 3) returns -6
+   *
+   * @example
+   * roundUpToNearest(5.5, 3); // returns 6
+   * roundUpToNearest(141.0, 10); // returns 150
+   * roundUpToNearest(-5.5, 3); // returns -6
    */
-
   function roundUpToNearest(value, multiple) {
     var remainder = value % multiple;
 
@@ -27,6 +27,12 @@ define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
     }
   }
 
+  /**
+   * Creates the waveform axis shapes and adds them to the given view.
+   *
+   * @class
+   * @alias WaveformAxis
+   */
   function WaveformAxis(view) {
     this.view = view; // store reference to waveform view object
 
@@ -41,14 +47,15 @@ define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
     this.view.uiLayer.add(this.axisShape);
   }
 
-  /*
+  /**
    * Returns number of seconds for each x-axis marker, appropriate for the
    * current zoom level, ensuring that markers are not too close together
    * and that markers are placed at intuitive time intervals (i.e., every 1,
    * 2, 5, 10, 20, 30 seconds, then every 1, 2, 5, 10, 20, 30 minutes, then
    * every 1, 2, 5, 10, 20, 30 hours).
+   *
+   * @returns {Number}
    */
-
   WaveformAxis.prototype.getAxisLabelScale = function() {
     var baseSecs   = 1; // seconds
     var steps      = [1, 2, 5, 10, 20, 30];
@@ -76,8 +83,9 @@ define(['peaks/waveform/waveform.mixins', 'konva'], function(mixins, Konva) {
   };
 
   /**
+   * Draws the time axis and labels onto a view.
    *
-   * @param {WaveformOverview|WaveformZoomview} view
+   * @param {WaveformOverview|WaveformZoomView} view
    * @param {Konva.Context} context
    */
   WaveformAxis.prototype.axisDrawFunction = function(view, context) {

@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * Defines the {@link Peaks} class.
+ *
+ * @module peaks/main
+ */
 define('peaks', [
   'EventEmitter',
   'peaks/player/player',
@@ -25,6 +32,12 @@ define('peaks', [
     return to;
   }
 
+  /**
+   * Creates a new Peaks.js object.
+   *
+   * @class
+   * @alias Peaks
+   */
   function Peaks(container) {
     EventEmitter.call(this, { wildcard: true });
 
@@ -264,6 +277,13 @@ define('peaks', [
     this.logger = console.error.bind(console);
   }
 
+  /**
+   * Creates and initialises a new Peaks instance with the given options.
+   *
+   * @param {Object} opts Configuration options
+   *
+   * @return {Peaks}
+   */
   Peaks.init = function init(opts) {
     opts = opts || {};
     opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
@@ -725,7 +745,7 @@ define('peaks', [
   });
 
   /**
-   * Clean up event listeners when you're no longer using a Peaks instance
+   * Cleans up a Peaks instance after use.
    */
   Peaks.prototype.destroy = function() {
     this.removeAllListeners();
