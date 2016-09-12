@@ -1,9 +1,9 @@
 /**
- * WAVEFORM.OVERVIEW.JS
+ * @file
  *
- * This module handles all functionality related to the editable overview
- * timeline canvas and initialises its own instance of the axis
- * object.
+ * Defines the {@link WaveformEditableOverview} class.
+ *
+ * @module peaks/views/waveform.editable-overview
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -12,6 +12,12 @@ define([
 ], function(WaveformAxis, mixins, Konva) {
   'use strict';
 
+  /**
+   * Creates the editable overview timeline canvas.
+   *
+   * @class
+   * @alias WaveformEditableOverview
+   */
   function WaveformEditableOverview(waveformData, container, peaks) {
     var self = this;
 
@@ -130,8 +136,12 @@ define([
     });
   }
 
-  // called when the segment layer has been added, allowing us to
-  // tidy up the UI a bit
+  /**
+   * Called when the segment layer has been added, allowing us to
+   * tidy up the UI a bit.
+   *
+   * @private
+   */
   WaveformEditableOverview.prototype.segmentLayerAdded = function() {
     this.waveformLayer.moveToBottom();
     this.refLayer.moveToTop();
@@ -139,14 +149,28 @@ define([
     this.updateState();
   };
 
+  /**
+   * Returns the position of the audio found at the very left hand edge
+   * of the screen at the current zoom level.
+   *
+   * @returns {Number}
+   */
   WaveformEditableOverview.prototype.getDataTime = function() {
     return this.data.time(this.frameOffset);
   };
 
+  /**
+   * Returns the pixel position for a particuilar position in the audio.
+   *
+   * @returns {Number}
+   */
   WaveformEditableOverview.prototype.atDataTime = function(axisLabelOffsetSecs) {
     return this.data.at_time(axisLabelOffsetSecs);
   };
 
+  /**
+   * Sets up the waveform etc.
+   */
   WaveformEditableOverview.prototype.createWaveform = function() {
     this.waveformShape = new Konva.Shape({
       fill: 'black',
@@ -160,11 +184,15 @@ define([
     this.stage.add(this.waveformLayer);
   };
 
-  // Reference Waveform to inform users where they are in overview waveform
-  // based on current zoom level. Also sets up the other parts of the UI
-  // TODO: this is quite messy!
+  /**
+   * Creates a reference waveform to inform users where they are in the overview
+   * waveform based on the current zoom level. Also sets up the other parts of
+   * the UI.
+   */
   WaveformEditableOverview.prototype.createRefWaveform = function() {
     var self = this;
+
+    // TODO: this is quite messy!
 
     this.refLayer = new Konva.Layer();
 
@@ -380,7 +408,7 @@ define([
       this.draw();
     });
 
-    // when we begin dragging the big rectangle or the edges, tell peaks what
+    // when we begin dragging the big rectangle or the edges, tell Peaks what
     // we're doing so that other views can change behaviour accordingly
     // similarly, when we stop dragging, we want to unset that flag
     this.refWaveformRect.on('dragstart', function() {
@@ -425,29 +453,38 @@ define([
     this.stage.add(this.uiLayer);
   };
 
-  // move to minimized state
+  /**
+   * Moves to the minimized state.
+   */
   WaveformEditableOverview.prototype.minimize = function() {
     this.minimized = true;
     this.updateState();
   };
 
-  // move to maximized state
+  /**
+   * Moves to the maximized state.
+   */
   WaveformEditableOverview.prototype.maximize = function() {
     this.minimized = false;
     this.updateState();
   };
 
-  // toggle between minimized and maximized states
+  /**
+   * Toggles between minimized and maximized states.
+   */
   WaveformEditableOverview.prototype.toggleMinimizedState = function() {
     this.minimized = !this.minimized;
     this.updateState();
   };
 
-  // redraw and reposition based on the current state
-  // todo - this is messy
+  /**
+   * Redraws and repositions based on the current state.
+   */
   WaveformEditableOverview.prototype.updateState = function() {
     var self = this;
     var backgroundTweenNodes, lineTweens, tween, tween6, tween2, tween4;
+
+    // TODO: this is messy
 
     // if we're in minimized state...
     if (self.minimized) {
@@ -479,7 +516,11 @@ define([
       tween.play();
 
       // adjust the position of the lines
-      lineTweens = [self.leftGroup.lines, self.centerGroup.lines, self.rightGroup.lines];
+      lineTweens = [
+        self.leftGroup.lines,
+        self.centerGroup.lines,
+        self.rightGroup.lines
+      ];
 
       lineTweens.map(function(item) {
         tween6 = new Konva.Tween({
@@ -553,7 +594,11 @@ define([
       tween.play();
 
       // tween the position of the lines
-      lineTweens = [self.leftGroup.lines, self.centerGroup.lines, self.rightGroup.lines];
+      lineTweens = [
+        self.leftGroup.lines,
+        self.centerGroup.lines,
+        self.rightGroup.lines
+      ];
 
       lineTweens.map(function(item) {
         tween6 = new Konva.Tween({
@@ -599,7 +644,9 @@ define([
     }
   };
 
-  // Update when we drag or resize
+  /**
+   * Updates when we drag or resize.
+   */
   WaveformEditableOverview.prototype.forceUpdateRefWaveform = function(offsetIn, offsetOut) {
     var self = this;
 
@@ -657,7 +704,9 @@ define([
     this.refLayer.draw();
   };
 
-  // Called when we need to reposition, not triggered by drag or resize
+  /**
+   * Called when we need to reposition, not triggered by drag or resize.
+   */
   WaveformEditableOverview.prototype.updateRefWaveform = function(timeIn, timeOut) {
     var self = this;
 

@@ -1,9 +1,9 @@
 /**
- * WAVEFORM.ZOOMVIEW.JS
+ * @file
  *
- * This module handles all functionality related to the continuous zoomed in
- * waveform view canvas and initialises its own instance of the axis
- * object.
+ * Defines the {@link WaveformContinuousZoomView} class.
+ *
+ * @module peaks/views/waveform.continuous-zoomview
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -12,6 +12,12 @@ define([
 ], function(WaveformAxis, mixins, Konva) {
   'use strict';
 
+  /**
+   * Creates the continuous zoom view canvas.
+   *
+   * @class
+   * @alias WaveformContinuousZoomView
+   */
   function WaveformContinuousZoomView(waveformData, container, peaks) {
     var self = this;
 
@@ -26,7 +32,8 @@ define([
     // create a snapshot of the data when zoomed out all the way
     // and a snapshot of the data when zoomed in all the way
     //
-    // we use the difference between the two values to determine a few scaling factors
+    // we use the difference between the two values to determine a few scaling
+    // factors
 
     self.zoomedOutData = self.rootData.resample(self.width);
     self.data = self.rootData.resample({
@@ -116,7 +123,6 @@ define([
 
     // declare a function that will be called mulitple times to generate each
     // piece of pre-sampled data
-    // var doNext = function() {
     function doNext() {
       // work out the ratio of the current iteraion. The first iteration will
       // have ratio of 1, the final iteration will be 0
@@ -430,7 +436,9 @@ define([
 
   /**
    * Returns the position of the audio found at the very right hand edge
-   * of the screen at the current zoom level
+   * of the screen at the current zoom level.
+   *
+   * @returns {Number}
    */
   WaveformContinuousZoomView.prototype.getRightEdgeTime = function() {
     var rightEdgeTime = this.leftEdgeTime +
@@ -440,8 +448,9 @@ define([
   };
 
   /**
-   * Seeks to a certain position in the audio - sets the 'dirty' flag
-   * ensuring a redraw
+   * Seeks to a certain position in the audio, and sets the 'dirty' flag
+   * ensuring a redraw.
+   *
    * @param {Number} time The time position to seek to, in seconds
    */
   WaveformContinuousZoomView.prototype.seekTo = function(time) {
@@ -452,20 +461,26 @@ define([
 
   /**
    * Returns the position of the audio found at the very left hand edge
-   * of the screen at the current zoom level
+   * of the screen at the current zoom level.
+   *
+   * @returns {Number}
    */
   WaveformContinuousZoomView.prototype.getDataTime = function() {
     return this.leftEdgeTime;
   };
 
   /**
-   * Returns the pixel position for a particuilar position in the audio
+   * Returns the pixel position for a particuilar position in the audio.
+   *
+   * @returns {Number}
    */
   WaveformContinuousZoomView.prototype.atDataTime = function(axisLabelOffsetSecs) {
     return axisLabelOffsetSecs * this.pixelsPerSecond;
   };
 
-  /* Sets up the waveform etc */
+  /**
+   * Sets up the waveform etc.
+   */
   WaveformContinuousZoomView.prototype.createZoomWaveform = function() {
     this.zoomWaveformShape = new Konva.Shape({
       fill: this.options.zoomWaveformColor,
@@ -478,7 +493,7 @@ define([
   };
 
   /**
-   * Create and configure the UI
+   * Creates and configures the UI.
    */
   WaveformContinuousZoomView.prototype.createUi = function() {
     this.zoomPlayheadLine = new Konva.Line({
@@ -518,10 +533,12 @@ define([
     // of the screen
     var rightEdgeTime = this.getRightEdgeTime();
 
-    // if we're not seeking, and the playhead is off the left or right hand edges...
-    if (!this.peaks.seeking && (this.lastTime > rightEdgeTime || this.lastTime < this.leftEdgeTime)) {
+    // if we're not seeking, and the playhead is off the left or right hand
+    // edges...
+    if (!this.peaks.seeking && (this.lastTime > rightEdgeTime ||
+                                this.lastTime < this.leftEdgeTime)) {
       // adjust the offset
-      this.adjustOffset();
+      this.adjustOffset(false);
     }
 
     // adjust the position of the playhead to match the current position
@@ -536,8 +553,12 @@ define([
     this.uiLayer.draw();
   };
 
-  // Clamp the left and right edges of the display to make sure we don't
-  // go out of bounds.
+  /**
+   * Clamps the left and right edges of the display to make sure we don't
+   * go out of bounds.
+   *
+   * @private
+   */
   WaveformContinuousZoomView.prototype.clamp = function() {
     this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (this.width * this.secondsPerPixel), this.leftEdgeTime));
 
@@ -549,8 +570,8 @@ define([
   };
 
   /**
-   * During a seek (e.g. user dragging overview window) we need to adjust
-   * the position of the waveform to keep things in sync
+   * During a seek (e.g., when the user drags the overview window) we need to
+   * adjust the position of the waveform to keep things in sync.
    */
   WaveformContinuousZoomView.prototype.adjustFromSeek = function() {
     // cache the current left edge time
@@ -577,12 +598,19 @@ define([
     this.zoomWaveformLayer.draw();
   };
 
-  // make UI adjustments once the segment layer is added
+  /**
+   * Makes UI adjustments once the segment layer is added.
+   */
   WaveformContinuousZoomView.prototype.segmentLayerAdded = function() {
     this.uiLayer.moveToTop();
   };
 
-  // another method to help with adjusting and clamping the zoom to prevent us going out of bounds
+  /**
+   * Another method to help with adjusting and clamping the zoom to prevent us
+   * going out of bounds.
+   *
+   * @private
+   */
   WaveformContinuousZoomView.prototype.adjustOffset = function(offsetOnly) {
     // cache the current left edge time
     var leftEdgeTime = this.leftEdgeTime;
@@ -601,7 +629,7 @@ define([
     // clamp the position
     this.leftEdgeTime = Math.max(0, Math.min(this.totalDuration - (secondsOnScreen), this.leftEdgeTime));
 
-    var start = Math.floor(this.leftEdgeTime * this.pixelsPerSecond / (this.zoomRatio)),
+    var start = Math.floor(this.leftEdgeTime * this.pixelsPerSecond / this.zoomRatio),
         end = start + (this.width / this.zoomRatio);
 
     this.data.offset(start, end);
