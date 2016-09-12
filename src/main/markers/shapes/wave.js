@@ -1,8 +1,9 @@
 /**
- * WAVEFORM.SEGMENTS.JS
+ * @file
  *
- * This module handles all functionality related to the adding,
- * removing and manipulation of segments
+ * Defines the {@link WaveShape} class.
+ *
+ * @module peaks/markers/shapes/wave
  */
 define([
   'peaks/markers/shapes/base',
@@ -11,6 +12,10 @@ define([
 ], function(BaseShape, mixins, Konva) {
   'use strict';
 
+  /**
+   * @class
+   * @alias WaveShape
+   */
   var WaveShape = Object.create(BaseShape.prototype);
 
   /**
@@ -37,6 +42,7 @@ define([
    * @param {WaveformZoomView|WaveformOverview} view
    * @param {String|Number} segmentId
    * @param {Konva.Context} context
+   * @private
    */
   WaveShape.drawFunc = function WaveShapeDrawFunc(view, segmentId, context) {
     var waveformData = view.data;

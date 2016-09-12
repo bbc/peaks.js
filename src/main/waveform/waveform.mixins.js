@@ -1,8 +1,9 @@
 /**
- * WAVEFORM.MIXINS.JS
+ * @file
  *
- * Common functions used in multiple modules are
- * collected here for DRY purposes.
+ * Common functions used in multiple modules are collected here for DRY purposes.
+ *
+ * @module peaks/waveform/waveform.mixins
  */
 define(['konva'], function(Konva) {
   'use strict';
@@ -231,7 +232,7 @@ define(['konva'], function(Konva) {
   }
 
   /**
-   * Draw a waveform on a canvas context
+   * Draws a waveform on a canvas context.
    *
    * @param  {Konva.Context} context  Canvas Context to draw on
    * @param  {Array}    min           Min values for waveform
@@ -294,10 +295,11 @@ define(['konva'], function(Konva) {
     },
 
     /**
-     * Format a time nicely
-     * @param  {int}      time            Time in seconds to be formatted
-     * @param  {Boolean}  dropHundredths  Don't display hundredths of a second if true
-     * @return {String}   Formatted time string
+     * Returns a formatted time string.
+     *
+     * @param {int}     time            Time in seconds to be formatted
+     * @param {Boolean} dropHundredths  Don't display hundredths of a second if true
+     * @returns {String}
      */
     niceTime: function(time, dropHundredths) {
       var result = [];
@@ -338,8 +340,7 @@ define(['konva'], function(Konva) {
     },
 
     /**
-     * Return a function that on execution creates and returns a new
-     * IN handle object
+     * Returns a function that creates and returns a new IN handle object.
      *
      * @param  {Object}   options Root Peaks.js options containing config info for handle
      * @return {Function} Provides Konva handle group on execution
@@ -349,8 +350,7 @@ define(['konva'], function(Konva) {
     },
 
     /**
-     * Return a function that on execution creates and returns a new
-     * OUT handle object
+     * Returns a function that creates and returns a new OUT handle object.
      *
      * @param  {Object}   options Root Peaks.js options containing config info for handle
      * @return {Function} Provides Konva handle group on execution
@@ -360,8 +360,7 @@ define(['konva'], function(Konva) {
     },
 
     /**
-     * Return a function that on execution creates and returns a new
-     * point marker
+     * Returns a function that creates and returns a new point marker.
      *
      * @param  {Object}   options Root Peaks.js options containing config info for marker
      * @return {Function} Provides Konva marker group on execution

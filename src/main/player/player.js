@@ -1,31 +1,10 @@
 /**
- * Player API
+ * @file
  *
- * Functionality layer for interfacing with the html5 audio API.
+ * Defines the {@link Player} class.
  *
- * player.init - takes a player object and sets up the player
- *
- * player.play - starts the audio playback and updates internal variables
- *
- * player.stop - stops playback
- *
- * player.seek - seek to a certain percentage
- *
- * player.timeUpdate - assignable function that is called on player update
- *                     during playback (normalised)
- *
- * player.getPercentage - get the percentage playthrough
- *
- * player.getTime - get a nicely formatted string representing the current timecode
- *
- * player.getDuration - get a nice formatted time representing the clip duration
- *
- * player.getTimeFromPercentage - get the time in track of a percentage
- *                                playthrough without setting
- *
- * player.setVolume
+ * @module peaks/player/player
  */
-
 define(['peaks/waveform/waveform.mixins'], function(mixins) {
   'use strict';
 
@@ -33,10 +12,23 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
     return time * (percentage / 100);
   }
 
+  /**
+   * A wrapper for interfacing with the HTML5 media element API.
+   *
+   * @class
+   * @alias Player
+   *
+   * @param {Peaks} peaks The parent Peaks object.
+   */
   function Player(peaks) {
     this.peaks = peaks;
   }
 
+  /**
+   * Initializes the player for a given media element.
+   *
+   * @param {HTMLMediaElement} mediaElement
+   */
   Player.prototype.init = function(mediaElement) {
     var self = this;
 
@@ -65,6 +57,13 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
     });
   };
 
+  /**
+   * Adds an event listener to the media element.
+   *
+   * @param {String} type
+   * @param {Function} callback
+   * @private
+   */
   Player.prototype._addMediaListener = function(type, callback) {
     this.listeners.push([type, callback]);
     this.mediaElement.addEventListener(type, callback);
@@ -86,14 +85,25 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
     return this.mediaElement.src;
   };
 
+  /**
+   * Starts playback.
+   */
   Player.prototype.play = function() {
     this.mediaElement.play();
   };
 
+  /**
+   * Pauses playback.
+   */
   Player.prototype.pause = function() {
     this.mediaElement.pause();
   };
 
+  /**
+   * Returns the current playback time position, in seconds.
+   *
+   * @returns {Number}
+   */
   Player.prototype.getTime = function() {
     return this.mediaElement.currentTime;
   };
@@ -106,24 +116,44 @@ define(['peaks/waveform/waveform.mixins'], function(mixins) {
     return Math.floor(this.duration * p / 100);
   };
 
+  /**
+   * Returns the media duration, in seconds.
+   *
+   * @returns {Number}
+   */
   Player.prototype.getDuration = function() {
     return this.mediaElement.duration;
   };
 
+  /**
+   * Returns the current playback position, as a percentage of the duration.
+   *
+   * @returns {Number}
+   */
   Player.prototype.getPercentage = function() {
-    return this.getPercentageFromSeconds(this.mediaElement.currentTime);
+    return this._getPercentageFromSeconds(this.mediaElement.currentTime);
   };
 
-  Player.prototype.getPercentageFromSeconds = function(s) {
+  Player.prototype._getPercentageFromSeconds = function(s) {
     var percentage = (s / this.duration) * 100;
 
     return Math.round(percentage * 100) / 100; // 2DP
   };
 
+  /**
+   * Seeks to a given percentage position within the media.
+   *
+   * @param {Number} percentage
+   */
   Player.prototype.seek = function(percentage) {
     this.mediaElement.currentTime = timeFromPercentage(this.duration, percentage);
   };
 
+  /**
+   * Seeks to a given time position within the media.
+   *
+   * @param {Number} seconds
+   */
   Player.prototype.seekBySeconds = function(seconds) {
     this.mediaElement.currentTime = seconds;
   };
