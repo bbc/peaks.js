@@ -1,7 +1,9 @@
 /**
- * ZOOMS.STATIC.JS
+ * @file
  *
- * This module is a zoom view adapter with no animations.
+ * Defines a zoom view adapter with no animations.
+ *
+ * @module peaks/views/zooms/static
  */
 define([], function() {
   'use strict';

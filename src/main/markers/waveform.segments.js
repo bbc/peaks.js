@@ -1,8 +1,9 @@
 /**
- * WAVEFORM.SEGMENTS.JS
+ * @file
  *
- * This module handles all functionality related to the adding,
- * removing and manipulation of segments
+ * Defines the {@link WaveformSegments} class.
+ *
+ * @module peaks/markers/waveform.segments
  */
 define([
   'konva',
@@ -11,6 +12,15 @@ define([
 ], function(Konva, mixins, SegmentShape) {
   'use strict';
 
+  /**
+   * handles all functionality related to the adding, removing and manipulation
+   * of segments
+   *
+   * @class
+   * @alias WaveformSegments
+   *
+   * @param {Peaks} peaks The parent Peaks object.
+   */
   function WaveformSegments(peaks) {
     var self = this;
 

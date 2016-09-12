@@ -1,9 +1,9 @@
 /**
- * WAVEFORM.OVERVIEW.JS
+ * @file
  *
- * This module handles all functionality related to the overview
- * timeline canvas and initialises its own instance of the axis
- * object.
+ * Defines the {@link WaveformOverview} class.
+ *
+ * @module peaks/views/waveform.overview
  */
 define([
   'peaks/waveform/waveform.axis',
@@ -12,6 +12,12 @@ define([
 ], function(WaveformAxis, mixins, Konva) {
   'use strict';
 
+  /**
+   * Creates the overview timeline canvas.
+   *
+   * @class
+   * @alias WaveformOverview
+   */
   function WaveformOverview(waveformData, container, peaks) {
     var self = this;
 

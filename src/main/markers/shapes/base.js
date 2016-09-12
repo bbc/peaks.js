@@ -1,12 +1,17 @@
 /**
- * WAVEFORM.SEGMENTS.JS
+ * @file
  *
- * This module handles all functionality related to the adding,
- * removing and manipulation of segments
+ * Defines the {@link BaseShape} class.
+ *
+ * @module peaks/markers/shapes/base
  */
 define(function() {
   'use strict';
 
+  /**
+   * @class
+   * @alias BaseShape
+   */
   function BaseShape() {}
 
   function noop() {}
