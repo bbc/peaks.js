@@ -411,7 +411,7 @@ define([
    * Performs the rendering of the segments on screen
    *
    * @api
-   * @see https://github.com/bbcrd/peaks.js/pull/5
+   * @see https://github.com/bbc/peaks.js/pull/5
    * @since 0.0.2
    */
   WaveformSegments.prototype.render = function() {

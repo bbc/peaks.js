@@ -4,7 +4,7 @@
 
 Peaks.js is a modular client-side JavaScript component designed for the display of and interaction with audio waveform material in the browser.
 
-![](https://github.com/bbcrd/peaks.js/blob/master/peaks.png?raw=1)
+![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
 
 Peaks.js is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
 
@@ -17,14 +17,14 @@ Peaks.js uses HTML5 canvas technology to display waveform data at different zoom
 - **npm**: `npm install --save peaks.js`
 - *bower*: `bower install --save peaks.js`
 - [Browserify CDN](http://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
-- *old school*: [download zip file](https://github.com/bbcrd/peaks.js/archive/master.zip)
+- *old school*: [download zip file](https://github.com/bbc/peaks.js/archive/master.zip)
 
 # Using Peaks.js in your own project
 
 Peaks.js can be included in any web page by following these steps:
 
 1. include it your web page
-1. include a media element and its [waveform data file](https://github.com/bbcrd/audiowaveform)
+1. include a media element and its [waveform data file](https://github.com/bbc/audiowaveform)
 1. initialise Peaks.js
 
 ```html
@@ -101,7 +101,7 @@ var p = Peaks.init({ … });
 
 ## Generate waveform data
 
-Peaks uses waveform data files produced by [audiowaveform](https://github.com/bbcrd/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size, but this is only compatible with [browsers that support Typed Arrays](http://caniuse.com/#feat=typedarrays).
+Peaks uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size, but this is only compatible with [browsers that support Typed Arrays](http://caniuse.com/#feat=typedarrays).
 
 You should also use the `-b 8` option when generating waveform data files, as Peaks does not currently support 16-bit waveform data files, and also to minimise file size.
 
@@ -495,7 +495,7 @@ The project *bundles* everything you need to do so.
 ## Prerequisite
 
 ```bash
-git clone https://github.com/bbcrd/peaks.js.git
+git clone https://github.com/bbc/peaks.js.git
 cd peaks.js
 npm install
 ```

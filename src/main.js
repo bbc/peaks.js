@@ -200,7 +200,7 @@ define('peaks', [
        *
        * You mostly want to play with the 'scale' option.
        *
-       * @see https://github.com/bbcrd/waveform-data.js/blob/master/lib/builders/webaudio.js
+       * @see https://github.com/bbc/waveform-data.js/blob/master/lib/builders/webaudio.js
        */
       waveformBuilderOptions: {
         scale: 512,

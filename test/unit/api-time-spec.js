@@ -30,8 +30,8 @@
         expect(p.time.getCurrentTime()).to.equal(0);
       });
 
-      // @see https://github.com/bbcrd/peaks.js/issues/9
-      // @see https://github.com/bbcrd/peaks.js/issues/12
+      // @see https://github.com/bbc/peaks.js/issues/9
+      // @see https://github.com/bbc/peaks.js/issues/12
       // For some reason, the event is not emitted during the tests
       it('should return an updated time if it has been modified through the audio element', function(done) {
         p.on('player_seek', function(currentTime) {
