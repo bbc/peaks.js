@@ -1,4 +1,4 @@
-# Peaks.js [![Build Status](https://travis-ci.org/bbcrd/peaks.js.svg?branch=master)](https://travis-ci.org/bbcrd/peaks.js)
+# Peaks.js [![Build Status](https://travis-ci.org/bbc/peaks.js.svg?branch=master)](https://travis-ci.org/bbc/peaks.js)
 
 > A browser based audio waveform visualisation frontend component from BBC R&D.
 

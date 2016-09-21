@@ -36,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/bbcrd/peaks.js.git"
+    "url": "git://github.com/bbc/peaks.js.git"
   },
   "license": "LGPL-3.0",
   "scripts": {
@@ -49,7 +49,7 @@
     "pretest": "jshint ./src",
     "test-watch": "./node_modules/karma/bin/karma start --auto-watch --no-single-run",
     "version": "npm run changelog && npm run build && git add CHANGELOG.md",
-    "changelog": "github-changes -o bbcrd -r peaks.js -n ${npm_package_version} --only-pulls --use-commit-body",
+    "changelog": "github-changes -o bbc -r peaks.js -n ${npm_package_version} --only-pulls --use-commit-body",
     "prestart": "npm run build",
     "prepublish": "npm run build",
     "start": "serve --cors -p 9000"
