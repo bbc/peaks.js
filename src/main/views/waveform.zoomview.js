@@ -239,13 +239,13 @@ define([
   };
 
   WaveformZoomView.prototype.createUi = function() {
-    this.zoomPlayheadLine = new Konva.Line({
+    this.playheadLine = new Konva.Line({
       points: [0.5, 0, 0.5, this.height],
       stroke: this.options.playheadColor,
       strokeWidth: 1
     });
 
-    this.zoomPlayheadText = new Konva.Text({
+    this.playheadText = new Konva.Text({
       x: 2,
       y: 12,
       text: '00:00:00',
@@ -255,18 +255,18 @@ define([
       align: 'right'
     });
 
-    this.zoomPlayheadGroup = new Konva.Group({
+    this.playheadGroup = new Konva.Group({
       x: 0,
       y: 0
     });
 
-    this.zoomPlayheadGroup.add(this.zoomPlayheadLine)
-                          .add(this.zoomPlayheadText);
+    this.playheadGroup.add(this.playheadLine)
+                      .add(this.playheadText);
 
-    this.uiLayer.add(this.zoomPlayheadGroup);
+    this.uiLayer.add(this.playheadGroup);
     this.stage.add(this.uiLayer);
 
-    this.zoomPlayheadGroup.moveToTop();
+    this.playheadGroup.moveToTop();
   };
 
   WaveformZoomView.prototype.updateZoomWaveform = function(pixelOffset) {
@@ -302,11 +302,11 @@ define([
     if (display) {
       var remPixels = this.playheadPixel - pixelOffset;
 
-      this.zoomPlayheadGroup.show().setAttr('x', remPixels);
-      this.zoomPlayheadText.setText(mixins.niceTime(this.data.time(this.playheadPixel), false));
+      this.playheadGroup.show().setAttr('x', remPixels);
+      this.playheadText.setText(mixins.niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
-      this.zoomPlayheadGroup.hide();
+      this.playheadGroup.hide();
     }
 
     this.uiLayer.draw();
@@ -388,11 +388,11 @@ define([
       // Place playhead at centre of zoom frame i.e. remPixels = 500
       var remPixels = this.playheadPixel - this.frameOffset;
 
-      this.zoomPlayheadGroup.show().setAttr('x', remPixels);
-      this.zoomPlayheadText.setText(mixins.niceTime(this.data.time(this.playheadPixel), false));
+      this.playheadGroup.show().setAttr('x', remPixels);
+      this.playheadText.setText(mixins.niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
-      this.zoomPlayheadGroup.hide();
+      this.playheadGroup.hide();
     }
 
     this.uiLayer.draw();

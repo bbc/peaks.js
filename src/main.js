@@ -399,7 +399,7 @@ define('peaks', [
           /**
            * Return all points
            *
-           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.zoomPlayheadLine.points|points|o.points|n.createUi.points}
+           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.playheadLine.points|points|o.points|n.createUi.points}
            */
           getPoints: function() {
             return self.waveform.points.getPoints();
