@@ -8,10 +8,17 @@
 define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
+  'peaks/views/helpers/mousedraghandler',
   'peaks/views/zooms/animated',
   'peaks/views/zooms/static',
   'konva'
-  ], function(WaveformAxis, mixins, AnimatedZoomAdapter, StaticZoomAdapter, Konva) {
+  ], function(
+    WaveformAxis,
+    mixins,
+    MouseDragHandler,
+    AnimatedZoomAdapter,
+    StaticZoomAdapter,
+    Konva) {
   'use strict';
 
   /**
@@ -67,74 +74,47 @@ define([
     self.createZoomWaveform();
     self.createUi();
 
-    // INTERACTION ===============================================
+    self.mouseDragHandler = new MouseDragHandler(self.stage, {
+      onMouseDown: function(layerX) {
+        this.initialFrameOffset = self.frameOffset;
+        this.mouseDownLayerX = layerX;
+      },
 
-    self.stage.on('mousedown', function(event) {
-      var x, dX, p;
+      onMouseMove: function(layerX) {
+        // Moving the mouse to the left increases the time position of the
+        // left-hand edge of the visible waveform.
+        var diff = this.mouseDownLayerX - layerX;
 
-      // enable drag if necessary
-      function mouseMove(event) {
-        var pixelsDifference = Math.abs(event.layerX - x);
+        var newFrameOffset = this.initialFrameOffset + diff;
 
-        if (pixelsDifference < 1) {
-          return;
+        if (newFrameOffset < 0) {
+          newFrameOffset = 0;
         }
-        peaks.seeking = false;
-
-        dX = x - event.layerX;
-        x = event.layerX;
-
-        p = self.frameOffset + dX;
-
-        if (p < 0) {
-          p = 0;
-        }
-        else if (p > (self.pixelLength - self.width)) {
-          p = self.pixelLength - self.width;
+        else if (newFrameOffset > (self.pixelLength - self.width)) {
+          newFrameOffset = self.pixelLength - self.width;
         }
 
-        self.updateZoomWaveform(p);
-      }
-
-      function mouseUp() {
-        if (peaks.seeking) {
-          // Set playhead position only on click release, when not dragging
-          self.peaks.emit(
-            'user_seek.zoomview',
-            self.data.time(self.frameOffset + x),
-            self.frameOffset + x
-          );
+        if (newFrameOffset !== this.initialFrameOffset) {
+          self.peaks.emit('user_scroll.zoomview', newFrameOffset);
         }
+      },
 
-        window.removeEventListener('mousemove', mouseMove, false);
-        window.removeEventListener('mouseup', mouseUp, false);
-        window.removeEventListener('blur', mouseUp, false);
+      onMouseUp: function(layerX) {
+        // Set playhead position only on click release, when not dragging
+        if (!self.mouseDragHandler.isDragging()) {
+          var pos = self.frameOffset + this.mouseDownLayerX;
 
-        peaks.seeking = false;
-      }
-
-      if (event.target &&
-        !event.target.attrs.draggable &&
-        !event.target.parent.attrs.draggable) {
-        if (event.type === 'mousedown') {
-          x = event.evt.layerX;
-
-          peaks.seeking = true;
-
-          window.addEventListener('mousemove', mouseMove, false);
-          window.addEventListener('mouseup', mouseUp, false);
-          window.addEventListener('blur', mouseUp, false);
+          self.peaks.emit('user_seek.zoomview', self.data.time(pos), pos);
         }
       }
     });
 
     // EVENTS ====================================================
 
-    function userSeekHandler(options, time) {
-      options = options || { withOffset: true };
+    function userSeekHandler(time) {
       var frameIndex = self.data.at_time(time);
 
-      self.seekFrame(frameIndex, options.withOffset ? Math.round(self.width / 2) : 0);
+      self.seekFrame(frameIndex, Math.round(self.width / 2));
 
       if (self.playing) {
         self.playFrom(time, frameIndex);
@@ -142,14 +122,16 @@ define([
     }
 
     self.peaks.on('player_time_update', function(time) {
-      if (!peaks.seeking) {
+      if (!self.mouseDragHandler.isDragging()) {
         self.seekFrame(self.data.at_time(time));
       }
     });
 
-    self.peaks.on('player_seek', userSeekHandler.bind(null, { withOffset: true }));
-    self.peaks.on('user_seek.*', userSeekHandler.bind(null, { withOffset: true }));
-    self.peaks.on('user_scrub.*', userSeekHandler.bind(null, { withOffset: false }));
+    self.peaks.on('player_seek', userSeekHandler);
+
+    self.peaks.on('user_scroll.zoomview', function(pixelOffset) {
+      self.updateZoomWaveform(pixelOffset);
+    });
 
     self.peaks.on('player_play', function(time) {
       self.playing = true;
@@ -168,29 +150,33 @@ define([
 
     self.peaks.on('zoom.update', function(currentScale, previousScale) {
       if (self.playing) {
+        // We currently don't allow changing the zoom level during playback.
         return;
       }
 
-      if (currentScale !== previousScale) {
-        self.data = self.rootData.resample({
-          scale: currentScale
-        });
-
-        var zoomAdapterMap = {
-          'animated': AnimatedZoomAdapter,
-          'static': StaticZoomAdapter
-        };
-
-        var zoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
-
-        if (!zoomAdapter) {
-          throw new Error('Invalid zoomAdapter: ' + self.peaks.options.zoomAdapter);
-        }
-
-        var adapter = zoomAdapter.create(currentScale, previousScale, self);
-
-        adapter.start();
+      if (currentScale === previousScale) {
+        // Nothing to do.
+        return;
       }
+
+      self.data = self.rootData.resample({
+        scale: currentScale
+      });
+
+      var zoomAdapterMap = {
+        'animated': AnimatedZoomAdapter,
+        'static': StaticZoomAdapter
+      };
+
+      var zoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
+
+      if (!zoomAdapter) {
+        throw new Error('Invalid zoomAdapter: ' + self.peaks.options.zoomAdapter);
+      }
+
+      var adapter = zoomAdapter.create(currentScale, previousScale, self);
+
+      adapter.start();
     });
 
     self.peaks.on('window_resized', function(width, newWaveformData) {
@@ -232,7 +218,7 @@ define([
     this.stage.add(this.zoomWaveformLayer);
 
     this.peaks.emit(
-      'waveform_zoom_displaying',
+      'zoomview.displaying',
       0 * this.data.seconds_per_pixel,
       this.width * this.data.seconds_per_pixel
     );
@@ -283,7 +269,7 @@ define([
 
     // new position is beyond the size of the waveform, so set it to the very
     // last possible position
-    if (pixelOffset > this.pixelLength) {
+    if (pixelOffset > this.pixelLength - this.width) {
       pixelOffset = this.pixelLength - this.width;
     }
 
@@ -317,7 +303,7 @@ define([
     // }
 
     this.peaks.emit(
-      'waveform_zoom_displaying',
+      'zoomview.displaying',
       pixelOffset * this.data.seconds_per_pixel,
       (pixelOffset + this.width) * this.data.seconds_per_pixel
     );

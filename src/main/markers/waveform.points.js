@@ -142,13 +142,19 @@ define([
     }
   };
 
+  /**
+   * @param {Konva.Group} thisPoint
+   * @param {Point} point
+   */
   WaveformPoints.prototype.pointHandleDrag = function(thisPoint, point) {
-    if (thisPoint.marker.getX() > 0) {
-      var inOffset = thisPoint.view.frameOffset +
-                     thisPoint.marker.getX() +
-                     thisPoint.marker.getWidth();
+    var markerX = thisPoint.marker.getX();
 
-      point.timestamp = thisPoint.view.data.time(inOffset);
+    if (markerX > 0 && markerX < thisPoint.view.width) {
+      var offset = thisPoint.view.frameOffset +
+                   markerX +
+                   thisPoint.marker.getWidth();
+
+      point.timestamp = thisPoint.view.data.time(offset);
     }
 
     this.peaks.emit('points.dragged', point);
@@ -157,7 +163,7 @@ define([
   };
 
   WaveformPoints.prototype.init = function() {
-    this.peaks.on('waveform_zoom_displaying', this.updatePoints.bind(this));
+    this.peaks.on('zoomview.displaying', this.updatePoints.bind(this));
     this.peaks.emit('points.ready');
   };
 
