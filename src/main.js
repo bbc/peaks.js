@@ -361,9 +361,6 @@ define('peaks', [
     instance.waveform = new Waveform(instance);
     instance.waveform.init(buildUi(instance.container));
 
-    // TODO maybe to move in the player object
-    instance.seeking = false;
-
     instance.on('waveformOverviewReady', function() {
       instance.waveform.openZoomView();
 

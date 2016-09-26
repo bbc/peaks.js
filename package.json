@@ -24,10 +24,12 @@
     "peaks/waveform/waveform.axis": "./src/main/waveform/waveform.axis.js",
     "peaks/waveform/waveform.core": "./src/main/waveform/waveform.core.js",
     "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
+    "peaks/waveform/waveform.utils": "./src/main/waveform/waveform.utils.js",
     "peaks/views/waveform.overview": "./src/main/views/waveform.overview.js",
-    "peaks/views/waveform.editable-overview": "./src/main/views/waveform.editable-overview.js",
     "peaks/views/waveform.zoomview": "./src/main/views/waveform.zoomview.js",
     "peaks/views/waveform.continuous-zoomview": "./src/main/views/waveform.continuous-zoomview.js",
+    "peaks/views/waveform.editable-overview": "./src/main/views/waveform.editable-overview.js",
+    "peaks/views/helpers/mousedraghandler": "./src/main/views/helpers/mousedraghandler.js",
     "peaks/views/zooms/animated": "./src/main/views/zooms/animated.js",
     "peaks/views/zooms/static": "./src/main/views/zooms/static.js",
     "peaks/markers/waveform.points": "./src/main/markers/waveform.points.js",
@@ -83,7 +85,7 @@
   },
   "dependencies": {
     "eventemitter2": "~1.0.0",
-    "konva": "~1.0.0",
+    "konva": "~1.2.2",
     "waveform-data": "^1.5.2"
   }
 }

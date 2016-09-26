@@ -430,7 +430,7 @@ define([
     if (this.peaks.seeking || this.dirty || this.playing) {
       this.dirty = false;
       this.syncPlayhead();
-      this.peaks.emit('waveform_zoom_displaying', this.leftEdgeTime, this.getRightEdgeTime());
+      this.peaks.emit('zoomview.displaying', this.leftEdgeTime, this.getRightEdgeTime());
     }
   };
 

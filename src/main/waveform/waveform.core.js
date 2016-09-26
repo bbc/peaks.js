@@ -231,10 +231,6 @@
     self.peaks.on('user_seek.*', function(time) {
       self.peaks.player.seekBySeconds(time);
     });
-
-    self.peaks.on('user_scrub.*', function(time) {
-      self.peaks.player.seekBySeconds(time);
-    });
   };
 
   Waveform.prototype.destroy = function() {

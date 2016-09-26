@@ -108,7 +108,7 @@ define([
     peaks.on('user_seek.*', trackPlayheadPosition);
     peaks.on('user_scrub.*', trackPlayheadPosition);
 
-    peaks.on('waveform_zoom_displaying', function(start, end) {
+    peaks.on('zoomview.displaying', function(start, end) {
       if (!peaks.dragSeeking) {
         self.updateRefWaveform(start, end);
       }

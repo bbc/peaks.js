@@ -470,7 +470,6 @@ Peaks.js emits events to enable you to extend its behaviour according to your ne
 `zoomview_resized`         | N/A
 `user_seek.overview`       | `float time`
 `user_seek.zoomview`       | `float time`
-`user_scrub.overview`      | `float time`
 
 ### Waveforms
 
