@@ -245,8 +245,7 @@ define([
   };
 
   WaveformSegments.prototype.init = function() {
-    this.peaks.on('waveform_zoom_displaying', this.updateSegments.bind(this));
-
+    this.peaks.on('zoomview.displaying', this.updateSegments.bind(this));
     this.peaks.emit('segments.ready');
   };
 

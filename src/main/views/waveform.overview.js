@@ -8,8 +8,9 @@
 define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
+  'peaks/views/helpers/mousedraghandler',
   'konva'
-], function(WaveformAxis, mixins, Konva) {
+], function(WaveformAxis, mixins, MouseDragHandler, Konva) {
   'use strict';
 
   /**
@@ -51,54 +52,35 @@ define([
     self.createRefWaveform();
     self.createUi();
 
-    // INTERACTION ===============================================
+    self.mouseDragHandler = new MouseDragHandler(self.stage, {
+      onMouseDown: function(layerX) {
+        self.peaks.emit('user_seek.overview', self.data.time(layerX));
+      },
 
-    function cancelSeeking() {
-      window.removeEventListener('mousemove', mouseMove, false);
-      window.removeEventListener('mouseup', cancelSeeking, false);
-      window.removeEventListener('blur', cancelSeeking, false);
-      peaks.seeking = false;
-    }
-
-    function mouseMove(event) {
-      var x = event.layerX;
-
-      peaks.emit('user_scrub.overview', self.data.time(x), x);
-    }
-
-    self.stage.on('mousedown', function(event) {
-      if (event.target &&
-        !event.target.attrs.draggable &&
-        !event.target.parent.attrs.draggable) {
-        if (event.type === 'mousedown') {
-          peaks.seeking = true;
-
-          mouseMove(event.evt);
-
-          window.addEventListener('mousemove', mouseMove, false);
-          window.addEventListener('mouseup', cancelSeeking, false);
-          window.addEventListener('blur', cancelSeeking, false);
+      onMouseMove: function(layerX) {
+        if (layerX < 0) {
+          layerX = 0;
         }
-        else {
-          cancelSeeking();
+        else if (layerX > self.width) {
+          layerX = self.width;
         }
+
+        self.peaks.emit('user_seek.overview', self.data.time(layerX));
       }
     });
 
     // EVENTS ====================================================
 
     function trackPlayheadPosition(time, frame) {
-      if (!peaks.seeking) {
-        self.playheadPixel = self.data.at_time(time);
-        self.updateUi(self.playheadPixel);
-      }
+      self.playheadPixel = self.data.at_time(time);
+      self.updateUi(self.playheadPixel);
     }
 
     peaks.on('player_time_update', trackPlayheadPosition);
-    peaks.on('user_seek.*', trackPlayheadPosition);
-    peaks.on('user_scrub.*', trackPlayheadPosition);
+    // peaks.on('user_seek.zoomview', trackPlayheadPosition);
+    // peaks.on('user_seek.overview', trackPlayheadPosition);
 
-    peaks.on('waveform_zoom_displaying', function(start, end) {
+    peaks.on('zoomview.displaying', function(start, end) {
       self.updateRefWaveform(start, end);
     });
 
@@ -144,7 +126,7 @@ define([
     });
     */
 
-    this.refWaveformRect = new Konva.Rect({
+    this.highlightRect = new Konva.Rect({
       x: 0,
       y: 11,
       width: 0,
@@ -156,7 +138,7 @@ define([
       cornerRadius: 2
     });
 
-    this.refLayer.add(this.refWaveformRect);
+    this.refLayer.add(this.highlightRect);
     this.stage.add(this.refLayer);
   };
 
@@ -225,13 +207,15 @@ define([
 
     this.data.set_segment(offsetIn, offsetOut, 'zoom');
 
-    this.refWaveformRect.setAttrs({
+    this.highlightRect.setAttrs({
       x: this.data.segments.zoom.offset_start - this.data.offset_start,
       width: this.data.at_time(timeOut) - this.data.at_time(timeIn)
     });
 
     this.refLayer.draw();
   };
+
+  // WaveformZoomView equivalent: updateZoomWaveform
 
   WaveformOverview.prototype.updateUi = function(pixel) {
     if (isNaN(pixel)) {
