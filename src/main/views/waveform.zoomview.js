@@ -80,7 +80,10 @@ define([
 
           // enable drag if necessary
           var mouseMove = function(event) {
-            peaks.seeking = false;
+			var pixelsDifference = Math.abs(event.layerX - x);
+			if(pixelsDifference < 1) return;  
+          
+			peaks.seeking = false;
 
             dX = x - event.layerX;
             x = event.layerX;
