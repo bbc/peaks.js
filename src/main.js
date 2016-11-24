@@ -211,7 +211,13 @@ define('peaks', [
       /**
        * Use animation on zoom
        */
-      zoomAdapter: 'animated'
+      zoomAdapter: 'animated',
+
+
+      /**
+       * Pass in AudioContext for Waveform-data library to render waveform data
+       */
+      audioContext: null,
     };
 
     /**
@@ -277,6 +283,10 @@ define('peaks', [
     if (opts.logger && typeof opts.logger !== 'function') {
       // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] The `logger` option should be a function.');
+    }
+
+    if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+      throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data.');
     }
 
     var instance = new Peaks(opts.container);

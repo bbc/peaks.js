@@ -99,7 +99,7 @@
     }
 
     // WebAudio Builder
-    if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
+    if (!options.dataUri && this.peaks.options.audioContext) {
       requestType = 'arraybuffer';
       uri = options.mediaElement.currentSrc || options.mediaElement.src;
       builder = 'webaudio';
@@ -123,6 +123,7 @@
     }
 
     xhr.onload = function(response) {
+<<<<<<< HEAD
       if (this.readyState !== 4) {
         return;
       }
@@ -137,9 +138,10 @@
 
       if (builder) {
         WaveformData.builders[builder](
+	  self.peaks.options.audioContext,
           response.target.response,
           options.waveformBuilderOptions,
-          self.handleRemoteData.bind(self, null)
+	  self.handleRemoteData.bind(self)
         );
       }
       else {
