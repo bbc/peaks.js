@@ -70,52 +70,56 @@ define([
     // INTERACTION ===============================================
 
     self.stage.on('mousedown', function(event) {
+      var x, dX, p;
+
+      // enable drag if necessary
+      function mouseMove(event) {
+        var pixelsDifference = Math.abs(event.layerX - x);
+
+        if (pixelsDifference < 1) {
+          return;
+        }
+        peaks.seeking = false;
+
+        dX = x - event.layerX;
+        x = event.layerX;
+
+        p = self.frameOffset + dX;
+
+        if (p < 0) {
+          p = 0;
+        }
+        else if (p > (self.pixelLength - self.width)) {
+          p = self.pixelLength - self.width;
+        }
+
+        self.updateZoomWaveform(p);
+      }
+
+      function mouseUp() {
+        if (peaks.seeking) {
+          // Set playhead position only on click release, when not dragging
+          self.peaks.emit(
+            'user_seek.zoomview',
+            self.data.time(self.frameOffset + x),
+            self.frameOffset + x
+          );
+        }
+
+        window.removeEventListener('mousemove', mouseMove, false);
+        window.removeEventListener('mouseup', mouseUp, false);
+        window.removeEventListener('blur', mouseUp, false);
+
+        peaks.seeking = false;
+      }
+
       if (event.target &&
         !event.target.attrs.draggable &&
         !event.target.parent.attrs.draggable) {
         if (event.type === 'mousedown') {
-          var x = event.evt.layerX, dX, p;
+          x = event.evt.layerX;
 
           peaks.seeking = true;
-
-          // enable drag if necessary
-          var mouseMove = function(event) {
-			var pixelsDifference = Math.abs(event.layerX - x);
-			if(pixelsDifference < 1) return;  
-          
-			peaks.seeking = false;
-
-            dX = x - event.layerX;
-            x = event.layerX;
-
-            p = self.frameOffset + dX;
-
-            if (p < 0) {
-              p = 0;
-            }
-            else if (p > (self.pixelLength - self.width)) {
-              p = self.pixelLength - self.width;
-            }
-
-            self.updateZoomWaveform(p);
-          };
-
-          var mouseUp = function() {
-            if (peaks.seeking) {
-              // Set playhead position only on click release, when not dragging
-              self.peaks.emit(
-                'user_seek.zoomview',
-                self.data.time(self.frameOffset + x),
-                self.frameOffset + x
-              );
-            }
-
-            window.removeEventListener('mousemove', mouseMove, false);
-            window.removeEventListener('mouseup', mouseUp, false);
-            window.removeEventListener('blur', mouseUp, false);
-
-            peaks.seeking = false;
-          };
 
           window.addEventListener('mousemove', mouseMove, false);
           window.addEventListener('mouseup', mouseUp, false);
