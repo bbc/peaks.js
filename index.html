@@ -67,8 +67,8 @@
 
       <div id="demo-controls">
         <audio controls=controls>
-          <source src="http://waveform.prototyping.bbc.co.uk/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
-          <source src="http://waveform.prototyping.bbc.co.uk/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
+          <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
+          <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
           Your browser does not support the audio element.
         </audio>
 
@@ -86,8 +86,8 @@
             container: document.getElementById('first-waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: {
-              arraybuffer: 'http://waveform.prototyping.bbc.co.uk/test_data/test_data/TOL_6min_720p_download.dat',
-              json: 'http://waveform.prototyping.bbc.co.uk/test_data/test_data/TOL_6min_720p_download.json'
+              arraybuffer: '/test_data/TOL_6min_720p_download.dat',
+              json: '/test_data/TOL_6min_720p_download.json'
             },
             keyboard: false
           };
