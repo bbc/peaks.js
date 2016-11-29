@@ -381,6 +381,14 @@ define('peaks', [
 
           removeAll: function() {
             return self.waveform.segments.removeAll();
+          },
+
+          /**
+           * Redraw segments
+           *
+           */
+          updateSegments: function() {
+            return self.waveform.segments.updateSegments();
           }
         };
       }
@@ -452,6 +460,14 @@ define('peaks', [
            */
           removeAll: function removeAll() {
             return self.waveform.points.removeAll();
+          },
+
+          /**
+           * Redraw points
+           *
+           */
+          updatePoints: function() {
+            return self.waveform.points.updatePoints();
           }
         };
       }
