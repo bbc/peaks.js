@@ -123,7 +123,6 @@
     }
 
     xhr.onload = function(response) {
-<<<<<<< HEAD
       if (this.readyState !== 4) {
         return;
       }
