@@ -121,8 +121,7 @@ Refer to the man page audiowaveform(1) for full details of the available command
 
 ## Web Audio based waveforms
 
-Since `0.3.0`, Peaks.js can use Web Audio to generate waveforms, which means you would not have to
-pre-generate a `dat` or `json` file beforehand.
+Since `0.3.0`, Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you would not have to pre-generate a `dat` or `json` file beforehand.
 
 To do so, skip the `dataUri` option and make sure [your browser is compatible with Web Audio](http://caniuse.com/#feat=audio-api).
 
@@ -514,7 +513,7 @@ The output of the build is a file named `peaks.js`, alongside its associated [so
 
 ## Live Demo
 
-This command will serve a local demo page containing a single Peaks instance. Look at the file [index.html][https://github.com/bbc/peaks.js/blob/master/index.html] to see an example of Peaks.js in use.
+This command will serve a local demo page containing a single Peaks instance. Look at the file [index.html](https://github.com/bbc/peaks.js/blob/master/index.html) to see an example of Peaks.js in use.
 
 ```bash
 npm start
