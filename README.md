@@ -275,36 +275,37 @@ and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
 
 ## Initialisation
 
-The top level `peaks` object exposes a factory to create new `peaks` instances.
+The top level `Peaks` object exposes a factory function to create new `Peaks` instances.
 
-### `peaks.init(options)`
+### `Peaks.init(options)`
 
-Starts an instance of Peaks with the [assigned options](#Configuration). It enables you do deal with several instances
+Starts an instance of Peaks with the [assigned options](#Configuration). It allows you to create and manage several instances
 of Peaks within a single page with one or several configurations.
 
 ```js
-var peaksInstance = peaks.init({ … });
-var secondPeaksInstance = peaks.init({ … });
+var peaksInstance = Peaks.init({ … });
+var secondPeaksInstance = Peaks.init({ … });
 ```
 
 ## Time API
 
 ### `instance.time.getCurrentTime()`
 
-Returns currently selected time in seconds (convenience method interchangeable with `mediaElement.currentTime`).
+Returns the current time from the associated HTMLMediaElement, in seconds.
+This is a convenience method interchangeable with `mediaElement.currentTime`.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 console.log(instance.time.getCurrentTime()); // -> 0
 ```
 
-### `instance.time.setCurrentTime(timeInSeconds)`
+### `instance.time.setCurrentTime(time)`
 
-Sets the media element selected time in seconds.
+Sets the media element current time in seconds.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 instance.time.setCurrentTime(5.85);
 console.log(instance.time.getCurrentTime()); // -> 5.85
@@ -314,20 +315,20 @@ console.log(instance.time.getCurrentTime()); // -> 5.85
 
 ### `instance.zoom.zoomOut()`
 
-Zoom in the waveform zoom view by one level.
+Zooms in the waveform zoom view by one level.
 
 ```js
-var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomOut(); // zoom level is now 1024
 ```
 
 ### `instance.zoom.zoomIn()`
 
-Zoom in the waveform zoom view by one level.
+Zooms in the waveform zoom view by one level.
 
 ```js
-var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomIn(); // zoom level is still 512
 
@@ -335,22 +336,22 @@ instance.zoom.zoomOut(); // zoom level is now 1024
 instance.zoom.zoomIn(); // zoom level is now 512 again
 ```
 
-### `instance.zoom.setZoom(indexInZoomArray)`
+### `instance.zoom.setZoom(index)`
 
-Set the zoom level to the element in the `options.zoomLevels` array at index `indexInZoomArray`.
+Sets the zoom level to the element in the `options.zoomLevels` array at index `index`.
 
 ```js
-var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.setZoom(3); // zoom level is now 4096
 ```
 
 ### `instance.zoom.getZoom()`
 
-Return the current zoom level.
+Returns the current zoom level, as an index into the `options.zoomLevels` array.
 
 ```js
-var instance = peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomOut();
 console.log(instance.zoom.getZoom()); // -> 1
@@ -364,7 +365,7 @@ This is a great way to provide visual cues to your users.
 ### `instance.segments.add({startTime, endTime, editable, color, labelText, id})`
 ### `instance.segments.add(segment[])`
 
-Add a segment to the waveform timeline. Accepts the following parameters:
+Adds a segment to the waveform timeline. Accepts the following parameters:
 
 * `startTime`: the segment start time (seconds)
 * `endTime`: the segment end time (seconds)
@@ -374,7 +375,7 @@ Add a segment to the waveform timeline. Accepts the following parameters:
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 // Add non-editable segment, from 0 to 10.5 seconds, with a random color
 instance.segments.add({startTime: 0, endTime: 10.5});
@@ -383,7 +384,7 @@ instance.segments.add({startTime: 0, endTime: 10.5});
 Alternatively, provide an array of segment objects to add all those segments at once.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 instance.segments.add([
   {
@@ -403,14 +404,14 @@ instance.segments.add([
 
 Returns an array of objects representing all displayed segments present on the timeline in the segment format.
 
-### `instance.segments.removeByTime(startTime, endTime)`
+### `instance.segments.removeByTime(startTime[, endTime])`
 
-Remove any segment which start at `startTime` (seconds), and which optionally finish at `endTime` (seconds).
+Removes any segment which starts at `startTime` (seconds), and which optionally ends at `endTime` (seconds).
 
 The return value indicates the number of deleted segments.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 instance.segments.add([{ startTime: 10, endTime: 12 }, { startTime: 10, endTime: 20 }]);
 
@@ -423,20 +424,20 @@ instance.segments.removeByTime(10, 12);
 
 ### `instance.segments.removeById(segmentId)`
 
-Remove segments with the given identifier.
+Removes segments with the given identifier.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 instance.segments.removeById('peaks.segment.3');
 ```
 
 ### `instance.segments.removeAll()`
 
-Remove all the segments from the waveforms.
+Removes all segments.
 
 ```js
-var instance = peaks.init({ … });
+var instance = Peaks.init({ … });
 
 instance.segments.removeAll();
 ```
@@ -445,16 +446,18 @@ instance.segments.removeAll();
 
 ### `instance.destroy()`
 
-Call this function to release resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
+Releases resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
 
 ```js
-var peaksInstance = peaks.init({ … });
-var peaksInstance.destroy();
+var instance = Peaks.init({ … });
+
+// later:
+instance.destroy();
 ```
 
 ## Events
 
-Peaks.js emits events to enable you to extend its behaviour according to your needs.
+Peaks instances emit events to enable you to extend its behaviour according to your needs.
 
 ### General
 
@@ -489,9 +492,9 @@ Peaks.js emits events to enable you to extend its behaviour according to your ne
 # Building Peaks.js
 
 You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests.
-The project *bundles* everything you need to do so.
+The project bundles everything you need to do so.
 
-## Prerequisite
+## Prerequisites
 
 ```bash
 git clone https://github.com/bbc/peaks.js.git
@@ -501,8 +504,7 @@ npm install
 
 ## Building
 
-This command will produce a minified standalone version of Peaks.js.
-It will indeed be UMD compatible, so as you can continue to use it with AMD or CommonJS module loaders, or even as vanilla JavaScript.
+This command will produce a UMD-compatible minified standalone version of Peaks.js, which allows you to use it with AMD or CommonJS module loaders, or even as vanilla JavaScript.
 
 ```bash
 npm run build
@@ -512,7 +514,7 @@ The output of the build is a file named `peaks.js`, alongside its associated [so
 
 ## Live Demo
 
-This command will serve a working version of Peaks.js to reflect your local updates.
+This command will serve a local demo page containing a single Peaks instance. Look at the file [index.html][https://github.com/bbc/peaks.js/blob/master/index.html] to see an example of Peaks.js in use.
 
 ```bash
 npm start
@@ -528,7 +530,7 @@ If you are developing and want to repeatedly run tests in a browser on your mach
 
 # License
 
-See [COPYING](COPYING)
+See [COPYING](COPYING).
 
 This project includes sample audio from the radio show [Desert Island Discs](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
