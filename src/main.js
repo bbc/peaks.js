@@ -314,7 +314,7 @@ define('peaks', [
     instance.waveform = new Waveform(instance);
     instance.waveform.init(buildUi(instance.container));
 
-    instance.on('waveformOverviewReady', function() {
+    instance.on('waveform_ready.overview', function() {
       instance.waveform.openZoomView();
 
       // Any initial segments to be displayed?

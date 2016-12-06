@@ -12,6 +12,7 @@ module.exports = {
   "rules": {
     "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
     // Disable no-unused-expressions for chai expectations
-    "no-unused-expressions": "off"
+    "no-unused-expressions": "off",
+    "newline-after-var": "off"
   }
 };

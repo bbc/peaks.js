@@ -469,7 +469,6 @@ Peaks instances emit events to enable you to extend its behaviour according to y
                            | Arguments
 ---------------------------|----------------
 `segments.ready`           | N/A
-`zoomview_resized`         | N/A
 `user_seek.overview`       | `float time`
 `user_seek.zoomview`       | `float time`
 
