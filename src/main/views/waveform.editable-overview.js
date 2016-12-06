@@ -17,16 +17,24 @@ define([
    *
    * @class
    * @alias WaveformEditableOverview
+   *
+   * @param {WaveformData} waveformData
+   * @param {HTMLElement} container
+   * @param {Peaks} peaks
    */
   function WaveformEditableOverview(waveformData, container, peaks) {
     var self = this;
 
+    self.originalWaveformData = waveformData;
+    self.container = container;
     self.peaks = peaks;
+
     self.options = peaks.options;
-    self.data = waveformData;
     self.width = container.clientWidth;
     self.height = self.options.overviewHeight || container.clientHeight;
     self.frameOffset = 0;
+
+    self.data = waveformData.resample(self.width);
 
     // work out if we should start with the view expanded or contracted
     self.minimized = !peaks.options.editableOverviewIsMaximized;
@@ -106,7 +114,6 @@ define([
 
     peaks.on('player_time_update', trackPlayheadPosition);
     peaks.on('user_seek.*', trackPlayheadPosition);
-    peaks.on('user_scrub.*', trackPlayheadPosition);
 
     peaks.on('zoomview.displaying', function(start, end) {
       if (!peaks.dragSeeking) {
@@ -126,9 +133,12 @@ define([
       self.toggleMinimizedState();
     });
 
-    peaks.on('resizeEndOverview', function(width, newWaveformData) {
+    peaks.on('window_resize', function() {
+      self.container.hidden = true;
+    });
+
+    peaks.on('window_resize_complete', function(width) {
       self.width = width;
-      self.data = newWaveformData;
       self.stage.setWidth(self.width);
 
       // self.updateWaveform();

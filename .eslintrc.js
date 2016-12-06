@@ -24,7 +24,6 @@ module.exports = {
     "max-len": ["warn", 100],
     "new-cap": "error",
     "newline-after-var": ["error", "always"],
-    "newline-before-return": "error",
     "newline-per-chained-call": "error",
     "no-alert": "error",
     "no-caller": "error",

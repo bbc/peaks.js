@@ -119,7 +119,7 @@
 
         p.on('window_resized', resizeSpy);
 
-        p.on('waveformOverviewReady', function() {
+        p.on('waveform_ready.overview', function() {
           container.parentNode.removeChild(container);
 
           // Give peaks chance to bind its resize listener:

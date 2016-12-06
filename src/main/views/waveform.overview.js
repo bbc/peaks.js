@@ -14,20 +14,28 @@ define([
   'use strict';
 
   /**
-   * Creates the overview timeline canvas.
+   * Creates the overview waveform view.
    *
    * @class
    * @alias WaveformOverview
+   *
+   * @param {WaveformData} waveformData
+   * @param {HTMLElement} container
+   * @param {Peaks} peaks
    */
   function WaveformOverview(waveformData, container, peaks) {
     var self = this;
 
+    self.originalWaveformData = waveformData;
+    self.container = container;
     self.peaks = peaks;
+
     self.options = peaks.options;
-    self.data = waveformData;
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
     self.frameOffset = 0;
+
+    self.data = waveformData.resample(self.width);
 
     self.stage = new Konva.Stage({
       container: container,
@@ -84,12 +92,16 @@ define([
       self.updateRefWaveform(start, end);
     });
 
-    peaks.on('resizeEndOverview', function(width, newWaveformData) {
+    peaks.on('window_resize', function() {
+      self.container.hidden = true;
+    });
+
+    peaks.on('window_resize_complete', function(width) {
       self.width = width;
-      self.data = newWaveformData;
+      self.data = self.originalWaveformData.resample(self.width);
       self.stage.setWidth(self.width);
       // self.updateWaveform();
-      peaks.emit('overview_resized');
+      self.container.removeAttribute('hidden');
     });
   }
 

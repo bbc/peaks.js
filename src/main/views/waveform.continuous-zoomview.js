@@ -17,17 +17,22 @@ define([
    *
    * @class
    * @alias WaveformContinuousZoomView
+   *
+   * @param {WaveformData} waveformData
+   * @param {HTMLElement} container
+   * @param {Peaks} peaks
    */
   function WaveformContinuousZoomView(waveformData, container, peaks) {
     var self = this;
 
+    self.originalWaveformData = waveformData;
+    self.container = container;
     self.peaks = peaks;
+
     self.options = peaks.options;
 
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
-
-    self.rootData = waveformData;
 
     // create a snapshot of the data when zoomed out all the way
     // and a snapshot of the data when zoomed in all the way
@@ -35,13 +40,13 @@ define([
     // we use the difference between the two values to determine a few scaling
     // factors
 
-    self.zoomedOutData = self.rootData.resample(self.width);
-    self.data = self.rootData.resample({
+    self.zoomedOutData = self.originalWaveformData.resample(self.width);
+    self.data = self.originalWaveformData.resample({
       scale: peaks.zoom.getMaximumScaleFactor()
     });
 
     // store the duration of the audio
-    this.totalDuration = this.rootData.duration;
+    this.totalDuration = this.originalWaveformData.duration;
 
     // these properties always tell us how many seconds of audio are displayed
     // per pixel on the screen, and how many pixels of screen width are
@@ -136,7 +141,7 @@ define([
       var pixelRatio = (self.totalDuration / visibleSeconds) * self.width;
 
       // now resample the data with these settings...
-      var newData = self.rootData.resample(pixelRatio);
+      var newData = self.originalWaveformData.resample(pixelRatio);
 
       // ... and offset the data to the width of the container
       newData.offset(0, self.width);
@@ -243,9 +248,6 @@ define([
       }));
       self.peaks.on('user_seek.*', userSeekHandler.bind(null, {
         withOffset: true
-      }));
-      self.peaks.on('user_scrub.*', userSeekHandler.bind(null, {
-        withOffset: false
       }));
 
       self.peaks.on('player_play', function(time) {
@@ -365,7 +367,7 @@ define([
         }
       });
 
-      self.peaks.on('window_resized', function(width, newWaveformData) {
+      self.peaks.on('window_resize_complete', function(width) {
         self.peaks.emit('zoomview_resized');
       });
 
