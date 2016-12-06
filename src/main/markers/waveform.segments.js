@@ -246,13 +246,13 @@ define([
                      thisSeg.inMarker.getX() +
                      thisSeg.inMarker.getWidth();
 
-      segment.startTime = thisSeg.view.atDataTime(inOffset);
+      segment.startTime = thisSeg.view.atPixelTime(inOffset);
     }
 
     if (thisSeg.outMarker.getX() < thisSeg.view.width) {
       var outOffset = thisSeg.view.frameOffset + thisSeg.outMarker.getX();
 
-      segment.endTime = thisSeg.view.atDataTime(outOffset);
+      segment.endTime = thisSeg.view.atPixelTime(outOffset);
     }
 
     this.peaks.emit('segments.dragged', segment);

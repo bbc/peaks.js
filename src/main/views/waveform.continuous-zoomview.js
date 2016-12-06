@@ -470,6 +470,15 @@ define([
   };
 
   /**
+   * Returns the time for a pixel position on the waveform.
+   *
+   * @returns {Number}
+   */
+  WaveformContinuousZoomView.prototype.atPixelTime = function(pixelNumber) {
+    return pixelNumber * this.secondsPerPixel;
+  };
+
+  /**
    * Returns the pixel position for a particuilar position in the audio.
    *
    * @returns {Number}
