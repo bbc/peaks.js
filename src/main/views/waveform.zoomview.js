@@ -22,22 +22,28 @@ define([
   'use strict';
 
   /**
-   * Creates the zoomed-in waveform view canvas.
+   * Creates the zoomed-in waveform view.
    *
    * @class
    * @alias WaveformZoomView
+   *
+   * @param {WaveformData} waveformData
+   * @param {HTMLElement} container
+   * @param {Peaks} peaks
    */
   function WaveformZoomView(waveformData, container, peaks) {
     var self = this;
 
+    self.originalWaveformData = waveformData;
+    self.container = container;
     self.peaks = peaks;
+
     self.options = peaks.options;
-    self.rootData = waveformData;
 
     self.playing = false;
 
     self.intermediateData = null;
-    self.data = self.rootData.resample({
+    self.data = self.originalWaveformData.resample({
       scale: self.options.zoomLevels[peaks.zoom.getZoom()]
     });
     self.playheadPixel = self.data.at_time(self.options.mediaElement.currentTime);
@@ -159,7 +165,7 @@ define([
         return;
       }
 
-      self.data = self.rootData.resample({
+      self.data = self.originalWaveformData.resample({
         scale: currentScale
       });
 
@@ -179,12 +185,15 @@ define([
       adapter.start();
     });
 
-    self.peaks.on('window_resized', function(width, newWaveformData) {
+    peaks.on('window_resize', function() {
+      self.container.hidden = true;
+    });
+
+    self.peaks.on('window_resize_complete', function(width) {
       self.width = width;
-      self.data = newWaveformData;
       self.stage.setWidth(self.width);
       self.updateZoomWaveform(self.frameOffset);
-      self.peaks.emit('zoomview_resized');
+      self.container.removeAttribute('hidden');
     });
 
     // KEYBOARD EVENTS =========================================
