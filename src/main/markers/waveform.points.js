@@ -6,9 +6,9 @@
  * @module peaks/markers/waveform.points
  */
 define([
-  'peaks/waveform/waveform.mixins',
+  'peaks/waveform/waveform.utils',
   'konva'
-], function(mixins, Konva) {
+], function(Utils, Konva) {
   'use strict';
 
   /**
@@ -112,7 +112,7 @@ define([
       }
 
       // Change Text
-      point.overview.marker.label.setText(mixins.niceTime(point.timestamp, false));
+      point.overview.marker.label.setText(Utils.niceTime(point.timestamp, false));
     }
 
     var zoomTimestampOffset = this.peaks.waveform.waveformZoomView.atDataTime(point.timestamp);
@@ -133,7 +133,7 @@ define([
 
       if (point.editable) {
         // Change Text
-        point.zoom.marker.label.setText(mixins.niceTime(point.timestamp, false));
+        point.zoom.marker.label.setText(Utils.niceTime(point.timestamp, false));
       }
     }
     else {

@@ -7,10 +7,10 @@
  */
 define([
   'konva',
-  'peaks/waveform/waveform.mixins',
+  'peaks/waveform/waveform.utils',
   'peaks/markers/shapes/wave',
   'peaks/markers/shapes/rect'
-], function(Konva, mixins, WaveShape, RectangleShape) {
+], function(Konva, Utils, WaveShape, RectangleShape) {
   'use strict';
 
   /**
@@ -177,8 +177,8 @@ define([
       }
 
       // Change Text
-      segment.overview.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
-      segment.overview.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
+      segment.overview.inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+      segment.overview.outMarker.label.setText(Utils.niceTime(segment.endTime, false));
     }
 
     // Label
@@ -225,8 +225,8 @@ define([
         }
 
         // Change Text
-        segment.zoom.inMarker.label.setText(mixins.niceTime(segment.startTime, false));
-        segment.zoom.outMarker.label.setText(mixins.niceTime(segment.endTime, false));
+        segment.zoom.inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+        segment.zoom.outMarker.label.setText(Utils.niceTime(segment.endTime, false));
       }
 
       this.SegmentShape.update.call(
