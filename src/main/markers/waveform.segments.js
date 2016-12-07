@@ -216,21 +216,10 @@ define([
     var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
     var frameEndOffset   = this.peaks.waveform.waveformZoomView.frameOffset + this.peaks.waveform.waveformZoomView.width;
 
-    // if (zoomStartOffset < frameStartOffset) {
-    //   zoomStartOffset = frameStartOffset;
-    // }
-
-    // if (zoomEndOffset > frameEndOffset) {
-    //   zoomEndOffset = frameEndOffset;
-    // }
-
     if (this.peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
       var segmentData = this.peaks.waveform.waveformZoomView.data.segments[segment.id];
       var offsetLength = segmentData.offset_length;
       var offsetStart  = segmentData.offset_start - this.peaks.waveform.waveformZoomView.data.offset_start;
-
-      // var startPixel = zoomStartOffset - frameStartOffset;
-      // var endPixel   = zoomEndOffset - frameStartOffset;
 
       segment.zoom.show();
 
