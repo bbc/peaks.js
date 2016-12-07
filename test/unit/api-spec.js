@@ -266,13 +266,14 @@
       });
 
       ('AudioBuffer' in window) && it('should build using WebAudio if the API is available and no dataUri is provided', function(done) {
-        var p = Peaks.init({
-          container: document.getElementById('waveform-visualiser-container'),
+	testContext = window.mozAudioContext || new AudioContext();
+	var p = Peaks.init({
+	  container: document.getElementById('waveform-visualiser-container'),
 	  mediaElement: document.querySelector('audio'),
-	  audioContext: new AudioContext()
-        });
+	  audioContext: testContext
+	});
 
-        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+	var spy = sandbox.spy(p.waveform, 'handleRemoteData');
 
         p.on('segments.ready', function() {
           expect(spy).to.have.been.calledOnce;
