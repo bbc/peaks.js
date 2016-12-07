@@ -116,7 +116,8 @@
 
         var p = Peaks.init({
           container: container,
-          mediaElement: document.querySelector('audio')
+	  mediaElement: document.querySelector('audio'),
+	  audioContext: new AudioContext()
         });
 
         p.on('window_resized', resizeSpy);
@@ -267,7 +268,8 @@
       ('AudioBuffer' in window) && it('should build using WebAudio if the API is available and no dataUri is provided', function(done) {
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
-          mediaElement: document.querySelector('audio')
+	  mediaElement: document.querySelector('audio'),
+	  audioContext: new AudioContext()
         });
 
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
