@@ -288,7 +288,7 @@ define('peaks', [
       throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data or a dataUri.');
     }
 
-    if (opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+    if (opts.dataUri && opts.audioContext) {
       throw new TypeError('[Peaks.init] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
     }
 
