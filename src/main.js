@@ -197,6 +197,11 @@ define('peaks', [
       pointDragEndHandler:  null,
 
       /**
+       * An AudioContext, used when creating waveform data using the Web Audio API
+       */
+      audioContext: null,
+
+      /**
        * WaveformData WebAudio Decoder Options
        *
        * You mostly want to play with the 'scale' option.
@@ -211,13 +216,7 @@ define('peaks', [
       /**
        * Use animation on zoom
        */
-      zoomAdapter: 'animated',
-
-
-      /**
-       * Pass in AudioContext for Waveform-data library to render waveform data
-       */
-      audioContext: null,
+      zoomAdapter: 'animated'
     };
 
     /**
@@ -286,7 +285,11 @@ define('peaks', [
     }
 
     if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
-      throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data.');
+      throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data or a dataUri.');
+    }
+
+    if (opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+      throw new TypeError('[Peaks.init] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
     }
 
     var instance = new Peaks(opts.container);
