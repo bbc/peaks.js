@@ -147,23 +147,44 @@ define([
     return segment;
   };
 
-  WaveformSegments.prototype.updateSegmentWaveform = function(segment) {
-    // Binding with data
-    this.peaks.waveform.waveformOverview.data.set_segment(
-      this.peaks.waveform.waveformOverview.data.at_time(segment.startTime),
-      this.peaks.waveform.waveformOverview.data.at_time(segment.endTime),
-      segment.id
-    );
+  WaveformSegments.prototype.updateSegmentWaveform = function(segment, dragOptions) {
 
-    this.peaks.waveform.waveformZoomView.data.set_segment(
-      this.peaks.waveform.waveformZoomView.data.at_time(segment.startTime),
-      this.peaks.waveform.waveformZoomView.data.at_time(segment.endTime),
-      segment.id
-    );
+    var zoomStartOffset;
+    var zoomEndOffset;
+
+    // if the update is caused by dragging a handle then the pixel positions of the handles
+    // are the definitive source of position, not the segment.startTime which are now the derived data
+    // this is important to consider, otherwise the processing chain will look like this:
+    // pixel_pos ---> time ----> pixel_pos    (this is wrong)
+    // pixel_pos ---> time                    (this is correct)
+    // this double calculation leads to rounding/precision errors and causes handles to creep unexpectedly 
+    if (dragOptions && dragOptions['drag']) {
+      // if there are drag options then update is caused by a drag,
+      // Zoom
+      zoomStartOffset = dragOptions['zoomViewPixelPosition_in'];
+      zoomEndOffset   = dragOptions['zoomViewPixelPosition_out'];
+    } else {
+      // Zoom
+      zoomStartOffset = this.peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
+      zoomEndOffset   = this.peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
+    }
 
     // Overview
     var overviewStartOffset = this.peaks.waveform.waveformOverview.data.at_time(segment.startTime);
     var overviewEndOffset   = this.peaks.waveform.waveformOverview.data.at_time(segment.endTime);
+
+    // Binding with data
+    this.peaks.waveform.waveformOverview.data.set_segment(
+      overviewStartOffset,
+      overviewEndOffset,
+      segment.id
+    );
+
+    this.peaks.waveform.waveformZoomView.data.set_segment(
+      zoomStartOffset,
+      zoomEndOffset,
+      segment.id
+    );
 
     segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
@@ -191,19 +212,17 @@ define([
     );
 
     // Zoom
-    var zoomStartOffset = this.peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
-    var zoomEndOffset   = this.peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
 
     var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
     var frameEndOffset   = this.peaks.waveform.waveformZoomView.frameOffset + this.peaks.waveform.waveformZoomView.width;
 
-    if (zoomStartOffset < frameStartOffset) {
-      zoomStartOffset = frameStartOffset;
-    }
+    // if (zoomStartOffset < frameStartOffset) {
+    //   zoomStartOffset = frameStartOffset;
+    // }
 
-    if (zoomEndOffset > frameEndOffset) {
-      zoomEndOffset = frameEndOffset;
-    }
+    // if (zoomEndOffset > frameEndOffset) {
+    //   zoomEndOffset = frameEndOffset;
+    // }
 
     if (this.peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
       var segmentData = this.peaks.waveform.waveformZoomView.data.segments[segment.id];
@@ -217,11 +236,21 @@ define([
 
       if (segment.editable) {
         if (segment.zoom.inMarker) {
-          segment.zoom.inMarker.show().setX(offsetStart - segment.zoom.inMarker.getWidth());
+          if (dragOptions && dragOptions['drag']) {
+            // if dragging the pixel position should be used directly, it is the master source of the drag data
+            segment.zoom.inMarker.show().setX(dragOptions['xPos_in']);
+          } else {
+            segment.zoom.inMarker.show().setX(offsetStart - segment.zoom.inMarker.getWidth());
+          }
         }
 
         if (segment.zoom.outMarker) {
-          segment.zoom.outMarker.show().setX(offsetLength + offsetStart);
+          if (dragOptions && dragOptions['drag']) {
+            // if dragging the pixel position should be used directly, it is the master source of the drag data
+            segment.zoom.outMarker.show().setX(dragOptions['xPos_out']);
+          } else {
+            segment.zoom.outMarker.show().setX(offsetLength + offsetStart);
+          }
         }
 
         // Change Text
@@ -257,7 +286,15 @@ define([
 
     this.peaks.emit('segments.dragged', segment);
 
-    this.updateSegmentWaveform(segment);
+    var dragUpdateOptions = {
+      drag: true,
+      zoomViewPixelPosition_in: inOffset,
+      zoomViewPixelPosition_out: outOffset,
+      xPos_in: thisSeg.inMarker.getX(),
+      xPos_out: thisSeg.outMarker.getX()
+    };
+
+    this.updateSegmentWaveform(segment, dragUpdateOptions);
     this.render();
   };
 
