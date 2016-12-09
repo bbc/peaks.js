@@ -7,12 +7,14 @@
  */
  define([
   'waveform-data',
+  'waveform-data/webaudio',
   'peaks/views/waveform.overview',
   'peaks/views/waveform.zoomview',
   'peaks/markers/waveform.segments',
   'peaks/markers/waveform.points'
   ], function(
     WaveformData,
+    webaudioBuilder,
     WaveformOverview,
     WaveformZoomView,
     WaveformSegments,
@@ -102,7 +104,7 @@
     if (!options.dataUri && this.peaks.options.audioContext) {
       requestType = 'arraybuffer';
       uri = options.mediaElement.currentSrc || options.mediaElement.src;
-      builder = 'webaudio';
+      builder = webaudioBuilder;
     }
 
     if (!uri) {
@@ -136,10 +138,10 @@
       }
 
       if (builder) {
-        WaveformData.builders[builder](
+	webaudioBuilder(
 	  self.peaks.options.audioContext,
-          response.target.response,
-          options.waveformBuilderOptions,
+	  response.target.response,
+	  options.waveformBuilderOptions,
 	  self.handleRemoteData.bind(self)
         );
       }
