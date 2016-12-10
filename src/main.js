@@ -285,10 +285,12 @@ define('peaks', [
     }
 
     if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+      // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data or a dataUri.');
     }
 
     if (opts.dataUri && opts.audioContext) {
+      // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
     }
 

@@ -138,11 +138,11 @@
       }
 
       if (builder) {
-	webaudioBuilder(
-	  self.peaks.options.audioContext,
-	  response.target.response,
-	  options.waveformBuilderOptions,
-	  self.handleRemoteData.bind(self)
+        webaudioBuilder(
+          self.peaks.options.audioContext,
+          response.target.response,
+          options.waveformBuilderOptions,
+          self.handleRemoteData.bind(self)
         );
       }
       else {
