@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 (function(Peaks) {
   describe('Peaks.time', function() {
     var sandbox, p;

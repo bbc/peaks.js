@@ -207,10 +207,12 @@ define([
 
   WaveformOverview.prototype.updateRefWaveform = function(timeIn, timeOut) {
     if (isNaN(timeIn)) {
+      // eslint-disable-next-line max-len
       throw new Error('WaveformOverview#updateRefWaveform timeIn parameter is not a number: ' + timeIn);
     }
 
     if (isNaN(timeOut)) {
+      // eslint-disable-next-line max-len
       throw new Error('WaveformOverview#updateRefWaveform timeOut parameter is not a number: ' + timeOut);
     }
 

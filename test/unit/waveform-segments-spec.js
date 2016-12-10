@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 (function(Peaks) {
   describe('player/waveform/waveform.segments', function() {
     var sandbox, p;

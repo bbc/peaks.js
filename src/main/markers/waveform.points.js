@@ -63,9 +63,10 @@ define([
 
     pointGroups.forEach(function(pointGroup, i) {
       var view = self.views[i];
+      var PointMarker = self.peaks.options.pointMarker;
 
       if (point.editable) {
-        pointGroup.marker = new self.peaks.options.pointMarker(
+        pointGroup.marker = new PointMarker(
           true,
           pointGroup,
           point,
@@ -174,14 +175,18 @@ define([
 
   WaveformPoints.prototype.createPoint = function(point) {
     if (typeof point.timestamp !== 'number') {
+      /* eslint-disable max-len */
       throw new TypeError('[waveform.points.createPoint] timestamp should be a numeric value \'' + typeof point.timestamp + '\': ' + point.typestamp);
+      /* eslint-enable max-len */
     }
 
     if (isNaN(point.timestamp)) {
+      // eslint-ignore-next-line max-len
       throw new TypeError('[waveform.points.createPoint] timestamp must be a numeric value');
     }
 
     if (point.timestamp < 0) {
+      // eslint-ignore-next-line max-len
       throw new RangeError('[waveform.points.createPoint] timestamp should be a >=0 value');
     }
 
@@ -200,7 +205,9 @@ define([
                  Array.prototype.slice.call(arguments);
 
     if (typeof points[0] === 'number') {
+      /* eslint-disable max-len */
       this.peaks.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
+      /* eslint-enable max-len */
 
       points = [{
         timestamp: arguments[0],

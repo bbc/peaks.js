@@ -8,7 +8,6 @@ function filterBrowsers(browsers, re) {
 
 module.exports = function (config) {
   var isCI   = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
-  var isFast = Boolean(process.env.FAST);
 
   // Karma configuration
   config.set({
@@ -147,8 +146,8 @@ module.exports = function (config) {
   });
 
   config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) :
-                     (isFast ? ['Chrome', 'Firefox'] :
-                               ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7'])
+    browsers: isCI
+      ? filterBrowsers(config.customLaunchers, /^BS/)
+      : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']
   });
 };

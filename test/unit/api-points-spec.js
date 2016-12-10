@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 (function(Peaks) {
   describe('Peaks.points', function() {
     var p, deprecationLogger;

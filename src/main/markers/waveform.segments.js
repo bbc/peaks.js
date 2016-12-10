@@ -74,6 +74,9 @@ define([
 
     segmentGroups.forEach(function(segmentGroup, i) {
       var view = self.views[i];
+      var SegmentLabel = self.peaks.options.segmentLabelDraw;
+      var SegmentMarkerIn = self.peaks.options.segmentInMarker;
+      var SegmentMarkerOut = self.peaks.options.segmentOutMarker;
 
       segmentGroup.waveformShape = SegmentShape.createShape(segment, view);
 
@@ -89,13 +92,13 @@ define([
 
       segmentGroup.add(segmentGroup.waveformShape);
 
-      segmentGroup.label = new self.peaks.options.segmentLabelDraw(segmentGroup, segment);
+      segmentGroup.label = new SegmentLabel(segmentGroup, segment);
       segmentGroup.add(segmentGroup.label.hide());
 
       if (segment.editable) {
         var draggable = true;
 
-        segmentGroup.inMarker = new self.peaks.options.segmentInMarker(
+        segmentGroup.inMarker = new SegmentMarkerIn(
           draggable,
           segmentGroup,
           segment,
@@ -104,7 +107,7 @@ define([
 
         segmentGroup.add(segmentGroup.inMarker);
 
-        segmentGroup.outMarker = new self.peaks.options.segmentOutMarker(
+        segmentGroup.outMarker = new SegmentMarkerOut(
           draggable,
           segmentGroup,
           segment,
@@ -126,50 +129,55 @@ define([
   };
 
   WaveformSegments.prototype.updateSegmentWaveform = function(segment) {
+    var waveformOverview = this.peaks.waveform.waveformOverview;
+    var waveformZoomView = this.peaks.waveform.waveformZoomView;
+    var inMarker = segment.overview.inMarker;
+    var outMarker = segment.overview.inMarker;
+
     // Binding with data
-    this.peaks.waveform.waveformOverview.data.set_segment(
-      this.peaks.waveform.waveformOverview.data.at_time(segment.startTime),
-      this.peaks.waveform.waveformOverview.data.at_time(segment.endTime),
+    waveformOverview.data.set_segment(
+      waveformOverview.data.at_time(segment.startTime),
+      waveformOverview.data.at_time(segment.endTime),
       segment.id
     );
 
-    this.peaks.waveform.waveformZoomView.data.set_segment(
-      this.peaks.waveform.waveformZoomView.data.at_time(segment.startTime),
-      this.peaks.waveform.waveformZoomView.data.at_time(segment.endTime),
+    waveformZoomView.data.set_segment(
+      waveformZoomView.data.at_time(segment.startTime),
+      waveformZoomView.data.at_time(segment.endTime),
       segment.id
     );
 
     // Overview
-    var overviewStartOffset = this.peaks.waveform.waveformOverview.data.at_time(segment.startTime);
-    var overviewEndOffset   = this.peaks.waveform.waveformOverview.data.at_time(segment.endTime);
+    var overviewStartOffset = waveformOverview.data.at_time(segment.startTime);
+    var overviewEndOffset   = waveformOverview.data.at_time(segment.endTime);
 
     segment.overview.setWidth(overviewEndOffset - overviewStartOffset);
 
     if (segment.editable) {
-      if (segment.overview.inMarker) {
-        segment.overview.inMarker.show().setX(overviewStartOffset - segment.overview.inMarker.getWidth());
+      if (inMarker) {
+        inMarker.show().setX(overviewStartOffset - inMarker.getWidth());
       }
 
-      if (segment.overview.outMarker) {
-        segment.overview.outMarker.show().setX(overviewEndOffset);
+      if (outMarker) {
+        outMarker.show().setX(overviewEndOffset);
       }
 
       // Change Text
-      segment.overview.inMarker.label.setText(Utils.niceTime(segment.startTime, false));
-      segment.overview.outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+      inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+      outMarker.label.setText(Utils.niceTime(segment.endTime, false));
     }
 
     // Label
     // segment.overview.label.setX(overviewStartOffset);
 
-    SegmentShape.update.call(segment.overview.waveformShape, this.peaks.waveform.waveformOverview, segment.id);
+    SegmentShape.update.call(segment.overview.waveformShape, waveformOverview, segment.id);
 
     // Zoom
-    var zoomStartOffset = this.peaks.waveform.waveformZoomView.data.at_time(segment.startTime);
-    var zoomEndOffset   = this.peaks.waveform.waveformZoomView.data.at_time(segment.endTime);
+    var zoomStartOffset = waveformZoomView.data.at_time(segment.startTime);
+    var zoomEndOffset   = waveformZoomView.data.at_time(segment.endTime);
 
-    var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
-    var frameEndOffset   = this.peaks.waveform.waveformZoomView.frameOffset + this.peaks.waveform.waveformZoomView.width;
+    var frameStartOffset = waveformZoomView.frameOffset;
+    var frameEndOffset   = waveformZoomView.frameOffset + waveformZoomView.width;
 
     if (zoomStartOffset < frameStartOffset) {
       zoomStartOffset = frameStartOffset;
@@ -179,7 +187,7 @@ define([
       zoomEndOffset = frameEndOffset;
     }
 
-    if (this.peaks.waveform.waveformZoomView.data.segments[segment.id].visible) {
+    if (waveformZoomView.data.segments[segment.id].visible) {
       var startPixel = zoomStartOffset - frameStartOffset;
       var endPixel   = zoomEndOffset   - frameStartOffset;
 
@@ -201,7 +209,7 @@ define([
 
       SegmentShape.update.call(
         segment.zoom.waveformShape,
-        this.peaks.waveform.waveformZoomView,
+        waveformZoomView,
         segment.id
       );
     }
@@ -277,22 +285,27 @@ define([
   WaveformSegments.prototype.createSegment = function(options) {
     // Watch for anyone still trying to use the old createSegment(startTime, endTime, ...) API
     if (typeof options === 'number') {
+      // eslint-disable-next-line max-len
       throw new TypeError('[waveform.segments.createSegment] `options` should be a Segment object');
     }
 
     if (isNaN(options.startTime) || isNaN(options.endTime)) {
+      // eslint-disable-next-line max-len
       throw new TypeError('[waveform.segments.createSegment] startTime an endTime must both be numbers');
     }
 
     if (options.startTime < 0) {
+      // eslint-disable-next-line max-len
       throw new RangeError('[waveform.segments.createSegment] startTime should be a positive value');
     }
 
     if (options.endTime <= 0) {
+      // eslint-disable-next-line max-len
       throw new RangeError('[waveform.segments.createSegment] endTime should be a positive value');
     }
 
     if (options.endTime <= options.startTime) {
+      // eslint-disable-next-line max-len
       throw new RangeError('[waveform.segments.createSegment] endTime should be higher than startTime');
     }
 
@@ -314,6 +327,7 @@ define([
                    Array.prototype.slice.call(arguments);
 
     if (typeof segments[0] === 'number') {
+      // eslint-disable-next-line max-len
       this.peaks.options.deprecationLogger('[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object.');
 
       segments = [
@@ -359,6 +373,7 @@ define([
     var index = this._remove(segment);
 
     if (index === null) {
+      // eslint-disable-next-line max-len
       throw new RangeError('Unable to find the requested segment' + String(segment));
     }
 

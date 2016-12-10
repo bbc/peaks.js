@@ -19,8 +19,7 @@ define(['konva'], function(Konva) {
    * @param  {Boolean}  inMarker  Is this marker the inMarker (LHS) or outMarker (RHS)
    * @return {Function} Segment handle creator function
    */
-  function segmentHandleCreator(height, color, inMarker) {
-
+   function segmentHandleCreator(height, color, inMarker) {
     /**
      * @param  {Boolean}  draggable If true, marker is draggable
      * @param  {Object}   segment   Parent segment object with in and out times
@@ -132,7 +131,6 @@ define(['konva'], function(Konva) {
    * @return {Function} Point handle creator function
    */
   function pointHandleCreator(height, color) {
-
     /**
      * @param  {Boolean}     draggable   If true, marker is draggable
      * @param  {Konva.Group} point

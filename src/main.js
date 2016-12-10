@@ -97,6 +97,7 @@ define('peaks', [
        * @type {Function}
        * @since 0.4.8
        */
+      // eslint-disable-next-line no-console
       deprecationLogger:     console.log.bind(console),
 
       /**
@@ -230,6 +231,7 @@ define('peaks', [
      *
      * @type {Function}
      */
+    // eslint-disable-next-line no-console
     this.logger = console.error.bind(console);
   }
 
@@ -242,30 +244,38 @@ define('peaks', [
    */
   Peaks.init = function init(opts) {
     opts = opts || {};
+
+    // eslint-disable-next-line no-console
     opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
 
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
+        // eslint-disable-next-line max-len
       opts.deprecationLogger('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
     }
 
     if (!opts.mediaElement) {
+      // eslint-disable-next-line max-len
       throw new Error('[Peaks.init] Please provide an audio element.');
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
+      // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] The mediaElement option should be an HTMLMediaElement.');
     }
 
     if (!opts.container) {
+      // eslint-disable-next-line max-len
       throw new Error('[Peaks.init] Please provide a container object.');
     }
 
     if ((opts.container.clientWidth > 0) === false) {
+      // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] Please ensure that the container has a width.');
     }
 
     if (opts.logger && typeof opts.logger !== 'function') {
+      // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] The `logger` option should be a function.');
     }
 
@@ -298,6 +308,7 @@ define('peaks', [
       instance.container.appendChild(instance.options.template);
     }
     else {
+      // eslint-disable-next-line max-len
       throw new TypeError('Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: ' + instance.options.template);
     }
 
@@ -393,6 +404,7 @@ define('peaks', [
 
         return {
 
+          /* eslint-disable max-len */
           /**
            * Return all points
            *
@@ -401,6 +413,7 @@ define('peaks', [
           getPoints: function() {
             return self.waveform.points.getPoints();
           },
+          /* eslint-enable max-len */
 
           /**
            * Add one or more points to the timeline
