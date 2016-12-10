@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 (function(Peaks) {
   describe('Peaks.segments', function() {
     var p, deprecationLogger;

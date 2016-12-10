@@ -268,6 +268,7 @@ define([
 
   WaveformZoomView.prototype.updateZoomWaveform = function(pixelOffset) {
     if (isNaN(pixelOffset)) {
+      // eslint-disable-next-line max-len
       throw new Error('WaveformZoomView#updateZoomWaveform passed a pixel offset that is not a number: ' + pixelOffset);
     }
 
@@ -356,6 +357,7 @@ define([
 
   WaveformZoomView.prototype.newFrame = function(frameOffset) {
     if (isNaN(frameOffset)) {
+      // eslint-disable-next-line max-len
       throw new Error('WaveformZoomView#newFrame passed a frame offset that is not a number: ' + frameOffset);
     }
 
@@ -373,6 +375,7 @@ define([
 
   WaveformZoomView.prototype.syncPlayhead = function(pixelIndex) {
     if (isNaN(pixelIndex)) {
+      // eslint-disable-next-line max-len
       throw new Error('WaveformZoomView#syncPlayhead passed a pixel index that is not a number: ' + pixelIndex);
     }
 
@@ -397,6 +400,7 @@ define([
 
   WaveformZoomView.prototype.seekFrame = function(pixelIndex, offset) {
     if (isNaN(pixelIndex)) {
+      // eslint-disable-next-line max-len
       throw new Error('WaveformZoomView#seekFrame passed a pixel index that is not a number: ' + pixelIndex);
     }
 
