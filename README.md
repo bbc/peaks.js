@@ -127,6 +127,7 @@ To do so, skip the `dataUri` option and make sure you pass in a valid instance o
 
 ```js
 var myAudioContext = new AudioContext();
+
 var p = Peaks.init({
   container: document.querySelector('#peaks-container'),
   mediaElement: document.querySelector('audio'),
