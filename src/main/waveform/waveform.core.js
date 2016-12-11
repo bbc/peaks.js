@@ -69,7 +69,7 @@
    * data) or 'json'
    * @param {HTMLMediaElement} options.mediaElement
    *
-   * @see Refer to the <a href="../../../doc/DataFormat.md">data format documentation</a>
+   * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
    * for details of the binary and JSON waveform data formats.
    */
    /* eslint-enable max-len */
