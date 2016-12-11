@@ -197,6 +197,11 @@ define('peaks', [
       pointDragEndHandler:  null,
 
       /**
+       * An AudioContext, used when creating waveform data using the Web Audio API
+       */
+      audioContext: null,
+
+      /**
        * WaveformData WebAudio Decoder Options
        *
        * You mostly want to play with the 'scale' option.
@@ -277,6 +282,16 @@ define('peaks', [
     if (opts.logger && typeof opts.logger !== 'function') {
       // eslint-disable-next-line max-len
       throw new TypeError('[Peaks.init] The `logger` option should be a function.');
+    }
+
+    if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data or a dataUri.');
+    }
+
+    if (opts.dataUri && opts.audioContext) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('[Peaks.init] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
     }
 
     var instance = new Peaks(opts.container);

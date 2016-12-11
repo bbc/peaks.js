@@ -7,12 +7,14 @@
  */
  define([
   'waveform-data',
+  'waveform-data/webaudio',
   'peaks/views/waveform.overview',
   'peaks/views/waveform.zoomview',
   'peaks/markers/waveform.segments',
   'peaks/markers/waveform.points'
   ], function(
     WaveformData,
+    webaudioBuilder,
     WaveformOverview,
     WaveformZoomView,
     WaveformSegments,
@@ -100,10 +102,10 @@
     }
 
     // WebAudio Builder
-    if (!options.dataUri && WaveformData.builders.webaudio.getAudioContext()) {
+    if (!options.dataUri && options.audioContext) {
       requestType = 'arraybuffer';
       uri = options.mediaElement.currentSrc || options.mediaElement.src;
-      builder = 'webaudio';
+      builder = webaudioBuilder;
     }
 
     if (!uri) {
@@ -137,10 +139,11 @@
       }
 
       if (builder) {
-        WaveformData.builders[builder](
+        webaudioBuilder(
+          options.audioContext,
           response.target.response,
           options.waveformBuilderOptions,
-          self.handleRemoteData.bind(self, null)
+          self.handleRemoteData.bind(self)
         );
       }
       else {
