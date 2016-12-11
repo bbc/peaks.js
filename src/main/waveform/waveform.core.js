@@ -56,6 +56,7 @@
     this.getRemoteData(this.peaks.options);
   };
 
+  /* eslint-disable max-len */
   /**
    * Fetches waveform data, based on the given options.
    *
@@ -71,7 +72,7 @@
    * @see Refer to the <a href="../../../doc/DataFormat.md">data format documentation</a>
    * for details of the binary and JSON waveform data formats.
    */
-
+   /* eslint-enable max-len */
   Waveform.prototype.getRemoteData = function(options) {
     var self = this;
     var xhr = new XMLHttpRequest();
