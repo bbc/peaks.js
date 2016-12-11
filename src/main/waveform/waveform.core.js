@@ -102,7 +102,7 @@
     }
 
     // WebAudio Builder
-    if (!options.dataUri && this.peaks.options.audioContext) {
+    if (!options.dataUri && options.audioContext) {
       requestType = 'arraybuffer';
       uri = options.mediaElement.currentSrc || options.mediaElement.src;
       builder = webaudioBuilder;
@@ -140,7 +140,7 @@
 
       if (builder) {
         webaudioBuilder(
-          self.peaks.options.audioContext,
+          options.audioContext,
           response.target.response,
           options.waveformBuilderOptions,
           self.handleRemoteData.bind(self)
