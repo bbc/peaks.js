@@ -253,7 +253,7 @@
         });
 
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
-        var expectedContentType = window['ArrayBuffer'] ? 'text/plain' : 'application/json';
+        var expectedContentType = window.ArrayBuffer ? 'text/plain' : 'application/json';
 
         p.on('segments.ready', function() {
           var xhr = spy.getCall(0).args[1];
