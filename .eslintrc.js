@@ -13,6 +13,7 @@ module.exports = {
     "consistent-this": ["error", "self"],
     "curly": ["error", "all"],
     "dot-location": ["error", "property"],
+    "dot-notation": "error",
     "eqeqeq": "error",
     "func-style": ["error", "declaration"],
     "guard-for-in": "error",
