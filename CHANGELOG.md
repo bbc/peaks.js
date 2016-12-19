@@ -1,5 +1,14 @@
 ## Change Log
 
+### v0.6.0 (2016/12/19 15:57 +00:00)
+- [#167](https://github.com/bbc/peaks.js/pull/167) Added audioContext config option (@chrisn, @oncletom, @dodds-cc)
+- [#165](https://github.com/bbc/peaks.js/pull/165) Fixed mouse dragging behaviour (@chrisn)
+- [#161](https://github.com/bbc/peaks.js/pull/161) More reliable clicking behaviour, don't turn seek click off on vertical mouse movement. (@Develliot)
+- [#159](https://github.com/bbc/peaks.js/pull/159) Added JSDoc comments (@chrisn)
+- [#157](https://github.com/bbc/peaks.js/pull/157) Register mouse up/move events to the window rather than the waveform stages (@jdelStrother)
+- [#156](https://github.com/bbc/peaks.js/pull/156) Refactored player and keyboard handler objects (@chrisn)
+- [#155](https://github.com/bbc/peaks.js/pull/155) Refactored WaveformPoints and WaveformSegments (@chrisn)
+
 ### v0.5.0 (2016/08/25 09:27 +00:00)
 - [#150](https://github.com/bbc/peaks.js/pull/150) Add Peaks.destroy method (@jdelStrother)
 
