@@ -56,6 +56,7 @@ define([
     self.container = options.container;
     self.peaks = options.peaks;
     self.zoomAdapter = options.zoomAdapter;
+    self.features = options.features || [];
 
     self.playing = false;
 
@@ -92,15 +93,15 @@ define([
 
     self.axis = new WaveformAxis(self);
 
-    self.createWaveform();
-    self.createUi();
-
     self.emit = function emitNamespacedEvent() {
       var name = [arguments[0], self.name].join('.');
       var args = Array.prototype.slice.call(arguments, 1);
 
       self.peaks.emit.apply(self.peaks, [name].concat(args));
     };
+
+    self.createWaveform();
+    self.createUi();
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(layerX) {
@@ -178,19 +179,14 @@ define([
     });
 
     self.peaks.on('zoom.update', function(currentScale, previousScale) {
+      // We currently don't allow changing the zoom level during playback.
       if (self.playing) {
-        // We currently don't allow changing the zoom level during playback.
         return;
       }
 
       if (currentScale === previousScale) {
-        // Nothing to do.
         return;
       }
-
-      self.data = self.waveformData.resample({
-        scale: currentScale
-      });
 
       self.zoomAdapter
         .create(currentScale, previousScale, self)
@@ -238,12 +234,11 @@ define([
     this.waveformLayer.add(this.waveformShape);
     this.stage.add(this.waveformLayer);
 
-    // TODO sort out how one view subscribe to another one
-    // this.peaks.emit(
-    //   'zoomview.displaying',
-    //   0 * this.data.seconds_per_pixel,
-    //   this.width * this.data.seconds_per_pixel
-    // );
+    this.emit(
+      'waveform.render',
+      0 * this.data.seconds_per_pixel,
+      this.width * this.data.seconds_per_pixel
+    );
   };
 
   WaveformView.prototype.createUi = function() {
@@ -321,16 +316,11 @@ define([
     this.uiLayer.draw();
     this.waveformLayer.draw();
 
-    // if (this.snipWaveformShape) {
-    //   this.updateSnipWaveform(this.currentSnipStartTime, this.currentSnipEndTime);
-    // }
-
-    // TODO sort out
-    // this.peaks.emit(
-    //   'zoomview.displaying',
-    //   pixelOffset * this.data.seconds_per_pixel,
-    //   (pixelOffset + this.width) * this.data.seconds_per_pixel
-    // );
+    this.emit(
+      'waveform.render',
+      pixelOffset * this.data.seconds_per_pixel,
+      (pixelOffset + this.width) * this.data.seconds_per_pixel
+    );
   };
 
   // UI functions ==============================
