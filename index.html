@@ -79,9 +79,21 @@
         <button data-action="log-data">Log segments/points</button>
       </div>
 
-      <script src="peaks.js"></script>
       <script>
-        (function(Peaks){
+        function initializeRequireJS() {
+          require.config({
+            paths: {
+              'EventEmitter': 'bower_components/eventemitter2/lib/eventemitter2',
+              'waveform-data': 'https://wzrd.in/standalone/waveform-data@2.0.0?',
+              'peaks': 'src/main',
+              'konva': 'bower_components/konva/konva',
+            }
+          });
+
+          require(['peaks'], initializePeaks);
+        }
+
+        function initializePeaks(Peaks) {
           var options = {
             container: document.getElementById('first-waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
@@ -116,7 +128,9 @@
             console.log('Segments', peaksInstance.segments.getSegments());
             console.log('Points', peaksInstance.points.getPoints());
           });
-        })(peaks);
+        };
       </script>
+      <script src="peaks.js" onload="initializePeaks(peaks)"></script>
+      <script src="bower_components/requirejs/require.js" onload="initializeRequireJS()"></script>
   </body>
 </html>

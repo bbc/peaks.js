@@ -11,7 +11,10 @@
     "test_data"
   ],
   "dependencies": {
-    "requirejs": "~2.1.14"
+    "eventemitter2": "~1.0.0",
+    "konva": "~1.2.2",
+    "requirejs": "~2.1.14",
+    "waveform-data": "~2.0.0"
   },
   "devDependencies": {}
 }
