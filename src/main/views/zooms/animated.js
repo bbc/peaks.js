@@ -84,10 +84,10 @@ define(['konva'], function(Konva) {
         previousScale = frameScale;
       }
 
-      return new Konva.Animation(this.onFrameData(view, frameData), view);
+      return new Konva.Animation(this.onFrameData(view, frameData, currentScale), view);
     },
 
-    onFrameData: function(view, frameData) {
+    onFrameData: function(view, frameData, currentScale) {
       view.intermediateData = null;
 
       /**
@@ -101,6 +101,10 @@ define(['konva'], function(Konva) {
           view.waveformLayer.draw();
         }
         else {
+          view.data = view.waveformData.resample({
+            scale: currentScale
+          });
+
           this.stop();
           view.intermediateData = null;
           view.segmentLayer.setVisible(true);

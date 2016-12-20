@@ -12,7 +12,9 @@
   'peaks/markers/waveform.segments',
   'peaks/markers/waveform.points',
   'peaks/views/zooms/animated',
-  'peaks/views/zooms/static'
+  'peaks/views/zooms/static',
+  'peaks/views/zooms/fixed',
+  'peaks/views/ref-segment'
   ], function(
     WaveformData,
     webaudioBuilder,
@@ -20,7 +22,9 @@
     WaveformSegments,
     WaveformPoints,
     AnimatedZoomAdapter,
-    StaticZoomAdapter) {
+    StaticZoomAdapter,
+    FixedZoomAdapter,
+    ReferenceSegment) {
   'use strict';
 
   var IS_XHR2 = ('withCredentials' in new XMLHttpRequest());
@@ -208,8 +212,12 @@
         scale: {
           width: Number(this.ui.overview.clientWidth)
         },
-        zoomAdapter: StaticZoomAdapter
+        zoomAdapter: FixedZoomAdapter
       });
+
+      ReferenceSegment
+        .install(this.waveformOverview, this.peaks)
+        .subscribeTo('waveform.render.zoomview');
 
       this.peaks.emit('waveform_ready.overview', this.waveformOverview);
     }
