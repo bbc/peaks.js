@@ -17,7 +17,7 @@ define(['konva'], function(Konva) {
       var outputIndex;
       var lastFrameOffsetTime;
 
-      var rootData = view.originalWaveformData;
+      var waveformData = view.waveformData;
 
       // Fade out the time axis and the segments
       // view.axis.axisShape.setAttr('opacity', 0);
@@ -41,27 +41,27 @@ define(['konva'], function(Konva) {
 
         // Determine the timeframe for the zoom animation (start and end of
         // dataset for zooming animation)
-        var newWidthSeconds = view.width * frameScale / rootData.adapter.sample_rate;
+        var newWidthSeconds = view.width * frameScale / waveformData.adapter.sample_rate;
 
         if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds / 2)) {
           inputIndex = 0;
           outputIndex = 0;
         }
-        else if ((currentTime <= rootData.duration) &&
-                 (currentTime >= rootData.duration - newWidthSeconds / 2)) {
-          lastFrameOffsetTime = rootData.duration - newWidthSeconds;
+        else if ((currentTime <= waveformData.duration) &&
+                 (currentTime >= waveformData.duration - newWidthSeconds / 2)) {
+          lastFrameOffsetTime = waveformData.duration - newWidthSeconds;
 
           // sample rate = 44100
-          inputIndex  = (lastFrameOffsetTime * rootData.adapter.sample_rate) / previousScale;
-          outputIndex = (lastFrameOffsetTime * rootData.adapter.sample_rate) / frameScale;
+          inputIndex  = (lastFrameOffsetTime * waveformData.adapter.sample_rate) / previousScale;
+          outputIndex = (lastFrameOffsetTime * waveformData.adapter.sample_rate) / frameScale;
         }
         else {
           // This way calculates the index of the start time at the scale we
           // are coming from and the scale we are going to
 
           // sample rate = 44100
-          var oldPixelIndex = (currentTime * rootData.adapter.sample_rate) / previousScale;
-          var newPixelIndex = (currentTime * rootData.adapter.sample_rate) / frameScale;
+          var oldPixelIndex = (currentTime * waveformData.adapter.sample_rate) / previousScale;
+          var newPixelIndex = (currentTime * waveformData.adapter.sample_rate) / frameScale;
 
           inputIndex  = oldPixelIndex - (view.width / 2);
           outputIndex = newPixelIndex - (view.width / 2);
@@ -71,8 +71,8 @@ define(['konva'], function(Konva) {
           inputIndex = 0;
         }
 
-        // rootData should be swapped for your resampled dataset:
-        var resampled = rootData.resample({
+        // waveformData should be swapped for your resampled dataset:
+        var resampled = waveformData.resample({
           scale:        frameScale,
           input_index:  Math.floor(inputIndex),
           output_index: Math.floor(outputIndex),
@@ -98,7 +98,7 @@ define(['konva'], function(Konva) {
         if (frameData.length) {
           // Send correct resampled waveform data object to drawFunc and draw it
           view.intermediateData = frameData.shift();
-          view.zoomWaveformLayer.draw();
+          view.waveformLayer.draw();
         }
         else {
           this.stop();
