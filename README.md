@@ -530,7 +530,7 @@ Then open http://localhost:9000 in a Web browser.
 
 `npm test` should work for simple one time testing.
 
-If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
+If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run watch`.
 
 # License
 

@@ -1,7 +1,8 @@
 module.exports = {
   "env": {
     "browser": true,
-    "mocha": true
+    "mocha": true,
+    "node": true,
   },
   "extends": "../.eslintrc.js",
   "globals": {
@@ -13,6 +14,7 @@ module.exports = {
     "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
     // Disable no-unused-expressions for chai expectations
     "no-unused-expressions": "off",
-    "newline-after-var": "off"
+    "newline-after-var": "off",
+    "max-len": "off"
   }
 };

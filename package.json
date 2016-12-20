@@ -64,6 +64,7 @@
     "github-changes": "^1.0.0",
     "jsdoc": "~3.4.1",
     "karma": "^1.1.0",
+    "karma-browserify": "^5.1.0",
     "karma-browserstack-launcher": "^1.0.0",
     "karma-chrome-launcher": "^1.0.0",
     "karma-firefox-launcher": "^1.0.0",
@@ -76,7 +77,8 @@
     "mocha": "^2.5.0",
     "serve": "^1.4.0",
     "sinon": "^1.17.2",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "watchify": "^3.8.0"
   },
   "dependencies": {
     "eventemitter2": "~1.0.0",

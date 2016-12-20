@@ -6,15 +6,15 @@ function filterBrowsers(browsers, re) {
   });
 }
 
-module.exports = function (config) {
-  var isCI   = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
+module.exports = function(config) {
+  var isCI = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
 
   // Karma configuration
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
-    frameworks: ['mocha', 'sinon-chai'],
+    frameworks: ['mocha', 'sinon-chai', 'browserify'],
 
     client: {
       chai: {
@@ -25,27 +25,31 @@ module.exports = function (config) {
       }
     },
 
+    browserify: {
+      debug: true,
+      transform: [
+        'deamdify'
+      ]
+    },
+
     // list of files / patterns to load in the browser
     files: [
-      'peaks.js',
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
       { pattern: 'test/*.html' },
       'test/load-fixtures.js',
-      'test/unit/**/*.js',
+      'test/unit/**/*.js'
     ],
 
     preprocessors: {
+      'test/unit/**/*.js': ['browserify'],
       'test/*.html': ['html2js']
     },
 
-    // list of files to exclude
-    //exclude: ['lib/js/main.js'],
-
     // test results reporter to use
     // possible values: dots || progress || growl || spec
-    reporters : isCI ? ['dots'] : ['spec'],
+    reporters: isCI ? ['dots'] : ['spec'],
 
     // web server port
     port: 8080,
@@ -138,16 +142,14 @@ module.exports = function (config) {
     },
 
     // If browser does not capture in given timeout [ms], kill it
-    captureTimeout : 120000,
+    captureTimeout: 120000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun : true
+    singleRun: true
   });
 
   config.set({
-    browsers: isCI
-      ? filterBrowsers(config.customLaunchers, /^BS/)
-      : ['Chrome', 'Safari', 'Firefox', 'IE9 - Win7']
+    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['Chrome']
   });
 };
