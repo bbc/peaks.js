@@ -9,13 +9,11 @@ define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
-  'peaks/views/helpers/mousedraghandler',
   'konva'
   ], function(
     WaveformAxis,
     mixins,
     Utils,
-    MouseDragHandler,
     Konva) {
   'use strict';
 
@@ -47,6 +45,10 @@ define([
 
     if (!options.zoomAdapter) {
       throw new Error('WaveformView requires `options.zoomAdapter` to be a views/zooms instance');
+    }
+
+    if (!options.mouseDragHandler) {
+      throw new Error('WaveformView requires `options.mouseDragHandler` to be a views/pointers instance');
     }
 
     var peaksOptions = options.peaks.options;
@@ -93,50 +95,9 @@ define([
 
     self.axis = new WaveformAxis(self);
 
-    self.emit = function emitNamespacedEvent() {
-      var name = [arguments[0], self.name].join('.');
-      var args = Array.prototype.slice.call(arguments, 1);
-
-      self.peaks.emit.apply(self.peaks, [name].concat(args));
-    };
-
+    self.mouseDragHandler = options.mouseDragHandler(self);
     self.createWaveform();
     self.createUi();
-
-    self.mouseDragHandler = new MouseDragHandler(self.stage, {
-      onMouseDown: function(layerX) {
-        this.initialFrameOffset = self.frameOffset;
-        this.mouseDownLayerX = layerX;
-      },
-
-      onMouseMove: function(layerX) {
-        // Moving the mouse to the left increases the time position of the
-        // left-hand edge of the visible waveform.
-        var diff = this.mouseDownLayerX - layerX;
-
-        var newFrameOffset = this.initialFrameOffset + diff;
-
-        if (newFrameOffset < 0) {
-          newFrameOffset = 0;
-        }
-        else if (newFrameOffset > (self.pixelLength - self.width)) {
-          newFrameOffset = self.pixelLength - self.width;
-        }
-
-        if (newFrameOffset !== this.initialFrameOffset) {
-          self.emit('user_scroll', newFrameOffset);
-        }
-      },
-
-      onMouseUp: function(layerX) {
-        // Set playhead position only on click release, when not dragging
-        if (!self.mouseDragHandler.isDragging()) {
-          var pos = self.frameOffset + this.mouseDownLayerX;
-
-          self.peaks.emit('user_seek', self.data.time(pos), pos);
-        }
-      }
-    });
 
     // EVENTS ====================================================
 
@@ -218,6 +179,13 @@ define([
     self.peaks.on('keyboard.shift_left', nudgeFrame.bind(self, -10));
     self.peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 10));
   }
+
+  WaveformView.prototype.emit = function() {
+    var name = [arguments[0], this.name].join('.');
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    this.peaks.emit.apply(this.peaks, [name].concat(args));
+  };
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
 
