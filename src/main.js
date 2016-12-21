@@ -259,6 +259,14 @@ define('peaks', [
       opts.deprecationLogger('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
     }
 
+    if (opts.segments) {
+      opts.deprecationLogger('[Peaks.init] `segments` option is deprecated. Please add your segments during the `segments.ready` event.');
+    }
+
+    if (opts.points) {
+      opts.deprecationLogger('[Peaks.init] `points` option is deprecated. Please add your points during the `points.ready` event.');
+    }
+
     if (!opts.mediaElement) {
       // eslint-disable-next-line max-len
       throw new Error('[Peaks.init] Please provide an audio element.');
@@ -342,16 +350,6 @@ define('peaks', [
 
     instance.on('waveform_ready.overview', function() {
       instance.waveform.openZoomView();
-
-      // Any initial segments to be displayed?
-      if (instance.options.segments) {
-        instance.segments.add(instance.options.segments);
-      }
-
-      // Any initial points to be displayed?
-      if (instance.options.points) {
-        instance.points.add(instance.options.points);
-      }
     });
 
     return instance;

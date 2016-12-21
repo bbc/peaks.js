@@ -216,25 +216,7 @@ var options = {
   randomizeSegmentColor: true,
 
   // Zoom view adapter to use. Valid adapters are: 'animated' (default) and 'static'
-  zoomAdapter: 'animated',
-
-  // Array of initial segment objects with startTime and
-  // endTime in seconds and a boolean for editable.
-  // See below.
-  segments: [{
-    startTime: 120,
-    endTime: 140,
-    editable: true,
-    color: "#ff0000",
-    labelText: "My label"
-  },
-  {
-    startTime: 220,
-    endTime: 240,
-    editable: false,
-    color: "#00ff00",
-    labelText: "My Second label"
-  }]
+  zoomAdapter: 'animated'
 }
 ```
 
