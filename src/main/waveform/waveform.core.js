@@ -14,6 +14,7 @@
   'peaks/views/zooms/animated',
   'peaks/views/zooms/static',
   'peaks/views/zooms/fixed',
+  'peaks/views/pointers/seek',
   'peaks/views/ref-segment'
   ], function(
     WaveformData,
@@ -24,6 +25,7 @@
     AnimatedZoomAdapter,
     StaticZoomAdapter,
     FixedZoomAdapter,
+    PointerHandlerSeek,
     ReferenceSegment) {
   'use strict';
 
@@ -212,7 +214,8 @@
         scale: {
           width: Number(this.ui.overview.clientWidth)
         },
-        zoomAdapter: FixedZoomAdapter
+        zoomAdapter: FixedZoomAdapter,
+        mouseDragHandler: PointerHandlerSeek
       });
 
       ReferenceSegment
@@ -232,7 +235,7 @@
   Waveform.prototype._bindEvents = function() {
     var self = this;
 
-    self.peaks.on('user_seek', function(time) {
+    self.peaks.on('user_seek.*', function(time) {
       self.peaks.player.seekBySeconds(time);
     });
 
