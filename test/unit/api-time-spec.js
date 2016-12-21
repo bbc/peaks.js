@@ -7,7 +7,7 @@
     beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
 
-      p = Peaks.init({
+      p = new Peaks({
         container: document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
         dataUri: {
