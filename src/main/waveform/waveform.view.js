@@ -119,10 +119,9 @@ define([
 
     self.peaks.on('player_seek', userSeekHandler);
 
-    // TODO make sure we update the view on a more generic event
-    // self.peaks.on('user_scroll.zoomview', function(pixelOffset) {
-    //   self.updateWaveform(pixelOffset);
-    // });
+    self.peaks.on('user_scroll.' + self.name, function(pixelOffset) {
+      self.updateWaveform(pixelOffset);
+    });
 
     self.peaks.on('player_play', function(time) {
       self.playing = true;

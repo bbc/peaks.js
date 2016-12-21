@@ -26,6 +26,7 @@
     "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
     "peaks/waveform/waveform.utils": "./src/main/waveform/waveform.utils.js",
     "peaks/waveform/waveform.view": "./src/main/waveform/waveform.view.js",
+    "peaks/views/pointers/drag": "./src/main/views/pointers/drag.js",
     "peaks/views/pointers/seek": "./src/main/views/pointers/seek.js",
     "peaks/views/ref-segment": "./src/main/views/ref-segment.js",
     "peaks/views/helpers/mousedraghandler": "./src/main/views/helpers/mousedraghandler.js",

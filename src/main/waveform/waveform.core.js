@@ -14,6 +14,7 @@
   'peaks/views/zooms/animated',
   'peaks/views/zooms/static',
   'peaks/views/zooms/fixed',
+  'peaks/views/pointers/drag',
   'peaks/views/pointers/seek',
   'peaks/views/ref-segment'
   ], function(
@@ -25,6 +26,7 @@
     AnimatedZoomAdapter,
     StaticZoomAdapter,
     FixedZoomAdapter,
+    PointerHandlerDrag,
     PointerHandlerSeek,
     ReferenceSegment) {
   'use strict';
@@ -250,7 +252,8 @@
       scale: {
         scale: this.peaks.options.zoomLevels[this.peaks.zoom.getZoom()]
       },
-      zoomAdapter: getZoomAdapter(this.peaks.options.zoomAdapter)
+      zoomAdapter: getZoomAdapter(this.peaks.options.zoomAdapter),
+      mouseDragHandler: PointerHandlerDrag
     });
 
     this.segments = new WaveformSegments(this.peaks);
