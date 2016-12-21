@@ -29,7 +29,7 @@
     describe('create', function() {
       it('should throw an exception if no mediaElement is provided', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
@@ -38,7 +38,7 @@
 
       it('should throw an exception if mediaElement is not an HTMLMediaElement', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.createElement('div'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
@@ -48,7 +48,7 @@
 
       it('should thrown an exception if no container is provided', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             mediaElement: document.querySelector('audio'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
@@ -57,7 +57,7 @@
 
       it('should thrown an exception if the container has no layout', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.createElement('div'),
             mediaElement: document.querySelector('audio'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
@@ -67,7 +67,7 @@
 
       it('should thrown an exception if the logger is defined and not a function', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: 'base/test_data/sample.json',
@@ -76,8 +76,33 @@
         }).to.throw(/logger/);
       });
 
+      it('should send a deprecation notice if Peaks.init form is used', function() {
+        var spy = sandbox.spy();
+
+        Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json',
+          deprecationLogger: spy
+        });
+
+        expect(spy).to.have.been.calledOnce;
+        expect(spy).to.have.been.calledWithMatch('`Peaks.init(options)` form is deprecated.');
+      });
+
+      it('should return a Peaks instance if called as a function', function() {
+        // eslint-disable-next-line new-cap
+        var p = Peaks({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json'
+        });
+
+        expect(p).to.be.an.instanceOf(Peaks);
+      });
+
       it('should broadcast errors to a configurable logger', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/sample.json',
@@ -116,7 +141,7 @@
         var oldOnError = window.onerror;
         window.onerror = errorSpy;
 
-        var p = Peaks.init({
+        var p = new Peaks({
           container: container,
           mediaElement: document.querySelector('audio'),
           audioContext: new TestAudioContext()
@@ -150,7 +175,7 @@
 
     describe('core#getRemoteData', function() {
       it('should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/sample.json'
@@ -168,7 +193,7 @@
       });
 
       it('should emit an error if the data handling fails', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/404-file.json'
@@ -180,7 +205,7 @@
       });
 
       it.skip('should emit an error if the data handling fails due to a network error', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'file:///test.json'
@@ -194,7 +219,7 @@
       });
 
       it('should use the JSON dataUri connector', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: {
@@ -214,7 +239,7 @@
       });
 
       ('ArrayBuffer' in window) && it('should use the arraybuffer dataUri connector or fail if not available', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: {
@@ -235,7 +260,7 @@
 
       !('ArrayBuffer' in window) && it('should throw an exception if the only available format is browser incompatible', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: {
@@ -246,7 +271,7 @@
       });
 
       it('should pick the arraybuffer format over the JSON one', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: {
@@ -268,7 +293,7 @@
       });
 
       ('AudioBuffer' in window) && it('should build using WebAudio if the API is available and no dataUri is provided', function(done) {
-        var p = Peaks.init({
+        var p = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           audioContext: new TestAudioContext()

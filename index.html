@@ -92,7 +92,7 @@
             keyboard: false
           };
 
-          var peaksInstance = Peaks.init(options);
+          var peaksInstance = new Peaks(options);
 
           document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
           document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
