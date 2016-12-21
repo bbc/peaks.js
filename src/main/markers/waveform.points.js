@@ -164,7 +164,7 @@ define([
   };
 
   WaveformPoints.prototype.init = function() {
-    this.peaks.on('zoomview.displaying', this.updatePoints.bind(this));
+    this.peaks.on('waveform.render.zoomview', this.updatePoints.bind(this));
     this.peaks.emit('points.ready');
   };
 
