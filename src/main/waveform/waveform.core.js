@@ -9,8 +9,7 @@
   'waveform-data',
   'waveform-data/webaudio',
   'peaks/waveform/waveform.view',
-  'peaks/markers/waveform.segments',
-  'peaks/markers/waveform.points',
+  'peaks/waveform/waveform.markers',
   'peaks/views/zooms/animated',
   'peaks/views/zooms/static',
   'peaks/views/zooms/fixed',
@@ -21,8 +20,7 @@
     WaveformData,
     webaudioBuilder,
     WaveformView,
-    WaveformSegments,
-    WaveformPoints,
+    WaveformMarkers,
     AnimatedZoomAdapter,
     StaticZoomAdapter,
     FixedZoomAdapter,
@@ -244,7 +242,7 @@
     window.addEventListener('resize', self.onResize);
   };
 
-  Waveform.prototype.openZoomView = function() {
+  Waveform.prototype.setupZoomView = function() {
     this.waveformZoomView = new WaveformView('zoomview', {
       waveformData: this.originalWaveformData,
       container: this.ui.zoom,
@@ -256,13 +254,17 @@
       mouseDragHandler: PointerHandlerDrag
     });
 
-    this.segments = new WaveformSegments(this.peaks);
-    this.segments.init();
-
-    this.points = new WaveformPoints(this.peaks);
-    this.points.init();
-
     this.peaks.emit('waveform_ready.zoomview', this.waveformZoomView);
+  };
+
+  Waveform.prototype.setupMarkers = function(views) {
+    this.markers = new WaveformMarkers(this.peaks);
+
+    views.forEach(function(view) {
+      this.markers
+        .install(view)
+        .subscribeTo('waveform.render.' + view.name);
+    }, this);
   };
 
   Waveform.prototype.destroy = function() {

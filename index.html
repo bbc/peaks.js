@@ -98,7 +98,7 @@
           document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
           document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
-            peaksInstance.segments.add({
+            peaksInstance.markers.add({
               startTime: peaksInstance.time.getCurrentTime(),
               endTime: peaksInstance.time.getCurrentTime() + 10,
               editable: true
@@ -106,15 +106,14 @@
           });
 
           document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
-            peaksInstance.points.add({
-              timestamp: peaksInstance.time.getCurrentTime(),
+            peaksInstance.markers.add({
+              startTime: peaksInstance.time.getCurrentTime(),
               editable: true
             });
           });
 
           document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
-            console.log('Segments', peaksInstance.segments.getSegments());
-            console.log('Points', peaksInstance.points.getPoints());
+            console.log(peaksInstance.markers.getAll());
           });
         })(peaks);
       </script>

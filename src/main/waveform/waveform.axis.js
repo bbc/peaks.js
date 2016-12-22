@@ -5,7 +5,7 @@
  *
  * @module peaks/waveform/waveform.axis
  */
-define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
+define(['peaks/helpers/nice-time', 'konva'], function(niceTime, Konva) {
   'use strict';
 
   /**
@@ -134,7 +134,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       context.lineTo(x + 0.5, this.view.height - markerHeight);
       context.stroke();
 
-      var label      = Utils.niceTime(secs, true);
+      var label      = niceTime(secs, true);
       // TODO: handle this with Konva.Text:
       var labelWidth = context._context.measureText(label).width;
       var labelX     = x - labelWidth / 2;

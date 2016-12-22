@@ -5,7 +5,7 @@
  *
  * @module peaks/player/player
  */
-define(['peaks/waveform/waveform.utils'], function(Utils) {
+define(['peaks/helpers/nice-time'], function(niceTime) {
   'use strict';
 
   function timeFromPercentage(time, percentage) {
@@ -109,7 +109,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   };
 
   Player.prototype.getTimeFromPercentage = function(p) {
-    return Utils.niceTime(this.duration * p / 100, false);
+    return niceTime(this.duration * p / 100, false);
   };
 
   Player.prototype.getSecsFromPercentage = function(p) {

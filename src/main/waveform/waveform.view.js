@@ -8,12 +8,12 @@
 define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
-  'peaks/waveform/waveform.utils',
+  'peaks/helpers/nice-time',
   'konva'
   ], function(
     WaveformAxis,
     mixins,
-    Utils,
+    niceTime,
     Konva) {
   'use strict';
 
@@ -274,7 +274,7 @@ define([
       var remPixels = this.playheadPixel - pixelOffset;
 
       this.playheadGroup.show().setAttr('x', remPixels);
-      this.playheadText.setText(Utils.niceTime(this.data.time(this.playheadPixel), false));
+      this.playheadText.setText(niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
       this.playheadGroup.hide();
@@ -358,7 +358,7 @@ define([
       var remPixels = this.playheadPixel - this.frameOffset;
 
       this.playheadGroup.show().setAttr('x', remPixels);
-      this.playheadText.setText(Utils.niceTime(this.data.time(this.playheadPixel), false));
+      this.playheadText.setText(niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
       this.playheadGroup.hide();
