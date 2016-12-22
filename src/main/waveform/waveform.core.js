@@ -8,20 +8,45 @@
  define([
   'waveform-data',
   'waveform-data/webaudio',
-  'peaks/views/waveform.overview',
-  'peaks/views/waveform.zoomview',
-  'peaks/markers/waveform.segments',
-  'peaks/markers/waveform.points'
+  'peaks/waveform/waveform.view',
+  'peaks/waveform/waveform.markers',
+  'peaks/views/zooms/animated',
+  'peaks/views/zooms/static',
+  'peaks/views/zooms/fixed',
+  'peaks/views/pointers/drag',
+  'peaks/views/pointers/seek',
+  'peaks/views/ref-segment'
   ], function(
     WaveformData,
     webaudioBuilder,
-    WaveformOverview,
-    WaveformZoomView,
-    WaveformSegments,
-    WaveformPoints) {
+    WaveformView,
+    WaveformMarkers,
+    AnimatedZoomAdapter,
+    StaticZoomAdapter,
+    FixedZoomAdapter,
+    PointerHandlerDrag,
+    PointerHandlerSeek,
+    ReferenceSegment) {
   'use strict';
 
-  var isXhr2 = ('withCredentials' in new XMLHttpRequest());
+  var IS_XHR2 = ('withCredentials' in new XMLHttpRequest());
+
+  var ZOOM_ADAPTER_MAP = {
+    'animated': AnimatedZoomAdapter,
+    'static': StaticZoomAdapter
+  };
+
+  function getZoomAdapter(adapter) {
+    if (typeof adapter === 'function') {
+      return adapter;
+    }
+
+    if ((adapter in ZOOM_ADAPTER_MAP) === false) {
+      throw new Error('Unknown zoom adapter (should be "animated" or "static")');
+    }
+
+    return ZOOM_ADAPTER_MAP[adapter];
+  }
 
   /**
    * Bootstraps all our waveform components and manages initialisation as well
@@ -115,7 +140,7 @@
     // open an XHR request to the data source file
     xhr.open('GET', uri, true);
 
-    if (isXhr2) {
+    if (IS_XHR2) {
       try {
         xhr.responseType = requestType;
       }
@@ -182,11 +207,20 @@
                                   remoteData :
                                   WaveformData.create(remoteData);
 
-      this.waveformOverview = new WaveformOverview(
-        this.originalWaveformData,
-        this.ui.overview,
-        this.peaks
-      );
+      this.waveformOverview = new WaveformView('overview', {
+        waveformData: this.originalWaveformData,
+        container: this.ui.overview,
+        peaks: this.peaks,
+        scale: {
+          width: Number(this.ui.overview.clientWidth)
+        },
+        zoomAdapter: FixedZoomAdapter,
+        mouseDragHandler: PointerHandlerSeek
+      });
+
+      ReferenceSegment
+        .install(this.waveformOverview, this.peaks)
+        .subscribeTo('waveform.render.zoomview');
 
       this.peaks.emit('waveform_ready.overview', this.waveformOverview);
     }
@@ -208,20 +242,29 @@
     window.addEventListener('resize', self.onResize);
   };
 
-  Waveform.prototype.openZoomView = function() {
-    this.waveformZoomView = new WaveformZoomView(
-      this.originalWaveformData,
-      this.ui.zoom,
-      this.peaks
-    );
-
-    this.segments = new WaveformSegments(this.peaks);
-    this.segments.init();
-
-    this.points = new WaveformPoints(this.peaks);
-    this.points.init();
+  Waveform.prototype.setupZoomView = function() {
+    this.waveformZoomView = new WaveformView('zoomview', {
+      waveformData: this.originalWaveformData,
+      container: this.ui.zoom,
+      peaks: this.peaks,
+      scale: {
+        scale: this.peaks.options.zoomLevels[this.peaks.zoom.getZoom()]
+      },
+      zoomAdapter: getZoomAdapter(this.peaks.options.zoomAdapter),
+      mouseDragHandler: PointerHandlerDrag
+    });
 
     this.peaks.emit('waveform_ready.zoomview', this.waveformZoomView);
+  };
+
+  Waveform.prototype.setupMarkers = function(views) {
+    this.markers = new WaveformMarkers(this.peaks);
+
+    views.forEach(function(view) {
+      this.markers
+        .install(view)
+        .subscribeTo('waveform.render.' + view.name);
+    }, this);
   };
 
   Waveform.prototype.destroy = function() {

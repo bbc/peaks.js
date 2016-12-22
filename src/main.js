@@ -10,8 +10,9 @@ define('peaks', [
   'peaks/player/player',
   'peaks/waveform/waveform.core',
   'peaks/waveform/waveform.mixins',
-  'peaks/player/player.keyboard'
-], function(EventEmitter, Player, Waveform, mixins, KeyboardHandler) {
+  'peaks/player/player.keyboard',
+  'peaks/helpers/extend'
+], function(EventEmitter, Player, Waveform, mixins, KeyboardHandler, extend) {
   'use strict';
 
   function buildUi(container) {
@@ -20,16 +21,6 @@ define('peaks', [
       zoom:     container.querySelector('.zoom-container'),
       overview: container.querySelector('.overview-container')
     };
-  }
-
-  function extend(to, from) {
-    for (var key in from) {
-      if (from.hasOwnProperty(key)) {
-        to[key] = from[key];
-      }
-    }
-
-    return to;
   }
 
   /**
@@ -42,6 +33,7 @@ define('peaks', [
     EventEmitter.call(this, { wildcard: true });
 
     this.options = {
+      mediaElement: null,
 
       /**
        * Array of scale factors (samples per pixel) for the zoom levels
@@ -111,12 +103,12 @@ define('peaks', [
       nudgeIncrement:        0.01,
 
       /**
-       * Colour for the in marker of segments
+       * Colour for the in marker of markers
        */
       inMarkerColor:         '#a0a0a0',
 
       /**
-       * Colour for the out marker of segments
+       * Colour for the out marker of markers
        */
       outMarkerColor:        '#a0a0a0',
 
@@ -137,9 +129,9 @@ define('peaks', [
       overviewHighlightRectangleColor: 'grey',
 
       /**
-       * Random colour per segment (overrides segmentColor)
+       * Random colour per marker (overrides markerColor)
        */
-      randomizeSegmentColor: true,
+      randomizeMarkerColor: true,
 
       /**
        * Height of the waveform canvases in pixels
@@ -147,9 +139,9 @@ define('peaks', [
       height:                200,
 
       /**
-       * Colour for segments on the waveform
+       * Colour for markers on the waveform
        */
-      segmentColor:          'rgba(255, 161, 39, 1)',
+      markerColor:          'rgba(255, 161, 39, 1)',
 
       /**
        * Colour of the play head
@@ -181,20 +173,33 @@ define('peaks', [
                                '</div>'
                              ].join(''),
 
-      /**
-       * Color for point markers
-       */
-      pointMarkerColor:     '#FF0000',
+     /**
+      * [markerInDraw description]
+      * @type {[type]}
+      */
+     markerInDraw: null,
+
+     /**
+      * [markerOutDraw description]
+      * @type {[type]}
+      */
+     markerOutDraw: null,
+
+     /**
+      * [markerLabelDraw description]
+      * @type {[type]}
+      */
+     markerLabelDraw: null,
 
       /**
-       * Handler function called when point handle double clicked
+       * Handler function called when marker handle double clicked
        */
-      pointDblClickHandler: null,
+      markerDblClickHandler: null,
 
       /*
-       * Handler function called when the point handle has finished dragging
+       * Handler function called when the marker handle has finished dragging
        */
-      pointDragEndHandler:  null,
+      markerDragEndHandler:  null,
 
       /**
        * An AudioContext, used when creating waveform data using the Web Audio API
@@ -298,10 +303,9 @@ define('peaks', [
 
     extend(instance.options, opts);
     extend(instance.options, {
-      segmentInMarker:  mixins.defaultInMarker(instance.options),
-      segmentOutMarker: mixins.defaultOutMarker(instance.options),
-      segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
-      pointMarker:      mixins.defaultPointMarker(instance.options)
+      markerInDraw: mixins.defaultMarkerIn(instance.options),
+      markerOutDraw: mixins.defaultMarkerOut(instance.options),
+      markerLabelDraw: mixins.defaultMarkerLabel(instance.options)
     });
 
     /*
@@ -341,34 +345,37 @@ define('peaks', [
     instance.waveform.init(buildUi(instance.container));
 
     instance.on('waveform_ready.overview', function() {
-      instance.waveform.openZoomView();
-
-      // Any initial segments to be displayed?
-      if (instance.options.segments) {
-        instance.segments.add(instance.options.segments);
-      }
-
-      // Any initial points to be displayed?
-      if (instance.options.points) {
-        instance.points.add(instance.options.points);
-      }
+      instance.waveform.setupZoomView();
+      instance.waveform.setupMarkers([
+        instance.waveform.waveformZoomView,
+        instance.waveform.waveformOverview
+      ]);
     });
 
     return instance;
   };
 
   Peaks.prototype = Object.create(EventEmitter.prototype, {
-    segments: {
+    /**
+     * Markers API
+     *
+     * @type {Object}
+     */
+    markers: {
       get: function() {
         var self = this;
 
         return {
-          getSegments: function() {
-            return self.waveform.segments.getSegments();
+          getAll: function() {
+            return self.waveform.markers.getAll();
+          },
+
+          removeAll: function() {
+            return self.waveform.markers.removeAll();
           },
 
           /**
-           * Add one or more segments to the timeline
+           * Add one or more markers to the timeline
            *
            * @param {(...Object|Object[])} segmentOrSegments
            * @param {Number} segmentOrSegments[].startTime
@@ -379,11 +386,11 @@ define('peaks', [
            * @param {Number=} segmentOrSegments[].id
            */
           add: function(segmentOrSegments) {
-            return self.waveform.segments.add.apply(self.waveform.segments, arguments);
+            return self.waveform.markers.add.apply(self.waveform.markers, arguments);
           },
 
-          remove: function(segment) {
-            return self.waveform.segments.remove(segment);
+          remove: function(marker) {
+            return self.waveform.markers.remove(marker);
           },
 
           /**
@@ -394,89 +401,12 @@ define('peaks', [
            * @api
            * @since 0.5.0
            */
-          removeById: function(segmentId) {
-            return self.waveform.segments.removeById(segmentId);
+          removeById: function(markerId) {
+            return self.waveform.markers.removeById(markerId);
           },
 
           removeByTime: function(startTime, endTime) {
-            return self.waveform.segments.removeByTime(startTime, endTime);
-          },
-
-          removeAll: function() {
-            return self.waveform.segments.removeAll();
-          }
-        };
-      }
-    },
-
-    /**
-     * Points API
-     */
-
-    points: {
-      get: function() {
-        var self = this;
-
-        return {
-
-          /* eslint-disable max-len */
-          /**
-           * Return all points
-           *
-           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.playheadLine.points|points|o.points|n.createUi.points}
-           */
-          getPoints: function() {
-            return self.waveform.points.getPoints();
-          },
-          /* eslint-enable max-len */
-
-          /**
-           * Add one or more points to the timeline
-           *
-           * @param {(...Object|Object[])} pointOrPoints
-           * @param {Number} pointOrPoints[].timestamp
-           * @param {Boolean=} pointOrPoints[].editable
-           * @param {String=} pointOrPoints[].color
-           * @param {String=} pointOrPoints[].labelText
-           * @param {Number=} pointOrPoints[].id
-           */
-          add: function(pointOrPoints) {
-            return self.waveform.points.add.apply(self.waveform.points, arguments);
-          },
-
-          remove: function(point) {
-            return self.waveform.points.remove(point);
-          },
-
-          /**
-           * Remove points at the given time
-           *
-           * @param {Number} timestamp
-           */
-          removeByTime: function(timestamp) {
-            return self.waveform.points.removeByTime(timestamp);
-          },
-
-          /**
-           * Remove points with the given id
-           *
-           * @param {Number|String} id
-           *
-           * @api
-           * @since 0.5.0
-           */
-          removeById: function(pointId) {
-            return self.waveform.points.removeById(pointId);
-          },
-
-          /**
-           * Remove all points
-           *
-           * @api
-           * @since 0.3.2
-           */
-          removeAll: function removeAll() {
-            return self.waveform.points.removeAll();
+            return self.waveform.markers.removeByTime(startTime, endTime);
           }
         };
       }

@@ -5,7 +5,7 @@
  *
  * @module peaks/waveform/waveform.axis
  */
-define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
+define(['peaks/helpers/nice-time', 'konva'], function(niceTime, Konva) {
   'use strict';
 
   /**
@@ -106,12 +106,12 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     // Distance between waveform start time and first axis marker (pixels)
     var axisLabelOffsetPixels = this.view.data.at_time(axisLabelOffsetSecs);
 
-    context.setAttr('strokeStyle', this.view.options.axisGridlineColor);
+    context.setAttr('strokeStyle', this.view.peaks.options.axisGridlineColor);
     context.setAttr('lineWidth', 1);
 
     // Set text style
     context.setAttr('font', '11px sans-serif');
-    context.setAttr('fillStyle', this.view.options.axisLabelColor);
+    context.setAttr('fillStyle', this.view.peaks.options.axisLabelColor);
     context.setAttr('textAlign', 'left');
     context.setAttr('textBaseline', 'bottom');
 
@@ -134,7 +134,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       context.lineTo(x + 0.5, this.view.height - markerHeight);
       context.stroke();
 
-      var label      = Utils.niceTime(secs, true);
+      var label      = niceTime(secs, true);
       // TODO: handle this with Konva.Text:
       var labelWidth = context._context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
