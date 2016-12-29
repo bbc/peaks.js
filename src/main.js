@@ -216,7 +216,13 @@ define('peaks', [
       /**
        * Use animation on zoom
        */
-      zoomAdapter: 'animated'
+      zoomAdapter: 'animated',
+
+      /**
+       * A semi-transparent waveform overlay, used to distinguish between
+       * played and unplayed portions of the audio.
+       */
+      playedOverlay: true
     };
 
     /**

@@ -166,6 +166,17 @@ define([
     this.axis = new WaveformAxis(this);
 
     this.uiLayer.add(this.playheadLine);
+
+    if (this.peaks.options.playedOverlay) {
+      this.highlightPlayedRect = new Konva.Rect({
+        height: this.height,
+        fill: '#fff',
+        opacity: 0.5
+      });
+
+      this.uiLayer.add(this.highlightPlayedRect);
+    }
+
     this.stage.add(this.uiLayer);
     this.uiLayer.moveToTop();
   };
@@ -237,6 +248,11 @@ define([
     }
 
     this.playheadLine.setAttr('x', pixel);
+
+    if (this.peaks.options.playedOverlay) {
+      this.highlightPlayedRect.setAttr('width', pixel);
+    }
+
     this.uiLayer.draw();
   };
 

@@ -261,6 +261,17 @@ define([
                       .add(this.playheadText);
 
     this.uiLayer.add(this.playheadGroup);
+
+    if (this.peaks.options.playedOverlay) {
+      this.highlightPlayedRect = new Konva.Rect({
+        height: this.height,
+        fill: '#fff',
+        opacity: 0.5
+      });
+
+      this.uiLayer.add(this.highlightPlayedRect);
+    }
+
     this.stage.add(this.uiLayer);
 
     this.playheadGroup.moveToTop();
@@ -379,6 +390,7 @@ define([
       throw new Error('WaveformZoomView#syncPlayhead passed a pixel index that is not a number: ' + pixelIndex);
     }
 
+    var highlightPlayedRectWidth = pixelIndex;
     var display = (pixelIndex >= this.frameOffset) &&
                   (pixelIndex <= this.frameOffset + this.width);
 
@@ -388,11 +400,17 @@ define([
       // Place playhead at centre of zoom frame i.e. remPixels = 500
       var remPixels = this.playheadPixel - this.frameOffset;
 
+      highlightPlayedRectWidth = remPixels;
+
       this.playheadGroup.show().setAttr('x', remPixels);
       this.playheadText.setText(Utils.niceTime(this.data.time(this.playheadPixel), false));
     }
     else {
       this.playheadGroup.hide();
+    }
+
+    if (this.peaks.options.playedOverlay) {
+      this.highlightPlayedRect.setAttr('width', highlightPlayedRectWidth);
     }
 
     this.uiLayer.draw();
