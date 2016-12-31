@@ -104,7 +104,7 @@ define([
 
         if (newFrameOffset !== this.initialFrameOffset) {
           self.peaks.emit('user_scroll.zoomview', newFrameOffset);
-           
+
           if (self.peaks.options.playedOverlay) {
             self.highlightPlayedRect.setAttr('width', self.playheadPixel - newFrameOffset);
           }
