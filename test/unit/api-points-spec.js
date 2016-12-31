@@ -11,7 +11,7 @@
     beforeEach(function(done) {
       deprecationLogger = sinon.spy();
 
-      p = Peaks.init({
+      p = new Peaks({
         container:    document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
         dataUri:      'base/test_data/sample.json',

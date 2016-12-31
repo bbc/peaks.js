@@ -6,7 +6,7 @@ function filterBrowsers(browsers, re) {
   });
 }
 
-module.exports = function (config) {
+module.exports = function(config) {
   var isCI   = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
 
   // Karma configuration
@@ -22,6 +22,7 @@ module.exports = function (config) {
       },
       mocha: {
         timeout: 5000
+        // grep: 'Peaks.init'
       }
     },
 
@@ -33,7 +34,7 @@ module.exports = function (config) {
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
       { pattern: 'test/*.html' },
       'test/load-fixtures.js',
-      'test/unit/**/*.js',
+      'test/unit/**/*.js'
     ],
 
     preprocessors: {
@@ -41,11 +42,11 @@ module.exports = function (config) {
     },
 
     // list of files to exclude
-    //exclude: ['lib/js/main.js'],
+    // exclude: ['lib/js/main.js'],
 
     // test results reporter to use
     // possible values: dots || progress || growl || spec
-    reporters : isCI ? ['dots'] : ['spec'],
+    reporters: isCI ? ['dots'] : ['spec'],
 
     // web server port
     port: 8080,
@@ -138,11 +139,11 @@ module.exports = function (config) {
     },
 
     // If browser does not capture in given timeout [ms], kill it
-    captureTimeout : 120000,
+    captureTimeout: 120000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun : true
+    singleRun: true
   });
 
   config.set({
