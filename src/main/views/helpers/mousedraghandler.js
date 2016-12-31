@@ -9,8 +9,9 @@ define(function() {
   'use strict';
 
   /**
-   * An object to receive callbacks on mouse drag events. Easch function is
-   * called with the current mouse X position, relative to the stage.
+   * An object to receive callbacks on mouse drag events. Each function is
+   * called with the current mouse X position, relative to the stage's
+   * container HTML element.
    *
    * @typedef {Object} MouseDragHandlers
    * @global
@@ -41,8 +42,6 @@ define(function() {
     this._stage.on('mousedown', this._mouseDown);
 
     this._mouseDownClientX = null;
-    this._mouseDownLayerX  = null;
-    this._mousePosLayerX   = null;
   }
 
   /**
@@ -62,10 +61,11 @@ define(function() {
     }
 
     this._mouseDownClientX = event.evt.clientX;
-    this._mouseDownLayerX  = event.evt.layerX;
 
     if (this._handlers.onMouseDown) {
-      this._handlers.onMouseDown(this._mouseDownLayerX);
+      var mouseDownPosX = this._getMousePosX(this._mouseDownClientX);
+
+      this._handlers.onMouseDown(mouseDownPosX);
     }
 
     // Use the window mousemove and mouseup handlers instead of the
@@ -83,17 +83,19 @@ define(function() {
    */
 
   MouseDragHandler.prototype.mouseMove = function(event) {
+    var clientX = event.clientX;
+
     // Don't update on vertical mouse movement.
-    if (event.clientX === this._mouseDownClientX) {
+    if (clientX === this._mouseDownClientX) {
       return;
     }
 
     this._dragging = true;
 
     if (this._handlers.onMouseMove) {
-      var layerX = this._getMousePosX(event);
+      var mousePosX = this._getMousePosX(clientX);
 
-      this._handlers.onMouseMove(layerX);
+      this._handlers.onMouseMove(mousePosX);
     }
   };
 
@@ -105,9 +107,9 @@ define(function() {
 
   MouseDragHandler.prototype.mouseUp = function(event) {
     if (this._handlers.onMouseUp) {
-      var layerX = this._getMousePosX(event);
+      var mousePosX = this._getMousePosX(event.clientX);
 
-      this._handlers.onMouseUp(layerX);
+      this._handlers.onMouseUp(mousePosX);
     }
 
     window.removeEventListener('mousemove', this._mouseMove, false);
@@ -118,15 +120,17 @@ define(function() {
   };
 
   /**
-   * @returns {Number} The mouse X position for a given mouse event, relative
-   * to the layer that received the mouse down event.
+   * @returns {Number} The mouse X position, relative to the container that
+   * received the mouse down event.
    *
-   * @param {MouseEvent} event
+   * @param {Number} clientX mouse client X position
    * @private
    */
 
-  MouseDragHandler.prototype._getMousePosX = function(event) {
-    return event.clientX - this._mouseDownClientX + this._mouseDownLayerX;
+  MouseDragHandler.prototype._getMousePosX = function(clientX) {
+    var containerPos = this._stage.getContainer().getBoundingClientRect();
+
+    return clientX - containerPos.left;
   };
 
   /**

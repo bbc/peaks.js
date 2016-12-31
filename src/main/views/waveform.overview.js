@@ -61,19 +61,19 @@ define([
     self.createUi();
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
-      onMouseDown: function(layerX) {
-        self.peaks.emit('user_seek.overview', self.data.time(layerX));
+      onMouseDown: function(mousePosX) {
+        self.peaks.emit('user_seek.overview', self.data.time(mousePosX));
       },
 
-      onMouseMove: function(layerX) {
-        if (layerX < 0) {
-          layerX = 0;
+      onMouseMove: function(mousePosX) {
+        if (mousePosX < 0) {
+          mousePosX = 0;
         }
-        else if (layerX > self.width) {
-          layerX = self.width;
+        else if (mousePosX > self.width) {
+          mousePosX = self.width;
         }
 
-        self.peaks.emit('user_seek.overview', self.data.time(layerX));
+        self.peaks.emit('user_seek.overview', self.data.time(mousePosX));
       }
     });
 

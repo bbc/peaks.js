@@ -83,15 +83,15 @@ define([
     self.createUi();
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
-      onMouseDown: function(layerX) {
+      onMouseDown: function(mousePosX) {
         this.initialFrameOffset = self.frameOffset;
-        this.mouseDownLayerX = layerX;
+        this.mouseDownX = mousePosX;
       },
 
-      onMouseMove: function(layerX) {
+      onMouseMove: function(mousePosX) {
         // Moving the mouse to the left increases the time position of the
         // left-hand edge of the visible waveform.
-        var diff = this.mouseDownLayerX - layerX;
+        var diff = this.mouseDownX - mousePosX;
 
         var newFrameOffset = this.initialFrameOffset + diff;
 
@@ -107,10 +107,10 @@ define([
         }
       },
 
-      onMouseUp: function(layerX) {
+      onMouseUp: function(mousePosX) {
         // Set playhead position only on click release, when not dragging
         if (!self.mouseDragHandler.isDragging()) {
-          var pos = self.frameOffset + this.mouseDownLayerX;
+          var pos = self.frameOffset + this.mouseDownX;
 
           self.peaks.emit('user_seek.zoomview', self.data.time(pos), pos);
         }
