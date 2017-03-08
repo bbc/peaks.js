@@ -2,7 +2,7 @@
   "name": "peaks.js",
   "version": "0.6.0",
   "description": "Frontend app for displaying audio waveforms",
-  "main": "./index.js",
+  "main": "./peaks.js",
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
     "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
@@ -43,9 +43,7 @@
   "license": "LGPL-3.0",
   "scripts": {
     "prebuild": "npm run lint",
-    "build": "npm run build:main && npm run build:standalone",
-    "build:main": "browserify -e ./src/main.js -t deamdify | derequire - > index.js",
-    "build:standalone": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
+    "build": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
     "doc": "jsdoc --private --destination docs --recurse src",
     "lint": "eslint src/**/*.js test/**/*.js",
     "pretest": "npm run build",
