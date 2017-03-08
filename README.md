@@ -95,7 +95,7 @@ var p = Peaks.init({ … });
 <script>
 (function(Peaks){
   var p = Peaks.init({ … });
-})(peaks.js);
+})(peaks);
 </script>
 ```
 
