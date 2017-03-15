@@ -81,6 +81,6 @@
   "dependencies": {
     "eventemitter2": "~1.0.0",
     "konva": "~1.2.2",
-    "waveform-data": "^2.0.0"
+    "waveform-data": "^2.0.1"
   }
 }

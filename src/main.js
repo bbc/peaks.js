@@ -210,7 +210,7 @@ define('peaks', [
        */
       waveformBuilderOptions: {
         scale: 512,
-        scale_adjuster: 127
+        amplitude_scale: 1.0
       },
 
       /**

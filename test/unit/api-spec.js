@@ -271,7 +271,7 @@
         var p = Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
-          audioContext: new TestAudioContext
+          audioContext: new TestAudioContext()
         });
 
         var spy = sandbox.spy(p.waveform, 'handleRemoteData');
