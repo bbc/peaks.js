@@ -39,13 +39,13 @@ define('peaks', [
    * @alias Peaks
    */
   function Peaks(opts) {
+    if (!(this instanceof Peaks)) {
+      return new Peaks(opts);
+    }
+
     EventEmitter.call(this, { wildcard: true });
 
     var options = opts || {};
-
-    if (this instanceof Peaks === false) {
-      return new Peaks(options);
-    }
 
     this.options = {
 
