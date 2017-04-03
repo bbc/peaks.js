@@ -27,6 +27,7 @@ module.exports = {
     "newline-per-chained-call": "error",
     "no-alert": "error",
     "no-caller": "error",
+    "no-console": "warn",
     "no-continue": "error",
     "no-eval": "error",
     "no-extra-bind": "error",
