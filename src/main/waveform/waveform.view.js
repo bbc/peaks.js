@@ -23,16 +23,17 @@ define([
    * @class
    * @alias WaveformView
    *
-   * @param {WaveformData} waveformData
-   * @param {HTMLElement} container
-   * @param {Peaks} peaks
-   * @param {Object} options
+   * @param {WaveformData} options.waveformData
+   * @param {HTMLElement} options.container
+   * @param {Peaks} options.peaks
+   * @param {ZoomAdapter} options.zoomAdapter
+   * @param {MouseDragHandler} options.mouseDragHandler
    */
   function WaveformView(name, options) {
     var self = this;
 
     if (!options.waveformData) {
-      throw new Error('WaveformView requires `options.waveformData` to be a waveform-data object');
+      throw new Error('WaveformView requires `options.waveformData` to be a WaveformData object');
     }
 
     if (!options.container) {
@@ -58,11 +59,9 @@ define([
     self.container = options.container;
     self.peaks = options.peaks;
     self.zoomAdapter = options.zoomAdapter;
-    self.features = options.features || [];
 
     self.playing = false;
 
-    self.intermediateData = null;
     self.data = self.waveformData.resample(options.scale);
     self.playheadPixel = self.data.at_time(peaksOptions.mediaElement.currentTime);
     self.pixelLength = self.data.adapter.length;
@@ -95,7 +94,7 @@ define([
 
     self.axis = new WaveformAxis(self);
 
-    self.mouseDragHandler = options.mouseDragHandler(self);
+    self._mouseDragHandler = options.mouseDragHandler.create(self);
     self.createWaveform();
     self.createUi();
 
@@ -112,7 +111,7 @@ define([
     }
 
     self.peaks.on('player_time_update', function(time) {
-      if (!self.mouseDragHandler.isDragging()) {
+      if (!self._mouseDragHandler.isDragging()) {
         self.seekFrame(self.data.at_time(time));
       }
     });
@@ -148,9 +147,8 @@ define([
         return;
       }
 
-      self.zoomAdapter
-        .create(currentScale, previousScale, self)
-        .start();
+      self.zoomAdapter.create(currentScale, previousScale, self)
+                      .start();
     });
 
     self.peaks.on('window_resize', function() {
@@ -296,7 +294,7 @@ define([
    * Creates a playhead animation in sync with the media playback.
    *
    * @param {Number} time Position in time where the playhead starts
-   * @param {Integer} start Position Position in frame index where the playhead starts
+   * @param {Integer} start Position in frame index where the playhead starts
    */
   WaveformView.prototype.playFrom = function(time, startPosition) {
     var self = this;

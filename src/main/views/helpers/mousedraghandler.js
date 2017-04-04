@@ -109,7 +109,7 @@ define(function() {
     if (this._handlers.onMouseUp) {
       var mousePosX = this._getMousePosX(event.clientX);
 
-      this._handlers.onMouseUp(mousePosX);
+      this._handlers.onMouseUp(mousePosX, this._dragging);
     }
 
     window.removeEventListener('mousemove', this._mouseMove, false);
