@@ -5,6 +5,7 @@
 
   describe('Peaks API interface', function() {
     var sandbox;
+    var peaksInstance = null;
 
     /**
     * SETUP =========================================================
@@ -12,6 +13,7 @@
 
     beforeEach(function beforeEach(done) {
       sandbox = sinon.sandbox.create();
+      peaksInstance = null;
       setTimeout(done, 100);
     });
 
@@ -20,16 +22,21 @@
     */
 
     afterEach(function() {
+      if (peaksInstance) {
+        peaksInstance.destroy();
+        peaksInstance = null;
+      }
       sandbox.restore();
     });
 
     /**
     * TESTS =========================================================
     */
+
     describe('create', function() {
       it('should throw an exception if no mediaElement is provided', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
@@ -38,7 +45,7 @@
 
       it('should throw an exception if mediaElement is not an HTMLMediaElement', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.createElement('div'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
@@ -48,7 +55,7 @@
 
       it('should thrown an exception if no container is provided', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             mediaElement: document.querySelector('audio'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
@@ -57,7 +64,7 @@
 
       it('should thrown an exception if the container has no layout', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.createElement('div'),
             mediaElement: document.querySelector('audio'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
@@ -67,7 +74,7 @@
 
       it('should thrown an exception if the logger is defined and not a function', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: 'base/test_data/sample.json',
@@ -76,20 +83,55 @@
         }).to.throw(/logger/);
       });
 
+      it('should send a deprecation notice if Peaks.init form is used', function() {
+        var spy = sandbox.spy();
+
+        peaksInstance = Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json',
+          deprecationLogger: spy
+        });
+
+        expect(spy).to.have.been.calledOnce;
+        expect(spy).to.have.been.calledWithMatch('`Peaks.init(options)` form is deprecated.');
+      });
+
+      it('should return a Peaks instance if called as a function', function() {
+        // eslint-disable-next-line new-cap
+        peaksInstance = Peaks({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json'
+        });
+
+        expect(peaksInstance).to.be.an.instanceOf(Peaks);
+      });
+
       it('should broadcast errors to a configurable logger', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/sample.json',
           logger: sandbox.spy()
         });
 
-        p.emit('error', new Error('Expected to be logged.'));
+        peaksInstance.emit('error', new Error('Expected to be logged.'));
 
         setTimeout(function() {
-          expect(p.logger).to.have.been.calledOnce;
+          expect(peaksInstance.logger).to.have.been.calledOnce;
           done();
         }, 0);
+      });
+
+      it('should return a new Peaks instance', function() {
+        peaksInstance = new Peaks({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: 'base/test_data/sample.json'
+        });
+
+        expect(peaksInstance).to.be.an.instanceof(Peaks);
       });
     });
 
@@ -116,27 +158,29 @@
         var oldOnError = window.onerror;
         window.onerror = errorSpy;
 
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: container,
           mediaElement: document.querySelector('audio'),
           audioContext: new TestAudioContext()
         });
 
-        p.on('window_resized', resizeSpy);
+        peaksInstance.on('window_resized', resizeSpy);
 
-        p.on('waveform_ready.overview', function() {
+        peaksInstance.on('waveform_ready.overview', function() {
           container.parentNode.removeChild(container);
 
           // Give peaks chance to bind its resize listener:
           setTimeout(function() {
-            p.destroy();
+            peaksInstance.destroy();
+            peaksInstance = null;
 
             // Fire a resize event, which would normally cause peaks to redraw
             var e = document.createEvent('HTMLEvents');
             e.initEvent('resize', true, false);
             window.dispatchEvent(e);
 
-            // Our resize handler is asynchronously throttled, so give it a little time to settle.
+            // Our resize handler is asynchronously throttled, so give it a
+            // little time to settle.
             setTimeout(function() {
               window.onerror = oldOnError;
               expect(resizeSpy).to.not.have.been.called;
@@ -150,15 +194,15 @@
 
     describe('core#getRemoteData', function() {
       it('should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/sample.json'
         });
 
-        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+        var spy = sandbox.spy(peaksInstance.waveform, 'handleRemoteData');
 
-        p.on('segments.ready', function() {
+        peaksInstance.on('segments.ready', function() {
           var xhr = spy.getCall(0).args[1];
 
           expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
@@ -168,25 +212,25 @@
       });
 
       it('should emit an error if the data handling fails', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'base/test_data/404-file.json'
         });
 
-        p.on('error', function(err) {
+        peaksInstance.on('error', function(err) {
           done();
         });
       });
 
       it.skip('should emit an error if the data handling fails due to a network error', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: 'file:///test.json'
         });
 
-        p.on('error', function(err) {
+        peaksInstance.on('error', function(err) {
           expect(err).to.be.an.instanceof(Error);
           expect(err.message).to.equal('XHR Failed');
           done();
@@ -194,7 +238,7 @@
       });
 
       it('should use the JSON dataUri connector', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: {
@@ -202,9 +246,9 @@
           }
         });
 
-        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+        var spy = sandbox.spy(peaksInstance.waveform, 'handleRemoteData');
 
-        p.on('segments.ready', function() {
+        peaksInstance.on('segments.ready', function() {
           var xhr = spy.getCall(0).args[1];
 
           expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
@@ -214,7 +258,7 @@
       });
 
       ('ArrayBuffer' in window) && it('should use the arraybuffer dataUri connector or fail if not available', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: {
@@ -222,9 +266,9 @@
           }
         });
 
-        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+        var spy = sandbox.spy(peaksInstance.waveform, 'handleRemoteData');
 
-        p.on('segments.ready', function() {
+        peaksInstance.on('segments.ready', function() {
           var xhr = spy.getCall(0).args[1];
 
           expect(xhr.getResponseHeader('content-type')).to.equal('text/plain');
@@ -235,7 +279,7 @@
 
       !('ArrayBuffer' in window) && it('should throw an exception if the only available format is browser incompatible', function() {
         expect(function() {
-          Peaks.init({
+          new Peaks({
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.querySelector('audio'),
             dataUri: {
@@ -246,7 +290,7 @@
       });
 
       it('should pick the arraybuffer format over the JSON one', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           dataUri: {
@@ -255,10 +299,10 @@
           }
         });
 
-        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+        var spy = sandbox.spy(peaksInstance.waveform, 'handleRemoteData');
         var expectedContentType = window.ArrayBuffer ? 'text/plain' : 'application/json';
 
-        p.on('segments.ready', function() {
+        peaksInstance.on('segments.ready', function() {
           var xhr = spy.getCall(0).args[1];
 
           expect(xhr.getResponseHeader('content-type')).to.equal(expectedContentType);
@@ -268,15 +312,15 @@
       });
 
       ('AudioBuffer' in window) && it('should build using WebAudio if the API is available and no dataUri is provided', function(done) {
-        var p = Peaks.init({
+        peaksInstance = new Peaks({
           container: document.getElementById('waveform-visualiser-container'),
           mediaElement: document.querySelector('audio'),
           audioContext: new TestAudioContext()
         });
 
-        var spy = sandbox.spy(p.waveform, 'handleRemoteData');
+        var spy = sandbox.spy(peaksInstance.waveform, 'handleRemoteData');
 
-        p.on('segments.ready', function() {
+        peaksInstance.on('segments.ready', function() {
           expect(spy).to.have.been.calledOnce;
 
           done();

@@ -38,8 +38,14 @@ define('peaks', [
    * @class
    * @alias Peaks
    */
-  function Peaks(container) {
+  function Peaks(opts) {
+    if (!(this instanceof Peaks)) {
+      return new Peaks(opts);
+    }
+
     EventEmitter.call(this, { wildcard: true });
+
+    var options = opts || {};
 
     this.options = {
 
@@ -219,11 +225,19 @@ define('peaks', [
       zoomAdapter: 'animated'
     };
 
+    extend(this.options, options);
+    extend(this.options, {
+      segmentInMarker:  mixins.defaultInMarker(this.options),
+      segmentOutMarker: mixins.defaultOutMarker(this.options),
+      segmentLabelDraw: mixins.defaultSegmentLabelDraw(this.options),
+      pointMarker:      mixins.defaultPointMarker(this.options)
+    });
+
     /**
      *
      * @type {HTMLElement}
      */
-    this.container = container;
+    this.container = this.options.container;
 
     /**
      *
@@ -238,123 +252,111 @@ define('peaks', [
      */
     // eslint-disable-next-line no-console
     this.logger = console.error.bind(console);
-  }
 
-  /**
-   * Creates and initialises a new Peaks instance with the given options.
-   *
-   * @param {Object} opts Configuration options
-   *
-   * @return {Peaks}
-   */
-  Peaks.init = function init(opts) {
-    opts = opts || {};
-
-    // eslint-disable-next-line no-console
-    opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
-
-    if (opts.audioElement) {
-      opts.mediaElement = opts.audioElement;
+    if (options.audioElement) {
+      this.options.mediaElement = options.audioElement;
         // eslint-disable-next-line max-len
-      opts.deprecationLogger('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
+      this.options.deprecationLogger('[new Peaks] `audioElement` option is deprecated. Please use `mediaElement` instead.');
     }
 
-    if (!opts.mediaElement) {
+    if (!this.options.mediaElement) {
       // eslint-disable-next-line max-len
-      throw new Error('[Peaks.init] Please provide an audio element.');
+      throw new Error('[new Peaks] Please provide an audio element.');
     }
 
-    if (!(opts.mediaElement instanceof HTMLMediaElement)) {
+    if (!(this.options.mediaElement instanceof HTMLMediaElement)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] The mediaElement option should be an HTMLMediaElement.');
+      throw new TypeError('[new Peaks] The mediaElement option should be an HTMLMediaElement.');
     }
 
-    if (!opts.container) {
+    if (!this.container) {
       // eslint-disable-next-line max-len
-      throw new Error('[Peaks.init] Please provide a container object.');
+      throw new Error('[new Peaks] Please provide a container object.');
     }
 
-    if ((opts.container.clientWidth > 0) === false) {
+    if ((this.options.container.clientWidth > 0) === false) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] Please ensure that the container has a width.');
+      throw new TypeError('[new Peaks] Please ensure that the container has a width.');
     }
 
-    if (opts.logger && typeof opts.logger !== 'function') {
+    if (!this.logger || typeof this.logger !== 'function') {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] The `logger` option should be a function.');
+      throw new TypeError('[new Peaks] The `logger` option should be a function.');
     }
 
-    if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+    if (!this.options.dataUri && !(this.options.audioContext instanceof AudioContext)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data or a dataUri.');
+      throw new TypeError('[new Peaks] You must pass in an AudioContext to render waveform data or a dataUri.');
     }
 
-    if (opts.dataUri && opts.audioContext) {
+    if (this.options.dataUri && this.options.audioContext) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
+      throw new TypeError('[new Peaks] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
     }
-
-    var instance = new Peaks(opts.container);
-
-    extend(instance.options, opts);
-    extend(instance.options, {
-      segmentInMarker:  mixins.defaultInMarker(instance.options),
-      segmentOutMarker: mixins.defaultOutMarker(instance.options),
-      segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
-      pointMarker:      mixins.defaultPointMarker(instance.options)
-    });
 
     /*
      Setup the logger
      */
-    if (opts.logger) {
-      instance.logger = opts.logger;
+    if (options.logger) {
+      this.logger = options.logger;
     }
 
-    instance.on('error', instance.logger.bind(null));
+    this.on('error', this.logger.bind(null));
 
     /*
      Setup the layout
      */
-    if (typeof instance.options.template === 'string') {
-      instance.container.innerHTML = instance.options.template;
+    if (typeof this.options.template === 'string') {
+      this.container.innerHTML = this.options.template;
     }
-    else if (instance.options.template instanceof HTMLElement) {
-      instance.container.appendChild(instance.options.template);
+    else if (this.options.template instanceof HTMLElement) {
+      this.container.appendChild(this.options.template);
     }
     else {
       // eslint-disable-next-line max-len
-      throw new TypeError('Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: ' + instance.options.template);
+      throw new TypeError('Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: ' + this.options.template);
     }
 
-    if (instance.options.keyboard) {
-      instance.keyboardHandler = new KeyboardHandler(instance);
+    if (this.options.keyboard) {
+      this.keyboardHandler = new KeyboardHandler(this);
     }
 
-    instance.player = new Player(instance);
-    instance.player.init(instance.options.mediaElement);
+    this.player = new Player(this);
+    this.player.init(this.options.mediaElement);
 
     /*
      Setup the UI components
      */
-    instance.waveform = new Waveform(instance);
-    instance.waveform.init(buildUi(instance.container));
+    this.waveform = new Waveform(this);
+    this.waveform.init(buildUi(this.container));
 
-    instance.on('waveform_ready.overview', function() {
-      instance.waveform.openZoomView();
+    this.on('waveform_ready.overview', function() {
+      this.waveform.openZoomView();
 
       // Any initial segments to be displayed?
-      if (instance.options.segments) {
-        instance.segments.add(instance.options.segments);
+      if (this.options.segments) {
+        this.segments.add(this.options.segments);
       }
 
       // Any initial points to be displayed?
-      if (instance.options.points) {
-        instance.points.add(instance.options.points);
+      if (this.options.points) {
+        this.points.add(this.options.points);
       }
     });
+  }
 
-    return instance;
+  /**
+   * For backward compatibility reasons
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+   */
+  Peaks.init = function init(options) {
+     var p = new Peaks(options);
+
+     // eslint-disable-next-line max-len
+     p.options.deprecationLogger('`Peaks.init(options)` form is deprecated. Please use `new Peaks(options)` instead.');
+
+     return p;
   };
 
   Peaks.prototype = Object.create(EventEmitter.prototype, {
@@ -497,7 +499,7 @@ define('peaks', [
            * Infers the playhead position to that same time.
            *
            * ```js
-           * var p = Peaks.init(…);
+           * var p = new Peaks(…);
            * p.time.setCurrentTime(20.5);
            * ```
            *
@@ -511,7 +513,7 @@ define('peaks', [
            * Returns the actual time of the media element, in seconds.
            *
            * ```js
-           * var p = Peaks.init(…);
+           * var p = new Peaks(…);
            * p.time.getCurrentTime();     // -> 0
            * ```
            *

@@ -54,7 +54,7 @@ requirejs.config({
 
 // require it
 require(['peaks'], function (Peaks) {
-  var p = Peaks.init({
+  var p = new Peaks({
     container: document.querySelector('#peaks-container'),
     mediaElement: document.querySelector('audio'),
     dataUri: 'test_data/sample.json'
@@ -75,7 +75,7 @@ This works well with systems such as [Meteor](https://www.meteor.com/), [webpack
 ```js
 import Peaks from 'peaks.js';
 
-const p = Peaks.init({ … });
+const p = new Peaks({ … });
 ```
 
 ## Start using CommonJS module loader
@@ -85,7 +85,7 @@ This works well with systems such as [Meteor](https://www.meteor.com/), [webpack
 ```js
 var Peaks = require('peaks.js');
 
-var p = Peaks.init({ … });
+var p = new Peaks({ … });
 ```
 
 ## Start using vanilla JavaScript
@@ -94,7 +94,7 @@ var p = Peaks.init({ … });
 <script src="node_modules/peaks.js/peaks.js"></script>
 <script>
 (function(Peaks){
-  var p = Peaks.init({ … });
+  var p = new Peaks({ … });
 })(peaks);
 </script>
 ```
@@ -128,7 +128,7 @@ To do so, skip the `dataUri` option and make sure you pass in a valid instance o
 ```js
 var myAudioContext = new AudioContext();
 
-var p = Peaks.init({
+var p = new Peaks({
   container: document.querySelector('#peaks-container'),
   mediaElement: document.querySelector('audio'),
   audioContext: myAudioContext
@@ -282,14 +282,14 @@ and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
 
 The top level `Peaks` object exposes a factory function to create new `Peaks` instances.
 
-### `Peaks.init(options)`
+### `new Peaks(options)`
 
 Starts an instance of Peaks with the [assigned options](#Configuration). It allows you to create and manage several instances
 of Peaks within a single page with one or several configurations.
 
 ```js
-var peaksInstance = Peaks.init({ … });
-var secondPeaksInstance = Peaks.init({ … });
+var peaksInstance = new Peaks({ … });
+var secondPeaksInstance = new Peaks({ … });
 ```
 
 ## Time API
@@ -300,7 +300,7 @@ Returns the current time from the associated HTMLMediaElement, in seconds.
 This is a convenience method interchangeable with `mediaElement.currentTime`.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 console.log(instance.time.getCurrentTime()); // -> 0
 ```
@@ -310,7 +310,7 @@ console.log(instance.time.getCurrentTime()); // -> 0
 Sets the media element current time in seconds.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 instance.time.setCurrentTime(5.85);
 console.log(instance.time.getCurrentTime()); // -> 5.85
@@ -323,7 +323,7 @@ console.log(instance.time.getCurrentTime()); // -> 5.85
 Zooms in the waveform zoom view by one level.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = new Peaks({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomOut(); // zoom level is now 1024
 ```
@@ -333,7 +333,7 @@ instance.zoom.zoomOut(); // zoom level is now 1024
 Zooms in the waveform zoom view by one level.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = new Peaks({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomIn(); // zoom level is still 512
 
@@ -346,7 +346,7 @@ instance.zoom.zoomIn(); // zoom level is now 512 again
 Sets the zoom level to the element in the `options.zoomLevels` array at index `index`.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = new Peaks({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.setZoom(3); // zoom level is now 4096
 ```
@@ -356,7 +356,7 @@ instance.zoom.setZoom(3); // zoom level is now 4096
 Returns the current zoom level, as an index into the `options.zoomLevels` array.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+var instance = new Peaks({ …, zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomOut();
 console.log(instance.zoom.getZoom()); // -> 1
@@ -380,7 +380,7 @@ Adds a segment to the waveform timeline. Accepts the following parameters:
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 // Add non-editable segment, from 0 to 10.5 seconds, with a random color
 instance.segments.add({startTime: 0, endTime: 10.5});
@@ -389,7 +389,7 @@ instance.segments.add({startTime: 0, endTime: 10.5});
 Alternatively, provide an array of segment objects to add all those segments at once.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 instance.segments.add([
   {
@@ -416,7 +416,7 @@ Removes any segment which starts at `startTime` (seconds), and which optionally 
 The return value indicates the number of deleted segments.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 instance.segments.add([{ startTime: 10, endTime: 12 }, { startTime: 10, endTime: 20 }]);
 
@@ -432,7 +432,7 @@ instance.segments.removeByTime(10, 12);
 Removes segments with the given identifier.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 instance.segments.removeById('peaks.segment.3');
 ```
@@ -442,7 +442,7 @@ instance.segments.removeById('peaks.segment.3');
 Removes all segments.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 instance.segments.removeAll();
 ```
@@ -454,7 +454,7 @@ instance.segments.removeAll();
 Releases resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
 
 ```js
-var instance = Peaks.init({ … });
+var instance = new Peaks({ … });
 
 // later:
 instance.destroy();

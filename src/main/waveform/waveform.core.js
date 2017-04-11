@@ -53,6 +53,8 @@
     this.ui = ui; // See getUiElements in main.js
     this.onResize = this.onResize.bind(this);
 
+    this._bindEvents();
+
     this.getRemoteData(this.peaks.options);
   };
 
@@ -194,8 +196,6 @@
       this.peaks.emit('error', e);
       return;
     }
-
-    this._bindEvents();
   };
 
   Waveform.prototype._bindEvents = function() {
