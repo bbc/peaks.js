@@ -8,6 +8,10 @@
 define(function() {
   'use strict';
 
+  function zeroPad(number) {
+    return number < 10 ? '0' + number : number;
+  }
+
   return {
 
     /**
@@ -33,24 +37,13 @@ define(function() {
       result.push(seconds % 60); // Seconds
 
       for (var i = 0; i < result.length; i++) {
-        var x = result[i];
-
-        if (x < 10) {
-          result[i] = '0' + x;
-        }
-        else {
-          result[i] = x;
-        }
+        result[i] = zeroPad(result[i]);
       }
 
       result = result.join(':');
 
       if (!dropHundredths) {
-        if (hundredths < 10) {
-          hundredths = '0' + hundredths;
-        }
-
-        result += '.' + hundredths;
+        result += '.' + zeroPad(hundredths);
       }
 
       return result;
