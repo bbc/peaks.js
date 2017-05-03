@@ -74,6 +74,7 @@ define([
 
     segmentGroups.forEach(function(segmentGroup, i) {
       var view = self.views[i];
+
       var SegmentLabel = self.peaks.options.segmentLabelDraw;
       var SegmentMarkerIn = self.peaks.options.segmentInMarker;
       var SegmentMarkerOut = self.peaks.options.segmentOutMarker;
@@ -132,7 +133,7 @@ define([
     var waveformOverview = this.peaks.waveform.waveformOverview;
     var waveformZoomView = this.peaks.waveform.waveformZoomView;
     var inMarker = segment.overview.inMarker;
-    var outMarker = segment.overview.inMarker;
+    var outMarker = segment.overview.outMarker;
 
     // Binding with data
     waveformOverview.data.set_segment(
@@ -155,16 +156,20 @@ define([
 
     if (segment.editable) {
       if (inMarker) {
-        inMarker.show().setX(overviewStartOffset - inMarker.getWidth());
+        inMarker.setX(overviewStartOffset - inMarker.getWidth());
+
+        inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+
+        inMarker.show();
       }
 
       if (outMarker) {
-        outMarker.show().setX(overviewEndOffset);
-      }
+        outMarker.setX(overviewEndOffset);
 
-      // Change Text
-      inMarker.label.setText(Utils.niceTime(segment.startTime, false));
-      outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+        outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+
+        outMarker.show();
+      }
     }
 
     // Label
@@ -195,16 +200,20 @@ define([
 
       if (segment.editable) {
         if (segment.zoom.inMarker) {
-          segment.zoom.inMarker.show().setX(startPixel - segment.zoom.inMarker.getWidth());
+          segment.zoom.inMarker.setX(startPixel - segment.zoom.inMarker.getWidth());
+
+          segment.zoom.inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+
+          segment.zoom.inMarker.show();
         }
 
         if (segment.zoom.outMarker) {
-          segment.zoom.outMarker.show().setX(endPixel);
-        }
+          segment.zoom.outMarker.setX(endPixel);
 
-        // Change Text
-        segment.zoom.inMarker.label.setText(Utils.niceTime(segment.startTime, false));
-        segment.zoom.outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+          segment.zoom.outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+
+          segment.zoom.outMarker.show();
+        }
       }
 
       SegmentShape.update.call(

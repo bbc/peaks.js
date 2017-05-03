@@ -152,7 +152,7 @@ define(['konva'], function(Konva) {
         draggable: draggable,
         dragBoundFunc: function(pos) {
           return {
-            x: pos.x, // No constraint hoziontally
+            x: pos.x, // No constraint horizontally
             y: this.getAbsolutePosition().y // Constrained vertical line
           };
         }
