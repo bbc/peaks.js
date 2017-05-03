@@ -1,5 +1,11 @@
 ## Change Log
 
+### v0.7.0 (2017/05/03 21:40 +00:00)
+- Updated to waveform-data.js v2.0.1 (@chrisn)
+- [#182](https://github.com/bbc/peaks.js/pull/182) Modified build to output a single UMD module; supporting installation with package managers or the script-tag (@craigjohnwright)
+- Another fix to mouse dragging behaviour (@chrisn)
+- [#187](https://github.com/bbc/peaks.js/issues/187) Fixed segment handle rendering (@chrisn)
+
 ### v0.6.0 (2016/12/19 15:57 +00:00)
 - [#167](https://github.com/bbc/peaks.js/pull/167) Added audioContext config option (@chrisn, @oncletom, @dodds-cc)
 - [#165](https://github.com/bbc/peaks.js/pull/165) Fixed mouse dragging behaviour (@chrisn)
