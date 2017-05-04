@@ -161,7 +161,8 @@ var options = {
     json: '../test_data/sample.json',
   },
 
-  // An Web Audio AudioContext instance which can be used to render the waveform if dataUri is not provided
+  // A Web Audio AudioContext instance which can be used
+  // to render the waveform if dataUri is not provided
   audioContext: new AudioContext(),
 
   // async logging function
@@ -191,7 +192,8 @@ var options = {
   // Colour for the overview waveform
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
 
-  // Colour for the overview waveform rectangle that shows what the zoom view shows
+  // Colour for the overview waveform rectangle
+  // that shows what the zoom view shows
   overviewHighlightRectangleColor: 'grey',
 
   // Colour for segments on the waveform
@@ -215,7 +217,8 @@ var options = {
   // Random colour per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
-  // Zoom view adapter to use. Valid adapters are: 'animated' (default) and 'static'
+  // Zoom view adapter to use. Valid adapters are:
+  // 'animated' (default) and 'static'
   zoomAdapter: 'animated',
 
   // Array of initial segment objects with startTime and
@@ -466,32 +469,32 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 
 ### General
 
-                           | Arguments
----------------------------|----------------
-`error`                    | `Error err`
+| Event name                | Arguments       |
+| ------------------------- | --------------- |
+| `error`                   | `Error err`     |
 
 ### Media / User interactions
 
-                           | Arguments
----------------------------|----------------
-`segments.ready`           | N/A
-`user_seek.overview`       | `float time`
-`user_seek.zoomview`       | `float time`
+| Event name                | Arguments       |
+| ------------------------- | --------------- |
+| `segments.ready`          | N/A             |
+| `user_seek.overview`      | `float time`    |
+| `user_seek.zoomview`      | `float time`    |
 
 ### Waveforms
 
-                           | Arguments
----------------------------|----------------
-`zoom.update`              | `float currentZoomLevel`, `float previousZoomLevel`
+| Event name                | Arguments                                           |
+| ------------------------- | --------------------------------------------------- |
+| `zoom.update`             | `float currentZoomLevel`, `float previousZoomLevel` |
 
 ### Segments / Points
 
-                           | Arguments
----------------------------|----------------
-`segments.ready`           | N/A
-`points.ready`             | N/A
-`segments.dragged`         | `Segment segment`
-`points.dragged`           | `Point point`
+| Event name                | Arguments         |
+| ------------------------- | ----------------- |
+| `segments.ready`          | N/A               |
+| `points.ready`            | N/A               |
+| `segments.dragged`        | `Segment segment` |
+| `points.dragged`          | `Point point`     |
 
 # Building Peaks.js
 
@@ -544,4 +547,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](http://github.com/chrisn)
 
-Copyright 2016, British Broadcasting Corporation.
+Copyright 2017 British Broadcasting Corporation
