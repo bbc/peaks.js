@@ -2,21 +2,21 @@
 
 > A browser based audio waveform visualisation frontend component from BBC R&D.
 
-Peaks.js is a modular client-side JavaScript component designed for the display of and interaction with audio waveform material in the browser.
+Peaks.js is a modular client-side JavaScript component designed for the display of and interaction with audio waveforms in the browser.
 
 ![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
 
-Peaks.js is developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio data over a timeline in browser, using a backend API that serves the waveform data.
+Peaks.js was developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio content in the browser, using a backend API that serves the waveform data.
 
-Peaks.js uses HTML5 canvas technology to display waveform data at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
+Peaks.js uses HTML5 canvas technology to display waveform at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
-[More information about the **Waveform project**](http://waveform.prototyping.bbc.co.uk/).
+You can read more about the project [here](http://waveform.prototyping.bbc.co.uk/).
 
 # Installation
 
 - **npm**: `npm install --save peaks.js`
 - *bower*: `bower install --save peaks.js`
-- [Browserify CDN](http://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
+- [Browserify CDN](https://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
 - *old school*: [download zip file](https://github.com/bbc/peaks.js/archive/master.zip)
 
 # Using Peaks.js in your own project
@@ -101,9 +101,9 @@ var p = Peaks.init({ … });
 
 ## Generate waveform data
 
-Peaks uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size, but this is only compatible with [browsers that support Typed Arrays](http://caniuse.com/#feat=typedarrays).
+Peaks.js uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size, but this is only compatible with [browsers that support Typed Arrays](https://caniuse.com/#feat=typedarrays).
 
-You should also use the `-b 8` option when generating waveform data files, as Peaks does not currently support 16-bit waveform data files, and also to minimise file size.
+You should also use the `-b 8` option when generating waveform data files, as Peaks.js does not currently support 16-bit waveform data files, and also to minimise file size.
 
 To generate a binary waveform data file:
 
@@ -123,7 +123,7 @@ Refer to the man page audiowaveform(1) for full details of the available command
 
 Since `0.3.0`, Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you would not have to pre-generate a `dat` or `json` file beforehand.
 
-To do so, skip the `dataUri` option and make sure you pass in a valid instance of an AudioContext as the 'audioContext' option. You may also want to make sure [your browser is compatible with Web Audio](http://caniuse.com/#feat=audio-api).
+To do so, omit the `dataUri` option and make sure you pass in a valid instance of an AudioContext as the 'audioContext' option. You may also want to make sure [your browser is compatible with Web Audio](https://caniuse.com/#feat=audio-api).
 
 ```js
 var myAudioContext = new AudioContext();
@@ -287,8 +287,7 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 
 ### `Peaks.init(options)`
 
-Starts an instance of Peaks with the [assigned options](#Configuration). It allows you to create and manage several instances
-of Peaks within a single page with one or several configurations.
+Returns a new `Peaks` instance with the [assigned options](#Configuration). You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
 ```js
 var peaksInstance = Peaks.init({ … });
@@ -367,7 +366,7 @@ console.log(instance.zoom.getZoom()); // -> 1
 
 ## Segments API
 
-**Segments** give the ability to visually tag timed portions of a media object.
+**Segments** give the ability to visually tag timed portions of the audio media.
 This is a great way to provide visual cues to your users.
 
 ### `instance.segments.add({startTime, endTime, editable, color, labelText, id})`
@@ -504,7 +503,7 @@ The project bundles everything you need to do so.
 ## Prerequisites
 
 ```bash
-git clone https://github.com/bbc/peaks.js.git
+git clone git@github.com:bbc/peaks.js.git
 cd peaks.js
 npm install
 ```
@@ -533,18 +532,18 @@ Then open http://localhost:9000 in a Web browser.
 
 `npm test` should work for simple one time testing.
 
-If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run watch`.
+If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
 
 # License
 
 See [COPYING](COPYING).
 
-This project includes sample audio from the radio show [Desert Island Discs](http://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
+This project includes sample audio from the radio show [Desert Island Discs](https://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
 # Credits
 
-- [Chris Finch](http://github.com/chrisfinch)
+- [Chris Finch](https://github.com/chrisfinch)
 - [Thomas Parisot](https://github.com/oncletom)
-- [Chris Needham](http://github.com/chrisn)
+- [Chris Needham](https://github.com/chrisn)
 
 Copyright 2017 British Broadcasting Corporation
