@@ -81,8 +81,8 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "eventemitter2": "~1.0.0",
-    "konva": "~1.2.2",
+    "eventemitter2": "^4.1.0",
+    "konva": "^1.6.1",
     "waveform-data": "^2.0.1"
   }
 }
