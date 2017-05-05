@@ -47,7 +47,7 @@ requirejs.config({
   paths: {
     peaks: 'bower_components/peaks.js/src/main',
     EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
-    Konva: 'bower_components/konvajs/konva',
+    konva: 'bower_components/konva/konva',
     'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
   }
 });
