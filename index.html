@@ -80,6 +80,10 @@
         <button data-action="log-data">Log segments/points</button>
       </div>
 
+      <ul id="segments">
+
+      </ul>
+
       <script src="peaks.js"></script>
       <script>
         (function(Peaks){
@@ -93,17 +97,35 @@
             keyboard: false
           };
 
+          var counter = 1;
           var peaksInstance = Peaks.init(options);
+
+          var renderSegments = function(peaks) {
+            var segments = peaks.segments.getSegments();
+            var html = '';
+
+            for( var i=0; i<segments.length; i++ ) {
+              var id = i + 1;
+              html += '<li><button data-action="play-segment" data-id="' + id + '">Play Segment [#' + id + ']</button></li>'
+            }
+
+            document.getElementById('segments').innerHTML = html;
+          }
 
           document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
           document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
           document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
             peaksInstance.segments.add({
+              id: counter.toString(),
               startTime: peaksInstance.time.getCurrentTime(),
               endTime: peaksInstance.time.getCurrentTime() + 10,
               editable: true
             });
+
+            counter++;
+
+            renderSegments(peaksInstance);
           });
 
           document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
@@ -117,6 +139,16 @@
             console.log('Segments', peaksInstance.segments.getSegments());
             console.log('Points', peaksInstance.points.getPoints());
           });
+
+          document.querySelector('body').addEventListener('click', function(event) {
+            var element = event.target;
+            if (element.getAttribute('data-action') === 'play-segment') {
+              var id = element.getAttribute('data-id');
+              var segment = peaksInstance.segments.getSegment(id);
+              peaksInstance.player.playSegment(segment);
+            }
+          });
+
         })(peaks);
       </script>
   </body>
