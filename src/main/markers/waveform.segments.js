@@ -42,11 +42,11 @@ define([
       return view;
     });
 
-    self.segmentId = 0;
+    self._segmentIdCounter = 0;
   }
 
   WaveformSegments.prototype.getNextSegmentId = function() {
-    return this.segmentId++;
+    return 'peaks.segment.' + this._segmentIdCounter++;
   };
 
   WaveformSegments.prototype.createSegmentWaveform = function(options) {
@@ -64,7 +64,7 @@ define([
       segment.id = options.id;
     }
     else {
-      segment.id = 'peaks.segment.' + this.getNextSegmentId();
+      segment.id = this.getNextSegmentId();
     }
 
     var segmentZoomGroup = new Konva.Group();

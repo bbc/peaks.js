@@ -41,18 +41,18 @@ define([
       return view;
     });
 
-    self.pointId = 0;
+    self._pointIdCounter = 0;
   }
 
   WaveformPoints.prototype.getNextPointId = function() {
-    return this.pointId++;
+    return 'peaks.point.' + this._pointIdCounter++;
   };
 
   WaveformPoints.prototype.constructPoint = function(point) {
     var self = this;
 
     if (point.id === undefined || point.id === null) {
-      point.id = 'peaks.point.' + this.getNextPointId();
+      point.id = this.getNextPointId();
     }
 
     point.editable = Boolean(point.editable);
