@@ -202,7 +202,7 @@
     var self = this;
 
     self.peaks.on('user_seek.*', function(time) {
-      self.peaks.player.seekBySeconds(time);
+      self.peaks.player.seek(time);
     });
 
     window.addEventListener('resize', self.onResize);
