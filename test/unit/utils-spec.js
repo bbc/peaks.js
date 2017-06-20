@@ -2,7 +2,7 @@
 
 var utils = require('../../src/main/waveform/waveform.utils.js');
 
-describe('niceTime', function() {
+describe('formatTime', function() {
   context('with hundredths', function() {
     var tests = [
       { input: 0,            output:    '00:00.00' },
@@ -16,7 +16,7 @@ describe('niceTime', function() {
     tests.forEach(function(test) {
       context('given ' + test.input, function() {
         it('should output ' + test.output, function() {
-          expect(utils.niceTime(test.input, false)).to.equal(test.output);
+          expect(utils.formatTime(test.input, false)).to.equal(test.output);
         });
       });
     });
@@ -35,7 +35,7 @@ describe('niceTime', function() {
     tests.forEach(function(test) {
       context('given ' + test.input, function() {
         it('should output ' + test.output, function() {
-          expect(utils.niceTime(test.input, true)).to.equal(test.output);
+          expect(utils.formatTime(test.input, true)).to.equal(test.output);
         });
       });
     });

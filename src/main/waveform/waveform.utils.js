@@ -22,7 +22,7 @@ define(function() {
      * @returns {String}
      */
 
-    niceTime: function(time, dropHundredths) {
+    formatTime: function(time, dropHundredths) {
       var result = [];
 
       var hundredths = Math.floor((time % 1) * 100);

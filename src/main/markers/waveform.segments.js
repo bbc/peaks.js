@@ -158,7 +158,7 @@ define([
       if (inMarker) {
         inMarker.setX(overviewStartOffset - inMarker.getWidth());
 
-        inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+        inMarker.label.setText(Utils.formatTime(segment.startTime, false));
 
         inMarker.show();
       }
@@ -166,7 +166,7 @@ define([
       if (outMarker) {
         outMarker.setX(overviewEndOffset);
 
-        outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+        outMarker.label.setText(Utils.formatTime(segment.endTime, false));
 
         outMarker.show();
       }
@@ -202,7 +202,7 @@ define([
         if (segment.zoom.inMarker) {
           segment.zoom.inMarker.setX(startPixel - segment.zoom.inMarker.getWidth());
 
-          segment.zoom.inMarker.label.setText(Utils.niceTime(segment.startTime, false));
+          segment.zoom.inMarker.label.setText(Utils.formatTime(segment.startTime, false));
 
           segment.zoom.inMarker.show();
         }
@@ -210,7 +210,7 @@ define([
         if (segment.zoom.outMarker) {
           segment.zoom.outMarker.setX(endPixel);
 
-          segment.zoom.outMarker.label.setText(Utils.niceTime(segment.endTime, false));
+          segment.zoom.outMarker.label.setText(Utils.formatTime(segment.endTime, false));
 
           segment.zoom.outMarker.show();
         }

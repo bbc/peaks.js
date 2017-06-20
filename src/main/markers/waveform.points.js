@@ -113,7 +113,7 @@ define([
       }
 
       // Change Text
-      point.overview.marker.label.setText(Utils.niceTime(point.timestamp, false));
+      point.overview.marker.label.setText(Utils.formatTime(point.timestamp, false));
     }
 
     // Zoom
@@ -135,7 +135,7 @@ define([
         }
 
         // Change Text
-        point.zoom.marker.label.setText(Utils.niceTime(point.timestamp, false));
+        point.zoom.marker.label.setText(Utils.formatTime(point.timestamp, false));
       }
     }
     else {

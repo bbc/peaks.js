@@ -301,7 +301,7 @@ define([
       var remPixels = this.playheadPixel - pixelOffset;
 
       this.playheadGroup.show().setAttr('x', remPixels);
-      this.playheadText.setText(Utils.niceTime(this.data.time(this.playheadPixel), false));
+      this.playheadText.setText(Utils.formatTime(this.data.time(this.playheadPixel), false));
     }
     else {
       this.playheadGroup.hide();
@@ -389,7 +389,7 @@ define([
       var remPixels = this.playheadPixel - this.frameOffset;
 
       this.playheadGroup.show().setAttr('x', remPixels);
-      this.playheadText.setText(Utils.niceTime(this.data.time(this.playheadPixel), false));
+      this.playheadText.setText(Utils.formatTime(this.data.time(this.playheadPixel), false));
     }
     else {
       this.playheadGroup.hide();
