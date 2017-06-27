@@ -367,6 +367,10 @@ define('peaks', [
             return self.waveform.segments.getSegments();
           },
 
+          getSegment: function(id) {
+            return self.waveform.segments.getSegment(id);
+          },
+
           /**
            * Add one or more segments to the timeline
            *

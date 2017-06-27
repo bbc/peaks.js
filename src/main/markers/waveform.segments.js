@@ -330,6 +330,16 @@ define([
     return this.segments;
   };
 
+  WaveformSegments.prototype.getSegment = function(id) {
+    for (var i = 0; i < this.segments.length; i++) {
+      if (this.segments[i].id === id) {
+        return this.segments[i];
+      }
+    }
+
+    throw new Error('Invalid segment id. That segment does not exist');
+  };
+
   WaveformSegments.prototype.add = function(segmentOrSegments) {
     var segments = Array.isArray(arguments[0]) ?
                    arguments[0] :

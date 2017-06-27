@@ -69,6 +69,7 @@ module.exports = {
     "semi": ["error", "always"],
     "space-before-blocks": "error",
     "space-before-function-paren": ["error", "never"],
+    "space-in-parens": ["error", "never"],
     "space-infix-ops": "error",
     "space-unary-ops": "error",
     "spaced-comment": ["error", "always", { "block": { "balanced": true } }],

@@ -55,6 +55,8 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     self._addMediaListener('seeked', function() {
       self.peaks.emit('player_seek', self.getTime());
     });
+
+    self._interval = null;
   };
 
   /**
@@ -75,6 +77,8 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     }
 
     this.listeners = [];
+    clearTimeout(self._interval);
+    self._interval = null;
   };
 
   Player.prototype.setSource = function(source) {
@@ -156,6 +160,33 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    */
   Player.prototype.seekBySeconds = function(seconds) {
     this.mediaElement.currentTime = seconds;
+  };
+
+  /**
+   * Plays the segment passed in
+   *
+   * @param {Segment} segment
+   */
+  Player.prototype.playSegment = function(segment) {
+    var self = this;
+
+    clearTimeout(self._interval);
+    self._interval = null;
+
+    // Set audio time to segment start time
+    self.seekBySeconds(segment.startTime);
+
+    // Start playing audio
+    self.mediaElement.play();
+
+    // Need to use an interval here as `timeupdate` event doesn't fire often enough
+    self._interval = setInterval(function() {
+      if (self.getTime() >= segment.endTime || self.mediaElement.paused) {
+        clearTimeout(self._interval);
+        self._interval = null;
+        self.mediaElement.pause();
+      }
+    }, 30);
   };
 
   return Player;
