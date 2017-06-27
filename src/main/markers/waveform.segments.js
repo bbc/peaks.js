@@ -331,8 +331,8 @@ define([
   };
 
   WaveformSegments.prototype.getSegment = function(id) {
-    for ( var i = 0; i < this.segments.length; i++ ) {
-      if ( this.segments[i].id === id ) {
+    for (var i = 0; i < this.segments.length; i++) {
+      if (this.segments[i].id === id) {
         return this.segments[i];
       }
     }

@@ -3,7 +3,8 @@
   <head>
     <title>Peaks.js Demo Page</title>
     <style>
-      #titles {
+
+      body {
         font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
       }
 
@@ -41,6 +42,27 @@
         background: #fff;
         border: 1px solid #919191;
         cursor: pointer;
+      }
+
+      .log {
+        margin: 0 auto 24px auto;
+        width: 1000px;
+      }
+
+      table {
+        width: 100%;
+      }
+
+      table th {
+        text-align: left;
+      }
+
+      table th, table td {
+        padding: 0.5em;
+      }
+
+      .hide {
+        display: none;
       }
     </style>
   </head>
@@ -80,9 +102,39 @@
         <button data-action="log-data">Log segments/points</button>
       </div>
 
-      <ul id="segments">
+      <div class="log">
 
-      </ul>
+        <div id="segments" class="hide">
+          <h2>Segments</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Label</th>
+                <th>Start time</th>
+                <th>End time</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="points" class="hide">
+          <h2>Points</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
 
       <script src="peaks.js"></script>
       <script>
@@ -97,19 +149,47 @@
             keyboard: false
           };
 
-          var counter = 1;
           var peaksInstance = Peaks.init(options);
 
           var renderSegments = function(peaks) {
+            var segmentsContainer = document.getElementById('segments');
             var segments = peaks.segments.getSegments();
             var html = '';
 
             for( var i=0; i<segments.length; i++ ) {
-              var id = i + 1;
-              html += '<li><button data-action="play-segment" data-id="' + id + '">Play Segment [#' + id + ']</button></li>'
+              var row = '<tr>' +
+                '<td>' + segments[i].id + '</td>' +
+                '<td>' + ((segments[i].labelText) ? segments[i].labelText : 'N/A' ) + '</td>' +
+                '<td>' + segments[i].startTime + '</td>' +
+                '<td>' + segments[i].endTime + '</td>' +
+              '</tr>'
+              html += row;
             }
 
-            document.getElementById('segments').innerHTML = html;
+            segmentsContainer.querySelector('tbody').innerHTML = html;
+            if (html.length) {
+              segmentsContainer.classList = '';
+            }
+          }
+
+          var renderPoints = function(peaks) {
+            var pointsContainer = document.getElementById('points');
+            var points = peaks.points.getPoints();
+            var html = '';
+
+            for( var i=0; i<points.length; i++ ) {
+              console.log(points[i]);
+              var row = '<tr>' +
+                '<td>' + points[i].id + '</td>' +
+                '<td>' + points[i].timestamp + '</td>' +
+              '</tr>'
+              html += row;
+            }
+
+            pointsContainer.querySelector('tbody').innerHTML = html;
+            if (html.length) {
+              pointsContainer.classList = '';
+            }
           }
 
           document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
@@ -117,15 +197,10 @@
 
           document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
             peaksInstance.segments.add({
-              id: counter.toString(),
               startTime: peaksInstance.time.getCurrentTime(),
               endTime: peaksInstance.time.getCurrentTime() + 10,
               editable: true
             });
-
-            counter++;
-
-            renderSegments(peaksInstance);
           });
 
           document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
@@ -136,8 +211,8 @@
           });
 
           document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
-            console.log('Segments', peaksInstance.segments.getSegments());
-            console.log('Points', peaksInstance.points.getPoints());
+            renderSegments(peaksInstance);
+            renderPoints(peaksInstance);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {

@@ -77,6 +77,8 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     }
 
     this.listeners = [];
+    clearTimeout(self._interval);
+    self._interval = null;
   };
 
   Player.prototype.setSource = function(source) {
@@ -169,20 +171,22 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     var self = this;
 
     clearTimeout(self._interval);
+    self._interval = null;
 
     // Set audio time to segment start time
-    self.peaks.time.setCurrentTime( segment.startTime );
+    self.seekBySeconds(segment.startTime);
 
     // Start playing audio
     self.mediaElement.play();
 
     // Need to use an interval here as `timeupdate` event doesn't fire often enough
-    self._interval = setInterval( function() {
-      if ( self.getTime() >= segment.endTime || self.mediaElement.paused ) {
-        clearTimeout( self._interval );
+    self._interval = setInterval(function() {
+      if (self.getTime() >= segment.endTime || self.mediaElement.paused) {
+        clearTimeout(self._interval);
+        self._interval = null;
         self.mediaElement.pause();
       }
-    }, 30 );
+    }, 30);
   };
 
   return Player;
