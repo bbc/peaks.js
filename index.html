@@ -113,6 +113,7 @@
                 <th>Label</th>
                 <th>Start time</th>
                 <th>End time</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -162,6 +163,7 @@
                 '<td>' + ((segments[i].labelText) ? segments[i].labelText : 'N/A' ) + '</td>' +
                 '<td>' + segments[i].startTime + '</td>' +
                 '<td>' + segments[i].endTime + '</td>' +
+                '<td>' + '<a href="#' + segments[i].id + '" data-action="play-segment" data-id="' + segments[i].id + '">Play segment</a>' + '</td>' +
               '</tr>'
               html += row;
             }
@@ -178,7 +180,6 @@
             var html = '';
 
             for( var i=0; i<points.length; i++ ) {
-              console.log(points[i]);
               var row = '<tr>' +
                 '<td>' + points[i].id + '</td>' +
                 '<td>' + points[i].timestamp + '</td>' +
