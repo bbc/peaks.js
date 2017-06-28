@@ -120,7 +120,7 @@
             </tbody>
           </table>
         </div>
-        
+
         <div id="points" class="hide">
           <h2>Points</h2>
           <table>
@@ -198,15 +198,15 @@
 
           document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
             peaksInstance.segments.add({
-              startTime: peaksInstance.time.getCurrentTime(),
-              endTime: peaksInstance.time.getCurrentTime() + 10,
+              startTime: peaksInstance.player.getCurrentTime(),
+              endTime: peaksInstance.player.getCurrentTime() + 10,
               editable: true
             });
           });
 
           document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
             peaksInstance.points.add({
-              timestamp: peaksInstance.time.getCurrentTime(),
+              timestamp: peaksInstance.player.getCurrentTime(),
               editable: true
             });
           });

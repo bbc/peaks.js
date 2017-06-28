@@ -487,41 +487,20 @@ define('peaks', [
     },
 
     /**
-     * Time API
+     * Time API (deprecated, use the Player interface instead)
      */
 
     time: {
       get: function() {
-        var self = this;
-
         return {
-
-          /**
-           * Seeks the media player to the given time.
-           *
-           * ```js
-           * var p = Peaks.init(…);
-           * p.time.setCurrentTime(20.5);
-           * ```
-           *
-           * @param {Number} time The time position to seek to, in seconds.
-           */
-          setCurrentTime: function setCurrentTime(time) {
-            return self.player.seek(time);
+          setCurrentTime: function(time) {
+            // eslint-disable-next-line max-len
+            throw new Error('instance.time.setCurrentTime() is deprecated; call instance.player.seek() instead');
           },
 
-          /**
-           * Returns the actual time of the media element, in seconds.
-           *
-           * ```js
-           * var p = Peaks.init(…);
-           * p.time.getCurrentTime();     // -> 0
-           * ```
-           *
-           * @returns {Number}
-           */
           getCurrentTime: function() {
-            return self.player.getTime();
+            // eslint-disable-next-line max-len
+            throw new Error('instance.time.setCurrentTime() is deprecated; call instance.player.getCurrentTime() instead');
           }
         };
       }

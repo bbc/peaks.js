@@ -10,7 +10,7 @@ define(['konva'], function(Konva) {
 
   return {
     create: function(currentScale, previousScale, view) {
-      var currentTime = view.peaks.time.getCurrentTime();
+      var currentTime = view.peaks.player.getCurrentTime();
       var frameData = [];
 
       var inputIndex;
@@ -105,7 +105,7 @@ define(['konva'], function(Konva) {
           view.intermediateData = null;
           view.segmentLayer.setVisible(true);
           view.pointLayer.setVisible(true);
-          view.seekFrame(view.data.at_time(view.peaks.time.getCurrentTime()));
+          view.seekFrame(view.data.at_time(view.peaks.player.getCurrentTime()));
         }
       };
     }

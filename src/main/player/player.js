@@ -37,19 +37,19 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     }
 
     self._addMediaListener('timeupdate', function() {
-      self._peaks.emit('player_time_update', self.getTime());
+      self._peaks.emit('player_time_update', self.getCurrentTime());
     });
 
     self._addMediaListener('play', function() {
-      self._peaks.emit('player_play', self.getTime());
+      self._peaks.emit('player_play', self.getCurrentTime());
     });
 
     self._addMediaListener('pause', function() {
-      self._peaks.emit('player_pause', self.getTime());
+      self._peaks.emit('player_pause', self.getCurrentTime());
     });
 
     self._addMediaListener('seeked', function() {
-      self._peaks.emit('player_seek', self.getTime());
+      self._peaks.emit('player_seek', self.getCurrentTime());
     });
 
     self._interval = null;
@@ -79,8 +79,10 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
 
     this.listeners = [];
 
-    clearTimeout(self._interval);
-    self._interval = null;
+    if (self._interval !== null) {
+      clearTimeout(self._interval);
+      self._interval = null;
+    }
   };
 
   Player.prototype.setSource = function(source) {
@@ -110,7 +112,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    *
    * @returns {Number}
    */
-  Player.prototype.getTime = function() {
+  Player.prototype.getCurrentTime = function() {
     return this._mediaElement.currentTime;
   };
 
@@ -133,9 +135,9 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   };
 
   /**
-   * Plays the segment passed in
+   * Plays the given segment.
    *
-   * @param {Segment} segment
+   * @param {Segment} segment The segment denoting the time region to play.
    */
   Player.prototype.playSegment = function(segment) {
     var self = this;
@@ -144,17 +146,17 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     self._interval = null;
 
     // Set audio time to segment start time
-    self.seekBySeconds(segment.startTime);
+    self.seek(segment.startTime);
 
     // Start playing audio
-    self.mediaElement.play();
+    self._mediaElement.play();
 
     // Need to use an interval here as `timeupdate` event doesn't fire often enough
     self._interval = setInterval(function() {
-      if (self.getTime() >= segment.endTime || self.mediaElement.paused) {
+      if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
         clearTimeout(self._interval);
         self._interval = null;
-        self.mediaElement.pause();
+        self._mediaElement.pause();
       }
     }, 30);
   };

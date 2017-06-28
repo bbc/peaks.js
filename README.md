@@ -294,28 +294,64 @@ var peaksInstance = Peaks.init({ … });
 var secondPeaksInstance = Peaks.init({ … });
 ```
 
-## Time API
+## Player API
 
-### `instance.time.getCurrentTime()`
+### `instance.player.play()`
 
-Returns the current time from the associated HTMLMediaElement, in seconds.
-This is a convenience method interchangeable with `mediaElement.currentTime`.
+Starts media playback, from the current time position.
 
 ```js
 var instance = Peaks.init({ … });
 
-console.log(instance.time.getCurrentTime()); // -> 0
+console.log(instance.player.play());
 ```
 
-### `instance.time.setCurrentTime(time)`
+### `instance.player.pause()`
 
-Sets the media element current time in seconds.
+Pauses media playback.
 
 ```js
 var instance = Peaks.init({ … });
 
-instance.time.setCurrentTime(5.85);
-console.log(instance.time.getCurrentTime()); // -> 5.85
+console.log(instance.player.pause());
+```
+
+### `instance.player.getCurrentTime()`
+
+Returns the current time from the associated HTMLMediaElement, in seconds.
+
+```js
+var instance = Peaks.init({ … });
+
+console.log(instance.player.getCurrentTime()); // -> 0
+```
+
+### `instance.player.seek(time)`
+
+Seeks the media element to the given time, in seconds.
+
+```js
+var instance = Peaks.init({ … });
+
+instance.player.seek(5.85);
+console.log(instance.player.getCurrentTime()); // -> 5.85
+```
+
+### `instance.player.playSegment(segment)`
+
+Plays a given segment of the media.
+
+```js
+var instance = Peaks.init({ … });
+
+var segment = instance.segments.add({
+  startTime: 5.0,
+  endTime: 15.0,
+  editable: true
+});
+
+// Plays from 5.0 to 15.0, then stops.
+instance.player.playSegment(segment);
 ```
 
 ## Zoom API

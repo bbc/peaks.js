@@ -15,7 +15,7 @@ define([], function() {
           view.segmentLayer.draw();
           view.pointLayer.draw();
 
-          view.seekFrame(view.data.at_time(view.peaks.time.getCurrentTime()));
+          view.seekFrame(view.data.at_time(view.peaks.player.getCurrentTime()));
         }
       };
     }
