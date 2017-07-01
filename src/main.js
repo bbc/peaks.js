@@ -438,7 +438,7 @@ define('peaks', [
            * Add one or more points to the timeline
            *
            * @param {(...Object|Object[])} pointOrPoints
-           * @param {Number} pointOrPoints[].timestamp
+           * @param {Number} pointOrPoints[].time
            * @param {Boolean=} pointOrPoints[].editable
            * @param {String=} pointOrPoints[].color
            * @param {String=} pointOrPoints[].labelText
@@ -455,16 +455,16 @@ define('peaks', [
           /**
            * Remove points at the given time
            *
-           * @param {Number} timestamp
+           * @param {Number} time
            */
-          removeByTime: function(timestamp) {
-            return self.waveform.points.removeByTime(timestamp);
+          removeByTime: function(time) {
+            return self.waveform.points.removeByTime(time);
           },
 
           /**
            * Remove points with the given id
            *
-           * @param {Number|String} id
+           * @param {Number|String} idn
            *
            * @api
            * @since 0.5.0
@@ -495,12 +495,14 @@ define('peaks', [
         return {
           setCurrentTime: function(time) {
             // eslint-disable-next-line max-len
-            throw new Error('instance.time.setCurrentTime() is deprecated; call instance.player.seek() instead');
+            self.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.seek() instead');
+            return self.player.seek(time);
           },
 
           getCurrentTime: function() {
             // eslint-disable-next-line max-len
-            throw new Error('instance.time.setCurrentTime() is deprecated; call instance.player.getCurrentTime() instead');
+            self.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.getCurrentTime() instead');
+            return self.player.getCurrentTime();
           }
         };
       }

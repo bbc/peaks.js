@@ -11,6 +11,15 @@ define([
 ], function(Utils, Konva) {
   'use strict';
 
+  function getLabelText(point) {
+    if (point.labelText) {
+      return point.labelText;
+    }
+    else {
+      return Utils.formatTime(point.time, false);
+    }
+  }
+
   /**
    * Handles all functionality related to the adding, removing and manipulation
    * of points. A point is a segment of zero length.
@@ -92,18 +101,18 @@ define([
   WaveformPoints.prototype.updatePoint = function(point) {
     // Binding with data
     this.peaks.waveform.waveformOverview.data.set_point(
-      this.peaks.waveform.waveformOverview.data.at_time(point.timestamp),
+      this.peaks.waveform.waveformOverview.data.at_time(point.time),
       point.id
     );
 
     this.peaks.waveform.waveformZoomView.data.set_point(
-      this.peaks.waveform.waveformZoomView.data.at_time(point.timestamp),
+      this.peaks.waveform.waveformZoomView.data.at_time(point.time),
       point.id
     );
 
     // Overview
     var overviewTimestampOffset =
-      this.peaks.waveform.waveformOverview.data.at_time(point.timestamp);
+      this.peaks.waveform.waveformOverview.data.at_time(point.time);
 
     if (point.editable) {
       if (point.overview.marker) {
@@ -113,11 +122,11 @@ define([
       }
 
       // Change Text
-      point.overview.marker.label.setText(Utils.formatTime(point.timestamp, false));
+      point.overview.marker.label.setText(getLabelText(point));
     }
 
     // Zoom
-    var zoomTimestampOffset = this.peaks.waveform.waveformZoomView.data.at_time(point.timestamp);
+    var zoomTimestampOffset = this.peaks.waveform.waveformZoomView.data.at_time(point.time);
     var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
 
     if (zoomTimestampOffset < frameStartOffset) {
@@ -135,7 +144,7 @@ define([
         }
 
         // Change Text
-        point.zoom.marker.label.setText(Utils.formatTime(point.timestamp, false));
+        point.zoom.marker.label.setText(getLabelText(point));
       }
     }
     else {
@@ -155,7 +164,7 @@ define([
                    markerX +
                    thisPoint.marker.getWidth();
 
-      point.timestamp = thisPoint.view.data.time(offset);
+      point.time = thisPoint.view.data.time(offset);
     }
 
     this.peaks.emit('points.dragged', point);
@@ -174,20 +183,30 @@ define([
   };
 
   WaveformPoints.prototype.createPoint = function(point) {
-    if (typeof point.timestamp !== 'number') {
-      /* eslint-disable max-len */
-      throw new TypeError('[waveform.points.createPoint] timestamp should be a numeric value \'' + typeof point.timestamp + '\': ' + point.typestamp);
-      /* eslint-enable max-len */
+    if (point.hasOwnProperty('timestamp') || !point.hasOwnProperty('time')) {
+      // eslint-disable-next-line max-len
+      this.peaks.options.deprecationLogger("Passing a point with a 'timestamp' attribute is deprecated; please pass a 'time' attribute instead");
+      point.time = point.timestamp;
     }
 
-    if (isNaN(point.timestamp)) {
-      // eslint-ignore-next-line max-len
-      throw new TypeError('[waveform.points.createPoint] timestamp must be a numeric value');
+    if (typeof point.time !== 'number') {
+      // eslint-disable-next-line max-len
+      throw new TypeError('[waveform.points.createPoint] time should be a numeric value \'' + typeof point.time + '\': ' + point.time);
     }
 
-    if (point.timestamp < 0) {
-      // eslint-ignore-next-line max-len
-      throw new RangeError('[waveform.points.createPoint] timestamp should be a >=0 value');
+    if (isNaN(point.time)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('[waveform.points.createPoint] time must be a numeric value');
+    }
+
+    if (point.time < 0) {
+      // eslint-disable-next-line max-len
+      throw new RangeError('[waveform.points.createPoint] time should be >=0');
+    }
+
+    // Set default label text
+    if (point.labelText === undefined || point.labelText === null) {
+      point.labelText = '';
     }
 
     point = this.constructPoint(point);
@@ -205,12 +224,11 @@ define([
                  Array.prototype.slice.call(arguments);
 
     if (typeof points[0] === 'number') {
-      /* eslint-disable max-len */
+      // eslint-disable-next-line max-len
       this.peaks.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
-      /* eslint-enable max-len */
 
       points = [{
-        timestamp: arguments[0],
+        time:      arguments[0],
         editable:  arguments[1],
         color:     arguments[2],
         labelText: arguments[3]
@@ -255,9 +273,9 @@ define([
     return this.points.splice(index, 1).pop();
   };
 
-  WaveformPoints.prototype.removeByTime = function(timestamp) {
+  WaveformPoints.prototype.removeByTime = function(time) {
     var matchingPoints = this.points.filter(function(point) {
-      return point.timestamp === timestamp;
+      return point.time === time;
     });
 
     matchingPoints.forEach(this.remove.bind(this));

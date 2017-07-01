@@ -64,7 +64,7 @@ module.exports = {
     "object-curly-spacing": ["error", "always"],
     "operator-assignment": ["error", "always"],
     "padded-blocks": ["warn", "never"],
-    "quotes": ["error", "single"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
     "radix": "error",
     "semi": ["error", "always"],
     "space-before-blocks": "error",

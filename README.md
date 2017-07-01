@@ -53,14 +53,14 @@ requirejs.config({
 });
 
 // require it
-require(['peaks'], function (Peaks) {
+require(['peaks'], function(Peaks) {
   var p = Peaks.init({
     container: document.querySelector('#peaks-container'),
     mediaElement: document.querySelector('audio'),
     dataUri: 'test_data/sample.json'
   });
 
-  p.on('segments.ready', function(){
+  p.on('segments.ready', function() {
     // do something when segments are ready to be displayed
   });
 });
@@ -93,7 +93,7 @@ var p = Peaks.init({ … });
 ```html
 <script src="node_modules/peaks.js/peaks.js"></script>
 <script>
-(function(Peaks){
+(function(Peaks) {
   var p = Peaks.init({ … });
 })(peaks);
 </script>
@@ -134,7 +134,7 @@ var p = Peaks.init({
   audioContext: myAudioContext
 });
 
-p.on('segments.ready', function(){
+p.on('segments.ready', function() {
   // do something when segments are ready to be displayed
 });
 ```
@@ -318,7 +318,7 @@ console.log(instance.player.pause());
 
 ### `instance.player.getCurrentTime()`
 
-Returns the current time from the associated HTMLMediaElement, in seconds.
+Returns the current time from the associated media element, in seconds.
 
 ```js
 var instance = Peaks.init({ … });
@@ -415,6 +415,7 @@ Adds a segment to the waveform timeline. Accepts the following parameters:
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
 * `color`: (optional) the segment color. If not specified, the segment is given a default color (see the `segmentColor` and
 `randomizeSegmentColor` [options](#Configuration)).
+* `labelText`: (option) a text label which is displayed when the user hovers the mouse pointer over the segment.
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
 
 ```js
@@ -483,6 +484,81 @@ Removes all segments.
 var instance = Peaks.init({ … });
 
 instance.segments.removeAll();
+```
+
+## Points API
+
+**Points** give the ability to visually tag points in time of the audio media.
+
+### `instance.points.add({time, editable, color, labelText, id})`
+### `instance.points.add(point[])`
+
+Adds one or more points to the waveform timeline. Accepts the following parameters:
+
+* `time`: the point time (seconds)
+* `editable`: (optional) sets whether the point is user editable (boolean, defaults to `false`)
+* `color`: (optional) the point color. If not specified, the point is given a default color (see the `pointMarkerColor` [option](#Configuration)).
+* `labelText`: (optional) a text label which is displayed next to the segment. If not given, the point's time is displayed.
+* `id`: (optional) the point identifier. If not specified, the point is automatically given a unique identifier.
+
+```js
+var instance = Peaks.init({ … });
+
+// Add non-editable point, with a random color
+instance.points.add({ time: 3.5 });
+```
+
+Alternatively, provide an array of point objects to add several at once.
+
+```js
+var instance = Peaks.init({ … });
+
+instance.points.add([
+  {
+    time: 3.5,
+    labelText: 'Test point',
+    color: '#666'
+  },
+  {
+    time: 5.6,
+    labelTect: 'Another test point',
+    color: '#666'
+  }
+]);
+```
+
+### `instance.segments.getPoints()`
+
+Returns an array of all points present on the timeline.
+
+### `instance.points.removeByTime(time)`
+
+Removes any point at the given `time` (seconds).
+
+```js
+var instance = Peaks.init({ … });
+
+instance.points.removeByTime(10);
+```
+
+### `instance.points.removeById(pointId)`
+
+Removes points with the given identifier.
+
+```js
+var instance = Peaks.init({ … });
+
+instance.points.removeById('peaks.point.3');
+```
+
+### `instance.points.removeAll()`
+
+Removes all points.
+
+```js
+var instance = Peaks.init({ … });
+
+instance.points.removeAll();
 ```
 
 ## Destruction

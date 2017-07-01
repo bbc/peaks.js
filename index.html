@@ -127,7 +127,8 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Timestamp</th>
+                <th>Label</th>
+                <th>Time</th>
               </tr>
             </thead>
             <tbody>
@@ -157,18 +158,19 @@
             var segments = peaks.segments.getSegments();
             var html = '';
 
-            for( var i=0; i<segments.length; i++ ) {
+            for (var i = 0; i < segments.length; i++) {
               var row = '<tr>' +
                 '<td>' + segments[i].id + '</td>' +
-                '<td>' + ((segments[i].labelText) ? segments[i].labelText : 'N/A' ) + '</td>' +
+                '<td>' + segments[i].labelText + '</td>' +
                 '<td>' + segments[i].startTime + '</td>' +
                 '<td>' + segments[i].endTime + '</td>' +
                 '<td>' + '<a href="#' + segments[i].id + '" data-action="play-segment" data-id="' + segments[i].id + '">Play segment</a>' + '</td>' +
-              '</tr>'
+                '</tr>';
               html += row;
             }
 
             segmentsContainer.querySelector('tbody').innerHTML = html;
+
             if (html.length) {
               segmentsContainer.classList = '';
             }
@@ -179,15 +181,17 @@
             var points = peaks.points.getPoints();
             var html = '';
 
-            for( var i=0; i<points.length; i++ ) {
+            for (var i = 0; i < points.length; i++) {
               var row = '<tr>' +
                 '<td>' + points[i].id + '</td>' +
-                '<td>' + points[i].timestamp + '</td>' +
-              '</tr>'
+                '<td>' + points[i].labelText + '</td>' +
+                '<td>' + points[i].time + '</td>' +
+                '</tr>';
               html += row;
             }
 
             pointsContainer.querySelector('tbody').innerHTML = html;
+
             if (html.length) {
               pointsContainer.classList = '';
             }
@@ -196,22 +200,24 @@
           document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
           document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
 
-          document.querySelector('button[data-action="add-segment"]').addEventListener("click", function () {
+          document.querySelector('button[data-action="add-segment"]').addEventListener("click", function() {
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
+              labelText: "Test segment",
               editable: true
             });
           });
 
-          document.querySelector('button[data-action="add-point"]').addEventListener("click", function () {
+          document.querySelector('button[data-action="add-point"]').addEventListener("click", function() {
             peaksInstance.points.add({
-              timestamp: peaksInstance.player.getCurrentTime(),
+              time: peaksInstance.player.getCurrentTime(),
+              labelText: "Test point",
               editable: true
             });
           });
 
-          document.querySelector('button[data-action="log-data"]').addEventListener("click", function (event) {
+          document.querySelector('button[data-action="log-data"]').addEventListener("click", function(event) {
             renderSegments(peaksInstance);
             renderPoints(peaksInstance);
           });
