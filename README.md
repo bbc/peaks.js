@@ -237,31 +237,22 @@ var options = {
     editable: false,
     color: "#00ff00",
     labelText: "My Second label"
+  }],
+
+  // Array of initial point objects
+  points: [{
+    time: 150,
+    editable: true,
+    color: "#00ff00",
+    labelText: "A point"
+  },
+  {
+    time: 160,
+    editable: true,
+    color: "#00ff00",
+    labelText: "Another point"
   }]
 }
-```
-
-## Segment Format
-
-Segments provided from Peaks.js use the following format:
-
-```javascript
-[{
-  // Assigned colour of the segment
-  color: "rgba(123, 2, 61, 1)",
-  // Editable state of the segment
-  editable: true,
-  // End time in seconds of the segment
-  endTime: 588.986667,
-  // Unique ID of the segment
-  id: "segment0",
-  // Konva.js Element group of segment canvas objects for overview waveform
-  overview: Konva.Group,
-  // End time in seconds of the segment
-  startTime: 578.986667,
-  // Konva.js Element group of segment canvas objects for overview waveform
-  zoom: Konva.Group
-}]
 ```
 
 ## Advanced configuration
@@ -527,7 +518,7 @@ instance.points.add([
 ]);
 ```
 
-### `instance.segments.getPoints()`
+### `instance.points.getPoints()`
 
 Returns an array of all points present on the timeline.
 
