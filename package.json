@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Frontend app for displaying audio waveforms",
   "main": "./peaks.js",
   "contributors": [
@@ -49,7 +49,6 @@
     "pretest": "npm run build",
     "test": "./node_modules/karma/bin/karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
-    "changelog": "github-changes -o bbc -r peaks.js -n ${npm_package_version} --only-pulls --use-commit-body --file CHANGELOG.${npm_package_version}.md",
     "prestart": "npm run build",
     "prepublish": "npm run build",
     "start": "serve --cors -p 9000"
