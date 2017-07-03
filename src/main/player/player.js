@@ -142,6 +142,13 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   Player.prototype.playSegment = function(segment) {
     var self = this;
 
+    if (!segment ||
+        segment.startTime === null || segment.startTime === undefined ||
+        segment.endTime === null || segment.endTime === undefined) {
+      self._peaks.logger('player.playSegment(): parameter must be a segment object');
+      return;
+    }
+
     clearTimeout(self._interval);
     self._interval = null;
 
