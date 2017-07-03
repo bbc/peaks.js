@@ -492,16 +492,18 @@ define('peaks', [
 
     time: {
       get: function() {
+        var self = this;
+
         return {
           setCurrentTime: function(time) {
             // eslint-disable-next-line max-len
-            self.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.seek() instead');
+            self.options.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.seek() instead');
             return self.player.seek(time);
           },
 
           getCurrentTime: function() {
             // eslint-disable-next-line max-len
-            self.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.getCurrentTime() instead');
+            self.options.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.getCurrentTime() instead');
             return self.player.getCurrentTime();
           }
         };
