@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 0.8.1 (2017/07/03)
+
+ * Fixed deprecation logging from time API functions (@chrisn)
+ * Added parameter validation to Player.playSegment (@chrisn)
+
 ## 0.8.0 (2017/07/01)
 
  * (#192) Added Player.playSegment() method (@craigharvi3)
