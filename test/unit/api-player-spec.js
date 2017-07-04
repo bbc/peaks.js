@@ -3,10 +3,12 @@
 var Peaks = require('../../src/main.js');
 
 describe('Peaks.time', function() {
-  var sandbox, p;
+  var sandbox, p, logger;
 
   beforeEach(function beforeEach(done) {
     sandbox = sinon.sandbox.create();
+
+    logger = sinon.spy();
 
     p = Peaks.init({
       container: document.getElementById('waveform-visualiser-container'),
@@ -15,7 +17,8 @@ describe('Peaks.time', function() {
         json: 'base/test_data/sample.json'
       },
       keyboard: true,
-      height: 240
+      height: 240,
+      logger: logger
     });
 
     p.on('segments.ready', done);
@@ -54,6 +57,33 @@ describe('Peaks.time', function() {
       p.player.seek(newTime);
 
       expect(p.player.getCurrentTime()).to.equal(newTime);
+    });
+  });
+
+  describe('playSegment', function() {
+    it('should log an error if a segment id is given', function() {
+      p.player.playSegment('peaks.segment.0');
+
+      expect(p.logger.calledOnce);
+    });
+
+    it('should play a given segment', function() {
+      p.segments.add({ startTime: 10, endTime: 20, editable: true });
+
+      var segments = p.segments.getSegments();
+      expect(segments.length).to.equal(1);
+
+      p.player.playSegment(segments[0]);
+      p.player.pause();
+
+      expect(p.logger.notCalled);
+    });
+
+    it('should play a segment if an object with startTime and endTime values is given', function() {
+      p.player.playSegment({ startTime: 10, endTime: 20 });
+      p.player.pause();
+
+      expect(p.logger.notCalled);
     });
   });
 });
