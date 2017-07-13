@@ -10,8 +10,9 @@ define('peaks', [
   'peaks/player/player',
   'peaks/waveform/waveform.core',
   'peaks/waveform/waveform.mixins',
+  'peaks/waveform/waveform.utils',
   'peaks/player/player.keyboard'
-], function(EventEmitter, Player, Waveform, mixins, KeyboardHandler) {
+], function(EventEmitter, Player, Waveform, mixins, Utils, KeyboardHandler) {
   'use strict';
 
   function buildUi(container) {
@@ -256,42 +257,40 @@ define('peaks', [
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
         // eslint-disable-next-line max-len
-      opts.deprecationLogger('[Peaks.init] `audioElement` option is deprecated. Please use `mediaElement` instead.');
+      opts.deprecationLogger('Peaks.init(): the audioElement option is deprecated, please use mediaElement instead');
     }
 
     if (!opts.mediaElement) {
-      // eslint-disable-next-line max-len
-      throw new Error('[Peaks.init] Please provide an audio element.');
+      throw new Error('Peaks.init(): Missing mediaElement option');
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] The mediaElement option should be an HTMLMediaElement.');
+      throw new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
     }
 
     if (!opts.container) {
-      // eslint-disable-next-line max-len
-      throw new Error('[Peaks.init] Please provide a container object.');
+      throw new Error('Peaks.init(): Missing container option');
     }
 
     if ((opts.container.clientWidth > 0) === false) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] Please ensure that the container has a width.');
+      throw new TypeError('Peaks.init(): Please ensure that the container has a width');
     }
 
-    if (opts.logger && typeof opts.logger !== 'function') {
+    if (opts.logger && !Utils.isFunction(opts.logger)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] The `logger` option should be a function.');
+      throw new TypeError('Peaks.init(): The logger option should be a function');
     }
 
     if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] You must pass in an AudioContext to render waveform data or a dataUri.');
+      throw new TypeError('Peaks.init(): You must pass an AudioContext to render waveform data or a dataUri');
     }
 
     if (opts.dataUri && opts.audioContext) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[Peaks.init] You must pass in either an AudioContext or dataUri to render waveform data, not both.');
+      throw new Error('Peaks.init(): You must pass in either an AudioContext or dataUri to render waveform data, not both');
     }
 
     var instance = new Peaks(opts.container);
@@ -324,7 +323,7 @@ define('peaks', [
     }
     else {
       // eslint-disable-next-line max-len
-      throw new TypeError('Please ensure you provide an HTML string or a DOM template as `template` instance option. Provided: ' + instance.options.template);
+      throw new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object');
     }
 
     if (instance.options.keyboard) {
@@ -497,13 +496,13 @@ define('peaks', [
         return {
           setCurrentTime: function(time) {
             // eslint-disable-next-line max-len
-            self.options.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.seek() instead');
+            self.options.deprecationLogger('peaks.time.setCurrentTime(): this function is deprecated. Call peaks.player.seek() instead');
             return self.player.seek(time);
           },
 
           getCurrentTime: function() {
             // eslint-disable-next-line max-len
-            self.options.deprecationLogger('instance.time.setCurrentTime() is deprecated; call instance.player.getCurrentTime() instead');
+            self.options.deprecationLogger('peaks.time.setCurrentTime(): this function is deprecated. Call peaks.player.getCurrentTime() instead');
             return self.player.getCurrentTime();
           }
         };

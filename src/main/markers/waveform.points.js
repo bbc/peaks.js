@@ -185,28 +185,26 @@ define([
   WaveformPoints.prototype.createPoint = function(point) {
     if (point.hasOwnProperty('timestamp') || !point.hasOwnProperty('time')) {
       // eslint-disable-next-line max-len
-      this.peaks.options.deprecationLogger("Passing a point with a 'timestamp' attribute is deprecated; please pass a 'time' attribute instead");
+      this.peaks.options.deprecationLogger("peaks.points.add(): The 'timestamp' attribute is deprecated; use 'time' instead");
       point.time = point.timestamp;
     }
 
-    if (typeof point.time !== 'number') {
+    if (!Utils.isValidTime(point.time)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[waveform.points.createPoint] time should be a numeric value \'' + typeof point.time + '\': ' + point.time);
-    }
-
-    if (isNaN(point.time)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('[waveform.points.createPoint] time must be a numeric value');
+      throw new TypeError('peaks.points.add(): time should be a numeric value');
     }
 
     if (point.time < 0) {
       // eslint-disable-next-line max-len
-      throw new RangeError('[waveform.points.createPoint] time should be >=0');
+      throw new TypeError('peaks.points.add(): time should not be negative');
     }
 
-    // Set default label text
-    if (point.labelText === undefined || point.labelText === null) {
+    if (Utils.isNullOrUndefined(point.labelText)) {
+      // Set default label text
       point.labelText = '';
+    }
+    else if (!Utils.isString(point.labelText)) {
+      throw new TypeError('peaks.points.add(): labelText must be a string');
     }
 
     point = this.constructPoint(point);
@@ -225,7 +223,7 @@ define([
 
     if (typeof points[0] === 'number') {
       // eslint-disable-next-line max-len
-      this.peaks.options.deprecationLogger('[Peaks.points.add] Passing spread-arguments to `add` is deprecated, please pass a single object.');
+      this.peaks.options.deprecationLogger('peaks.points.add(): expected a segment object or an array');
 
       points = [{
         time:      arguments[0],
@@ -265,7 +263,8 @@ define([
     var index = this._remove(point);
 
     if (index === null) {
-      throw new RangeError('Unable to find the requested point' + String(point));
+      // eslint-disable-next-line max-len
+      throw new Error('peaks.points.remove(): Unable to find the requested point' + String(point));
     }
 
     this.render();

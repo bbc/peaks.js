@@ -143,9 +143,9 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     var self = this;
 
     if (!segment ||
-        segment.startTime === null || segment.startTime === undefined ||
-        segment.endTime === null || segment.endTime === undefined) {
-      self._peaks.logger('player.playSegment(): parameter must be a segment object');
+        !Utils.isValidTime(segment.startTime) ||
+        !Utils.isValidTime(segment.endTime)) {
+      self._peaks.logger('peaks.player.playSegment(): parameter must be a segment object');
       return;
     }
 

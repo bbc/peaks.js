@@ -47,6 +47,62 @@ define(function() {
       }
 
       return result;
+    },
+
+    /**
+     * Checks whether the given value is a valid timestamp.
+     *
+     * @param {Number} value The value to test.
+     * @returns {Boolean}
+     */
+
+    isValidTime: function(value) {
+      return (typeof value === 'number') && Number.isFinite(value);
+    },
+
+    /**
+     * Checks whether the given value is a valid object.
+     *
+     * @param {Number} value The value to test.
+     * @returns {Boolean}
+     */
+
+    isObject: function(value) {
+      return (value !== null) && (typeof value === 'object')
+        && !Array.isArray(value);
+    },
+
+    /**
+     * Checks whether the given value is a valid string.
+     *
+     * @param {String} value The value to test.
+     * @returns {Boolean}
+     */
+
+    isString: function(value) {
+      return typeof value === 'string';
+    },
+
+    /**
+     * Checks whether the given value is null or undefined.
+     *
+     * @param {Object} value The value to test.
+     * @returns {Boolean}
+     */
+
+    isNullOrUndefined: function(value) {
+      return value === undefined || value === null;
+    },
+
+    /**
+     * Checks whether the given value is a function.
+     *
+     * @param {Function} value The value to test.
+     * @returns {Boolean}
+     */
+
+    isFunction: function(value) {
+      return typeof value === 'function';
     }
   };
 });

@@ -291,31 +291,37 @@ define([
    * @param {Number=} options.id
    * @return {Object}
    */
-  WaveformSegments.prototype.createSegment = function(options) {
-    // Watch for anyone still trying to use the old createSegment(startTime, endTime, ...) API
-    if (typeof options === 'number') {
+  WaveformSegments.prototype._createSegment = function(options) {
+    // Watch for anyone still trying to use the old
+    // createSegment(startTime, endTime, ...) API
+    if (!Utils.isObject(options)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[waveform.segments.createSegment] `options` should be a Segment object');
+      throw new TypeError('peaks.segments.add(): expected a Segment object parameter');
     }
 
-    if (isNaN(options.startTime) || isNaN(options.endTime)) {
+    if (!Utils.isValidTime(options.startTime)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('[waveform.segments.createSegment] startTime an endTime must both be numbers');
+      throw new TypeError('peaks.segments.add(): startTime should be a valid number');
+    }
+
+    if (!Utils.isValidTime(options.endTime)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('peaks.segments.add(): endTime should be a valid number');
     }
 
     if (options.startTime < 0) {
       // eslint-disable-next-line max-len
-      throw new RangeError('[waveform.segments.createSegment] startTime should be a positive value');
+      throw new RangeError('peaks.segments.add(): startTime should not be negative');
     }
 
-    if (options.endTime <= 0) {
+    if (options.endTime < 0) {
       // eslint-disable-next-line max-len
-      throw new RangeError('[waveform.segments.createSegment] endTime should be a positive value');
+      throw new RangeError('peaks.segments.add(): endTime should not be negative');
     }
 
     if (options.endTime <= options.startTime) {
       // eslint-disable-next-line max-len
-      throw new RangeError('[waveform.segments.createSegment] endTime should be higher than startTime');
+      throw new RangeError('peaks.segments.add(): endTime should be greater than startTime');
     }
 
     var segment = this.createSegmentWaveform(options);
@@ -331,13 +337,14 @@ define([
   };
 
   WaveformSegments.prototype.getSegment = function(id) {
+    // TODO: Need a better algorithm
     for (var i = 0; i < this.segments.length; i++) {
       if (this.segments[i].id === id) {
         return this.segments[i];
       }
     }
 
-    throw new Error('Invalid segment id. That segment does not exist');
+    throw new Error("peaks.segments.getSegment(): segment '" + id + "' not found");
   };
 
   WaveformSegments.prototype.add = function(segmentOrSegments) {
@@ -347,20 +354,18 @@ define([
 
     if (typeof segments[0] === 'number') {
       // eslint-disable-next-line max-len
-      this.peaks.options.deprecationLogger('[Peaks.segments.addSegment] Passing spread-arguments to addSegment is deprecated, please pass a single object.');
+      this.peaks.options.deprecationLogger('peaks.segments.add(): expected a segment object or an array');
 
-      segments = [
-        {
-          startTime: arguments[0],
-          endTime:   arguments[1],
-          editable:  arguments[2],
-          color:     arguments[3],
-          labelText: arguments[4]
-        }
-      ];
+      segments = [{
+        startTime: arguments[0],
+        endTime:   arguments[1],
+        editable:  arguments[2],
+        color:     arguments[3],
+        labelText: arguments[4]
+      }];
     }
 
-    segments.forEach(this.createSegment.bind(this));
+    segments.forEach(this._createSegment.bind(this));
     this.render();
   };
 
@@ -393,7 +398,7 @@ define([
 
     if (index === null) {
       // eslint-disable-next-line max-len
-      throw new RangeError('Unable to find the requested segment' + String(segment));
+      throw new Error('peaks.segments.remove(): Unable to find the segment: ' + String(segment));
     }
 
     this.updateSegments();

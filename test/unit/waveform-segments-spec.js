@@ -28,7 +28,7 @@ describe('player/waveform/waveform.segments', function() {
 
   describe('segments.add', function() {
     it('should accept a single Segment object', function() {
-      var spy = sandbox.spy(p.waveform.segments, 'createSegment');
+      var spy = sandbox.spy(p.waveform.segments, '_createSegment');
 
       p.segments.add({ startTime: 0, endTime: 10, editable: false });
       expect(spy.callCount).to.equal(1);
@@ -37,7 +37,7 @@ describe('player/waveform/waveform.segments', function() {
 
     it('should accept spreaded arguments (deprecated)', function() {
       p.options.deprecationLogger = sinon.spy();
-      var stub = sandbox.stub(p.waveform.segments, 'createSegment');
+      var stub = sandbox.stub(p.waveform.segments, '_createSegment');
 
       p.segments.add(0, 10, false);
 
@@ -54,7 +54,7 @@ describe('player/waveform/waveform.segments', function() {
     });
 
     it('should accept an array of Segment objects', function() {
-      var spy = sandbox.spy(p.waveform.segments, 'createSegment');
+      var spy = sandbox.spy(p.waveform.segments, '_createSegment');
 
       p.segments.add([
         { startTime: 0, endTime: 10, editable: false },

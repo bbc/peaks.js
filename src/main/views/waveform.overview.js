@@ -206,17 +206,7 @@ define([
   */
 
   WaveformOverview.prototype.updateRefWaveform = function(timeIn, timeOut) {
-    if (isNaN(timeIn)) {
-      // eslint-disable-next-line max-len
-      throw new Error('WaveformOverview#updateRefWaveform timeIn parameter is not a number: ' + timeIn);
-    }
-
-    if (isNaN(timeOut)) {
-      // eslint-disable-next-line max-len
-      throw new Error('WaveformOverview#updateRefWaveform timeOut parameter is not a number: ' + timeOut);
-    }
-
-    var offsetIn = this.data.at_time(timeIn);
+    var offsetIn  = this.data.at_time(timeIn);
     var offsetOut = this.data.at_time(timeOut);
 
     this.data.set_segment(offsetIn, offsetOut, 'zoom');
@@ -232,10 +222,6 @@ define([
   // WaveformZoomView equivalent: updateZoomWaveform
 
   WaveformOverview.prototype.updateUi = function(pixel) {
-    if (isNaN(pixel)) {
-      throw new Error('WaveformOverview#updateUi passed a value that is not a number: ' + pixel);
-    }
-
     this.playheadLine.setAttr('x', pixel);
     this.uiLayer.draw();
   };

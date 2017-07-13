@@ -33,7 +33,7 @@ describe('Peaks API interface', function() {
           container: document.getElementById('waveform-visualiser-container'),
           dataUri: { arraybuffer: 'base/test_data/sample.dat' }
         });
-      }).to.throw(/provide an audio element/);
+      }).to.throw(/Missing mediaElement option/);
     });
 
     it('should throw an exception if mediaElement is not an HTMLMediaElement', function() {
@@ -46,16 +46,16 @@ describe('Peaks API interface', function() {
       }).to.throw(/HTMLMediaElement/);
     });
 
-    it('should thrown an exception if no container is provided', function() {
+    it('should throw an exception if no container is provided', function() {
       expect(function() {
         Peaks.init({
           mediaElement: document.querySelector('audio'),
           dataUri: { arraybuffer: 'base/test_data/sample.dat' }
         });
-      }).to.throw(/provide a container/);
+      }).to.throw(/Missing container option/);
     });
 
-    it('should thrown an exception if the container has no layout', function() {
+    it('should throw an exception if the container has no layout', function() {
       expect(function() {
         Peaks.init({
           container: document.createElement('div'),
@@ -65,7 +65,18 @@ describe('Peaks API interface', function() {
       }).to.throw(/width/);
     });
 
-    it('should thrown an exception if the logger is defined and not a function', function() {
+    it('should throw an exception if the template is not a string or an HTMLElement', function() {
+      expect(function() {
+        Peaks.init({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: { arraybuffer: 'base/test_data/sample.dat' },
+          template: null
+        });
+      }).to.throw(/template/);
+    });
+
+    it('should throw an exception if the logger is defined and not a function', function() {
       expect(function() {
         Peaks.init({
           container: document.getElementById('waveform-visualiser-container'),
@@ -76,7 +87,7 @@ describe('Peaks API interface', function() {
       }).to.throw(/logger/);
     });
 
-    it('should broadcast errors to a configurable logger', function(done) {
+    it('should report errors to a configurable logger', function(done) {
       var p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
