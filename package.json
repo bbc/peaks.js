@@ -25,6 +25,7 @@
     "peaks/waveform/waveform.core": "./src/main/waveform/waveform.core.js",
     "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
     "peaks/waveform/waveform.utils": "./src/main/waveform/waveform.utils.js",
+    "peaks/views/playhead-layer": "./src/main/views/playhead-layer.js",
     "peaks/views/points-layer": "./src/main/views/points-layer.js",
     "peaks/views/segments-layer": "./src/main/views/segments-layer.js",
     "peaks/views/waveform.overview": "./src/main/views/waveform.overview.js",

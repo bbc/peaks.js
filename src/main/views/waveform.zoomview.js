@@ -10,6 +10,7 @@ define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
+  'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/helpers/mousedraghandler',
@@ -20,6 +21,7 @@ define([
     WaveformAxis,
     mixins,
     Utils,
+    PlayheadLayer,
     PointsLayer,
     SegmentsLayer,
     MouseDragHandler,
@@ -48,7 +50,7 @@ define([
 
     self.options = peaks.options;
 
-    self.playing = false;
+    self._playing = false;
     self.playheadVisible = false;
 
     self.data = null;
@@ -58,8 +60,6 @@ define([
     var initialZoomLevel = self.options.zoomLevels[peaks.zoom.getZoom()];
 
     self.resampleData(initialZoomLevel);
-
-    self.playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
 
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
@@ -94,7 +94,9 @@ define([
     self._segmentsLayer = new SegmentsLayer(peaks, self.stage, self, true);
     self._pointsLayer = new PointsLayer(peaks, self.stage, self, true);
 
-    self.createPlayhead(true);
+    var playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
+
+    self._playheadLayer = new PlayheadLayer(peaks, self.stage, self, true, playheadPixel);
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {
@@ -126,12 +128,12 @@ define([
           var time = self.pixelsToTime(pixelIndex);
 
           self.updateWaveform(pixelIndex - mouseDownX);
-          self.syncPlayhead(pixelIndex);
+          self._playheadLayer.syncPlayhead(pixelIndex);
 
           self.peaks.player.seek(time);
 
-          if (self.playing) {
-            self.playFrom(time);
+          if (self._playing) {
+            self._playheadLayer.playFrom(time);
           }
         }
       }
@@ -146,9 +148,9 @@ define([
 
       var pixelIndex = self.timeToPixels(time);
 
-      self.syncPlayhead(pixelIndex);
+      self._playheadLayer.syncPlayhead(pixelIndex);
 
-      if (self.playing) {
+      if (self._playing) {
         // Check for the playhead reaching the right-hand side of the window.
 
         // TODO: move this code to animation function?
@@ -173,10 +175,10 @@ define([
       var frameIndex = self.timeToPixels(time);
 
       self.updateWaveform(frameIndex - Math.floor(self.width / 2));
-      self.syncPlayhead(frameIndex);
+      self._playheadLayer.syncPlayhead(frameIndex);
 
-      if (self.playing) {
-        self.playFrom(time);
+      if (self._playing) {
+        self._playheadLayer.playFrom(time);
       }
     });
 
@@ -185,18 +187,14 @@ define([
     });
 
     self.peaks.on('player_play', function(time) {
-      self.playing = true;
-      self.playFrom(time);
+      self._playing = true;
+      self._playheadLayer.playFrom(time);
     });
 
     self.peaks.on('player_pause', function(time) {
-      self.playing = false;
+      self._playing = false;
 
-      if (self.playheadLineAnimation) {
-        self.playheadLineAnimation.stop();
-      }
-
-      self.syncPlayhead(self.timeToPixels(time));
+      self._playheadLayer.stop(time);
     });
 
     self.peaks.on('zoom.update', function(currentScale, previousScale) {
@@ -251,7 +249,7 @@ define([
 
     var currentTime = this.peaks.player.getCurrentTime();
     var apexTime;
-    var playheadOffsetPixels = this.playheadPixel - this.frameOffset;
+    var playheadOffsetPixels = this._playheadLayer.getPlayheadOffset();
 
     if (playheadOffsetPixels >= 0 && playheadOffsetPixels < this.width) {
       // Playhead is visible. Change the zoom level while keeping the
@@ -273,12 +271,14 @@ define([
 
     this.updateWaveform(this.frameOffset);
 
+    this._playheadLayer.zoomLevelChanged();
+
     // Update the playhead position after zooming. This is done automatically
     // by the playhead animation if the media is playing.
-    if (!this.playing) {
+    if (!this._playing) {
       var playheadPixel = this.timeToPixels(currentTime);
 
-      this.syncPlayhead(playheadPixel);
+      this._playheadLayer.syncPlayhead(playheadPixel);
     }
 
     // var adapter = this.createZoomAdapter(currentScale, previousScale);
@@ -358,50 +358,6 @@ define([
   };
 
   /**
-   * Creates the playhead UI objects.
-   *
-   * @private
-   * @param {Boolean} showTime If <code>true</code> the playback time position
-   *   is shown next to the playhead.
-   */
-
-  WaveformZoomView.prototype.createPlayhead = function(showTime) {
-    this.playheadLayer = new Konva.Layer();
-
-    this.playheadLine = new Konva.Line({
-      points: [0.5, 0, 0.5, this.height],
-      stroke: this.options.playheadColor,
-      strokeWidth: 1
-    });
-
-    if (showTime) {
-      this.playheadText = new Konva.Text({
-        x: 2,
-        y: 12,
-        text: '00:00:00',
-        fontSize: 11,
-        fontFamily: 'sans-serif',
-        fill: this.options.playheadTextColor,
-        align: 'right'
-      });
-    }
-
-    this.playheadGroup = new Konva.Group({
-      x: 0,
-      y: 0
-    });
-
-    this.playheadGroup.add(this.playheadLine);
-
-    if (showTime) {
-      this.playheadGroup.add(this.playheadText);
-    }
-
-    this.playheadLayer.add(this.playheadGroup);
-    this.stage.add(this.playheadLayer);
-  };
-
-  /**
    * Updates the region of waveform shown in the view.
    *
    * @param {Number} frameOffset The new frame offset, in pixels.
@@ -425,7 +381,9 @@ define([
     this.frameOffset = frameOffset;
 
     // Display playhead if it is within the zoom frame width.
-    this.syncPlayhead(this.playheadPixel);
+    var playheadPixel = this._playheadLayer.getPlayheadPixel();
+
+    this._playheadLayer.syncPlayhead(playheadPixel);
 
     this.waveformLayer.draw();
 
@@ -436,65 +394,6 @@ define([
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
 
     this.peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
-  };
-
-  /**
-   * Creates a playhead animation in sync with the media playback.
-   *
-   * @param {Number} startTime Start time of the playhead animation, in seconds.
-   */
-
-  WaveformZoomView.prototype.playFrom = function(startTime) {
-    var self = this;
-
-    if (self.playheadLineAnimation) {
-      self.playheadLineAnimation.stop();
-    }
-
-    self.playheadLineAnimation = new Konva.Animation(function(frame) {
-      // Elapsed time since animation started (seconds).
-      var elapsed = frame.time / 1000;
-
-      // TODO: update playhead position based on player currentTime,
-      // to avoid drift?
-      var playheadPosition = self.timeToPixels(startTime + elapsed);
-
-      self.syncPlayhead(playheadPosition);
-    }, self.playheadLayer);
-
-    self.playheadLineAnimation.start();
-  };
-
-  WaveformZoomView.prototype.syncPlayhead = function(pixelIndex) {
-    var isVisible = (pixelIndex >= this.frameOffset) &&
-                    (pixelIndex <  this.frameOffset + this.width);
-
-    this.playheadPixel = pixelIndex;
-
-    if (isVisible) {
-      var playheadX = this.playheadPixel - this.frameOffset;
-
-      if (!this.playheadVisible) {
-        this.playheadVisible = true;
-        this.playheadGroup.show();
-      }
-
-      this.playheadGroup.setAttr('x', playheadX);
-
-      if (this.playheadText) {
-        var text = Utils.formatTime(this.pixelsToTime(this.playheadPixel), false);
-
-        this.playheadText.setText(text);
-      }
-
-      this.playheadLayer.draw();
-    }
-    else if (this.playheadVisible) {
-      this.playheadVisible = false;
-      this.playheadGroup.hide();
-
-      this.playheadLayer.draw();
-    }
   };
 
   WaveformZoomView.prototype.beginZoom = function() {
@@ -522,6 +421,14 @@ define([
     var time = this.peaks.player.getCurrentTime();
 
     this.seekFrame(this.timeToPixels(time));
+  };
+
+  /**
+   * @returns <code>true</code> if the audio is currently playing.
+   */
+
+  WaveformZoomView.prototype.isPlaying = function() {
+    return this._playing;
   };
 
   WaveformZoomView.prototype.destroy = function() {

@@ -39,7 +39,7 @@ module.exports = {
     "no-label-var": "error",
     "no-labels": "error",
     "no-lone-blocks": "error",
-    "no-lonely-if": "error",
+    "no-lonely-if": "off",
     "no-loop-func": "error",
     "no-multi-str": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],

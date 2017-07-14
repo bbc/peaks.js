@@ -7,6 +7,7 @@
  */
 
 define([
+  'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/helpers/mousedraghandler',
@@ -15,6 +16,7 @@ define([
   'peaks/waveform/waveform.utils',
   'konva'
 ], function(
+  PlayheadLayer,
   PointsLayer,
   SegmentsLayer,
   MouseDragHandler,
@@ -76,13 +78,25 @@ define([
     self._pointsLayer = new PointsLayer(peaks, self.stage, self, false);
 
     self.createHighlightRect();
-    self.createPlayhead();
+
+    var playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
+
+    self._playheadLayer = new PlayheadLayer(peaks, self.stage, self, false, playheadPixel);
+    self._playing = false;
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {
         mousePosX = Utils.clamp(mousePosX, 0, self.width);
 
-        self.peaks.emit('user_seek', self.pixelsToTime(mousePosX));
+        var time = self.pixelsToTime(mousePosX);
+
+        self._playheadLayer.syncPlayhead(mousePosX);
+
+        if (self._playing) {
+          self._playheadLayer.playFrom(time);
+        }
+
+        self.peaks.emit('user_seek', time);
       },
 
       onMouseMove: function(mousePosX) {
@@ -92,15 +106,33 @@ define([
 
         // Update the playhead position. This gives a smoother visual update
         // than if we only use the player_time_update event.
-        self.setPlayheadPosition(time);
+        self._playheadLayer.syncPlayhead(mousePosX);
+
+        if (self._playing) {
+          self._playheadLayer.playFrom(time);
+        }
+
         self.peaks.emit('user_seek', time);
       }
     });
 
     // Events
 
+    self.peaks.on('player_play', function(time) {
+      self._playing = true;
+      self._playheadLayer.playFrom(time);
+    });
+
+    self.peaks.on('player_pause', function(time) {
+      self._playing = false;
+
+      self._playheadLayer.stop(time);
+    });
+
     peaks.on('player_time_update', function(time) {
-      self.setPlayheadPosition(time);
+      var pixelIndex = self.timeToPixels(time);
+
+      self._playheadLayer.syncPlayhead(pixelIndex);
     });
 
     peaks.on('zoomview.displaying', function(startTime, endTime) {
@@ -116,6 +148,8 @@ define([
       self.data = self.originalWaveformData.resample(self.width);
       self.stage.setWidth(self.width);
       self.container.removeAttribute('hidden');
+
+      self._playheadLayer.zoomLevelChanged();
     });
 
     peaks.emit('waveform_ready.overview', this);
@@ -206,30 +240,12 @@ define([
     this.highlightLayer.draw();
   };
 
-  WaveformOverview.prototype.createPlayhead = function() {
-    this.playheadLine = new Konva.Line({
-      points: [0.5, 0, 0.5, this.height],
-      stroke: this.options.playheadColor,
-      strokeWidth: 1,
-      x: 0
-    });
-
-    this.playheadLayer = new Konva.Layer();
-    this.playheadLayer.add(this.playheadLine);
-    this.stage.add(this.playheadLayer);
-  };
-
   /**
-   * Updates the playhead position.
-   *
-   * @param {Number} time The playhead position, in seconds.
+   * @returns <code>true</code> if the audio is currently playing.
    */
 
-  WaveformOverview.prototype.setPlayheadPosition = function(time) {
-    var playheadPixel = this.data.at_time(time);
-
-    this.playheadLine.setAttr('x', playheadPixel);
-    this.playheadLayer.draw();
+  WaveformOverview.prototype.isPlaying = function() {
+    return this._playing;
   };
 
   WaveformOverview.prototype.destroy = function() {

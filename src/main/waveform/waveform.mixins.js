@@ -25,8 +25,7 @@ define(['konva'], function(Konva) {
     /**
      * @param  {Boolean}  draggable If true, marker is draggable
      * @param  {Konva.Group} segmentGroup
-     * @param  {Object}   segment   Segment object with in and out times
-     * @param  {Object}   parent    Parent context
+     * @param  {Object}   segment
      * @param  {Konva.Layer} layer
      * @param  {Function} onDrag    Callback after drag completed
      * @return {Konva.Group} Konva group object of handle marker elements
@@ -155,7 +154,7 @@ define(['konva'], function(Konva) {
       var handleHeight = 20;
       var handleX = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
-      var handleColor = parent.color ? parent.color : color;
+      var handleColor = point.color ? point.color : color;
 
       var group = new Konva.Group({
         draggable: draggable,
