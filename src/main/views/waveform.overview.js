@@ -88,8 +88,8 @@ define([
     // peaks.on('user_seek.zoomview', trackPlayheadPosition);
     // peaks.on('user_seek.overview', trackPlayheadPosition);
 
-    peaks.on('zoomview.displaying', function(start, end) {
-      self.updateRefWaveform(start, end);
+    peaks.on('zoomview.displaying', function(startTime, endTime) {
+      self.updateRefWaveform(startTime, endTime);
     });
 
     peaks.on('window_resize', function() {
@@ -111,7 +111,9 @@ define([
       strokeWidth: 0
     });
 
-    this.waveformShape.sceneFunc(mixins.waveformDrawFunction.bind(this.waveformShape, this));
+    this.waveformShape.sceneFunc(
+      mixins.waveformDrawFunction.bind(this.waveformShape, this)
+    );
 
     this.waveformLayer.add(this.waveformShape);
     this.stage.add(this.waveformLayer);
@@ -122,21 +124,6 @@ define([
 
   WaveformOverview.prototype.createRefWaveform = function() {
     this.refLayer = new Konva.Layer();
-
-    /*
-    this.refWaveformShape = new Konva.Shape({
-      drawFunc: function(canvas) {
-        mixins.waveformDrawFunction.call(
-          this,
-          this.data,
-          canvas,
-          mixins.interpolateHeight(this.height)
-        );
-      },
-      fill: this.options.zoomWaveformColor,
-      strokeWidth: 0
-    });
-    */
 
     this.highlightRect = new Konva.Rect({
       x: 0,
@@ -205,15 +192,15 @@ define([
   };
   */
 
-  WaveformOverview.prototype.updateRefWaveform = function(timeIn, timeOut) {
-    var offsetIn  = this.data.at_time(timeIn);
-    var offsetOut = this.data.at_time(timeOut);
+  WaveformOverview.prototype.updateRefWaveform = function(startTime, endTime) {
+    var startOffset = this.data.at_time(startTime);
+    var endOffset   = this.data.at_time(endTime);
 
-    this.data.set_segment(offsetIn, offsetOut, 'zoom');
+    this.data.set_segment(startOffset, endOffset, 'zoom');
 
     this.highlightRect.setAttrs({
       x: this.data.segments.zoom.offset_start - this.data.offset_start,
-      width: this.data.at_time(timeOut) - this.data.at_time(timeIn)
+      width: endOffset - startOffset
     });
 
     this.refLayer.draw();

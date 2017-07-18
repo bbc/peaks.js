@@ -84,18 +84,22 @@ define(['konva'], function(Konva) {
         previousScale = frameScale;
       }
 
-      return new Konva.Animation(this.onFrameData(view, frameData), view);
+      var animationFrameFunction =
+        this.createAnimationFrameFunction(view, frameData);
+
+      return new Konva.Animation(animationFrameFunction, view);
     },
 
-    onFrameData: function(view, frameData) {
+    createAnimationFrameFunction: function(view, frameData) {
       view.intermediateData = null;
 
       /**
        * @param {Object} frame
        * @this {Konva.Animation}
        */
+
       return function(frame) {
-        if (frameData.length) {
+        if (frameData.length > 0) {
           // Send correct resampled waveform data object to drawFunc and draw it
           view.intermediateData = frameData.shift();
           view.zoomWaveformLayer.draw();
