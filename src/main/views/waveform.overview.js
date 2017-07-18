@@ -196,10 +196,8 @@ define([
     var startOffset = this.data.at_time(startTime);
     var endOffset   = this.data.at_time(endTime);
 
-    this.data.set_segment(startOffset, endOffset, 'zoom');
-
     this.highlightRect.setAttrs({
-      x: this.data.segments.zoom.offset_start - this.data.offset_start,
+      x:     startOffset,
       width: endOffset - startOffset
     });
 
