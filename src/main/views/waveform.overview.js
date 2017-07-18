@@ -57,7 +57,7 @@ define([
     self.stage.add(self.backgroundLayer);
 
     self.createWaveform();
-    self.createRefWaveform();
+    self.createHighlightRect();
     self.createUi();
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
@@ -89,7 +89,7 @@ define([
     // peaks.on('user_seek.overview', trackPlayheadPosition);
 
     peaks.on('zoomview.displaying', function(startTime, endTime) {
-      self.updateRefWaveform(startTime, endTime);
+      self.updateHighlightRect(startTime, endTime);
     });
 
     peaks.on('window_resize', function() {
@@ -119,11 +119,13 @@ define([
     this.stage.add(this.waveformLayer);
   };
 
-  // Green Reference Waveform to inform users where they are in overview
-  // waveform based on current zoom level
+  /**
+   * Creates a highlight region to show the current position of the
+   * WaveformZoomView.
+   */
 
-  WaveformOverview.prototype.createRefWaveform = function() {
-    this.refLayer = new Konva.Layer();
+  WaveformOverview.prototype.createHighlightRect = function() {
+    this.highlightLayer = new Konva.Layer();
 
     this.highlightRect = new Konva.Rect({
       x: 0,
@@ -137,8 +139,27 @@ define([
       cornerRadius: 2
     });
 
-    this.refLayer.add(this.highlightRect);
-    this.stage.add(this.refLayer);
+    this.highlightLayer.add(this.highlightRect);
+    this.stage.add(this.highlightLayer);
+  };
+
+  /**
+   * Updates the position of the highlight region.
+   *
+   * @param {Number} startTime
+   * @param {Number} endTime
+   */
+
+  WaveformOverview.prototype.updateHighlightRect = function(startTime, endTime) {
+    var startOffset = this.data.at_time(startTime);
+    var endOffset   = this.data.at_time(endTime);
+
+    this.highlightRect.setAttrs({
+      x:     startOffset,
+      width: endOffset - startOffset
+    });
+
+    this.highlightLayer.draw();
   };
 
   WaveformOverview.prototype.createUi = function() {
@@ -155,53 +176,6 @@ define([
     this.uiLayer.add(this.playheadLine);
     this.stage.add(this.uiLayer);
     this.uiLayer.moveToTop();
-  };
-
-  /*
-  WaveformOverview.prototype.updateWaveform = function() {
-    var self = this;
-    self.waveformShape.sceneFunc(function(canvas) {
-      mixins.waveformDrawFunction.call(
-        this,
-        self.data,
-        canvas,
-        mixins.interpolateHeight(self.height)
-      );
-    });
-    self.waveformLayer.draw();
-  };
-
-  WaveformOverview.prototype.updateRefWaveform = function (time_in, time_out) {
-    var self = this;
-
-    var offset_in = self.data.at_time(time_in);
-    var offset_out = self.data.at_time(time_out);
-
-    self.refWaveformShape.sceneFunc(function(canvas) {
-      self.data.set_segment(offset_in, offset_out, "zoom");
-
-      mixins.waveformOffsetDrawFunction.call(
-        this,
-        self.data,
-        canvas,
-        mixins.interpolateHeight(self.height));
-    });
-
-    self.refWaveformShape.setWidth(self.data.at_time(time_out) - self.data.at_time(time_in));
-    self.refLayer.draw();
-  };
-  */
-
-  WaveformOverview.prototype.updateRefWaveform = function(startTime, endTime) {
-    var startOffset = this.data.at_time(startTime);
-    var endOffset   = this.data.at_time(endTime);
-
-    this.highlightRect.setAttrs({
-      x:     startOffset,
-      width: endOffset - startOffset
-    });
-
-    this.refLayer.draw();
   };
 
   // WaveformZoomView equivalent: updateZoomWaveform
