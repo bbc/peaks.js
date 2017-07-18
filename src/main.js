@@ -282,8 +282,9 @@ define('peaks', [
       // eslint-disable-next-line max-len
       throw new TypeError('Peaks.init(): The logger option should be a function');
     }
-
-    if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
+    
+    // eslint-disable-next-line max-len
+    if (!opts.dataUri && !((opts.audioContext instanceof webkitAudioContext) || (opts.audioContext instanceof AudioContext))) {
       // eslint-disable-next-line max-len
       throw new TypeError('Peaks.init(): You must pass an AudioContext to render waveform data or a dataUri');
     }
