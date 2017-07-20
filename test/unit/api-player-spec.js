@@ -25,7 +25,10 @@ describe('Peaks.time', function() {
   });
 
   afterEach(function() {
-    p.destroy();
+    if (p) {
+      p.destroy();
+    }
+
     sandbox.restore();
   });
 

@@ -27,7 +27,10 @@ describe('Peaks.zoom', function() {
   });
 
   afterEach(function() {
-    p.destroy();
+    if (p) {
+      p.destroy();
+    }
+
     sandbox.restore();
   });
 

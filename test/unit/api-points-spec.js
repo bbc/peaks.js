@@ -25,7 +25,9 @@ describe('Peaks.points', function() {
   });
 
   afterEach(function() {
-    p.destroy();
+    if (p) {
+      p.destroy();
+    }
   });
 
   /**
