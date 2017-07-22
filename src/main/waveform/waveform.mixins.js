@@ -5,6 +5,7 @@
  *
  * @module peaks/waveform/waveform.mixins
  */
+
 define(['konva'], function(Konva) {
   'use strict';
 
@@ -19,6 +20,7 @@ define(['konva'], function(Konva) {
    * @param  {Boolean}  inMarker  Is this marker the inMarker (LHS) or outMarker (RHS)
    * @return {Function} Segment handle creator function
    */
+
    function segmentHandleCreator(height, color, inMarker) {
     /**
      * @param  {Boolean}  draggable If true, marker is draggable
@@ -27,6 +29,7 @@ define(['konva'], function(Konva) {
      * @param  {Function} onDrag    Callback after drag completed
      * @return {Konva.Group} Konva group object of handle marker elements
      */
+
     return function createSegmentHandle(draggable, segment, parent, onDrag) {
       var handleHeight = 20;
       var handleWidth = handleHeight / 2;
@@ -130,6 +133,7 @@ define(['konva'], function(Konva) {
    * @param  {string}   color     Colour hex value for handle and line marker
    * @return {Function} Point handle creator function
    */
+
   function pointHandleCreator(height, color) {
     /**
      * @param  {Boolean}     draggable   If true, marker is draggable
@@ -140,6 +144,7 @@ define(['konva'], function(Konva) {
      * @param  {Function}    onDragEnd
      * @return {Konva.Group} Konva group object of handle marker elements
      */
+
     return function createPointHandle(draggable, point, parent, onDrag, onDblClick, onDragEnd) {
       var handleTop = (height / 2) - 10.5;
       var handleWidth = 10;
@@ -230,35 +235,12 @@ define(['konva'], function(Konva) {
   }
 
   /**
-   * Draws a waveform on a canvas context.
+   * Returns a height interpolator function.
    *
-   * @param  {Konva.Context} context  Canvas Context to draw on
-   * @param  {Array}    min           Min values for waveform
-   * @param  {Array}    max           Max values for waveform
-   * @param  {Int}      offsetStart   Where to start drawing
-   * @param  {Int}      offsetLength  How much to draw
-   * @param  {Function} y             Calculate height (see fn interpolateHeight)
-   */
-  function drawWaveform(context, min, max, offsetStart, offsetLength, y) {
-    context.beginPath();
-
-    min.forEach(function(val, x) {
-      context.lineTo(offsetStart + x + 0.5, y(val) + 0.5);
-    });
-
-    max.reverse().forEach(function(val, x) {
-      context.lineTo(offsetStart + (offsetLength - x) + 0.5, y(val) + 0.5);
-    });
-
-    context.closePath();
-  }
-
-  /**
-   * Returns a height interpolator function
-   *
-   * @param {Number} total_height
+   * @param {Number} totalHeight
    * @returns {interpolateHeight}
    */
+
   function interpolateHeightGenerator(totalHeight) {
     var amplitude = 256;
 
@@ -267,26 +249,43 @@ define(['konva'], function(Konva) {
     };
   }
 
+  /**
+   * Draws a waveform on a canvas context.
+   *
+   * @param  {Konva.Context} context  The canvas context to draw on
+   * @param  {WaveformData} waveformData  The waveform data to draw
+   * @param  {Int} frameOffset
+   * @param  {Int} startPixels
+   * @param  {Int} endPixels
+   * @param  {Int} height The height of the waveform area, in pixels
+   */
+
+  function drawWaveform(context, waveformData, frameOffset, startPixels, endPixels, height) {
+    var y = interpolateHeightGenerator(height);
+    var adapter = waveformData.adapter;
+    var x, val;
+
+    context.beginPath();
+
+    for (x = startPixels; x < endPixels; x++) {
+      val = adapter.at(2 * x);
+
+      context.lineTo(x - frameOffset + 0.5, y(val) + 0.5);
+    }
+
+    for (x = endPixels - 1; x >= startPixels; x--) {
+      val = adapter.at(2 * x + 1);
+
+      context.lineTo(x - frameOffset + 0.5, y(val) + 0.5);
+    }
+
+    context.closePath();
+  }
+
   // Public API
 
   return {
-    interpolateHeight: interpolateHeightGenerator,
     drawWaveform: drawWaveform,
-
-    /**
-     *
-     * @this {Konva.Shape}
-     * @param {WaveformOverview} view
-     * @param {Konva.Context} context
-     */
-    waveformDrawFunction: function(view, context) {
-      var waveform = view.intermediateData || view.data;
-      var y = interpolateHeightGenerator(view.height);
-      var offset_length = waveform.offset_length;
-
-      drawWaveform(context, waveform.min, waveform.max, 0, offset_length, y);
-      context.fillStrokeShape(this);
-    },
 
     waveformOverviewMarkerDrawFunction: function(xIndex, viewGroup, view) {
       viewGroup.waveformShape.setPoints([xIndex, 0, xIndex, view.height]);

@@ -49,6 +49,22 @@ define(function() {
       return result;
     },
 
+    clamp: function(value, min, max) {
+      if (value < min) {
+        return min;
+      }
+      else if (value > max) {
+        return max;
+      }
+      else {
+        return value;
+      }
+    },
+
+    isNumber: function(value) {
+      return typeof value === 'number';
+    },
+
     /**
      * Checks whether the given value is a valid timestamp.
      *

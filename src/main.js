@@ -109,7 +109,7 @@ define('peaks', [
       /**
        * Keyboard nudge increment in seconds (left arrow/right arrow)
        */
-      nudgeIncrement:        0.01,
+      nudgeIncrement: 1.0,
 
       /**
        * Colour for the in marker of segments
@@ -217,7 +217,7 @@ define('peaks', [
       /**
        * Use animation on zoom
        */
-      zoomAdapter: 'animated'
+      zoomAdapter: 'static'
     };
 
     /**

@@ -5,17 +5,24 @@
  *
  * @module peaks/views/zooms/static
  */
-define([], function() {
+
+define(['peaks/waveform/waveform.utils'], function(Utils) {
   'use strict';
 
   return {
     create: function(currentScale, previousScale, view) {
       return {
-        start: function() {
+        start: function(relativePosition) {
+          // This function is called after data is rescaled to currentScale
+          // from previousScale.
+
           view.segmentLayer.draw();
           view.pointLayer.draw();
 
-          view.seekFrame(view.data.at_time(view.peaks.player.getCurrentTime()));
+          var time = view.peaks.player.getCurrentTime();
+          var index = view.data.at_time(time);
+
+          view.seekFrame(index, relativePosition);
         }
       };
     }

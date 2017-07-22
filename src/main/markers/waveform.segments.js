@@ -13,8 +13,8 @@ define([
   'use strict';
 
   /**
-   * handles all functionality related to the adding, removing and manipulation
-   * of segments
+   * Handles all functionality related to the adding, removing and manipulation
+   * of segments.
    *
    * @class
    * @alias WaveformSegments
@@ -135,19 +135,6 @@ define([
     var inMarker = segment.overview.inMarker;
     var outMarker = segment.overview.outMarker;
 
-    // Binding with data
-    waveformOverview.data.set_segment(
-      waveformOverview.data.at_time(segment.startTime),
-      waveformOverview.data.at_time(segment.endTime),
-      segment.id
-    );
-
-    waveformZoomView.data.set_segment(
-      waveformZoomView.data.at_time(segment.startTime),
-      waveformZoomView.data.at_time(segment.endTime),
-      segment.id
-    );
-
     // Overview
     var overviewStartOffset = waveformOverview.data.at_time(segment.startTime);
     var overviewEndOffset   = waveformOverview.data.at_time(segment.endTime);
@@ -175,8 +162,6 @@ define([
     // Label
     // segment.overview.label.setX(overviewStartOffset);
 
-    SegmentShape.update.call(segment.overview.waveformShape, waveformOverview, segment.id);
-
     // Zoom
     var zoomStartOffset = waveformZoomView.data.at_time(segment.startTime);
     var zoomEndOffset   = waveformZoomView.data.at_time(segment.endTime);
@@ -184,15 +169,8 @@ define([
     var frameStartOffset = waveformZoomView.frameOffset;
     var frameEndOffset   = waveformZoomView.frameOffset + waveformZoomView.width;
 
-    if (zoomStartOffset < frameStartOffset) {
-      zoomStartOffset = frameStartOffset;
-    }
-
-    if (zoomEndOffset > frameEndOffset) {
-      zoomEndOffset = frameEndOffset;
-    }
-
-    if (waveformZoomView.data.segments[segment.id].visible) {
+    if (zoomEndOffset > frameStartOffset || zoomStartOffset < frameEndOffset) {
+      // Segment is visible
       var startPixel = zoomStartOffset - frameStartOffset;
       var endPixel   = zoomEndOffset   - frameStartOffset;
 
@@ -215,12 +193,6 @@ define([
           segment.zoom.outMarker.show();
         }
       }
-
-      SegmentShape.update.call(
-        segment.zoom.waveformShape,
-        waveformZoomView,
-        segment.id
-      );
     }
     else {
       segment.zoom.hide();

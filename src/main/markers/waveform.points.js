@@ -99,20 +99,9 @@ define([
   };
 
   WaveformPoints.prototype.updatePoint = function(point) {
-    // Binding with data
-    this.peaks.waveform.waveformOverview.data.set_point(
-      this.peaks.waveform.waveformOverview.data.at_time(point.time),
-      point.id
-    );
-
-    this.peaks.waveform.waveformZoomView.data.set_point(
-      this.peaks.waveform.waveformZoomView.data.at_time(point.time),
-      point.id
-    );
-
     // Overview
-    var overviewTimestampOffset =
-      this.peaks.waveform.waveformOverview.data.at_time(point.time);
+    var overview = this.peaks.waveform.waveformOverview;
+    var overviewTimestampOffset = overview.data.at_time(point.time);
 
     if (point.editable) {
       if (point.overview.marker) {
@@ -126,14 +115,14 @@ define([
     }
 
     // Zoom
-    var zoomTimestampOffset = this.peaks.waveform.waveformZoomView.data.at_time(point.time);
-    var frameStartOffset = this.peaks.waveform.waveformZoomView.frameOffset;
+    var zoomView = this.peaks.waveform.waveformZoomView;
+    var zoomTimestampOffset = zoomView.data.at_time(point.time);
+    var frameStartOffset = zoomView.frameOffset;
+    var zoomViewWidth = zoomView.width;
 
-    if (zoomTimestampOffset < frameStartOffset) {
-      zoomTimestampOffset = frameStartOffset;
-    }
-
-    if (this.peaks.waveform.waveformZoomView.data.points[point.id].visible) {
+    if (zoomTimestampOffset >= frameStartOffset &&
+        zoomTimestampOffset <  frameStartOffset + zoomViewWidth) {
+      // Point is visible
       var startPixel = zoomTimestampOffset - frameStartOffset;
 
       point.zoom.show();

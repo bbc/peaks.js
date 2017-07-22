@@ -43,6 +43,23 @@ describe('Utils', function() {
     });
   });
 
+  describe('clamp', function() {
+    it('should given value if in range', function() {
+      expect(Utils.clamp(15, 10, 20)).to.equal(15);
+      expect(Utils.clamp(-15, -20, -10)).to.equal(-15);
+    });
+
+    it('should return minimum if given value is lower', function() {
+      expect(Utils.clamp(1, 10, 20)).to.equal(10);
+      expect(Utils.clamp(-21, -20, -10)).to.equal(-20);
+    });
+
+    it('should return maximum if given value is higher', function() {
+      expect(Utils.clamp(21, 10, 20)).to.equal(20);
+      expect(Utils.clamp(-9, -20, -10)).to.equal(-10);
+    });
+  });
+
   describe('isValidTime', function() {
     it('should accept valid numbers', function() {
       expect(Utils.isValidTime(1.0)).to.equal(true);

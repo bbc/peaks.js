@@ -8,9 +8,10 @@
 define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
+  'peaks/waveform/waveform.utils',
   'peaks/views/helpers/mousedraghandler',
   'konva'
-], function(WaveformAxis, mixins, MouseDragHandler, Konva) {
+], function(WaveformAxis, mixins, Utils, MouseDragHandler, Konva) {
   'use strict';
 
   /**
@@ -33,8 +34,8 @@ define([
     self.options = peaks.options;
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
-    self.frameOffset = 0;
 
+    self.frameOffset = 0;
     self.data = waveformData.resample(self.width);
 
     self.stage = new Konva.Stage({
@@ -56,37 +57,43 @@ define([
     self.backgroundLayer.add(self.background);
     self.stage.add(self.backgroundLayer);
 
+    self.axis = new WaveformAxis(self, self.waveformLayer);
+
     self.createWaveform();
     self.createHighlightRect();
-    self.createUi();
+    self.createPlayhead();
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {
+        mousePosX = Utils.clamp(mousePosX, 0, self.width);
+
+        var time = self.data.time(mousePosX);
+
+        self.setPlayheadPosition(time);
         self.peaks.emit('user_seek.overview', self.data.time(mousePosX));
       },
 
       onMouseMove: function(mousePosX) {
-        if (mousePosX < 0) {
-          mousePosX = 0;
-        }
-        else if (mousePosX > self.width) {
-          mousePosX = self.width;
-        }
+        mousePosX = Utils.clamp(mousePosX, 0, self.width);
 
-        self.peaks.emit('user_seek.overview', self.data.time(mousePosX));
+        var time = self.data.time(mousePosX);
+
+        // Update the playhead position. This gives a smoother visual update
+        // than if we only use the player_time_update event.
+        self.setPlayheadPosition(time);
+        self.peaks.emit('user_seek.overview', time);
+      },
+
+      onMouseUp: function(mousePosX) {
+        self.peaks.emit('user_seek.overview.end');
       }
     });
 
     // EVENTS ====================================================
 
-    function trackPlayheadPosition(time, frame) {
-      self.playheadPixel = self.data.at_time(time);
-      self.updateUi(self.playheadPixel);
-    }
-
-    peaks.on('player_time_update', trackPlayheadPosition);
-    // peaks.on('user_seek.zoomview', trackPlayheadPosition);
-    // peaks.on('user_seek.overview', trackPlayheadPosition);
+    peaks.on('player_time_update', function(time) {
+      self.setPlayheadPosition(time);
+    });
 
     peaks.on('zoomview.displaying', function(startTime, endTime) {
       self.updateHighlightRect(startTime, endTime);
@@ -106,14 +113,24 @@ define([
   }
 
   WaveformOverview.prototype.createWaveform = function() {
+    var self = this;
+
     this.waveformShape = new Konva.Shape({
       fill: this.options.overviewWaveformColor,
-      strokeWidth: 0
-    });
+      strokeWidth: 0,
+      sceneFunc: function(context) {
+        mixins.drawWaveform(
+          context,
+          self.data,
+          self.frameOffset,
+          0,
+          self.width,
+          self.height
+        );
 
-    this.waveformShape.sceneFunc(
-      mixins.waveformDrawFunction.bind(this.waveformShape, this)
-    );
+        context.fillStrokeShape(this);
+      }
+    });
 
     this.waveformLayer.add(this.waveformShape);
     this.stage.add(this.waveformLayer);
@@ -162,7 +179,7 @@ define([
     this.highlightLayer.draw();
   };
 
-  WaveformOverview.prototype.createUi = function() {
+  WaveformOverview.prototype.createPlayhead = function() {
     this.playheadLine = new Konva.Line({
       points: [0.5, 0, 0.5, this.height],
       stroke: this.options.playheadColor,
@@ -170,19 +187,21 @@ define([
       x: 0
     });
 
-    this.uiLayer = new Konva.Layer({ index: 100 });
-    this.axis = new WaveformAxis(this, this.uiLayer);
-
-    this.uiLayer.add(this.playheadLine);
-    this.stage.add(this.uiLayer);
-    this.uiLayer.moveToTop();
+    this.playheadLayer = new Konva.Layer();
+    this.playheadLayer.add(this.playheadLine);
+    this.stage.add(this.playheadLayer);
+    this.playheadLayer.moveToTop();
   };
 
-  // WaveformZoomView equivalent: updateZoomWaveform
+  /**
+   * @param {Number} time
+   */
 
-  WaveformOverview.prototype.updateUi = function(pixel) {
-    this.playheadLine.setAttr('x', pixel);
-    this.uiLayer.draw();
+  WaveformOverview.prototype.setPlayheadPosition = function(time) {
+    var playheadPixel = this.data.at_time(time);
+
+    this.playheadLine.setAttr('x', playheadPixel);
+    this.playheadLayer.draw();
   };
 
   WaveformOverview.prototype.destroy = function() {
