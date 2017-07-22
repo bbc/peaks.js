@@ -171,18 +171,7 @@ define([
         scale: currentScale
       });
 
-      var zoomAdapterMap = {
-        'animated': AnimatedZoomAdapter,
-        'static': StaticZoomAdapter
-      };
-
-      var zoomAdapter = zoomAdapterMap[self.peaks.options.zoomAdapter];
-
-      if (!zoomAdapter) {
-        throw new Error('Invalid zoomAdapter: ' + self.peaks.options.zoomAdapter);
-      }
-
-      var adapter = zoomAdapter.create(currentScale, previousScale, self);
+      var adapter = self.createZoomAdapter(currentScale, previousScale);
 
       adapter.start();
     });
@@ -214,6 +203,21 @@ define([
   }
 
   // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
+
+  var zoomAdapterMap = {
+    'animated': AnimatedZoomAdapter,
+    'static': StaticZoomAdapter
+  };
+
+  WaveformZoomView.prototype.createZoomAdapter = function(currentScale, previousScale) {
+    var ZoomAdapter = zoomAdapterMap[this.peaks.options.zoomAdapter];
+
+    if (!ZoomAdapter) {
+      throw new Error('Invalid zoomAdapter: ' + this.peaks.options.zoomAdapter);
+    }
+
+    return ZoomAdapter.create(currentScale, previousScale, this);
+  };
 
   WaveformZoomView.prototype.createZoomWaveform = function() {
     this.zoomWaveformShape = new Konva.Shape({
