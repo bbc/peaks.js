@@ -34,37 +34,35 @@ define(['konva'], function(Konva) {
       for (var i = 0; i < frameCount; i++) {
         // Work out interpolated resample scale using currentScale
         // and previousScale
-        var frameScale = Math.round(
+        var frameScale = Math.floor(
           previousScale +
-          ((i + 1) * (currentScale - previousScale) / frameCount)
+          i * (currentScale - previousScale) / frameCount
         );
 
         // Determine the timeframe for the zoom animation (start and end of
         // dataset for zooming animation)
         var newWidthSeconds = view.width * frameScale / rootData.adapter.sample_rate;
 
-        if ((currentTime >= 0) && (currentTime <= 0 + newWidthSeconds / 2)) {
+        if (currentTime >= 0 && currentTime <= newWidthSeconds / 2) {
           inputIndex = 0;
           outputIndex = 0;
         }
-        else if ((currentTime <= rootData.duration) &&
-                 (currentTime >= rootData.duration - newWidthSeconds / 2)) {
+        else if (currentTime <= rootData.duration &&
+                 currentTime >= rootData.duration - newWidthSeconds / 2) {
           lastFrameOffsetTime = rootData.duration - newWidthSeconds;
 
-          // sample rate = 44100
-          inputIndex  = (lastFrameOffsetTime * rootData.adapter.sample_rate) / previousScale;
-          outputIndex = (lastFrameOffsetTime * rootData.adapter.sample_rate) / frameScale;
+          inputIndex  = lastFrameOffsetTime * rootData.adapter.sample_rate / previousScale;
+          outputIndex = lastFrameOffsetTime * rootData.adapter.sample_rate / frameScale;
         }
         else {
           // This way calculates the index of the start time at the scale we
           // are coming from and the scale we are going to
 
-          // sample rate = 44100
-          var oldPixelIndex = (currentTime * rootData.adapter.sample_rate) / previousScale;
-          var newPixelIndex = (currentTime * rootData.adapter.sample_rate) / frameScale;
+          var oldPixelIndex = currentTime * rootData.adapter.sample_rate / previousScale;
+          var newPixelIndex = currentTime * rootData.adapter.sample_rate / frameScale;
 
-          inputIndex  = oldPixelIndex - (view.width / 2);
-          outputIndex = newPixelIndex - (view.width / 2);
+          inputIndex  = oldPixelIndex - view.width / 2;
+          outputIndex = newPixelIndex - view.width / 2;
         }
 
         if (inputIndex < 0) {
@@ -80,8 +78,6 @@ define(['konva'], function(Konva) {
         });
 
         frameData.push(resampled);
-
-        previousScale = frameScale;
       }
 
       var animationFrameFunction =
@@ -91,6 +87,8 @@ define(['konva'], function(Konva) {
     },
 
     createAnimationFrameFunction: function(view, frameData) {
+      var index = 0;
+
       view.intermediateData = null;
 
       /**
@@ -99,9 +97,11 @@ define(['konva'], function(Konva) {
        */
 
       return function(frame) {
-        if (frameData.length > 0) {
+        if (index < frameData.length) {
           // Send correct resampled waveform data object to drawFunc and draw it
-          view.intermediateData = frameData.shift();
+          view.intermediateData = frameData[index];
+          index++;
+
           view.zoomWaveformLayer.draw();
         }
         else {
