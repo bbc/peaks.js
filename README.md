@@ -17,7 +17,6 @@ You can read more about the project [here](http://waveform.prototyping.bbc.co.uk
 - **npm**: `npm install --save peaks.js`
 - *bower*: `bower install --save peaks.js`
 - [Browserify CDN](https://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
-- *old school*: [download zip file](https://github.com/bbc/peaks.js/archive/master.zip)
 
 # Using Peaks.js in your own project
 
