@@ -77,7 +77,7 @@ define([
     self.backgroundLayer.add(self.background);
     self.stage.add(self.backgroundLayer);
 
-    self.axis = new WaveformAxis(self);
+    self.axis = new WaveformAxis(self, self.uiLayer);
 
     self.createZoomWaveform();
     self.createUi();

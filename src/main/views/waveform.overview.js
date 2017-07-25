@@ -171,7 +171,7 @@ define([
     });
 
     this.uiLayer = new Konva.Layer({ index: 100 });
-    this.axis = new WaveformAxis(this);
+    this.axis = new WaveformAxis(this, this.uiLayer);
 
     this.uiLayer.add(this.playheadLine);
     this.stage.add(this.uiLayer);
