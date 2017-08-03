@@ -363,13 +363,17 @@ define([
    */
 
   WaveformZoomView.prototype.updateZoomWaveform = function(frameOffset) {
+    var upperLimit;
+
     // Total waveform is shorter than viewport, so reset the offset to 0.
     if (this.pixelLength < this.width) {
       frameOffset = 0;
+      upperLimit = this.width;
     }
-
-    // Calculate the very last possible position.
-    var upperLimit = this.pixelLength - this.width;
+    else {
+      // Calculate the very last possible position.
+      upperLimit = this.pixelLength - this.width;
+    }
 
     frameOffset = Utils.clamp(frameOffset, 0, upperLimit);
 
@@ -392,7 +396,7 @@ define([
   /**
    * Creates a playhead animation in sync with the media playback.
    *
-   * @param {Number} startTime Start time of the playhead animation
+   * @param {Number} startTime Start time of the playhead animation, in seconds.
    */
 
   WaveformZoomView.prototype.playFrom = function(startTime) {
