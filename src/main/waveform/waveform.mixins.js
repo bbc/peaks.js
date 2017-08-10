@@ -24,17 +24,19 @@ define(['konva'], function(Konva) {
    function segmentHandleCreator(height, color, inMarker) {
     /**
      * @param  {Boolean}  draggable If true, marker is draggable
-     * @param  {Object}   segment   Parent segment object with in and out times
+     * @param  {Konva.Group} segmentGroup
+     * @param  {Object}   segment   Segment object with in and out times
      * @param  {Object}   parent    Parent context
+     * @param  {Konva.Layer} layer
      * @param  {Function} onDrag    Callback after drag completed
      * @return {Konva.Group} Konva group object of handle marker elements
      */
 
-    return function createSegmentHandle(draggable, segment, parent, onDrag) {
+    return function createSegmentHandle(draggable, segmentGroup, segment, layer, onDrag) {
       var handleHeight = 20;
-      var handleWidth = handleHeight / 2;
-      var handleY = (height / 2) - 10.5;
-      var handleX = inMarker ? -handleWidth + 0.5 : 0.5;
+      var handleWidth  = handleHeight / 2;
+      var handleY      = (height / 2) - 10.5;
+      var handleX      = -(handleWidth / 2) + 0.5;
 
       var group = new Konva.Group({
         draggable: draggable,
@@ -42,14 +44,14 @@ define(['konva'], function(Konva) {
           var limit;
 
           if (inMarker) {
-            limit = segment.outMarker.getX() - segment.outMarker.getWidth();
+            limit = segmentGroup.outMarker.getX() - segmentGroup.outMarker.getWidth();
 
             if (pos.x > limit) {
               pos.x = limit;
             }
           }
           else {
-            limit = segment.inMarker.getX() + segment.inMarker.getWidth();
+            limit = segmentGroup.inMarker.getX() + segmentGroup.inMarker.getWidth();
 
             if (pos.x < limit) {
               pos.x = limit;
@@ -64,7 +66,7 @@ define(['konva'], function(Konva) {
       });
 
       group.on('dragmove', function(event) {
-        onDrag(segment, parent);
+        onDrag(segmentGroup, segment);
       });
 
       var xPosition = inMarker ? -24 : 24;
@@ -109,12 +111,12 @@ define(['konva'], function(Konva) {
           text.setX(xPosition - text.getWidth());
         }
         text.show();
-        segment.view.segmentLayer.draw();
+        layer.draw();
       });
 
       handle.on('mouseout', function(event) {
         text.hide();
-        segment.view.segmentLayer.draw();
+        layer.draw();
       });
 
       group.add(text);
@@ -137,19 +139,21 @@ define(['konva'], function(Konva) {
   function pointHandleCreator(height, color) {
     /**
      * @param  {Boolean}     draggable   If true, marker is draggable
-     * @param  {Konva.Group} point
-     * @param  {Object}      parent      Parent point object with timestamp
+     * @param  {Konva.Group} pointGroup  Point marker UI object
+     * @param  {Object}      point       Point object with timestamp
+     * @param  {Konva.Layer} layer       Layer that contains the pointGroup
      * @param  {Function}    onDrag      Callback after drag completed
      * @param  {Function}    onDblClick
      * @param  {Function}    onDragEnd
      * @return {Konva.Group} Konva group object of handle marker elements
      */
 
-    return function createPointHandle(draggable, point, parent, onDrag, onDblClick, onDragEnd) {
+    return function createPointHandle(draggable, pointGroup, point, layer,
+                                      onDrag, onDblClick, onDragEnd) {
       var handleTop = (height / 2) - 10.5;
       var handleWidth = 10;
       var handleHeight = 20;
-      var handleX = 0.5; // Place in the middle of the marker
+      var handleX = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
       var handleColor = parent.color ? parent.color : color;
 
@@ -164,18 +168,18 @@ define(['konva'], function(Konva) {
       });
 
       group.on('dragmove', function(event) {
-        onDrag(point, parent);
+        onDrag(pointGroup, point);
       });
 
       if (onDblClick) {
         group.on('dblclick', function(event) {
-          onDblClick(parent);
+          onDblClick(point);
         });
       }
 
       if (onDragEnd) {
         group.on('dragend', function(event) {
-          onDragEnd(parent);
+          onDragEnd(point);
         });
       }
 
@@ -206,7 +210,7 @@ define(['konva'], function(Konva) {
 
       // Line
       var line = new Konva.Line({
-        x:           handleX,
+        x:           0,
         y:           0,
         points:      [0, 0, 0, height],
         stroke:      handleColor,
@@ -217,13 +221,14 @@ define(['konva'], function(Konva) {
 
       handle.on('mouseover', function(event) {
         text.show();
-        text.setX(xPosition - text.getWidth()); // Position text to the left of the mark
-        point.view.pointLayer.draw();
+        // Position text to the left of the marker
+        text.setX(xPosition - text.getWidth());
+        layer.draw();
       });
 
       handle.on('mouseout', function(event) {
         text.hide();
-        point.view.pointLayer.draw();
+        layer.draw();
       });
 
       group.add(handle);
@@ -235,25 +240,25 @@ define(['konva'], function(Konva) {
   }
 
   /**
-   * Returns a height interpolator function.
+   * Scales the waveform data for drawing on a canvas context.
    *
-   * @param {Number} totalHeight
-   * @returns {interpolateHeight}
+   * @param {Number} amplitude The waveform data point amplitude.
+   * @param {Number} height The height of the waveform, in pixels.
+   * @returns {Number} The scaled waveform data point.
    */
 
-  function interpolateHeightGenerator(totalHeight) {
-    var amplitude = 256;
+  function scaleY(amplitude, height) {
+    var range = 256;
+    var offset = 128;
 
-    return function interpolateHeight(size) {
-      return totalHeight - ((size + 128) * totalHeight) / amplitude;
-    };
+    return height - ((amplitude + offset) * height) / range;
   }
 
   /**
    * Draws a waveform on a canvas context.
    *
-   * @param  {Konva.Context} context  The canvas context to draw on
-   * @param  {WaveformData} waveformData  The waveform data to draw
+   * @param  {Konva.Context} context  The canvas context to draw on.
+   * @param  {WaveformData} waveformData  The waveform data to draw.
    * @param  {Int} frameOffset
    * @param  {Int} startPixels
    * @param  {Int} endPixels
@@ -272,7 +277,6 @@ define(['konva'], function(Konva) {
       endPixels = limit;
     }
 
-    var y = interpolateHeightGenerator(height);
     var adapter = waveformData.adapter;
     var x, val;
 
@@ -281,13 +285,13 @@ define(['konva'], function(Konva) {
     for (x = startPixels; x < endPixels; x++) {
       val = adapter.at(2 * x);
 
-      context.lineTo(x - frameOffset + 0.5, y(val) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
       val = adapter.at(2 * x + 1);
 
-      context.lineTo(x - frameOffset + 0.5, y(val) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
     }
 
     context.closePath();
@@ -305,9 +309,10 @@ define(['konva'], function(Konva) {
     /**
      * Returns a function that creates and returns a new IN handle object.
      *
-     * @param  {Object}   options Root Peaks.js options containing config info for handle
-     * @return {Function} Provides Konva handle group on execution
+     * @param  {Object}   options Root Peaks.js options containing config info for handle.
+     * @return {Function} Provides Konva handle group on execution.
      */
+
     defaultInMarker: function(options) {
       return segmentHandleCreator(options.height, options.inMarkerColor, true);
     },
@@ -315,9 +320,10 @@ define(['konva'], function(Konva) {
     /**
      * Returns a function that creates and returns a new OUT handle object.
      *
-     * @param  {Object}   options Root Peaks.js options containing config info for handle
-     * @return {Function} Provides Konva handle group on execution
+     * @param  {Object}   options Root Peaks.js options containing config info for handle.
+     * @return {Function} Provides Konva handle group on execution.
      */
+
     defaultOutMarker: function(options) {
       return segmentHandleCreator(options.height, options.outMarkerColor, false);
     },
@@ -325,19 +331,20 @@ define(['konva'], function(Konva) {
     /**
      * Returns a function that creates and returns a new point marker.
      *
-     * @param  {Object}   options Root Peaks.js options containing config info for marker
-     * @return {Function} Provides Konva marker group on execution
+     * @param  {Object}   options Root Peaks.js options containing config info for marker.
+     * @return {Function} Provides Konva marker group on execution.
      */
+
     defaultPointMarker: function(options) {
       return pointHandleCreator(options.height, options.pointMarkerColor);
     },
 
     defaultSegmentLabelDraw: function(options) {
-      return function(segment, parent) {
+      return function(segmentGroup, segment) {
         return new Konva.Text({
           x:          12,
           y:          12,
-          text:       parent.labelText,
+          text:       segment.labelText,
           textAlign:  'center',
           fontSize:   12,
           fontFamily: 'Arial, sans-serif',

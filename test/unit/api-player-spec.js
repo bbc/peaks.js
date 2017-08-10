@@ -1,13 +1,11 @@
 'use strict';
 
-var Peaks = require('../../src/main.js');
+var Peaks = require('../../src/main');
 
-describe('Peaks.time', function() {
-  var sandbox, p, logger;
+describe('Peaks.player', function() {
+  var p, logger;
 
   beforeEach(function beforeEach(done) {
-    sandbox = sinon.sandbox.create();
-
     logger = sinon.spy();
 
     p = Peaks.init({
@@ -21,15 +19,13 @@ describe('Peaks.time', function() {
       logger: logger
     });
 
-    p.on('segments.ready', done);
+    p.on('peaks.ready', done);
   });
 
   afterEach(function() {
     if (p) {
       p.destroy();
     }
-
-    sandbox.restore();
   });
 
   describe.skip('getCurrentTime', function() {

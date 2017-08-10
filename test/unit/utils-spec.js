@@ -1,6 +1,6 @@
 'use strict';
 
-var Utils = require('../../src/main/waveform/waveform.utils.js');
+var Utils = require('../../src/main/waveform/waveform.utils');
 
 describe('Utils', function() {
   describe('formatTime', function() {

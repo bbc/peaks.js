@@ -10,6 +10,8 @@ define([
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
+  'peaks/views/points-layer',
+  'peaks/views/segments-layer',
   'peaks/views/helpers/mousedraghandler',
   'peaks/views/zooms/animated',
   'peaks/views/zooms/static',
@@ -18,6 +20,8 @@ define([
     WaveformAxis,
     mixins,
     Utils,
+    PointsLayer,
+    SegmentsLayer,
     MouseDragHandler,
     AnimatedZoomAdapter,
     StaticZoomAdapter,
@@ -25,7 +29,7 @@ define([
   'use strict';
 
   /**
-   * Creates the zoomed-in waveform view.
+   * Creates a zoomable waveform view.
    *
    * @class
    * @alias WaveformZoomView
@@ -51,7 +55,9 @@ define([
     self.pixelLength = 0;
     self.intermediateData = null;
 
-    self.resampleData(self.options.zoomLevels[peaks.zoom.getZoom()]);
+    var initialZoomLevel = self.options.zoomLevels[peaks.zoom.getZoom()];
+
+    self.resampleData(initialZoomLevel);
 
     self.playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
 
@@ -68,8 +74,6 @@ define([
     });
 
     self.backgroundLayer = new Konva.Layer();
-    self.waveformLayer = new Konva.FastLayer();
-    self.playheadLayer = new Konva.Layer();
 
     self.background = new Konva.Rect({
       x: 0,
@@ -81,10 +85,16 @@ define([
     self.backgroundLayer.add(self.background);
     self.stage.add(self.backgroundLayer);
 
+    self.waveformLayer = new Konva.FastLayer();
+
     self.axis = new WaveformAxis(self, self.waveformLayer);
 
     self.createWaveform();
-    self.createPlayhead();
+
+    self._segmentsLayer = new SegmentsLayer(peaks, self.stage, self, true);
+    self._pointsLayer = new PointsLayer(peaks, self.stage, self, true);
+
+    self.createPlayhead(true);
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {
@@ -115,7 +125,7 @@ define([
 
           var time = self.pixelsToTime(pixelIndex);
 
-          self.updateZoomWaveform(pixelIndex - mouseDownX);
+          self.updateWaveform(pixelIndex - mouseDownX);
           self.syncPlayhead(pixelIndex);
 
           self.peaks.player.seek(time);
@@ -127,7 +137,7 @@ define([
       }
     });
 
-    // EVENTS ====================================================
+    // Events
 
     self.peaks.on('player_time_update', function(time) {
       if (self.mouseDragHandler.isDragging()) {
@@ -154,15 +164,15 @@ define([
             self.frameOffset = 0;
           }
 
-          self.updateZoomWaveform(self.frameOffset);
+          self.updateWaveform(self.frameOffset);
         }
       }
     });
 
-    self.peaks.on('user_seek.overview', function(time) {
+    self.peaks.on('user_seek', function(time) {
       var frameIndex = self.timeToPixels(time);
 
-      self.updateZoomWaveform(frameIndex - Math.floor(self.width / 2));
+      self.updateWaveform(frameIndex - Math.floor(self.width / 2));
       self.syncPlayhead(frameIndex);
 
       if (self.playing) {
@@ -170,13 +180,8 @@ define([
       }
     });
 
-    self.peaks.on('user_seek.overview.end', function() {
-    });
-
-    // self.peaks.on('player_seek', userSeekHandler);
-
     self.peaks.on('user_scroll.zoomview', function(pixelOffset) {
-      self.updateZoomWaveform(pixelOffset);
+      self.updateWaveform(pixelOffset);
     });
 
     self.peaks.on('player_play', function(time) {
@@ -195,46 +200,7 @@ define([
     });
 
     self.peaks.on('zoom.update', function(currentScale, previousScale) {
-      if (currentScale === previousScale) {
-        // Nothing to do.
-        return;
-      }
-
-      var currentTime = self.peaks.player.getCurrentTime();
-      var apexTime;
-      var playheadOffsetPixels = self.playheadPixel - self.frameOffset;
-
-      if (playheadOffsetPixels >= 0 && playheadOffsetPixels < self.width) {
-        // Playhead is visible. Change the zoom level while keeping the
-        // playhead at the same position in the window.
-        apexTime = currentTime;
-      }
-      else {
-        // Playhead is not visible. Change the zoom level while keeping the
-        // centre of the window at the same position in the waveform.
-        playheadOffsetPixels = self.width / 2;
-        apexTime = self.pixelsToTime(self.frameOffset + playheadOffsetPixels);
-      }
-
-      self.resampleData(currentScale);
-
-      var apexPixel = self.timeToPixels(apexTime);
-
-      self.frameOffset = apexPixel - playheadOffsetPixels;
-
-      self.updateZoomWaveform(self.frameOffset);
-
-      // Update the playhead position after zooming. This is done automatically
-      // by the playhead animation if the media is playing.
-      if (!self.playing) {
-        var playheadPixel = self.timeToPixels(currentTime);
-
-        self.syncPlayhead(playheadPixel);
-      }
-
-      // var adapter = self.createZoomAdapter(currentScale, previousScale);
-
-      // adapter.start(relativePosition);
+      self.setZoomLevel(currentScale, previousScale);
     });
 
     peaks.on('window_resize', function() {
@@ -244,11 +210,9 @@ define([
     self.peaks.on('window_resize_complete', function(width) {
       self.width = width;
       self.stage.setWidth(self.width);
-      self.updateZoomWaveform(self.frameOffset);
+      self.updateWaveform(self.frameOffset);
       self.container.removeAttribute('hidden');
     });
-
-    // KEYBOARD EVENTS =========================================
 
     function nudgeFrame(direction, large) {
       var increment;
@@ -260,32 +224,95 @@ define([
         increment = direction * self.timeToPixels(self.options.nudgeIncrement);
       }
 
-      self.updateZoomWaveform(self.frameOffset + increment);
+      self.updateWaveform(self.frameOffset + increment);
     }
 
     self.peaks.on('keyboard.left', nudgeFrame.bind(self, -1, false));
     self.peaks.on('keyboard.right', nudgeFrame.bind(self, 1, false));
     self.peaks.on('keyboard.shift_left', nudgeFrame.bind(self, -1, true));
     self.peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 1, true));
+
+    self.peaks.emit('waveform_ready.zoomview', this);
   }
 
+  /**
+   * Changes the zoom level.
+   *
+   * @param {Number} currentScale
+   * @param {Number} previousScale
+   */
+
+  WaveformZoomView.prototype.setZoomLevel = function(currentScale, previousScale) {
+    if (currentScale === this._scale) {
+      // Nothing to do.
+      return;
+    }
+
+    var currentTime = this.peaks.player.getCurrentTime();
+    var apexTime;
+    var playheadOffsetPixels = this.playheadPixel - this.frameOffset;
+
+    if (playheadOffsetPixels >= 0 && playheadOffsetPixels < this.width) {
+      // Playhead is visible. Change the zoom level while keeping the
+      // playhead at the same position in the window.
+      apexTime = currentTime;
+    }
+    else {
+      // Playhead is not visible. Change the zoom level while keeping the
+      // centre of the window at the same position in the waveform.
+      playheadOffsetPixels = this.width / 2;
+      apexTime = this.pixelsToTime(this.frameOffset + playheadOffsetPixels);
+    }
+
+    this.resampleData(currentScale);
+
+    var apexPixel = this.timeToPixels(apexTime);
+
+    this.frameOffset = apexPixel - playheadOffsetPixels;
+
+    this.updateWaveform(this.frameOffset);
+
+    // Update the playhead position after zooming. This is done automatically
+    // by the playhead animation if the media is playing.
+    if (!this.playing) {
+      var playheadPixel = this.timeToPixels(currentTime);
+
+      this.syncPlayhead(playheadPixel);
+    }
+
+    // var adapter = this.createZoomAdapter(currentScale, previousScale);
+
+    // adapter.start(relativePosition);
+  };
+
   WaveformZoomView.prototype.resampleData = function(scale) {
+    this._scale = scale;
     this.data = this.originalWaveformData.resample({ scale: scale });
 
     this.pixelLength = this.data.adapter.length;
   };
 
+  /**
+   * Returns the pixel index for a given time, for the current zoom level.
+   *
+   * @param {Number} Time, in seconds.
+   * @returns {Number} Pixel index.
+   */
+
   WaveformZoomView.prototype.timeToPixels = function(time) {
-    // this.data.at_time(time);
     return Math.floor(time * this.data.adapter.sample_rate / this.data.adapter.scale);
   };
 
+  /**
+   * Returns the time for a given pixel index, for the current zoom level.
+   *
+   * @param {Number} Pixel index.
+   * @returns {Number} Time, in seconds.
+   */
+
   WaveformZoomView.prototype.pixelsToTime = function(pixels) {
-    // this.data.time(pixels);
     return pixels * this.data.adapter.scale / this.data.adapter.sample_rate;
   };
-
-  // WAVEFORM ZOOMVIEW FUNCTIONS =========================================
 
   var zoomAdapterMap = {
     'animated': AnimatedZoomAdapter,
@@ -329,22 +356,34 @@ define([
     this.peaks.emit('zoomview.displaying', 0, this.pixelsToTime(this.width));
   };
 
-  WaveformZoomView.prototype.createPlayhead = function() {
+  /**
+   * Creates the playhead UI objects.
+   *
+   * @private
+   * @param {Boolean} showTime If <code>true</code> The playback time position
+   *   is shown next to the playhead.
+   */
+
+  WaveformZoomView.prototype.createPlayhead = function(showTime) {
+    this.playheadLayer = new Konva.Layer();
+
     this.playheadLine = new Konva.Line({
       points: [0.5, 0, 0.5, this.height],
       stroke: this.options.playheadColor,
       strokeWidth: 1
     });
 
-    this.playheadText = new Konva.Text({
-      x: 2,
-      y: 12,
-      text: '00:00:00',
-      fontSize: 11,
-      fontFamily: 'sans-serif',
-      fill: this.options.playheadTextColor,
-      align: 'right'
-    });
+    if (showTime) {
+      this.playheadText = new Konva.Text({
+        x: 2,
+        y: 12,
+        text: '00:00:00',
+        fontSize: 11,
+        fontFamily: 'sans-serif',
+        fill: this.options.playheadTextColor,
+        align: 'right'
+      });
+    }
 
     this.playheadGroup = new Konva.Group({
       x: 0,
@@ -352,25 +391,26 @@ define([
     });
 
     this.playheadGroup.add(this.playheadLine);
-    this.playheadGroup.add(this.playheadText);
+
+    if (showTime) {
+      this.playheadGroup.add(this.playheadText);
+    }
 
     this.playheadLayer.add(this.playheadGroup);
     this.stage.add(this.playheadLayer);
-
-    this.playheadGroup.moveToTop();
   };
 
   /**
    * Updates the region of waveform shown in the view.
    *
-   * @param [Number] frameOffset The new frame offset, in pixel units
+   * @param {Number} frameOffset The new frame offset, in pixels.
    */
 
-  WaveformZoomView.prototype.updateZoomWaveform = function(frameOffset) {
+  WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
     var upperLimit;
 
-    // Total waveform is shorter than viewport, so reset the offset to 0.
     if (this.pixelLength < this.width) {
+      // Total waveform is shorter than viewport, so reset the offset to 0.
       frameOffset = 0;
       upperLimit = this.width;
     }
@@ -388,14 +428,14 @@ define([
 
     this.waveformLayer.draw();
 
-    this.peaks.emit(
-      'zoomview.displaying',
-      this.pixelsToTime(this.frameOffset),
-      this.pixelsToTime(this.frameOffset + this.width)
-    );
-  };
+    var frameStartTime = this.pixelsToTime(this.frameOffset);
+    var frameEndTime   = this.pixelsToTime(this.frameOffset + this.width);
 
-  // UI functions ==============================
+    this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
+    this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
+
+    this.peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
+  };
 
   /**
    * Creates a playhead animation in sync with the media playback.
@@ -425,14 +465,13 @@ define([
   };
 
   WaveformZoomView.prototype.syncPlayhead = function(pixelIndex) {
-    var display = (pixelIndex >= this.frameOffset) &&
-                  (pixelIndex <  this.frameOffset + this.width);
+    var isVisible = (pixelIndex >= this.frameOffset) &&
+                    (pixelIndex <  this.frameOffset + this.width);
 
     this.playheadPixel = pixelIndex;
 
-    if (display) {
+    if (isVisible) {
       var playheadX = this.playheadPixel - this.frameOffset;
-      var text = Utils.formatTime(this.pixelsToTime(this.playheadPixel), false);
 
       if (!this.playheadVisible) {
         this.playheadVisible = true;
@@ -440,7 +479,12 @@ define([
       }
 
       this.playheadGroup.setAttr('x', playheadX);
-      this.playheadText.setText(text);
+
+      if (this.playheadText) {
+        var text = Utils.formatTime(this.pixelsToTime(this.playheadPixel), false);
+
+        this.playheadText.setText(text);
+      }
 
       this.playheadLayer.draw();
     }
@@ -452,9 +496,38 @@ define([
     }
   };
 
+  WaveformZoomView.prototype.beginZoom = function() {
+    // Fade out the time axis and the segments
+    // this.axis.axisShape.setAttr('opacity', 0);
+
+    if (this._pointsLayer) {
+      this._pointsLayer.setVisible(false);
+    }
+
+    if (this._segmentsLayer) {
+      this._segmentsLayer.setVisible(false);
+    }
+  };
+
+  WaveformZoomView.prototype.endZoom = function() {
+    if (this._pointsLayer) {
+      this._pointsLayer.setVisible(true);
+    }
+
+    if (this._segmentsLayer) {
+      this._segmentsLayer.setVisible(true);
+    }
+
+    var time = this.peaks.player.getCurrentTime();
+
+    this.seekFrame(this.timeToPixels(time));
+  };
+
   WaveformZoomView.prototype.destroy = function() {
-    this.stage.destroy();
-    this.stage = null;
+    if (this.stage) {
+      this.stage.destroy();
+      this.stage = null;
+    }
   };
 
   return WaveformZoomView;

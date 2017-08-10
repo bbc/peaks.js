@@ -14,7 +14,7 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
-    frameworks: ['mocha', 'sinon-chai', 'browserify'],
+    frameworks: ['mocha', 'chai-sinon', 'browserify'],
 
     client: {
       chai: {
@@ -150,6 +150,6 @@ module.exports = function(config) {
   });
 
   config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['Firefox']
+    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['ChromeHeadless']
   });
 };

@@ -1,17 +1,11 @@
 'use strict';
 
-var Peaks = require('../../src/main.js');
+var Peaks = require('../../src/main');
 
 describe('Peaks.zoom', function() {
-  var p, sandbox;
+  var p;
 
-  /**
-   * SETUP =========================================================
-   */
-
-  beforeEach(function beforeEach(done) {
-    sandbox = sinon.sandbox.create();
-
+  beforeEach(function(done) {
     p = Peaks.init({
       container: document.getElementById('waveform-visualiser-container'),
       mediaElement: document.querySelector('audio'),
@@ -23,41 +17,35 @@ describe('Peaks.zoom', function() {
       zoomLevels: [512, 1024]
     });
 
-    p.on('segments.ready', done);
+    p.on('peaks.ready', done);
   });
 
   afterEach(function() {
     if (p) {
       p.destroy();
     }
-
-    sandbox.restore();
   });
 
-  /**
-   * TESTS =========================================================
-   */
-
   describe('getZoom', function() {
-    it('should be able to get the initial zoom level value, which is 0', function() {
+    it('should return the initial zoom level index', function() {
       expect(p.zoom.getZoom()).to.equal(0);
     });
   });
 
   describe('setZoom', function() {
-    it('should update the zoom level value', function() {
+    it('should update the zoom level index', function() {
       p.zoom.setZoom(1);
 
       expect(p.zoom.getZoom()).to.equal(1);
     });
 
-    it('should dispatch zoom.update with the associated zoom level value', function() {
-      var spy = sandbox.spy();
+    it('should emit a zoom.update event with the new zoom level index', function() {
+      var spy = sinon.spy();
 
       p.on('zoom.update', spy);
       p.zoom.setZoom(1);
 
-      expect(spy.calledWith(1024)).to.equal(true);
+      expect(spy).to.have.been.calledWith(1024, 512);
     });
 
     it('should limit the zoom level index value to the minimum valid index', function() {
@@ -81,7 +69,7 @@ describe('Peaks.zoom', function() {
 
   describe('zoomOut', function() {
     it('should call setZoom with a bigger zoom level', function() {
-      var spy = sandbox.spy();
+      var spy = sinon.spy();
 
       p.on('zoom.update', spy);
       p.zoom.zoomOut();
@@ -94,7 +82,7 @@ describe('Peaks.zoom', function() {
     it('should call setZoom with a smaller zoom level', function() {
       p.zoom.setZoom(1);
 
-      var spy = sandbox.spy();
+      var spy = sinon.spy();
 
       p.on('zoom.update', spy);
       p.zoom.zoomIn();

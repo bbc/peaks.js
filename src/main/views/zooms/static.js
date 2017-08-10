@@ -20,7 +20,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
           view.pointLayer.draw();
 
           var time = view.peaks.player.getCurrentTime();
-          var index = view.data.at_time(time);
+          var index = view.timeToPixels(time);
 
           view.seekFrame(index, relativePosition);
         }

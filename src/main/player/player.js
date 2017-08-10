@@ -5,29 +5,25 @@
  *
  * @module peaks/player/player
  */
+
 define(['peaks/waveform/waveform.utils'], function(Utils) {
   'use strict';
 
   /**
    * A wrapper for interfacing with the HTML5 media element API.
+   * Initializes the player for a given media element.
    *
    * @class
    * @alias Player
    *
    * @param {Peaks} peaks The parent Peaks object.
-   */
-  function Player(peaks) {
-    this._peaks = peaks;
-  }
-
-  /**
-   * Initializes the player for a given media element.
-   *
    * @param {HTMLMediaElement} mediaElement
    */
-  Player.prototype.init = function(mediaElement) {
+
+  function Player(peaks, mediaElement) {
     var self = this;
 
+    self._peaks = peaks;
     self._listeners = [];
     self._mediaElement = mediaElement;
     self._duration = self.getDuration();
@@ -53,7 +49,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     });
 
     self._interval = null;
-  };
+  }
 
   /**
    * Adds an event listener to the media element.
@@ -62,6 +58,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    * @param {Function} callback
    * @private
    */
+
   Player.prototype._addMediaListener = function(type, callback) {
     this._listeners.push({ type: type, callback: callback });
     this._mediaElement.addEventListener(type, callback);
@@ -96,6 +93,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   /**
    * Starts playback.
    */
+
   Player.prototype.play = function() {
     this._mediaElement.play();
   };
@@ -103,6 +101,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   /**
    * Pauses playback.
    */
+
   Player.prototype.pause = function() {
     this._mediaElement.pause();
   };
@@ -112,6 +111,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    *
    * @returns {Number}
    */
+
   Player.prototype.getCurrentTime = function() {
     return this._mediaElement.currentTime;
   };
@@ -121,6 +121,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    *
    * @returns {Number}
    */
+
   Player.prototype.getDuration = function() {
     return this._mediaElement.duration;
   };
@@ -130,6 +131,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    *
    * @param {Number} time The time position, in seconds.
    */
+
   Player.prototype.seek = function(time) {
     this._mediaElement.currentTime = time;
   };
@@ -139,6 +141,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    *
    * @param {Segment} segment The segment denoting the time region to play.
    */
+
   Player.prototype.playSegment = function(segment) {
     var self = this;
 
@@ -158,7 +161,8 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     // Start playing audio
     self._mediaElement.play();
 
-    // Need to use an interval here as `timeupdate` event doesn't fire often enough
+    // We need to use setInterval here as the timeupdate event doesn't fire
+    // often enough.
     self._interval = setInterval(function() {
       if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
         clearTimeout(self._interval);

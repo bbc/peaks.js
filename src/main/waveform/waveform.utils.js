@@ -65,10 +65,20 @@ define(function() {
       return typeof value === 'number';
     },
 
+    extend: function(to, from) {
+      for (var key in from) {
+        if (from.hasOwnProperty(key)) {
+          to[key] = from[key];
+        }
+      }
+
+      return to;
+    },
+
     /**
      * Checks whether the given value is a valid timestamp.
      *
-     * @param {Number} value The value to test.
+     * @param {Number} value The value to test
      * @returns {Boolean}
      */
 
@@ -79,7 +89,7 @@ define(function() {
     /**
      * Checks whether the given value is a valid object.
      *
-     * @param {Number} value The value to test.
+     * @param {Number} value The value to test
      * @returns {Boolean}
      */
 
@@ -91,7 +101,7 @@ define(function() {
     /**
      * Checks whether the given value is a valid string.
      *
-     * @param {String} value The value to test.
+     * @param {String} value The value to test
      * @returns {Boolean}
      */
 
@@ -102,7 +112,7 @@ define(function() {
     /**
      * Checks whether the given value is null or undefined.
      *
-     * @param {Object} value The value to test.
+     * @param {Object} value The value to test
      * @returns {Boolean}
      */
 
@@ -113,7 +123,7 @@ define(function() {
     /**
      * Checks whether the given value is a function.
      *
-     * @param {Function} value The value to test.
+     * @param {Function} value The value to test
      * @returns {Boolean}
      */
 

@@ -12,6 +12,10 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
   /**
    * Rounds the given value up to the nearest given multiple.
    *
+   * @param {Number} value
+   * @param {Number} multiple
+   * @returns {Number}
+   *
    * @example
    * roundUpToNearest(5.5, 3); // returns 6
    * roundUpToNearest(141.0, 10); // returns 150
@@ -75,7 +79,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
 
     for (;;) {
       secs = baseSecs * steps[index];
-      var pixels = view.data.at_time(secs);
+      var pixels = view.timeToPixels(secs);
 
       if (pixels < minSpacing) {
         if (++index === steps.length) {
@@ -94,12 +98,12 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
   /**
    * Draws the time axis and labels onto a view.
    *
-   * @param {Konva.Context} context
+   * @param {Konva.Context} context The context to draw on.
    * @param {WaveformOverview|WaveformZoomView} view
    */
 
   WaveformAxis.prototype.drawAxis = function(context, view) {
-    var currentFrameStartTime = view.data.time(view.frameOffset);
+    var currentFrameStartTime = view.pixelsToTime(view.frameOffset);
 
     // Draw axis markers
     var markerHeight = 10;
@@ -114,7 +118,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     var axisLabelOffsetSecs = firstAxisLabelSecs - currentFrameStartTime;
 
     // Distance between waveform start time and first axis marker (pixels)
-    var axisLabelOffsetPixels = view.data.at_time(axisLabelOffsetSecs);
+    var axisLabelOffsetPixels = view.timeToPixels(axisLabelOffsetSecs);
 
     context.setAttr('strokeStyle', view.options.axisGridlineColor);
     context.setAttr('lineWidth', 1);
@@ -130,7 +134,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
 
     for (;;) {
       // Position of axis marker (pixels)
-      x = axisLabelOffsetPixels + view.data.at_time(secs - firstAxisLabelSecs);
+      x = axisLabelOffsetPixels + view.timeToPixels(secs - firstAxisLabelSecs);
       if (x >= view.width) {
         break;
       }

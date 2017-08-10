@@ -158,13 +158,17 @@
             var html = '';
 
             for (var i = 0; i < segments.length; i++) {
+              var segment = segments[i];
+
               var row = '<tr>' +
-                '<td>' + segments[i].id + '</td>' +
-                '<td>' + segments[i].labelText + '</td>' +
-                '<td>' + segments[i].startTime + '</td>' +
-                '<td>' + segments[i].endTime + '</td>' +
-                '<td>' + '<a href="#' + segments[i].id + '" data-action="play-segment" data-id="' + segments[i].id + '">Play segment</a>' + '</td>' +
+                '<td>' + segment.id + '</td>' +
+                '<td>' + segment.labelText + '</td>' +
+                '<td>' + segment.startTime + '</td>' +
+                '<td>' + segment.endTime + '</td>' +
+                '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
+                '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
                 '</tr>';
+
               html += row;
             }
 
@@ -181,11 +185,15 @@
             var html = '';
 
             for (var i = 0; i < points.length; i++) {
+              var point = points[i];
+
               var row = '<tr>' +
-                '<td>' + points[i].id + '</td>' +
-                '<td>' + points[i].labelText + '</td>' +
-                '<td>' + points[i].time + '</td>' +
+                '<td>' + point.id + '</td>' +
+                '<td>' + point.labelText + '</td>' +
+                '<td>' + point.time + '</td>' +
+                '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
                 '</tr>';
+
               html += row;
             }
 
@@ -196,10 +204,15 @@
             }
           }
 
-          document.querySelector('[data-action="zoom-in"]').addEventListener("click", peaksInstance.zoom.zoomIn.bind(peaksInstance));
-          document.querySelector('[data-action="zoom-out"]').addEventListener("click", peaksInstance.zoom.zoomOut.bind(peaksInstance));
+          document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
+            peaksInstance.zoom.zoomIn();
+          });
 
-          document.querySelector('button[data-action="add-segment"]').addEventListener("click", function() {
+          document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
+            peaksInstance.zoom.zoomOut();
+          });
+
+          document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
@@ -208,7 +221,7 @@
             });
           });
 
-          document.querySelector('button[data-action="add-point"]').addEventListener("click", function() {
+          document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
             peaksInstance.points.add({
               time: peaksInstance.player.getCurrentTime(),
               labelText: "Test point",
@@ -216,17 +229,25 @@
             });
           });
 
-          document.querySelector('button[data-action="log-data"]').addEventListener("click", function(event) {
+          document.querySelector('button[data-action="log-data"]').addEventListener('click', function(event) {
             renderSegments(peaksInstance);
             renderPoints(peaksInstance);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {
             var element = event.target;
-            if (element.getAttribute('data-action') === 'play-segment') {
-              var id = element.getAttribute('data-id');
+            var action  = element.getAttribute('data-action');
+            var id      = element.getAttribute('data-id');
+
+            if (action === 'play-segment') {
               var segment = peaksInstance.segments.getSegment(id);
               peaksInstance.player.playSegment(segment);
+            }
+            else if (action === 'remove-point') {
+              peaksInstance.points.removeById(id);
+            }
+            else if (action === 'remove-segment') {
+              peaksInstance.segments.removeById(id);
             }
           });
 

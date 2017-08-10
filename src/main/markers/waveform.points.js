@@ -5,205 +5,146 @@
  *
  * @module peaks/markers/waveform.points
  */
+
 define([
-  'peaks/waveform/waveform.utils',
-  'konva'
-], function(Utils, Konva) {
+  'peaks/markers/point',
+  'peaks/waveform/waveform.utils'
+], function(Point, Utils) {
   'use strict';
 
-  function getLabelText(point) {
-    if (point.labelText) {
-      return point.labelText;
-    }
-    else {
-      return Utils.formatTime(point.time, false);
-    }
-  }
+  /**
+   * Point parameters.
+   *
+   * @typedef {Object} PointOptions
+   * @global
+   * @property {Number} point Point time, in seconds.
+   * @property {Boolean=} editable If <code>true</code> the point time can be
+   *   adjusted via the user interface.
+   *   Default: <code>false</code>.
+   * @property {String=} color Point marker color.
+   *   Default: a random color.
+   * @property {String=} labelText Point label text.
+   *   Default: an empty string.
+   * @property {String=} id A unique point identifier.
+   *   Default: an automatically generated identifier.
+   */
 
   /**
    * Handles all functionality related to the adding, removing and manipulation
-   * of points. A point is a segment of zero length.
+   * of points. A point is a single instant of time.
    *
    * @class
    * @alias WaveformPoints
    *
    * @param {Peaks} peaks The parent Peaks object.
    */
+
   function WaveformPoints(peaks) {
-    var self = this;
-
-    self.peaks = peaks;
-    self.points = [];
-
-    var views = [
-      self.peaks.waveform.waveformZoomView,
-      self.peaks.waveform.waveformOverview
-    ];
-
-    self.views = views.map(function(view) {
-      if (!view.pointLayer) {
-        view.pointLayer = new Konva.Layer();
-        view.stage.add(view.pointLayer);
-        view.pointLayer.moveToTop();
-      }
-
-      return view;
-    });
-
-    self._pointIdCounter = 0;
+    this._peaks = peaks;
+    this._points = [];
+    this._pointsById = {};
+    this._pointIdCounter = 0;
   }
 
-  WaveformPoints.prototype.getNextPointId = function() {
+  /**
+   * Returns a new unique point id value.
+   *
+   * @returns {String}
+   */
+
+  WaveformPoints.prototype._getNextPointId = function() {
     return 'peaks.point.' + this._pointIdCounter++;
   };
 
-  WaveformPoints.prototype.constructPoint = function(point) {
-    var self = this;
-
-    if (point.id === undefined || point.id === null) {
-      point.id = this.getNextPointId();
-    }
-
-    point.editable = Boolean(point.editable);
-
-    var pointZoomGroup = new Konva.Group();
-    var pointOverviewGroup = new Konva.Group();
-    var pointGroups = [pointZoomGroup, pointOverviewGroup];
-
-    pointGroups.forEach(function(pointGroup, i) {
-      var view = self.views[i];
-      var PointMarker = self.peaks.options.pointMarker;
-
-      if (point.editable) {
-        pointGroup.marker = new PointMarker(
-          true,
-          pointGroup,
-          point,
-          self.pointHandleDrag.bind(self),
-          self.peaks.options.pointDblClickHandler,
-          self.peaks.options.pointDragEndHandler
-        );
-
-        pointGroup.add(pointGroup.marker);
-      }
-
-      view.pointLayer.add(pointGroup);
-    });
-
-    point.zoom = pointZoomGroup;
-    point.zoom.view = this.peaks.waveform.waveformZoomView;
-    point.overview = pointOverviewGroup;
-    point.overview.view = this.peaks.waveform.waveformOverview;
-
-    return point;
-  };
-
-  WaveformPoints.prototype.updatePoint = function(point) {
-    // Overview
-    var overview = this.peaks.waveform.waveformOverview;
-    var overviewTimestampOffset = overview.data.at_time(point.time);
-
-    if (point.editable) {
-      if (point.overview.marker) {
-        point.overview.marker.show().setX(
-          overviewTimestampOffset - point.overview.marker.getWidth()
-        );
-      }
-
-      // Change Text
-      point.overview.marker.label.setText(getLabelText(point));
-    }
-
-    // Zoom
-    var zoomView = this.peaks.waveform.waveformZoomView;
-    var zoomTimestampOffset = zoomView.data.at_time(point.time);
-    var frameStartOffset = zoomView.frameOffset;
-    var zoomViewWidth = zoomView.width;
-
-    if (zoomTimestampOffset >= frameStartOffset &&
-        zoomTimestampOffset <  frameStartOffset + zoomViewWidth) {
-      // Point is visible
-      var startPixel = zoomTimestampOffset - frameStartOffset;
-
-      point.zoom.show();
-
-      if (point.editable) {
-        if (point.zoom.marker) {
-          point.zoom.marker.show().setX(startPixel - point.zoom.marker.getWidth());
-        }
-
-        // Change Text
-        point.zoom.marker.label.setText(getLabelText(point));
-      }
-    }
-    else {
-      point.zoom.hide();
-    }
-  };
-
   /**
-   * @param {Konva.Group} thisPoint
-   * @param {Point} point
+   * Creates a new point object.
+   *
+   * @param {PointOptions} options
+   * @return {Point}
    */
-  WaveformPoints.prototype.pointHandleDrag = function(thisPoint, point) {
-    var markerX = thisPoint.marker.getX();
 
-    if (markerX > 0 && markerX < thisPoint.view.width) {
-      var offset = thisPoint.view.frameOffset +
-                   markerX +
-                   thisPoint.marker.getWidth();
-
-      point.time = thisPoint.view.data.time(offset);
-    }
-
-    this.peaks.emit('points.dragged', point);
-    this.updatePoint(point);
-    this.render();
-  };
-
-  WaveformPoints.prototype.init = function() {
-    this.peaks.on('zoomview.displaying', this.updatePoints.bind(this));
-    this.peaks.emit('points.ready');
-  };
-
-  WaveformPoints.prototype.updatePoints = function() {
-    this.points.forEach(this.updatePoint.bind(this));
-    this.render();
-  };
-
-  WaveformPoints.prototype.createPoint = function(point) {
-    if (point.hasOwnProperty('timestamp') || !point.hasOwnProperty('time')) {
+  WaveformPoints.prototype._createPoint = function(options) {
+    if (options.hasOwnProperty('timestamp') || !options.hasOwnProperty('time')) {
       // eslint-disable-next-line max-len
-      this.peaks.options.deprecationLogger("peaks.points.add(): The 'timestamp' attribute is deprecated; use 'time' instead");
-      point.time = point.timestamp;
+      this._peaks.options.deprecationLogger("peaks.points.add(): The 'timestamp' attribute is deprecated; use 'time' instead");
+      options.time = options.timestamp;
     }
 
-    if (!Utils.isValidTime(point.time)) {
+    if (!Utils.isValidTime(options.time)) {
       // eslint-disable-next-line max-len
       throw new TypeError('peaks.points.add(): time should be a numeric value');
     }
 
-    if (point.time < 0) {
+    if (options.time < 0) {
       // eslint-disable-next-line max-len
       throw new TypeError('peaks.points.add(): time should not be negative');
     }
 
-    if (Utils.isNullOrUndefined(point.labelText)) {
+    if (Utils.isNullOrUndefined(options.labelText)) {
       // Set default label text
-      point.labelText = '';
+      options.labelText = '';
     }
-    else if (!Utils.isString(point.labelText)) {
+    else if (!Utils.isString(options.labelText)) {
       throw new TypeError('peaks.points.add(): labelText must be a string');
     }
 
-    point = this.constructPoint(point);
-    this.updatePoint(point);
-    this.points.push(point);
+    var point = new Point(
+      Utils.isNullOrUndefined(options.id) ? this._getNextPointId() : options.id,
+      options.time,
+      options.labelText,
+      options.color,
+      Boolean(options.editable)
+    );
+
+    if (this._pointsById.hasOwnProperty(point.id)) {
+      throw new Error('peaks.points.add(): duplicate id');
+    }
+
+    this._points.push(point);
+
+    this._pointsById[point.id] = point;
+
+    return point;
   };
 
+  /**
+   * Returns all points.
+   *
+   * @returns {Array<Point>}
+   */
+
   WaveformPoints.prototype.getPoints = function() {
-    return this.points;
+    return this._points;
   };
+
+  /**
+   * Returns all points within a given time region.
+   *
+   * @param {Number} startTime The start of the time region, in seconds.
+   * @param {Number} endTime The end of the time region, in seconds.
+   *
+   * @returns {Array<Point>}
+   */
+
+  WaveformPoints.prototype.find = function(startTime, endTime) {
+    var points = [];
+
+    for (var i = 0, length = this._points.length; i < length; i++) {
+      var point = this._points[i];
+
+      if (point.isVisible(startTime, endTime)) {
+        points.push(point);
+      }
+    }
+
+    return points;
+  };
+
+  /**
+   * Adds one or more points to the timeline.
+   *
+   * @param {PointOptions|Array<PointOptions>} pointOrPoints
+   */
 
   WaveformPoints.prototype.add = function(pointOrPoints) {
     var points = Array.isArray(arguments[0]) ?
@@ -212,7 +153,7 @@ define([
 
     if (typeof points[0] === 'number') {
       // eslint-disable-next-line max-len
-      this.peaks.options.deprecationLogger('peaks.points.add(): expected a segment object or an array');
+      this._peaks.options.deprecationLogger('peaks.points.add(): expected a segment object or an array');
 
       points = [{
         time:      arguments[0],
@@ -222,81 +163,142 @@ define([
       }];
     }
 
-    points.forEach(this.createPoint.bind(this));
-    this.render();
+    points = points.map(this._createPoint.bind(this));
+
+    this._peaks.emit('points.add', points);
   };
 
   /**
+   * Returns the indexes of points that match the given predicate.
+   *
    * @private
+   * @param {Function} predicate Predicate function to find matching points.
+   * @returns {Array<Number>} An array of indexes into the points array of
+   *   the matching elements.
    */
-  WaveformPoints.prototype._remove = function(point) {
-    var index = null;
 
-    this.points.some(function(p, i) {
-      if (p === point) {
-        index = i;
+  WaveformPoints.prototype._findPoint = function(predicate) {
+    var indexes = [];
 
-        return true;
+    for (var i = 0, length = this._points.length; i < length; i++) {
+      if (predicate(this._points[i])) {
+        indexes.push(i);
       }
-    });
-
-    if (index !== null) {
-      point.overview.destroy();
-      point.zoom.destroy();
     }
 
-    return index;
+    return indexes;
   };
+
+  /**
+   * Removes the points at the given array indexes.
+   *
+   * @private
+   * @param {Array<Number>} indexes The array indexes to remove.
+   * @returns {Array<Point>} The removed {@link Point} objects.
+   */
+
+  WaveformPoints.prototype._removeIndexes = function(indexes) {
+    var removed = [];
+
+    for (var i = 0; i < indexes.length; i++) {
+      var index = indexes[i] - removed.length;
+
+      var itemRemoved = this._points.splice(index, 1)[0];
+
+      delete this._pointsById[itemRemoved.id];
+
+      removed.push(itemRemoved);
+    }
+
+    return removed;
+  };
+
+  /**
+   * Removes all points that match a given predicate function.
+   *
+   * After removing the points, this function emits a
+   * <code>points.remove</code> event with the removed {@link Point}
+   * objects.
+   *
+   * @private
+   * @param {Function} predicate A predicate function that identifies which
+   *   points to remove.
+   * @returns {Array<Points>} The removed {@link Points} objects.
+   */
+
+  WaveformPoints.prototype._removePoints = function(predicate) {
+    var indexes = this._findPoint(predicate);
+
+    var removed = this._removeIndexes(indexes);
+
+    this._peaks.emit('points.remove', removed);
+
+    return removed;
+  };
+
+  /**
+   * Removes the given point.
+   *
+   * @param {Point} point The point to remove.
+   * @returns {Point} The removed point.
+   */
 
   WaveformPoints.prototype.remove = function(point) {
-    var index = this._remove(point);
+    var removed = this._removePoints(function(p) {
+      return p === point;
+    });
 
-    if (index === null) {
+    if (removed.length === 0) {
       // eslint-disable-next-line max-len
-      throw new Error('peaks.points.remove(): Unable to find the requested point' + String(point));
+      throw new Error('peaks.points.remove(): Unable to find the point: ' + String(point));
     }
+    else if (removed.length > 1) {
+      // eslint-disable-next-line max-len
+      this._peaks.logger('peaks.points.remomve(): Found multiple matching points: ' + String(point));
 
-    this.render();
-
-    return this.points.splice(index, 1).pop();
-  };
-
-  WaveformPoints.prototype.removeByTime = function(time) {
-    var matchingPoints = this.points.filter(function(point) {
-      return point.time === time;
-    });
-
-    matchingPoints.forEach(this.remove.bind(this));
-
-    return matchingPoints.length;
-  };
-
-  WaveformPoints.prototype.removeById = function(pointId) {
-    this.points.filter(function(point) {
-      return point.id === pointId;
-    }).forEach(this.remove.bind(this));
-  };
-
-  WaveformPoints.prototype.removeAll = function() {
-    this.views.forEach(function(view) {
-      view.pointLayer.removeChildren();
-    });
-
-    this.points = [];
-
-    this.render();
+      return removed;
+    }
+    else {
+      return removed[0];
+    }
   };
 
   /**
-   * Performs the rendering of the segments on screen
+   * Removes any points with the given id.
    *
-   * @api
-   * @since 0.3.0
+   * @param {String} id
+   * @returns {Array<Point>} The removed {@link Point} objects.
    */
-  WaveformPoints.prototype.render = function() {
-    this.views.forEach(function(view) {
-      view.pointLayer.draw();
+
+  WaveformPoints.prototype.removeById = function(pointId) {
+    return this._removePoints(function(point) {
+      return point.id === pointId;
     });
+  };
+
+  /**
+   * Removes any points at the given time.
+   *
+   * @param {Number} time
+   * @returns {Array<Point>} The removed {@link Point} objects.
+   */
+
+  WaveformPoints.prototype.removeByTime = function(time) {
+    return this._removePoints(function(point) {
+      return point.time === time;
+    });
+  };
+
+  /**
+   * Removes all points.
+   *
+   * After removing the points, this function emits a
+   * <code>points.remove_all</code> event.
+   */
+
+  WaveformPoints.prototype.removeAll = function() {
+    this._points = [];
+    this._peaks.emit('points.remove_all');
   };
 
   return WaveformPoints;

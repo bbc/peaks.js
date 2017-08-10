@@ -5,6 +5,7 @@
  *
  * @module peaks/player/player.keyboard
  */
+
 define([], function() {
   'use strict';
 
@@ -36,11 +37,12 @@ define([], function() {
   /**
    * Keyboard event handler function.
    *
-   * @note Arrow keys only triggered on keydown, not keypress
+   * @note Arrow keys only triggered on keydown, not keypress.
    *
    * @param {KeyboardEvent} event
    * @private
    */
+
   KeyboardHandler.prototype.handleKeyEvent = function handleKeyEvent(event) {
     if (nodes.indexOf(event.target.nodeName) === -1) {
       if (keys.indexOf(event.type) > -1) {

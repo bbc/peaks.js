@@ -5,6 +5,7 @@
  *
  * @module peaks/waveform/waveform.core
  */
+
  define([
   'waveform-data',
   'waveform-data/webaudio',
@@ -32,6 +33,7 @@
    *
    * @param {Peaks} peaks
    */
+
   function Waveform(peaks) {
     this.peaks = peaks;
   }
@@ -57,6 +59,7 @@
   };
 
   /* eslint-disable max-len */
+
   /**
    * Fetches waveform data, based on the given options.
    *
@@ -72,7 +75,9 @@
    * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
    * for details of the binary and JSON waveform data formats.
    */
-   /* eslint-enable max-len */
+
+  /* eslint-enable max-len */
+
   Waveform.prototype.getRemoteData = function(options) {
     var self = this;
     var xhr = new XMLHttpRequest();
@@ -169,6 +174,7 @@
    * @param xhr {XMLHttpRequest}
    * @private
    */
+
   Waveform.prototype.handleRemoteData = function(err, remoteData, xhr) {
     if (err) {
       this.peaks.emit('error', err);
@@ -188,7 +194,16 @@
         this.peaks
       );
 
-      this.peaks.emit('waveform_ready.overview', this.waveformOverview);
+      this.waveformZoomView = new WaveformZoomView(
+        this.originalWaveformData,
+        this.ui.zoom,
+        this.peaks
+      );
+
+      // TODO: Deprecated, use peaks.ready instead.
+      this.peaks.emit('segments.ready');
+
+      this.peaks.emit('peaks.ready');
     }
     catch (e) {
       this.peaks.emit('error', e);
@@ -201,36 +216,22 @@
   Waveform.prototype._bindEvents = function() {
     var self = this;
 
-    self.peaks.on('user_seek.*', function(time) {
+    self.peaks.on('user_seek', function(time) {
       self.peaks.player.seek(time);
     });
 
     window.addEventListener('resize', self.onResize);
   };
 
-  Waveform.prototype.openZoomView = function() {
-    this.waveformZoomView = new WaveformZoomView(
-      this.originalWaveformData,
-      this.ui.zoom,
-      this.peaks
-    );
-
-    this.segments = new WaveformSegments(this.peaks);
-    this.segments.init();
-
-    this.points = new WaveformPoints(this.peaks);
-    this.points.init();
-
-    this.peaks.emit('waveform_ready.zoomview', this.waveformZoomView);
-  };
-
   Waveform.prototype.destroy = function() {
     if (this.waveformOverview) {
       this.waveformOverview.destroy();
+      this.waveformOverview = null;
     }
 
     if (this.waveformZoomView) {
       this.waveformZoomView.destroy();
+      this.waveformZoomView = null;
     }
 
     window.removeEventListener('resize', this.onResize);

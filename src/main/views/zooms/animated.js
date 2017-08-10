@@ -5,10 +5,19 @@
  *
  * @module peaks/views/zooms/animated
  */
+
 define(['konva'], function(Konva) {
   'use strict';
 
   return {
+
+    /**
+     * @param {Number} currentScale
+     * @param {Number} previousScale
+     * @param {WaveformZoomView} view
+     * @returns {Konva.Animation}
+     */
+
     create: function(currentScale, previousScale, view) {
       var currentTime = view.peaks.player.getCurrentTime();
       var frameData = [];
@@ -19,12 +28,7 @@ define(['konva'], function(Konva) {
 
       var rootData = view.originalWaveformData;
 
-      // Fade out the time axis and the segments
-      // view.axis.axisShape.setAttr('opacity', 0);
-      if (view.segmentLayer) {
-        view.segmentLayer.setVisible(false);
-        view.pointLayer.setVisible(false);
-      }
+      view.beginZoom();
 
       // Determine whether zooming in or out
       var frameCount = (previousScale < currentScale) ? 15 : 30;
@@ -107,9 +111,7 @@ define(['konva'], function(Konva) {
         else {
           this.stop();
           view.intermediateData = null;
-          view.segmentLayer.setVisible(true);
-          view.pointLayer.setVisible(true);
-          view.seekFrame(view.data.at_time(view.peaks.player.getCurrentTime()));
+          view.endZoom();
         }
       };
     }

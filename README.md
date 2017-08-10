@@ -15,7 +15,7 @@ You can read more about the project [here](http://waveform.prototyping.bbc.co.uk
 # Installation
 
 - **npm**: `npm install --save peaks.js`
-- *bower*: `bower install --save peaks.js`
+- **bower**: `bower install --save peaks.js`
 - [Browserify CDN](https://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
 
 # Using Peaks.js in your own project
@@ -59,8 +59,8 @@ require(['peaks'], function(Peaks) {
     dataUri: 'test_data/sample.json'
   });
 
-  p.on('segments.ready', function() {
-    // do something when segments are ready to be displayed
+  p.on('peaks.ready', function() {
+    // do something when the waveform is displayed and ready
   });
 });
 ```
@@ -133,8 +133,8 @@ var p = Peaks.init({
   audioContext: myAudioContext
 });
 
-p.on('segments.ready', function() {
-  // do something when segments are ready to be displayed
+p.on('peaks.ready', function() {
+  // do something when the waveform is displayed and ready
 });
 ```
 
@@ -436,7 +436,7 @@ instance.segments.add([
 
 ### `instance.segments.getSegments()`
 
-Returns an array of objects representing all displayed segments present on the timeline in the segment format.
+Returns an array of all segments present on the timeline.
 
 ### `instance.segments.removeByTime(startTime[, endTime])`
 
@@ -576,26 +576,36 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 
 ### Media / User interactions
 
-| Event name                | Arguments       |
-| ------------------------- | --------------- |
-| `segments.ready`          | N/A             |
-| `user_seek.overview`      | `float time`    |
-| `user_seek.zoomview`      | `float time`    |
+| Event name                    | Arguments     |
+| ----------------------------- | ------------- |
+| `peaks.ready`                 | (none)        |
+| `segments.ready` (deprecated) | (none)        |
+| `user_seek.overview`          | `Number time` |
+| `user_seek.zoomview`          | `Number time` |
 
 ### Waveforms
 
-| Event name                | Arguments                                           |
-| ------------------------- | --------------------------------------------------- |
-| `zoom.update`             | `float currentZoomLevel`, `float previousZoomLevel` |
+| Event name                | Arguments                                             |
+| ------------------------- | ----------------------------------------------------- |
+| `zoom.update`             | `Number currentZoomLevel`, `Number previousZoomLevel` |
 
-### Segments / Points
+### Segments
 
-| Event name                | Arguments         |
-| ------------------------- | ----------------- |
-| `segments.ready`          | N/A               |
-| `points.ready`            | N/A               |
-| `segments.dragged`        | `Segment segment` |
-| `points.dragged`          | `Point point`     |
+| Event name                | Arguments                 |
+| ------------------------- | ------------------------- |
+| `segments.add`            | `Array<Segment> segments` |
+| `segments.remove`         | `Array<Segment> segments` |
+| `segments.remove_all`     | (none)                    |
+| `segments.dragged`        | `Segment segment`         |
+
+### Points
+
+| Event name                | Arguments             |
+| ------------------------- | --------------------- |
+| `points.add`              | `Array<Point> points` |
+| `points.remove`           | `Array<Point> points` |
+| `points.remove_all`       | (none)                |
+| `points.dragged`          | `Point point`         |
 
 # Building Peaks.js
 

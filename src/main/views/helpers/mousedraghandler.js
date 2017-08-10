@@ -5,6 +5,7 @@
  *
  * @module peaks/views/helpers/mousedraghandler
  */
+
 define(function() {
   'use strict';
 
@@ -123,8 +124,8 @@ define(function() {
    * @returns {Number} The mouse X position, relative to the container that
    * received the mouse down event.
    *
-   * @param {Number} clientX mouse client X position
    * @private
+   * @param {Number} clientX mouse client X position.
    */
 
   MouseDragHandler.prototype._getMousePosX = function(clientX) {

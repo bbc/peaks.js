@@ -5,14 +5,29 @@
  *
  * @module peaks/main
  */
+
 define('peaks', [
   'EventEmitter',
+  'peaks/markers/waveform.points',
+  'peaks/markers/waveform.segments',
   'peaks/player/player',
+  'peaks/views/waveform.timecontroller',
+  'peaks/views/waveform.zoomcontroller',
   'peaks/waveform/waveform.core',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
   'peaks/player/player.keyboard'
-], function(EventEmitter, Player, Waveform, mixins, Utils, KeyboardHandler) {
+  ], function(
+    EventEmitter,
+    WaveformPoints,
+    WaveformSegments,
+    Player,
+    TimeController,
+    ZoomController,
+    Waveform,
+    mixins,
+    Utils,
+    KeyboardHandler) {
   'use strict';
 
   function buildUi(container) {
@@ -23,22 +38,13 @@ define('peaks', [
     };
   }
 
-  function extend(to, from) {
-    for (var key in from) {
-      if (from.hasOwnProperty(key)) {
-        to[key] = from[key];
-      }
-    }
-
-    return to;
-  }
-
   /**
    * Creates a new Peaks.js object.
    *
    * @class
    * @alias Peaks
    */
+
   function Peaks(container) {
     EventEmitter.call(this, { wildcard: true });
 
@@ -227,12 +233,6 @@ define('peaks', [
     this.container = container;
 
     /**
-     *
-     * @type {number}
-     */
-    this.currentZoomLevel = 0;
-
-    /**
      * Asynchronous errors logger.
      *
      * @type {Function}
@@ -248,6 +248,7 @@ define('peaks', [
    *
    * @return {Peaks}
    */
+
   Peaks.init = function init(opts) {
     opts = opts || {};
 
@@ -295,13 +296,21 @@ define('peaks', [
 
     var instance = new Peaks(opts.container);
 
-    extend(instance.options, opts);
-    extend(instance.options, {
+    Utils.extend(instance.options, opts);
+    Utils.extend(instance.options, {
       segmentInMarker:  mixins.defaultInMarker(instance.options),
       segmentOutMarker: mixins.defaultOutMarker(instance.options),
       segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
       pointMarker:      mixins.defaultPointMarker(instance.options)
     });
+
+    if (!Array.isArray(instance.options.zoomLevels)) {
+      throw new TypeError('Peaks.init(): The zoomLevels option should be an array');
+    }
+
+    if (instance.options.zoomLevels.length === 0) {
+      throw new Error('Peaks.init(): The zoomLevels array must not be empty');
+    }
 
     /*
      Setup the logger
@@ -330,8 +339,10 @@ define('peaks', [
       instance.keyboardHandler = new KeyboardHandler(instance);
     }
 
-    instance.player = new Player(instance);
-    instance.player.init(instance.options.mediaElement);
+    instance.player = new Player(instance, instance.options.mediaElement);
+
+    instance.segments = new WaveformSegments(instance);
+    instance.points = new WaveformPoints(instance);
 
     /*
      Setup the UI components
@@ -339,16 +350,25 @@ define('peaks', [
     instance.waveform = new Waveform(instance);
     instance.waveform.init(buildUi(instance.container));
 
-    instance.on('waveform_ready.overview', function() {
-      instance.waveform.openZoomView();
+    instance.zoom = new ZoomController(instance, instance.options.zoomLevels);
+    instance.time = new TimeController(instance);
 
-      // Any initial segments to be displayed?
+    instance.on('peaks.ready', function() {
       if (instance.options.segments) {
+        if (!Array.isArray(instance.options.segments)) {
+          // eslint-disable-next-line max-len
+          throw new TypeError('Peaks.init(): options.segments must be an array of segment objects');
+        }
+
         instance.segments.add(instance.options.segments);
       }
 
-      // Any initial points to be displayed?
       if (instance.options.points) {
+        if (!Array.isArray(instance.options.points)) {
+          // eslint-disable-next-line max-len
+          throw new TypeError('Peaks.init(): options.points must be an array of point objects');
+        }
+
         instance.points.add(instance.options.points);
       }
     });
@@ -356,250 +376,12 @@ define('peaks', [
     return instance;
   };
 
-  Peaks.prototype = Object.create(EventEmitter.prototype, {
-    segments: {
-      get: function() {
-        var self = this;
-
-        return {
-          getSegments: function() {
-            return self.waveform.segments.getSegments();
-          },
-
-          getSegment: function(id) {
-            return self.waveform.segments.getSegment(id);
-          },
-
-          /**
-           * Add one or more segments to the timeline
-           *
-           * @param {(...Object|Object[])} segmentOrSegments
-           * @param {Number} segmentOrSegments[].startTime
-           * @param {Number} segmentOrSegments[].endTime
-           * @param {Boolean=} segmentOrSegments[].editable
-           * @param {String=} segmentOrSegments[].color
-           * @param {String=} segmentOrSegments[].labelText
-           * @param {Number=} segmentOrSegments[].id
-           */
-          add: function(segmentOrSegments) {
-            return self.waveform.segments.add.apply(self.waveform.segments, arguments);
-          },
-
-          remove: function(segment) {
-            return self.waveform.segments.remove(segment);
-          },
-
-          /**
-           * Remove segments with the given id
-           *
-           * @param {Number|String} id
-           *
-           * @api
-           * @since 0.5.0
-           */
-          removeById: function(segmentId) {
-            return self.waveform.segments.removeById(segmentId);
-          },
-
-          removeByTime: function(startTime, endTime) {
-            return self.waveform.segments.removeByTime(startTime, endTime);
-          },
-
-          removeAll: function() {
-            return self.waveform.segments.removeAll();
-          }
-        };
-      }
-    },
-
-    /**
-     * Points API
-     */
-
-    points: {
-      get: function() {
-        var self = this;
-
-        return {
-
-          /* eslint-disable max-len */
-          /**
-           * Return all points
-           *
-           * @returns {*|WaveformOverview.playheadLine.points|WaveformZoomView.playheadLine.points|points|o.points|n.createUi.points}
-           */
-          getPoints: function() {
-            return self.waveform.points.getPoints();
-          },
-          /* eslint-enable max-len */
-
-          /**
-           * Add one or more points to the timeline
-           *
-           * @param {(...Object|Object[])} pointOrPoints
-           * @param {Number} pointOrPoints[].time
-           * @param {Boolean=} pointOrPoints[].editable
-           * @param {String=} pointOrPoints[].color
-           * @param {String=} pointOrPoints[].labelText
-           * @param {Number=} pointOrPoints[].id
-           */
-          add: function(pointOrPoints) {
-            return self.waveform.points.add.apply(self.waveform.points, arguments);
-          },
-
-          remove: function(point) {
-            return self.waveform.points.remove(point);
-          },
-
-          /**
-           * Remove points at the given time
-           *
-           * @param {Number} time
-           */
-          removeByTime: function(time) {
-            return self.waveform.points.removeByTime(time);
-          },
-
-          /**
-           * Remove points with the given id
-           *
-           * @param {Number|String} idn
-           *
-           * @api
-           * @since 0.5.0
-           */
-          removeById: function(pointId) {
-            return self.waveform.points.removeById(pointId);
-          },
-
-          /**
-           * Remove all points
-           *
-           * @api
-           * @since 0.3.2
-           */
-          removeAll: function removeAll() {
-            return self.waveform.points.removeAll();
-          }
-        };
-      }
-    },
-
-    /**
-     * Time API (deprecated, use the Player interface instead)
-     */
-
-    time: {
-      get: function() {
-        var self = this;
-
-        return {
-          setCurrentTime: function(time) {
-            // eslint-disable-next-line max-len
-            self.options.deprecationLogger('peaks.time.setCurrentTime(): this function is deprecated. Call peaks.player.seek() instead');
-            return self.player.seek(time);
-          },
-
-          getCurrentTime: function() {
-            // eslint-disable-next-line max-len
-            self.options.deprecationLogger('peaks.time.setCurrentTime(): this function is deprecated. Call peaks.player.getCurrentTime() instead');
-            return self.player.getCurrentTime();
-          }
-        };
-      }
-    },
-
-    /**
-     * Zoom API
-     */
-
-    zoom: {
-      get: function() {
-        var self = this;
-
-        return {
-
-          /**
-           * Zoom in one level
-           */
-          zoomIn: function() {
-            self.zoom.setZoom(self.currentZoomLevel - 1);
-          },
-
-          /**
-           * Zoom out one level
-           */
-          zoomOut: function() {
-            self.zoom.setZoom(self.currentZoomLevel + 1);
-          },
-
-          /**
-           * Given a particular zoom level, triggers a resampling of the data in the zoomed view
-           *
-           * @param {number} zoomLevelIndex
-           */
-          setZoom: function(zoomLevelIndex) { // Set zoom level to index of current zoom levels
-            if (zoomLevelIndex >= self.options.zoomLevels.length) {
-              zoomLevelIndex = self.options.zoomLevels.length - 1;
-            }
-
-            if (zoomLevelIndex < 0) {
-              zoomLevelIndex = 0;
-            }
-
-            var previousZoomLevel = self.currentZoomLevel;
-
-            self.currentZoomLevel = zoomLevelIndex;
-
-            self.emit(
-              'zoom.update',
-              self.options.zoomLevels[zoomLevelIndex],
-              self.options.zoomLevels[previousZoomLevel]
-            );
-          },
-
-          /**
-           * Returns the current zoom level
-           *
-           * @returns {number}
-           */
-          getZoom: function() {
-            return self.currentZoomLevel;
-          },
-
-          /**
-           * Sets the zoom level to an overview level
-           *
-           * @since 0.3
-           */
-          overview: function zoomToOverview() {
-            self.emit(
-              'zoom.update',
-              self.waveform.waveformOverview.data.adapter.scale,
-              self.options.zoomLevels[self.currentZoomLevel]
-            );
-          },
-
-          /**
-           * Sets the zoom level to an overview level
-           *
-           * @since 0.3
-           */
-          reset: function resetOverview() {
-            self.emit(
-              'zoom.update',
-              self.options.zoomLevels[self.currentZoomLevel],
-              self.waveform.waveformOverview.data.adapter.scale
-            );
-          }
-        };
-      }
-    }
-  });
+  Peaks.prototype = Object.create(EventEmitter.prototype);
 
   /**
    * Cleans up a Peaks instance after use.
    */
+
   Peaks.prototype.destroy = function() {
     this.removeAllListeners();
     this.waveform.destroy();

@@ -1,15 +1,12 @@
 'use strict';
 
-var Peaks = require('../../src/main.js');
+var Peaks = require('../../src/main');
+var Segment = require('../../src/main/markers/segment');
 
 describe('Peaks.segments', function() {
   var p, deprecationLogger;
 
-  /**
-   * SETUP =========================================================
-   */
-
-  beforeEach(function before(done) {
+  beforeEach(function(done) {
     deprecationLogger = sinon.spy();
 
     p = Peaks.init({
@@ -23,7 +20,7 @@ describe('Peaks.segments', function() {
       deprecationLogger: deprecationLogger
     });
 
-    p.on('segments.ready', done);
+    p.on('peaks.ready', done);
   });
 
   afterEach(function() {
@@ -32,20 +29,24 @@ describe('Peaks.segments', function() {
     }
   });
 
-  /**
-   * TESTS =========================================================
-   */
-
   describe('getSegments', function() {
-    it('should return an empty array by default', function() {
-      expect(p.segments.getSegments()).to.be.an('array').and.have.length.of(0);
+    it('should return an empty array if no segments are present', function() {
+      expect(p.segments.getSegments()).to.be.an('array').and.have.lengthOf(0);
     });
 
-    it('should return any added segment', function() {
+    it('should return any added segments', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
       p.segments.add({ startTime: 2, endTime: 12 });
 
-      expect(p.segments.getSegments()).to.have.length.of(2);
+      var segments = p.segments.getSegments();
+
+      expect(segments).to.have.lengthOf(2);
+      expect(segments[0]).to.be.an.instanceOf(Segment);
+      expect(segments[0].startTime).to.equal(0);
+      expect(segments[0].endTime).to.equal(10);
+      expect(segments[1]).to.be.an.instanceOf(Segment);
+      expect(segments[1].startTime).to.equal(2);
+      expect(segments[1].endTime).to.equal(12);
     });
   });
 
@@ -57,6 +58,7 @@ describe('Peaks.segments', function() {
       var segment = p.segments.getSegment('segment2');
 
       expect(segment).to.be.ok;
+      expect(segment).to.be.an.instanceOf(Segment);
       expect(segment.id).to.equal('segment2');
       expect(segment.startTime).to.equal(2);
       expect(segment.endTime).to.equal(12);
@@ -76,10 +78,12 @@ describe('Peaks.segments', function() {
     it('should accept a single segment object', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
-      expect(p.segments.getSegments()).to.have.length.of(1);
-      expect(p.segments.getSegments()[0]).to.include.keys('startTime', 'endTime');
-      expect(p.segments.getSegments()[0].startTime).to.equal(0);
-      expect(p.segments.getSegments()[0].endTime).to.equal(10);
+      var segments = p.segments.getSegments();
+
+      expect(segments).to.have.lengthOf(1);
+      expect(segments[0]).to.be.an.instanceOf(Segment);
+      expect(segments[0].startTime).to.equal(0);
+      expect(segments[0].endTime).to.equal(10);
 
       expect(deprecationLogger).to.not.have.been.called;
     });
@@ -87,10 +91,12 @@ describe('Peaks.segments', function() {
     it('should accept a list of properties for a single segment (deprecated)', function() {
       p.segments.add(0, 10);
 
-      expect(p.segments.getSegments()).to.have.length.of(1);
-      expect(p.segments.getSegments()[0]).to.include.keys('startTime', 'endTime');
-      expect(p.segments.getSegments()[0].startTime).to.equal(0);
-      expect(p.segments.getSegments()[0].endTime).to.equal(10);
+      var segments = p.segments.getSegments();
+
+      expect(segments).to.have.lengthOf(1);
+      expect(segments[0]).to.be.an.instanceOf(Segment);
+      expect(segments[0].startTime).to.equal(0);
+      expect(segments[0].endTime).to.equal(10);
 
       expect(deprecationLogger).to.have.been.calledOnce;
     });
@@ -107,10 +113,10 @@ describe('Peaks.segments', function() {
       }).to.throw(TypeError);
     });
 
-    it('should accept an optional id for each segment', function() {
-      p.segments.add({ startTime: 0, endTime: 10, id: 123 });
+    it('should accept an optional id', function() {
+      p.segments.add({ startTime: 0, endTime: 10, id: '123' });
 
-      expect(p.segments.getSegments()[0].id).to.equal(123);
+      expect(p.segments.getSegments()[0].id).to.equal('123');
     });
 
     it('should allow 0 for a segment id', function() {
@@ -154,12 +160,48 @@ describe('Peaks.segments', function() {
 
       p.segments.add(segments);
 
-      expect(p.segments.getSegments()).to.have.length.of(2);
+      expect(p.segments.getSegments()).to.have.lengthOf(2);
       expect(p.segments.getSegments()[0]).to.include.keys('startTime', 'endTime');
       expect(p.segments.getSegments()[1]).to.include.keys('startTime', 'endTime');
     });
 
-    it('should throw an exception if arguments are not matching any previous accepted signature form', function() {
+    it('should emit an event with an array containing a single segment object', function(done) {
+      p.on('segments.add', function(segments) {
+        expect(segments).to.have.lengthOf(1);
+        expect(segments[0]).to.be.an.instanceOf(Segment);
+        expect(segments[0].startTime).to.equal(0);
+        expect(segments[0].endTime).to.equal(10);
+        done();
+      });
+
+      p.segments.add({ startTime: 0,  endTime: 10 });
+    });
+
+    it('should emit an event with multiple segment objects', function(done) {
+      p.on('segments.add', function(segments) {
+        expect(segments).to.have.lengthOf(2);
+        expect(segments[0]).to.be.an.instanceOf(Segment);
+        expect(segments[0].startTime).to.equal(0);
+        expect(segments[0].endTime).to.equal(10);
+        expect(segments[1]).to.be.an.instanceOf(Segment);
+        expect(segments[1].startTime).to.equal(20);
+        expect(segments[1].endTime).to.equal(30);
+        done();
+      });
+
+      p.segments.add([
+        { startTime: 0,  endTime: 10 },
+        { startTime: 20, endTime: 30 }
+      ]);
+    });
+
+    it('should return undefined', function() {
+      var result = p.segments.add({ startTime: 0, endTime: 10 });
+
+      expect(result).to.be.undefined;
+    });
+
+    it('should throw an exception if arguments do not match any previous accepted signature form', function() {
       expect(function() { p.segments.add({}); }).to.throw(TypeError);
       expect(function() { p.segments.add(undefined); }).to.throw(TypeError);
       expect(function() { p.segments.add(null); }).to.throw(TypeError);
@@ -177,6 +219,27 @@ describe('Peaks.segments', function() {
         p.segments.add({ startTime: 1.0, endTime: NaN });
       }).to.throw(TypeError);
     });
+
+    it('should throw an exception if given a duplicate id', function() {
+      p.segments.add({ startTime: 10, endTime: 20, id: 'segment1' });
+
+      expect(function() {
+        p.segments.add({ startTime: 10, endTime: 20, id: 'segment1' });
+      }).to.throw(Error, /duplicate/);
+    });
+
+    it('should add a segment with the same id as a previously removed segment', function() {
+      p.segments.add({ startTime: 10, endTime: 20, id: 'segment1' });
+      p.segments.removeById('segment1');
+      p.segments.add({ startTime: 20, endTime: 30, id: 'segment1' });
+
+      var segments = p.segments.getSegments();
+
+      expect(segments).to.have.lengthOf(1);
+      expect(segments[0].startTime).to.equal(20);
+      expect(segments[0].endTime).to.equal(30);
+      expect(segments[0].id).to.equal('segment1');
+    });
   });
 
   describe('remove', function() {
@@ -184,7 +247,7 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 10, endTime: 12 });
     });
 
-    it('should throw an exception if you remove a segment which does not exist', function() {
+    it('should throw an exception if the segment does not exist', function() {
       expect(function() { p.segments.remove({}); }).to.throw();
     });
 
@@ -202,13 +265,17 @@ describe('Peaks.segments', function() {
       expect(p.segments.getSegments()).to.not.include(segment);
     });
 
-    it('should remove the segment from both view layers', function() {
+    it('should emit an event with the removed segment', function(done) {
       var segment = p.segments.getSegments()[0];
 
-      p.segments.remove(segment);
+      p.on('segments.remove', function(segments) {
+        expect(segments).to.be.an.instanceOf(Array);
+        expect(segments).to.have.lengthOf(1);
+        expect(segments[0]).to.deep.equal(segment);
+        done();
+      });
 
-      expect(p.waveform.waveformOverview.segmentLayer.children).to.not.include(segment.overview);
-      expect(p.waveform.waveformZoomView.segmentLayer.children).to.not.include(segment.zoom);
+      p.segments.remove(segment);
     });
   });
 
@@ -221,7 +288,7 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 3,  endTime: 10 });
     });
 
-    it('should not remove any segment if the startTime does not match with any segment', function() {
+    it('should not remove any segment if the startTime does not match any segment', function() {
       p.segments.removeByTime(6);
 
       expect(p.segments.getSegments()).to.have.a.lengthOf(4);
@@ -236,23 +303,51 @@ describe('Peaks.segments', function() {
     it('should remove the only segment matching the startTime', function() {
       p.segments.removeByTime(5);
 
-      expect(p.segments.getSegments()).to.have.a.lengthOf(3);
-      expect(p.segments.getSegments()[0].startTime).to.equal(10);
-      expect(p.segments.getSegments()[1].startTime).to.equal(3);
-      expect(p.segments.getSegments()[2].startTime).to.equal(3);
+      var segments = p.segments.getSegments();
+
+      expect(segments).to.have.a.lengthOf(3);
+      expect(segments[0].startTime).to.equal(10);
+      expect(segments[1].startTime).to.equal(3);
+      expect(segments[2].startTime).to.equal(3);
     });
 
-    it('should return the number of deleted segments', function() {
-      expect(p.segments.removeByTime(3)).to.equal(2);
+    it('should return the removed segments', function() {
+      var segments = p.segments.removeByTime(3);
+
+      expect(segments).to.be.an.instanceOf(Array);
+      expect(segments).to.have.lengthOf(2);
+      expect(segments[0]).to.be.an.instanceOf(Segment);
+      expect(segments[0].startTime).to.equal(3);
+      expect(segments[0].endTime).to.equal(6);
+      expect(segments[1]).to.be.an.instanceOf(Segment);
+      expect(segments[1].startTime).to.equal(3);
+      expect(segments[1].endTime).to.equal(10);
     });
 
-    it('should remove the two segments matching the startTime', function() {
+    it('should emit an event containing the removed segments', function(done) {
+      p.on('segments.remove', function(segments) {
+        expect(segments).to.be.an.instanceOf(Array);
+        expect(segments).to.have.lengthOf(2);
+        expect(segments[0]).to.be.an.instanceOf(Segment);
+        expect(segments[0].startTime).to.equal(3);
+        expect(segments[0].endTime).to.equal(6);
+        expect(segments[1]).to.be.an.instanceOf(Segment);
+        expect(segments[1].startTime).to.equal(3);
+        expect(segments[1].endTime).to.equal(10);
+
+        done();
+      });
+
+      p.segments.removeByTime(3);
+    });
+
+    it('should remove multiple segments with the same startTime', function() {
       p.segments.removeByTime(3);
 
       expect(p.segments.getSegments()).to.have.a.lengthOf(2);
     });
 
-    it('should remove only the segment matching both starTime and endTime', function() {
+    it('should remove a segment matching both startTime and endTime', function() {
       p.segments.removeByTime(3, 6);
 
       expect(p.segments.getSegments()).to.have.a.lengthOf(3);
@@ -260,27 +355,46 @@ describe('Peaks.segments', function() {
   });
 
   describe('removeById', function() {
-    it('should remove the segment by matching id', function() {
+    beforeEach(function() {
       p.segments.add([
-        { startTime: 0,  endTime: 10, id: 123 },
-        { startTime: 15, endTime: 25, id: 456 }
+        { startTime: 0,  endTime: 10, id: 'segment_id.1' },
+        { startTime: 15, endTime: 25, id: 'segment_id.2' }
       ]);
-
-      p.segments.removeById(123);
-      expect(p.segments.getSegments()).to.have.a.lengthOf(1);
-      expect(p.segments.getSegments()[0].id).to.eq(456);
     });
 
-    it('should remove all segments with matching id', function() {
-      p.segments.add([
-        { startTime: 0,  endTime: 10, id: 123 },
-        { startTime: 15, endTime: 25, id: 456 },
-        { startTime: 30, endTime: 40, id: 456 }
-      ]);
+    it('should remove the segment with the given id', function() {
+      p.segments.removeById('segment_id.1');
 
-      p.segments.removeById(456);
-      expect(p.segments.getSegments()).to.have.a.lengthOf(1);
-      expect(p.segments.getSegments()[0].id).to.eq(123);
+      var remainingSegments = p.segments.getSegments();
+
+      expect(remainingSegments).to.have.a.lengthOf(1);
+      expect(remainingSegments[0].id).to.equal('segment_id.2');
+      expect(remainingSegments[0].startTime).to.equal(15);
+      expect(remainingSegments[0].endTime).to.equal(25);
+    });
+
+    it('should return the removed segments', function() {
+      var removed = p.segments.removeById('segment_id.1');
+
+      expect(removed).to.be.an.instanceOf(Array);
+      expect(removed.length).to.equal(1);
+      expect(removed[0]).to.be.an.instanceOf(Segment);
+      expect(removed[0].startTime).to.equal(0);
+      expect(removed[0].endTime).to.equal(10);
+    });
+
+    it('should emit an event with the removed segments', function(done) {
+      p.on('segments.remove', function(segments) {
+        expect(segments).to.be.an.instanceOf(Array);
+        expect(segments.length).to.equal(1);
+        expect(segments[0]).to.be.an.instanceOf(Segment);
+        expect(segments[0].startTime).to.equal(15);
+        expect(segments[0].endTime).to.equal(25);
+
+        done();
+      });
+
+      p.segments.removeById('segment_id.2');
     });
   });
 
@@ -290,17 +404,31 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 5,  endTime: 12 });
     });
 
-    it('should clear all segments objects', function() {
+    it('should remove all segment objects', function() {
       p.segments.removeAll();
 
-      expect(p.segments.getSegments()).to.be.empty;
+      var remainingSegments = p.segments.getSegments();
+
+      expect(remainingSegments).to.be.empty;
     });
 
-    it('should clear views groups as well', function() {
-      p.segments.removeAll();
+    it('should emit an event', function(done) {
+      p.on('segments.remove_all', function(param) {
+        expect(param).to.be.undefined;
 
-      expect(p.waveform.waveformOverview.segmentLayer.children).to.have.a.property('length', 0);
-      expect(p.waveform.waveformZoomView.segmentLayer.children).to.have.a.property('length', 0);
+        var remainingSegments = p.segments.getSegments();
+
+        expect(remainingSegments).to.be.empty;
+        done();
+      });
+
+      p.segments.removeAll();
+    });
+
+    it('should return undefined', function() {
+      var result = p.segments.removeAll();
+
+      expect(result).to.be.undefined;
     });
   });
 });
