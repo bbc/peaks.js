@@ -49,7 +49,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: dots || progress || growl || spec
-    reporters: isCI ? ['dots'] : ['spec'],
+    reporters: 'spec',
 
     // web server port
     port: 8080,
@@ -150,6 +150,6 @@ module.exports = function(config) {
   });
 
   config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['Chrome']
+    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['Firefox']
   });
 };
