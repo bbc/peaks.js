@@ -257,10 +257,21 @@ define(['konva'], function(Konva) {
    * @param  {Int} frameOffset
    * @param  {Int} startPixels
    * @param  {Int} endPixels
+   * @param  {Int} width The width of the waveform area, in pixels
    * @param  {Int} height The height of the waveform area, in pixels
    */
 
-  function drawWaveform(context, waveformData, frameOffset, startPixels, endPixels, height) {
+  function drawWaveform(context, waveformData, frameOffset, startPixels, endPixels, width, height) {
+    if (startPixels < frameOffset) {
+      startPixels = frameOffset;
+    }
+
+    var limit = frameOffset + width;
+
+    if (endPixels > limit) {
+      endPixels = limit;
+    }
+
     var y = interpolateHeightGenerator(height);
     var adapter = waveformData.adapter;
     var x, val;

@@ -37,6 +37,7 @@ define([
             view.frameOffset,
             waveformData.at_time(segment.startTime),
             waveformData.at_time(segment.endTime),
+            view.width,
             view.height
           );
 

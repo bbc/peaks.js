@@ -125,6 +125,7 @@ define([
           self.frameOffset,
           0,
           self.width,
+          self.width,
           self.height
         );
 

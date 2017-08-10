@@ -169,8 +169,8 @@ define([
     var frameStartOffset = waveformZoomView.frameOffset;
     var frameEndOffset   = waveformZoomView.frameOffset + waveformZoomView.width;
 
-    if (zoomEndOffset > frameStartOffset || zoomStartOffset < frameEndOffset) {
-      // Segment is visible
+    if (zoomStartOffset < frameEndOffset && zoomStartOffset < zoomEndOffset) {
+      // Segment is visible - see http://wiki.c2.com/?TestIfDateRangesOverlap
       var startPixel = zoomStartOffset - frameStartOffset;
       var endPixel   = zoomEndOffset   - frameStartOffset;
 
