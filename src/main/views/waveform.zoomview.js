@@ -144,12 +144,15 @@ define([
         // TODO: move this code to animation function?
         // TODO: don't scroll if user has positioned view manually (e.g., using
         // the keyboard)
-        var playheadPos = pixelIndex - self.frameOffset;
+        var endThreshold = self.frameOffset + self.width - 100;
 
-        var endThreshold = self.width - 100;
+        if (pixelIndex >= endThreshold || pixelIndex < self.frameOffset) {
+          // Put the playhead at 100 pixels from the left edge
+          self.frameOffset = pixelIndex - 100;
 
-        if (playheadPos >= endThreshold) {
-          self.frameOffset += self.width - 200;
+          if (self.frameOffset < 0) {
+            self.frameOffset = 0;
+          }
 
           self.updateZoomWaveform(self.frameOffset);
         }
