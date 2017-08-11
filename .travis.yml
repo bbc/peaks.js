@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-- v4
 - v6
+- v8
 sudo: false
 cache:
   directories:
