@@ -238,8 +238,9 @@ define([
   /**
    * Changes the zoom level.
    *
-   * @param {Number} currentScale
-   * @param {Number} previousScale
+   * @param {Number} currentScale The new zoom level, in samples per pixel.
+   * @param {Number} previousScale The previous zoom level, in samples per
+   *   pixel.
    */
 
   WaveformZoomView.prototype.setZoomLevel = function(currentScale, previousScale) {
@@ -295,7 +296,7 @@ define([
   /**
    * Returns the pixel index for a given time, for the current zoom level.
    *
-   * @param {Number} Time, in seconds.
+   * @param {Number} time Time, in seconds.
    * @returns {Number} Pixel index.
    */
 
@@ -306,7 +307,7 @@ define([
   /**
    * Returns the time for a given pixel index, for the current zoom level.
    *
-   * @param {Number} Pixel index.
+   * @param {Number} pixels Pixel index.
    * @returns {Number} Time, in seconds.
    */
 
@@ -360,7 +361,7 @@ define([
    * Creates the playhead UI objects.
    *
    * @private
-   * @param {Boolean} showTime If <code>true</code> The playback time position
+   * @param {Boolean} showTime If <code>true</code> the playback time position
    *   is shown next to the playhead.
    */
 

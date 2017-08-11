@@ -30,6 +30,12 @@ define([
   }
 
   /**
+   * Creates a Konva.Layer that displays point markers against the audio
+   * waveform.
+   *
+   * @class
+   * @alias PointsLayer
+   *
    * @param {Peaks} peaks
    * @param {Konva.Stage} stage
    * @param {WaveformOverview|WaveformZoomView} view
@@ -86,6 +92,14 @@ define([
     });
   };
 
+  /**
+   * Creates the Konva UI objects for a given point.
+   *
+   * @private
+   * @param {Point} point
+   * @returns {Konva.Group}
+   */
+
   PointsLayer.prototype._createPointGroup = function(point) {
     var pointGroup = new Konva.Group();
 
@@ -110,12 +124,15 @@ define([
     return pointGroup;
   };
 
-  PointsLayer.prototype._addPointGroup = function(point) {
-    if (this._pointGroups[point.id]) {
-      this._peaks.logger('Already have pointGroup for id: ' + point.id);
-      return;
-    }
+  /**
+   * Adds a Konva UI object to the layer for a given point.
+   *
+   * @private
+   * @param {Point} point
+   * @returns {Konva.Group}
+   */
 
+  PointsLayer.prototype._addPointGroup = function(point) {
     var pointGroup = this._createPointGroup(point);
 
     this._pointGroups[point.id] = pointGroup;
@@ -125,19 +142,9 @@ define([
     return pointGroup;
   };
 
-  PointsLayer.prototype._removePoint = function(point) {
-    var pointGroup = this._pointGroups[point.id];
-
-    if (pointGroup) {
-      pointGroup.destroyChildren();
-      pointGroup.destroy();
-      delete this._pointGroups[point.id];
-    }
-  };
-
   /**
    * @param {Konva.Group} pointGroup
-   * @param {Object} point
+   * @param {Point} point
    */
 
   PointsLayer.prototype._onPointHandleDrag = function(pointGroup, point) {
@@ -153,6 +160,36 @@ define([
 
     this._peaks.emit('points.dragged', point);
   };
+
+  /**
+   * Updates the positions of all displayed points in the view.
+   *
+   * @param {Number} startTime The start of the visible range in the view,
+   *   in seconds.
+   * @param {Number} endTime The end of the visible range in the view,
+   *   in seconds.
+   */
+
+  PointsLayer.prototype.updatePoints = function(startTime, endTime) {
+    // Update all points in the visible time range.
+    var points = this._peaks.points.find(startTime, endTime);
+
+    var count = points.length;
+
+    points.forEach(this._updatePoint.bind(this));
+
+    // TODO: in the overview all segments are visible, so no need to check
+    count += this._removeInvisiblePoints(startTime, endTime);
+
+    if (count > 0) {
+      this._layer.draw();
+    }
+  };
+
+  /**
+   * @private
+   * @param {Point} point
+   */
 
   PointsLayer.prototype._updatePoint = function(point) {
     var pointGroup = this._pointGroups[point.id];
@@ -172,31 +209,6 @@ define([
 
         pointGroup.marker.label.setText(getLabelText(point));
       }
-    }
-  };
-
-  PointsLayer.prototype.setVisible = function(visible) {
-    this._layer.setVisible(visible);
-  };
-
-  /**
-   * Updates the positions of all displayed points according to the view's
-   * zoom level and scroll position.
-   */
-
-  PointsLayer.prototype.updatePoints = function(startTime, endTime) {
-    // Update all points in the visible time range.
-    var points = this._peaks.points.find(startTime, endTime);
-
-    var count = points.length;
-
-    points.forEach(this._updatePoint.bind(this));
-
-    // TODO: in the overview all segments are visible, so no need to check
-    count += this._removeInvisiblePoints(startTime, endTime);
-
-    if (count > 0) {
-      this._layer.draw();
     }
   };
 
@@ -225,6 +237,33 @@ define([
     });
 
     return count;
+  };
+
+  /**
+   * Removes the UI object for a given point.
+   *
+   * @private
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._removePoint = function(point) {
+    var pointGroup = this._pointGroups[point.id];
+
+    if (pointGroup) {
+      pointGroup.destroyChildren();
+      pointGroup.destroy();
+      delete this._pointGroups[point.id];
+    }
+  };
+
+  /**
+   * Toggles visibility of the points layer.
+   *
+   * @param {Boolean} visible
+   */
+
+  PointsLayer.prototype.setVisible = function(visible) {
+    this._layer.setVisible(visible);
   };
 
   return PointsLayer;

@@ -43,6 +43,9 @@ define('peaks', [
    *
    * @class
    * @alias Peaks
+   *
+   * @param {HTMLElement} container An HTML element to contain the Peaks.js
+   *  user interface elements.
    */
 
   function Peaks(container) {

@@ -36,6 +36,54 @@ define([
     this._createLayer();
   }
 
+  SegmentsLayer.prototype._createLayer = function() {
+    var self = this;
+
+    this._layer = new Konva.Layer();
+    this._stage.add(this._layer);
+
+    this._peaks.on('segments.add', function(segments) {
+      var frameStartTime = self._view.pixelsToTime(self._view.frameOffset);
+      var frameEndTime   = self._view.pixelsToTime(self._view.frameOffset + self._view.width);
+
+      segments.forEach(function(segment) {
+        if (segment.isVisible(frameStartTime, frameEndTime)) {
+          self._addSegmentGroup(segment);
+        }
+      });
+
+      self.updateSegments(frameStartTime, frameEndTime);
+    });
+
+    this._peaks.on('segments.remove', function(segments) {
+      segments.forEach(function(segment) {
+        self._removeSegment(segment);
+      });
+
+      self._layer.draw();
+    });
+
+    this._peaks.on('segments.remove_all', function() {
+      self._layer.removeChildren();
+      self._segmentGroups = {};
+
+      self._layer.draw();
+    });
+
+    this._peaks.on('segments.dragged', function(segment) {
+      self._updateSegment(segment);
+      self._layer.draw();
+    });
+  };
+
+  /**
+   * Creates the Konva UI objects for a given segment.
+   *
+   * @private
+   * @param {Segment} segment
+   * @returns {Konva.Group}
+   */
+
   SegmentsLayer.prototype._createSegmentGroup = function(segment) {
     var self = this;
 
@@ -102,6 +150,14 @@ define([
     return segmentGroup;
   };
 
+  /**
+   * Adds a Konva UI object to the layer for a given segment.
+   *
+   * @private
+   * @param {Segment} segment
+   * @returns {Konva.Group}
+   */
+
   SegmentsLayer.prototype._addSegmentGroup = function(segment) {
     var segmentGroup = this._createSegmentGroup(segment);
 
@@ -112,45 +168,61 @@ define([
     return segmentGroup;
   };
 
-  SegmentsLayer.prototype._createLayer = function() {
-    var self = this;
+  /**
+   * @param {Konva.Group} segmentGroup
+   * @param {Segment} segment
+   */
 
-    this._layer = new Konva.Layer();
-    this._stage.add(this._layer);
+  SegmentsLayer.prototype._onSegmentHandleDrag = function(segmentGroup, segment) {
+    var inMarkerX  = segmentGroup.inMarker.getX();
+    var outMarkerX = segmentGroup.outMarker.getX();
 
-    this._peaks.on('segments.add', function(segments) {
-      var frameStartTime = self._view.pixelsToTime(self._view.frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(self._view.frameOffset + self._view.width);
+    if (inMarkerX > 0) {
+      var inOffset = this._view.frameOffset +
+                     inMarkerX +
+                     segmentGroup.inMarker.getWidth();
 
-      segments.forEach(function(segment) {
-        if (segment.isVisible(frameStartTime, frameEndTime)) {
-          self._addSegmentGroup(segment);
-        }
-      });
+      segment.startTime = this._view.pixelsToTime(inOffset);
+    }
 
-      self.updateSegments(frameStartTime, frameEndTime);
-    });
+    if (outMarkerX < this._view.width) {
+      var outOffset = this._view.frameOffset + outMarkerX;
 
-    this._peaks.on('segments.remove', function(segments) {
-      segments.forEach(function(segment) {
-        self._removeSegment(segment);
-      });
+      segment.endTime = this._view.pixelsToTime(outOffset);
+    }
 
-      self._layer.draw();
-    });
-
-    this._peaks.on('segments.remove_all', function() {
-      self._layer.removeChildren();
-      self._segmentGroups = {};
-
-      self._layer.draw();
-    });
-
-    this._peaks.on('segments.dragged', function(segment) {
-      self._updateSegment(segment);
-      self._layer.draw();
-    });
+    this._peaks.emit('segments.dragged', segment);
   };
+
+  /**
+   * Updates the positions of all displayed segments in the view.
+   *
+   * @param {Number} startTime The start of the visible range in the view,
+   *   in seconds.
+   * @param {Number} endTime The end of the visible range in the view,
+   *   in seconds.
+   */
+
+  SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
+    // Update segments in visible time range.
+    var segments = this._peaks.segments.find(startTime, endTime);
+
+    var count = segments.length;
+
+    segments.forEach(this._updateSegment.bind(this));
+
+    // TODO: in the overview all segments are visible, so no need to check
+    count += this._removeInvisibleSegments(startTime, endTime);
+
+    if (count > 0) {
+      this._layer.draw();
+    }
+  };
+
+  /**
+   * @private
+   * @param {Segment} segment
+   */
 
   SegmentsLayer.prototype._updateSegment = function(segment) {
     var segmentGroup = this._segmentGroups[segment.id];
@@ -187,58 +259,6 @@ define([
     }
   };
 
-  SegmentsLayer.prototype._removeSegment = function(segment) {
-    var segmentGroup = this._segmentGroups[segment.id];
-
-    if (segmentGroup) {
-      segmentGroup.destroyChildren();
-      segmentGroup.destroy();
-      delete this._segmentGroups[segment.id];
-    }
-  };
-
-  SegmentsLayer.prototype._onSegmentHandleDrag = function(segmentGroup, segment) {
-    var inMarkerX  = segmentGroup.inMarker.getX();
-    var outMarkerX = segmentGroup.outMarker.getX();
-
-    if (inMarkerX > 0) {
-      var inOffset = this._view.frameOffset +
-                     inMarkerX +
-                     segmentGroup.inMarker.getWidth();
-
-      segment.startTime = this._view.pixelsToTime(inOffset);
-    }
-
-    if (outMarkerX < this._view.width) {
-      var outOffset = this._view.frameOffset + outMarkerX;
-
-      segment.endTime = this._view.pixelsToTime(outOffset);
-    }
-
-    this._peaks.emit('segments.dragged', segment);
-  };
-
-  /**
-   * Updates the positions of all displayed segments according to the view's
-   * zoom level and scroll position.
-   */
-
-  SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
-    // Update segments in visible time range.
-    var segments = this._peaks.segments.find(startTime, endTime);
-
-    var count = segments.length;
-
-    segments.forEach(this._updateSegment.bind(this));
-
-    // TODO: in the overview all segments are visible, so no need to check
-    count += this._removeInvisibleSegments(startTime, endTime);
-
-    if (count > 0) {
-      this._layer.draw();
-    }
-  };
-
   /**
    * Removes any segments that are not visible, i.e., are within or overlap the
    * given time range.
@@ -264,6 +284,32 @@ define([
     });
 
     return count;
+  };
+
+  /**
+   * Removes the given segment from the view.
+   *
+   * @param {Segment} segment
+   */
+
+  SegmentsLayer.prototype._removeSegment = function(segment) {
+    var segmentGroup = this._segmentGroups[segment.id];
+
+    if (segmentGroup) {
+      segmentGroup.destroyChildren();
+      segmentGroup.destroy();
+      delete this._segmentGroups[segment.id];
+    }
+  };
+
+  /**
+   * Toggles visibility of the segments layer.
+   *
+   * @param {Boolean} visible
+   */
+
+  SegmentsLayer.prototype.setVisible = function(visible) {
+    this._layer.setVisible(visible);
   };
 
   return SegmentsLayer;

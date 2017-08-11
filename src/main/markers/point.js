@@ -32,10 +32,10 @@ define(function() {
   }
 
   /**
-   * Returns true if the point lies with in the given time range.
+   * Returns <code>true</code> if the point lies with in a given time range.
    *
-   * @param {Number} startTime start time, in seconds
-   * @param {Number} endTime end time, in seconds
+   * @param {Number} startTime The start of the time region, in seconds.
+   * @param {Number} endTime The end of the time region, in seconds.
    * @returns {Boolean}
    */
 

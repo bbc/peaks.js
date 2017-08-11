@@ -125,7 +125,7 @@ define(function() {
    * received the mouse down event.
    *
    * @private
-   * @param {Number} clientX mouse client X position.
+   * @param {Number} clientX Mouse client X position.
    */
 
   MouseDragHandler.prototype._getMousePosX = function(clientX) {
@@ -135,8 +135,10 @@ define(function() {
   };
 
   /**
-   * @returns {Boolean} <code>true</code> if the mouse is being dragged,
-   * i.e., moved with the mouse button held down.
+   * Returns <code>true</code> if the mouse is being dragged, i.e., moved with
+   * the mouse button held down.
+   *
+   * @returns {Boolean}
    */
 
   MouseDragHandler.prototype.isDragging = function() {

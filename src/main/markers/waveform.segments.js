@@ -50,8 +50,8 @@ define([
   /**
    * Returns a new unique segment id value.
    *
-   * @returns {String}
    * @private
+   * @returns {String}
    */
 
   WaveformSegments.prototype._getNextSegmentId = function() {
@@ -74,6 +74,7 @@ define([
   /**
    * Creates a new segment object.
    *
+   * @private
    * @param {SegmentOptions} options
    * @return {Segment}
    */
@@ -145,18 +146,11 @@ define([
    * Returns the segment with the given id, or <code>null</code> if not found.
    *
    * @param {String} id
-   *
    * @returns {Segment|null}
    */
 
   WaveformSegments.prototype.getSegment = function(id) {
-    for (var i = 0, length = this._segments.length; i < length; i++) {
-      if (this._segments[i].id === id) {
-        return this._segments[i];
-      }
-    }
-
-    throw new Error("peaks.segments.getSegment(): segment '" + id + "' not found");
+    return this._segmentsById[id] || null;
   };
 
   /**

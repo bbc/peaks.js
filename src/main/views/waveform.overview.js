@@ -124,7 +124,7 @@ define([
   /**
    * Returns the pixel index for a given time, for the current zoom level.
    *
-   * @param {Number} Time, in seconds.
+   * @param {Number} time Time, in seconds.
    * @returns {Number} Pixel index.
    */
 
@@ -135,7 +135,7 @@ define([
   /**
    * Returns the time for a given pixel index, for the current zoom level.
    *
-   * @param {Number} Pixel index.
+   * @param {Number} pixels Pixel index.
    * @returns {Number} Time, in seconds.
    */
 

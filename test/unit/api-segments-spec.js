@@ -51,7 +51,7 @@ describe('Peaks.segments', function() {
   });
 
   describe('getSegment', function() {
-    it('should return a segment', function() {
+    it('should return a segment given a valid id', function() {
       p.segments.add({ startTime: 0, endTime: 10, id: 'segment1' });
       p.segments.add({ startTime: 2, endTime: 12, id: 'segment2' });
 
@@ -64,13 +64,13 @@ describe('Peaks.segments', function() {
       expect(segment.endTime).to.equal(12);
     });
 
-    it('should throw an exception if segment not found', function() {
+    it('should return null if segment not found', function() {
       p.segments.add({ startTime: 0, endTime: 10, id: 'segment1' });
       p.segments.add({ startTime: 2, endTime: 12, id: 'segment2' });
 
-      expect(function() {
-        p.segments.getSegment('segment3');
-      }).to.throw(/not found/);
+      var segment = p.segments.getSegment('segment3');
+
+      expect(segment).to.equal(null);
     });
   });
 

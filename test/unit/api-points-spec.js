@@ -46,6 +46,25 @@ describe('Peaks.points', function() {
     });
   });
 
+  describe('getPoint', function() {
+    beforeEach(function() {
+      p.points.add({ time: 10, editable: true, id: 'point1' });
+    });
+
+    it('should return a point given a valid id', function() {
+      var point = p.points.getPoint('point1');
+
+      expect(point).to.be.an.instanceOf(Point);
+      expect(point.id).to.equal('point1');
+    });
+
+    it('should return null if point not found', function() {
+      var point = p.points.getPoint('point2');
+
+      expect(point).to.equal(null);
+    });
+  });
+
   describe('add', function() {
     it('should create a point from the supplied object', function() {
       p.points.add({ time: 10, editable: true, color: '#ff0000', labelText: 'A point' });

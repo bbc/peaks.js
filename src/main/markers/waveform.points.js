@@ -59,8 +59,9 @@ define([
   /**
    * Creates a new point object.
    *
+   * @private
    * @param {PointOptions} options
-   * @return {Point}
+   * @returns {Point}
    */
 
   WaveformPoints.prototype._createPoint = function(options) {
@@ -118,11 +119,21 @@ define([
   };
 
   /**
+   * Returns the point with the given id, or <code>null</code> if not found.
+   *
+   * @param {String} id
+   * @returns {Point|null}
+   */
+
+  WaveformPoints.prototype.getPoint = function(id) {
+    return this._pointsById[id] || null;
+  };
+
+  /**
    * Returns all points within a given time region.
    *
    * @param {Number} startTime The start of the time region, in seconds.
    * @param {Number} endTime The end of the time region, in seconds.
-   *
    * @returns {Array<Point>}
    */
 

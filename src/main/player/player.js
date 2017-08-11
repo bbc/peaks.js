@@ -16,8 +16,10 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    * @class
    * @alias Player
    *
-   * @param {Peaks} peaks The parent Peaks object.
-   * @param {HTMLMediaElement} mediaElement
+   * @param {Peaks} peaks The parent {@link Peaks} object.
+   * @param {HTMLMediaElement} mediaElement The HTML <code>&lt;audio&gt;</code>
+   *   or <code>&lt;video&gt;</code> element to associate with the
+   *   {@link Peaks} instance.
    */
 
   function Player(peaks, mediaElement) {
@@ -54,15 +56,20 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   /**
    * Adds an event listener to the media element.
    *
-   * @param {String} type
-   * @param {Function} callback
    * @private
+   * @param {String} type The event type to listen for.
+   * @param {Function} callback An event handler function.
    */
 
   Player.prototype._addMediaListener = function(type, callback) {
     this._listeners.push({ type: type, callback: callback });
     this._mediaElement.addEventListener(type, callback);
   };
+
+  /**
+   * Cleans up the player object, removing all event listeners from the
+   * associated media element.
+   */
 
   Player.prototype.destroy = function() {
     for (var i = 0; i < this._listeners.length; i++) {

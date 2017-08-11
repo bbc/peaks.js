@@ -34,7 +34,7 @@ define(function() {
   }
 
   /**
-   * Determines whether the segment overlaps a given time region.
+   * Returns <code>true</code> if the segment overlaps a given time region.
    *
    * @param {Number} startTime The start of the time region, in seconds.
    * @param {Number} endTime The end of the time region, in seconds.
