@@ -70,7 +70,7 @@ define(function() {
     }
 
     // Use the window mousemove and mouseup handlers instead of the
-    // Konva.Stage so that we still receive events of the user moves the
+    // Konva.Stage ones so that we still receive events if the user moves the
     // mouse outside the stage.
     window.addEventListener('mousemove', this._mouseMove, false);
     window.addEventListener('mouseup', this._mouseUp, false);
