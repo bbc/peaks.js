@@ -1,5 +1,31 @@
 # Peaks.js
 
+## 0.9.0 (2017/08/16)
+
+ * (#184, #116) Fixed waveform zoom and scrolling behaviour. Note that the
+   animated zoom feature no longer works, and so static zoom is now always used,
+   regardless of the 'zoomAdapter' option (@chrisn)
+ * Refactored WaveformSegments and WaveformPoints to separate the UI code into
+   new SegmentsLayer and PointsLayer classes (@chrisn)
+ * Points and segments are now represented by Point and Segment objects, rather
+   than plain JavaScript objects (@chrisn)
+ * (#117) Improved rendering speed of points and segments (@chrisn)
+ * Points and segments with duplicate ids are no longer allowed (@chrisn)
+ * The 'segments.ready' event is deprecated, use 'peaks.ready' instead (@chrisn)
+ * Added 'add', 'remove', 'remove_all', and 'dragged' events for points
+   and segments (@chrisn)
+ * The demo page now allows points and segments to be removed (@chrisn)
+ * Added ZoomController and TimeController classes to simplify main.js (@chrisn)
+ * Added PlayheadLayer class and refactored WaveformOverview WaveformZoomView
+   so that the playhead update code is reused between both (@chrisn)
+ * Added peaks.points.getPoint() method (@chrisn)
+ * Changed the keyboard interface so that the left/right arrow keys scroll the
+   waveform by 1 second, and shift+left/right by one screen width (@chrisn)
+ * Improved error messages (@chrisn)
+ * Removed Node.js v4 and added v8 in Travis CI builds. Please use v6.0 or later
+   to build Peaks.js (@chrisn)
+ * Many other refactorings and code improvements (@chrisn)
+
 ## 0.8.1 (2017/07/03)
 
  * Fixed deprecation logging from time API functions (@chrisn)

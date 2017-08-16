@@ -1,11 +1,11 @@
 {
   "name": "peaks.js",
-  "version": "0.8.1",
-  "description": "Frontend app for displaying audio waveforms",
+  "version": "0.9.0",
+  "description": "JavaScript UI component for displaying audio waveforms",
   "main": "./peaks.js",
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
-    "Thomas Parisot <thomas.parisot@bbc.co.uk> (https://github.com/oncletom)",
+    "Thomas Parisot (https://github.com/oncletom)",
     "Chris Needham (https://github.com/chrisn)"
   ],
   "keywords": [
@@ -48,6 +48,9 @@
     "url": "git://github.com/bbc/peaks.js.git"
   },
   "license": "LGPL-3.0",
+  "engines": {
+    "node" : ">=6.0"
+  },
   "scripts": {
     "prebuild": "npm run lint",
     "build": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
