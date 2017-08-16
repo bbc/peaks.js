@@ -438,6 +438,10 @@ instance.segments.add([
 
 Returns an array of all segments present on the timeline.
 
+### `instance.segments.getSegment(id)`
+
+Returns the segment with the given id, or `null` if not found.
+
 ### `instance.segments.removeByTime(startTime[, endTime])`
 
 Removes any segment which starts at `startTime` (seconds), and which optionally ends at `endTime` (seconds).
@@ -520,6 +524,10 @@ instance.points.add([
 ### `instance.points.getPoints()`
 
 Returns an array of all points present on the timeline.
+
+### `instance.points.getPoint(id)`
+
+Returns the point with the given id, or `null` if not found.
 
 ### `instance.points.removeByTime(time)`
 
