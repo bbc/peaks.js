@@ -7,9 +7,10 @@
  */
 
 define([
+  'colors.css',
   'peaks/markers/segment',
   'peaks/waveform/waveform.utils'
-], function(Segment, Utils) {
+], function(Colors, Segment, Utils) {
   'use strict';
 
   /**
@@ -45,6 +46,7 @@ define([
     this._segments = [];
     this._segmentsById = {};
     this._segmentIdCounter = 0;
+    this._colorIndex = 0;
   }
 
   /**
@@ -58,13 +60,37 @@ define([
     return 'peaks.segment.' + this._segmentIdCounter++;
   };
 
-  function g() {
-    return Math.floor(Math.random() * 255);
-  }
+  var colors = [
+    Colors.navy,
+    Colors.blue,
+    Colors.aqua,
+    Colors.teal,
+    // Colors.olive,
+    // Colors.lime,
+    // Colors.green,
+    Colors.yellow,
+    Colors.orange,
+    Colors.red,
+    Colors.maroon,
+    Colors.fuchsia,
+    Colors.purple
+    // Colors.black,
+    // Colors.gray,
+    // Colors.silver
+  ];
 
-  WaveformSegments.prototype.getSegmentColor = function() {
+  /**
+   * @private
+   * @returns {String}
+   */
+
+  WaveformSegments.prototype._getSegmentColor = function() {
     if (this._peaks.options.randomizeSegmentColor) {
-      return 'rgba(' + g() + ', ' + g() + ', ' + g() + ', 1)';
+      if (++this._colorIndex === colors.length) {
+        this._colorIndex = 0;
+      }
+
+      return colors[this._colorIndex];
     }
     else {
       return this._peaks.options.segmentColor;
@@ -117,7 +143,7 @@ define([
       options.startTime,
       options.endTime,
       options.labelText || '',
-      options.color || this.getSegmentColor(),
+      options.color || this._getSegmentColor(),
       options.editable || false
     );
 

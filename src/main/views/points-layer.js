@@ -13,23 +13,6 @@ define([
   'use strict';
 
   /**
-   * Returns the label text for the given point, or a formatted timestamp
-   * if there is no label text.
-   *
-   * @param {Point} point
-   * @returns {String}
-   */
-
-  function getLabelText(point) {
-    if (point.labelText) {
-      return point.labelText;
-    }
-    else {
-      return Utils.formatTime(point.time, false);
-    }
-  }
-
-  /**
    * Creates a Konva.Layer that displays point markers against the audio
    * waveform.
    *
@@ -42,21 +25,25 @@ define([
    * @param {Boolean} allowEditing
    */
 
-  function PointsLayer(peaks, stage, view, allowEditing) {
+  function PointsLayer(peaks, stage, view, allowEditing, showLabels) {
     this._peaks        = peaks;
     this._stage        = stage;
     this._view         = view;
-    this._allowEditing = true; // allowEditing;
+    this._allowEditing = allowEditing;
+    this._showLabels   = showLabels;
 
     this._pointGroups = {};
     this._createLayer();
+    this._registerEventHandlers();
   }
 
   PointsLayer.prototype._createLayer = function() {
-    var self = this;
-
     this._layer = new Konva.Layer();
     this._stage.add(this._layer);
+  };
+
+  PointsLayer.prototype._registerEventHandlers = function() {
+    var self = this;
 
     this._peaks.on('points.add', function(points) {
       var frameStartTime = self._view.pixelsToTime(self._view.frameOffset);
@@ -105,21 +92,22 @@ define([
 
     pointGroup.point = point;
 
-    if (this._allowEditing && point.editable) {
-      var PointMarker = this._peaks.options.pointMarker;
+    var editable = this._allowEditing && point.editable;
 
-      pointGroup.marker = new PointMarker(
-        true,
-        pointGroup,
-        point,
-        this._layer,
-        this._onPointHandleDrag.bind(this),
-        this._peaks.options.pointDblClickHandler,
-        this._peaks.options.pointDragEndHandler
-      );
+    pointGroup.marker = this._peaks.options.createPointMarker({
+      draggable:   editable,
+      showLabel:   this._showLabels,
+      handleColor: point.color ? point.color : this._peaks.options.pointMarkerColor,
+      height:      this._view.height,
+      pointGroup:  pointGroup,
+      point:       point,
+      layer:       this._layer,
+      onDrag:      editable ? this._onPointHandleDrag.bind(this) : null,
+      onDblClick:  this._peaks.options.pointDblClickHandler,
+      onDragEnd:   editable ? this._peaks.options.pointDragEndHandler : null
+    });
 
-      pointGroup.add(pointGroup.marker);
-    }
+    pointGroup.add(pointGroup.marker);
 
     return pointGroup;
   };
@@ -192,24 +180,35 @@ define([
    */
 
   PointsLayer.prototype._updatePoint = function(point) {
-    var pointGroup = this._pointGroups[point.id];
-
-    if (!pointGroup) {
-      pointGroup = this._addPointGroup(point);
-    }
+    var pointGroup = this._findOrAddPointGroup(point);
 
     // Point is visible
     var timestampOffset = this._view.timeToPixels(point.time);
 
     var startPixel = timestampOffset - this._view.frameOffset;
 
-    if (this._allowEditing && point.editable) {
-      if (pointGroup.marker) {
-        pointGroup.marker.setX(startPixel - pointGroup.marker.getWidth());
+    if (pointGroup.marker) {
+      pointGroup.marker.setX(startPixel);
 
-        pointGroup.marker.label.setText(getLabelText(point));
+      if (pointGroup.marker.time) {
+        pointGroup.marker.time.setText(Utils.formatTime(point.time, false));
       }
     }
+  };
+
+  /**
+   * @private
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._findOrAddPointGroup = function(point) {
+    var pointGroup = this._pointGroups[point.id];
+
+    if (!pointGroup) {
+      pointGroup = this._addPointGroup(point);
+    }
+
+    return pointGroup;
   };
 
   /**

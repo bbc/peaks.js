@@ -5,6 +5,7 @@
  *
  * @module peaks/waveform/waveform.utils
  */
+
 define(function() {
   'use strict';
 
@@ -33,8 +34,8 @@ define(function() {
     /**
      * Returns a formatted time string.
      *
-     * @param {int}     time            Time in seconds to be formatted
-     * @param {Boolean} dropHundredths  Don't display hundredths of a second if true
+     * @param {Number} time The time to be formatted, in seconds.
+     * @param {Boolean} dropHundredths Don't display hundredths of a second if true.
      * @returns {String}
      */
 

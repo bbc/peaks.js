@@ -47,7 +47,7 @@
   },
   "license": "LGPL-3.0",
   "engines": {
-    "node" : ">=6.0"
+    "node": ">=6.0"
   },
   "scripts": {
     "prebuild": "npm run lint",
@@ -87,6 +87,7 @@
     "watchify": "~3.9.0"
   },
   "dependencies": {
+    "colors.css": "~3.0.0",
     "eventemitter2": "~4.1.0",
     "konva": "~1.6.7",
     "waveform-data": "~2.0.1"

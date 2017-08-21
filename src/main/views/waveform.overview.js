@@ -75,7 +75,7 @@ define([
     self.createWaveform();
 
     self._segmentsLayer = new SegmentsLayer(peaks, self.stage, self, false);
-    self._pointsLayer = new PointsLayer(peaks, self.stage, self, false);
+    self._pointsLayer = new PointsLayer(peaks, self.stage, self, false, false);
 
     self.createHighlightRect();
 

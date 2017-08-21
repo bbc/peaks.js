@@ -7,6 +7,7 @@
  */
 
 define('peaks', [
+  'colors.css',
   'EventEmitter',
   'peaks/markers/waveform.points',
   'peaks/markers/waveform.segments',
@@ -18,6 +19,7 @@ define('peaks', [
   'peaks/waveform/waveform.utils',
   'peaks/player/player.keyboard'
   ], function(
+    Colors,
     EventEmitter,
     WaveformPoints,
     WaveformSegments,
@@ -123,12 +125,12 @@ define('peaks', [
       /**
        * Colour for the in marker of segments
        */
-      inMarkerColor:         '#a0a0a0',
+      inMarkerColor:         Colors.gray,
 
       /**
        * Colour for the out marker of segments
        */
-      outMarkerColor:        '#a0a0a0',
+      outMarkerColor:        Colors.gray,
 
       /**
        * Colour for the zoomed in waveform
@@ -159,17 +161,17 @@ define('peaks', [
       /**
        * Colour for segments on the waveform
        */
-      segmentColor:          'rgba(255, 161, 39, 1)',
+      segmentColor:          Colors.orange,
 
       /**
        * Colour of the play head
        */
-      playheadColor:         'rgba(0, 0, 0, 1)',
+      playheadColor:         Colors.black,
 
       /**
        * Colour of the play head text
        */
-      playheadTextColor:     '#aaa',
+      playheadTextColor:     Colors.gray,
 
       /**
        * Colour of the axis gridlines
@@ -179,7 +181,7 @@ define('peaks', [
       /**
        * Colour of the axis labels
        */
-      axisLabelColor:        '#aaa',
+      axisLabelColor:        Colors.gray,
 
       /**
        *
@@ -194,7 +196,7 @@ define('peaks', [
       /**
        * Color for point markers
        */
-      pointMarkerColor:     '#FF0000',
+      pointMarkerColor:     Colors.teal,
 
       /**
        * Handler function called when point handle double clicked
@@ -301,10 +303,9 @@ define('peaks', [
 
     Utils.extend(instance.options, opts);
     Utils.extend(instance.options, {
-      segmentInMarker:  mixins.defaultInMarker(instance.options),
-      segmentOutMarker: mixins.defaultOutMarker(instance.options),
-      segmentLabelDraw: mixins.defaultSegmentLabelDraw(instance.options),
-      pointMarker:      mixins.defaultPointMarker(instance.options)
+      createSegmentMarker: mixins.createSegmentMarker,
+      createSegmentLabel:  mixins.createSegmentLabel,
+      createPointMarker:   mixins.createPointMarker
     });
 
     if (!Array.isArray(instance.options.zoomLevels)) {

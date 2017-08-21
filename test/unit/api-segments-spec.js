@@ -140,7 +140,7 @@ describe('Peaks.segments', function() {
     it('should assign a default (random) color if not specified', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
-      expect(p.segments.getSegments()[0].color).to.match(/rgba\(\d+, \d+, \d+, 1\)/);
+      expect(p.segments.getSegments()[0].color).to.match(/^#[0-9A-Fa-f]{6}$/);
     });
 
     it('should accept an optional label text', function() {
