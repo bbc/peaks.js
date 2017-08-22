@@ -28,20 +28,17 @@ describe('Peaks.player', function() {
     }
   });
 
-  describe.skip('getCurrentTime', function() {
+  describe('getCurrentTime', function() {
     var newTime = 6.0;
 
     it('should return the actual value of the audio element', function() {
       expect(p.player.getCurrentTime()).to.equal(0);
     });
 
-    // @see https://github.com/bbc/peaks.js/issues/9
-    // @see https://github.com/bbc/peaks.js/issues/12
-    // For some reason, the event is not emitted during the tests
     it('should return an updated time if it has been modified through the audio element', function(done) {
       p.on('player_seek', function(currentTime) {
-        expect(p.player.getCurrentTime()).to.equal(newTime);
-        expect(currentTime).to.equal(newTime);
+        var diff = Math.abs(p.player.getCurrentTime() - newTime);
+        expect(diff).to.be.lessThan(0.2);
         done();
       });
 
@@ -49,13 +46,14 @@ describe('Peaks.player', function() {
     });
   });
 
-  describe.skip('seek', function() {
+  describe('seek', function() {
     var newTime = 6.0;
 
     it('should change the currentTime value of the audio element', function() {
       p.player.seek(newTime);
 
-      expect(p.player.getCurrentTime()).to.equal(newTime);
+      var diff = Math.abs(p.player.getCurrentTime() - newTime);
+      expect(diff).to.be.lessThan(0.2);
     });
   });
 
