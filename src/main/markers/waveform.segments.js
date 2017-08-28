@@ -163,17 +163,9 @@ define([
    */
 
   WaveformSegments.prototype.find = function(startTime, endTime) {
-    var segments = [];
-
-    for (var i = 0, length = this._segments.length; i < length; i++) {
-      var segment = this._segments[i];
-
-      if (segment.isVisible(startTime, endTime)) {
-        segments.push(segment);
-      }
-    }
-
-    return segments;
+    return this._segments.filter(function(segment) {
+      return segment.isVisible(startTime, endTime);
+    });
   };
 
   /**

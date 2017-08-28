@@ -138,17 +138,9 @@ define([
    */
 
   WaveformPoints.prototype.find = function(startTime, endTime) {
-    var points = [];
-
-    for (var i = 0, length = this._points.length; i < length; i++) {
-      var point = this._points[i];
-
-      if (point.isVisible(startTime, endTime)) {
-        points.push(point);
-      }
-    }
-
-    return points;
+    return this._points.filter(function(point) {
+      return point.isVisible(startTime, endTime);
+    });
   };
 
   /**
