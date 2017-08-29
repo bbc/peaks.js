@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.9.1 (2017/08/29)
+
+ * Fixed bug in IE11 which caused adding segment objects to fail (@chrisn)
+
 ## 0.9.0 (2017/08/16)
 
  * (#184, #116) Fixed waveform zoom and scrolling behaviour. Note that the
@@ -16,8 +20,9 @@
    and segments (@chrisn)
  * The demo page now allows points and segments to be removed (@chrisn)
  * Added ZoomController and TimeController classes to simplify main.js (@chrisn)
- * Added PlayheadLayer class and refactored WaveformOverview WaveformZoomView
-   so that the playhead update code is reused between both (@chrisn)
+ * Added PlayheadLayer class and refactored WaveformOverview and
+   WaveformZoomView so that the playhead update code is reused between both
+   (@chrisn)
  * Added peaks.points.getPoint() method (@chrisn)
  * Changed the keyboard interface so that the left/right arrow keys scroll the
    waveform by 1 second, and shift+left/right by one screen width (@chrisn)
