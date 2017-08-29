@@ -1,9 +1,9 @@
 /**
  * @file
  *
- * Defines the {@link WaveShape} class.
+ * Defines the {@link WaveformSegmentShape} class.
  *
- * @module peaks/markers/shapes/wave
+ * @module peaks/markers/shapes/waveform
  */
 
 define([
@@ -18,13 +18,13 @@ define([
      * Returns a new {Konva.Shape} object that renders the given waveform
      * segment.
      *
-     * @param {object} segment
+     * @param {Segment} segment
      * @param {WaveformZoomView|WaveformOverview} view
      * @returns {Konva.Shape}
      */
 
-    createShape: function(segment, view) {
-      var shape = new Konva.Shape({
+    create: function(segment, view) {
+      return new Konva.Shape({
         fill: segment.color,
         strokeWidth: 0,
         opacity: 1,
@@ -41,11 +41,9 @@ define([
             view.height
           );
 
-          context.fillStrokeShape(shape);
+          context.fillStrokeShape(this);
         }
       });
-
-      return shape;
     }
   };
 });

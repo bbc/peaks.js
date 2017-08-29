@@ -39,9 +39,7 @@
     "peaks/markers/segment": "./src/main/markers/segment",
     "peaks/markers/waveform.points": "./src/main/markers/waveform.points.js",
     "peaks/markers/waveform.segments": "./src/main/markers/waveform.segments.js",
-    "peaks/markers/shapes/base": "./src/main/markers/shapes/base.js",
-    "peaks/markers/shapes/rect": "./src/main/markers/shapes/rect.js",
-    "peaks/markers/shapes/wave": "./src/main/markers/shapes/wave.js"
+    "peaks/markers/shapes/waveform": "./src/main/markers/shapes/waveform.js"
   },
   "repository": {
     "type": "git",

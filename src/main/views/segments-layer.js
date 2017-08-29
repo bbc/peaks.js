@@ -7,10 +7,10 @@
  */
 
 define([
-  'peaks/markers/shapes/wave',
+  'peaks/markers/shapes/waveform',
   'peaks/waveform/waveform.utils',
   'konva'
-  ], function(SegmentShape, Utils, Konva) {
+  ], function(WaveformSegmentShape, Utils, Konva) {
   'use strict';
 
   /**
@@ -95,7 +95,7 @@ define([
 
     segmentGroup.segment = segment;
 
-    segmentGroup.waveformShape = SegmentShape.createShape(segment, self._view);
+    segmentGroup.waveformShape = WaveformSegmentShape.create(segment, self._view);
 
     segmentGroup.waveformShape.on('mouseenter', function(event) {
       if (!event.target.parent) {
