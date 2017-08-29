@@ -8,6 +8,22 @@
 define(function() {
   'use strict';
 
+  if (typeof Number.isFinite !== 'function') {
+    Number.isFinite = function isFinite(value) {
+      if (typeof value !== 'number') {
+        return false;
+      }
+
+      // Check for NaN and infinity
+      // eslint-disable-next-line no-self-compare
+      if (value !== value || value === Infinity || value === -Infinity) {
+        return false;
+      }
+
+      return true;
+    };
+  }
+
   function zeroPad(number) {
     return number < 10 ? '0' + number : number;
   }
