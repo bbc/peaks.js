@@ -57,6 +57,28 @@ define([
   };
 
   /**
+   * Creates and adds a new point object.
+   *
+   * @private
+   * @param {PointOptions} options
+   * @returns {Point}
+   */
+
+  WaveformPoints.prototype._addPoint = function(options) {
+    var point = this._createPoint(options);
+
+    if (this._pointsById.hasOwnProperty(point.id)) {
+      throw new Error('peaks.points.add(): duplicate id');
+    }
+
+    this._points.push(point);
+
+    this._pointsById[point.id] = point;
+
+    return point;
+  };
+
+  /**
    * Creates a new point object.
    *
    * @private
@@ -96,14 +118,6 @@ define([
       options.color,
       Boolean(options.editable)
     );
-
-    if (this._pointsById.hasOwnProperty(point.id)) {
-      throw new Error('peaks.points.add(): duplicate id');
-    }
-
-    this._points.push(point);
-
-    this._pointsById[point.id] = point;
 
     return point;
   };
@@ -166,7 +180,7 @@ define([
       }];
     }
 
-    points = points.map(this._createPoint.bind(this));
+    points = points.map(this._addPoint.bind(this));
 
     this._peaks.emit('points.add', points);
   };

@@ -98,6 +98,28 @@ define([
   };
 
   /**
+   * Creates and adds a new segment object.
+   *
+   * @private
+   * @param {SegmentOptions} options
+   * @return {Segment}
+   */
+
+  WaveformSegments.prototype._addSegment = function(options) {
+    var segment = this._createSegment(options);
+
+    if (this._segmentsById.hasOwnProperty(segment.id)) {
+      throw new Error('peaks.segments.add(): duplicate id');
+    }
+
+    this._segments.push(segment);
+
+    this._segmentsById[segment.id] = segment;
+
+    return segment;
+  };
+
+  /**
    * Creates a new segment object.
    *
    * @private
@@ -146,14 +168,6 @@ define([
       options.color || this._getSegmentColor(),
       options.editable || false
     );
-
-    if (this._segmentsById.hasOwnProperty(segment.id)) {
-      throw new Error('peaks.segments.add(): duplicate id');
-    }
-
-    this._segments.push(segment);
-
-    this._segmentsById[segment.id] = segment;
 
     return segment;
   };
@@ -218,7 +232,7 @@ define([
       }];
     }
 
-    segments = segments.map(this._createSegment.bind(this));
+    segments = segments.map(this._addSegment.bind(this));
 
     this._peaks.emit('segments.add', segments);
   };

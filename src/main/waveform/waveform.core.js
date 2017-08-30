@@ -43,12 +43,12 @@
    * components.
    *
    * @param {Object} ui Container elements for the UI components. See the
-   * <code>template</code> option.
+   *   <code>template</code> option.
    * @param {HTMLElement} ui.player Overall container HTML element.
    * @param {HTMLElement} ui.zoom HTML element container for the zoomable
-   * waveform view.
+   *   waveform view.
    * @param {HTMLElement} ui.overview HTML element container for the overview
-   * waveform.
+   *   waveform.
    */
 
   Waveform.prototype.init = function(ui) {
@@ -66,14 +66,14 @@
    * @param {Object} options
    * @param {String|Object} options.dataUri
    * @param {String} options.dataUri.arraybuffer Waveform data URL
-   * (binary format)
+   *   (binary format)
    * @param {String} options.dataUri.json Waveform data URL (JSON format)
    * @param {String} options.defaultUriFormat Either 'arraybuffer' (for binary
-   * data) or 'json'
+   *   data) or 'json'
    * @param {HTMLMediaElement} options.mediaElement
    *
    * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
-   * for details of the binary and JSON waveform data formats.
+   *   for details of the binary and JSON waveform data formats.
    */
 
   /* eslint-enable max-len */
@@ -137,7 +137,7 @@
 
       if (this.status !== 200) {
         self.handleRemoteData(
-          new Error('Unable to fetch remote data. HTTP Status ' + this.status)
+          new Error('Unable to fetch remote data. HTTP status ' + this.status)
         );
 
         return;
