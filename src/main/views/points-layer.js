@@ -223,18 +223,18 @@ define([
    */
 
   PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
-    var self = this;
-
     var count = 0;
 
-    Object.keys(this._pointGroups).forEach(function(pointId) {
-      var point = self._pointGroups[pointId].point;
+    for (var pointId in this._pointGroups) {
+      if (this._pointGroups.hasOwnProperty(pointId)) {
+        var point = this._pointGroups[pointId];
 
-      if (!point.isVisible(startTime, endTime)) {
-        self._removePoint(point);
-        count++;
+        if (!point.isVisible(startTime, endTime)) {
+          this._removePoint(point);
+          count++;
+        }
       }
-    });
+    }
 
     return count;
   };

@@ -270,18 +270,18 @@ define([
    */
 
   SegmentsLayer.prototype._removeInvisibleSegments = function(startTime, endTime) {
-    var self = this;
-
     var count = 0;
 
-    Object.keys(this._segmentGroups).forEach(function(segmentId) {
-      var segment = self._segmentGroups[segmentId].segment;
+    for (var segmentId in this._segmentGroups) {
+      if (this._segmentGroups.hasOwnProperty(segmentId)) {
+        var segment = this._segmentGroups[segmentId].segment;
 
-      if (!segment.isVisible(startTime, endTime)) {
-        self._removeSegment(segment);
-        count++;
+        if (!segment.isVisible(startTime, endTime)) {
+          this._removeSegment(segment);
+          count++;
+        }
       }
-    });
+    }
 
     return count;
   };
