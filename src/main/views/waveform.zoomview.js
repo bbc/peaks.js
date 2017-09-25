@@ -150,24 +150,22 @@ define([
 
       self._playheadLayer.syncPlayhead(pixelIndex);
 
-      if (self._playing) {
-        // Check for the playhead reaching the right-hand side of the window.
+      // Check for the playhead reaching the right-hand side of the window.
 
-        // TODO: move this code to animation function?
-        // TODO: don't scroll if user has positioned view manually (e.g., using
-        // the keyboard)
-        var endThreshold = self.frameOffset + self.width - 100;
+      // TODO: move this code to animation function?
+      // TODO: don't scroll if user has positioned view manually (e.g., using
+      // the keyboard)
+      var endThreshold = self.frameOffset + self.width - 100;
 
-        if (pixelIndex >= endThreshold || pixelIndex < self.frameOffset) {
-          // Put the playhead at 100 pixels from the left edge
-          self.frameOffset = pixelIndex - 100;
+      if (pixelIndex >= endThreshold || pixelIndex < self.frameOffset) {
+        // Put the playhead at 100 pixels from the left edge
+        self.frameOffset = pixelIndex - 100;
 
-          if (self.frameOffset < 0) {
-            self.frameOffset = 0;
-          }
-
-          self.updateWaveform(self.frameOffset);
+        if (self.frameOffset < 0) {
+          self.frameOffset = 0;
         }
+
+        self.updateWaveform(self.frameOffset);
       }
     });
 

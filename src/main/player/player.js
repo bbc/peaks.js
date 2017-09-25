@@ -140,6 +140,11 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
    */
 
   Player.prototype.seek = function(time) {
+    if (!Utils.isValidTime(time)) {
+      this._peaks.logger('peaks.player.seek(): parameter must be a valid time, in seconds');
+      return;
+    }
+
     this._mediaElement.currentTime = time;
   };
 

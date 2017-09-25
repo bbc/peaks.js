@@ -47,13 +47,24 @@ describe('Peaks.player', function() {
   });
 
   describe('seek', function() {
-    var newTime = 6.0;
+    beforeEach(function() {
+      p.player.seek(0.0);
+    });
 
     it('should change the currentTime value of the audio element', function() {
+      var newTime = 6.0;
+
       p.player.seek(newTime);
 
       var diff = Math.abs(p.player.getCurrentTime() - newTime);
       expect(diff).to.be.lessThan(0.2);
+    });
+
+    it('should log an error if the given time is not valid', function() {
+      p.player.seek('6.0');
+
+      expect(p.logger.calledOnce);
+      expect(p.player.getCurrentTime()).to.equal(0.0);
     });
   });
 
