@@ -1,5 +1,19 @@
 # Peaks.js
 
+## 0.9.2 (2017/09/27)
+
+ * (#199) The playhead position is now correctly updated in the zoomable
+   view after calling player.seek()
+ * Added parameter validation to player.seek()
+ * Show the time when dragging point markers (@chrisn)
+ * Use a fixed set of default colors instead of random colors for segments
+   (@chrisn)
+ * Simplified createSegmentMarker, createSegmentLabel, and createPointMarker
+   functions (@chrisn)
+ * Refactored WaveformPoints and WaveformSegments classes (@chrisn)
+ * Refactored PointsLayer and SegmentsLayer _removeInvisiblePoints methods
+   (@chrisn)
+
 ## 0.9.1 (2017/08/29)
 
  * Fixed bug in IE11 which caused adding segment objects to fail (@chrisn)
