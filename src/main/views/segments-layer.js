@@ -279,8 +279,8 @@ define([
   };
 
   /**
-   * Removes any segments that are not visible, i.e., are within or overlap the
-   * given time range.
+   * Removes any segments that are not visible, i.e., are not within and do not
+   * overlap the given time range.
    *
    * @private
    * @param {Number} startTime The start of the visible time range, in seconds.

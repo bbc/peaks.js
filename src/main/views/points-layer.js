@@ -212,7 +212,7 @@ define([
   };
 
   /**
-   * Remove any points that are not visible, i.e., are within the given time
+   * Remove any points that are not visible, i.e., are outside the given time
    * range.
    *
    * @private
@@ -226,7 +226,7 @@ define([
 
     for (var pointId in this._pointGroups) {
       if (this._pointGroups.hasOwnProperty(pointId)) {
-        var point = this._pointGroups[pointId];
+        var point = this._pointGroups[pointId].point;
 
         if (!point.isVisible(startTime, endTime)) {
           this._removePoint(point);
