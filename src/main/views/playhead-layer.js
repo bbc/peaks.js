@@ -30,12 +30,13 @@ define([
     this._peaks = peaks;
     this._stage = stage;
     this._view  = view;
-    this._playheadPixel = playheadPixel;
+    this._playheadPixel = 0;
     this._playheadLineAnimation = null;
+    this._playheadVisible = false;
 
     this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
 
-    this.zoomLevelChanged();
+    this.syncPlayhead(playheadPixel);
   }
 
   /**
