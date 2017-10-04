@@ -31,7 +31,7 @@ define([], function() {
 
   TimeController.prototype.getCurrentTime = function() {
     // eslint-disable-next-line max-len
-    this._peaks.options.deprecationLogger('peaks.time.setCurrentTime(): this function is deprecated. Call peaks.player.getCurrentTime() instead');
+    this._peaks.options.deprecationLogger('peaks.time.getCurrentTime(): this function is deprecated. Call peaks.player.getCurrentTime() instead');
     return this._peaks.player.getCurrentTime();
   };
 
