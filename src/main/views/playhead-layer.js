@@ -169,13 +169,13 @@ define([
   PlayheadLayer.prototype.playFrom = function(startTime) {
     var self = this;
 
-    if (!self._useAnimation) {
-      return;
-    }
-
     if (self._playheadLineAnimation) {
       self._playheadLineAnimation.stop();
       self._playheadLineAnimation = null;
+    }
+
+    if (!self._useAnimation) {
+      return;
     }
 
     var lastPlayheadPosition = null;
@@ -184,8 +184,6 @@ define([
       // Elapsed time since animation started (seconds).
       var elapsed = frame.time / 1000;
 
-      // TODO: update playhead position based on player currentTime,
-      // to avoid drift?
       var playheadPosition = self._view.timeToPixels(startTime + elapsed);
 
       if (playheadPosition !== lastPlayheadPosition) {
