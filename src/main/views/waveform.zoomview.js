@@ -134,13 +134,9 @@ define([
           var time = self.pixelsToTime(pixelIndex);
 
           self.updateWaveform(pixelIndex - mouseDownX);
-          self._playheadLayer.syncPlayhead(pixelIndex);
+          self.updatePlayheadTime(time);
 
           self.peaks.player.seek(time);
-
-          if (self._playing) {
-            self._playheadLayer.playFrom(time);
-          }
         }
       }
     });
@@ -152,9 +148,9 @@ define([
         return;
       }
 
-      var pixelIndex = self.timeToPixels(time);
+      self.updatePlayheadTime(time);
 
-      self._playheadLayer.syncPlayhead(pixelIndex);
+      var pixelIndex = self.timeToPixels(time);
 
       // Check for the playhead reaching the right-hand side of the window.
 
@@ -179,11 +175,7 @@ define([
       var frameIndex = self.timeToPixels(time);
 
       self.updateWaveform(frameIndex - Math.floor(self.width / 2));
-      self._playheadLayer.syncPlayhead(frameIndex);
-
-      if (self._playing) {
-        self._playheadLayer.playFrom(time);
-      }
+      self.updatePlayheadTime(time);
     });
 
     self.peaks.on('user_scroll.zoomview', function(pixelOffset) {
@@ -192,7 +184,7 @@ define([
 
     self.peaks.on('player_play', function(time) {
       self._playing = true;
-      self._playheadLayer.playFrom(time);
+      self.updatePlayheadTime(time);
     });
 
     self.peaks.on('player_pause', function(time) {
@@ -277,13 +269,8 @@ define([
 
     this._playheadLayer.zoomLevelChanged();
 
-    // Update the playhead position after zooming. This is done automatically
-    // by the playhead animation if the media is playing.
-    if (!this._playing) {
-      var playheadPixel = this.timeToPixels(currentTime);
-
-      this._playheadLayer.syncPlayhead(playheadPixel);
-    }
+    // Update the playhead position after zooming.
+    this.updatePlayheadTime(currentTime);
 
     // var adapter = this.createZoomAdapter(currentScale, previousScale);
 
@@ -398,6 +385,15 @@ define([
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
 
     this.peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
+  };
+
+  WaveformZoomView.prototype.updatePlayheadTime = function(time) {
+    var frameIndex = this.timeToPixels(time);
+
+    this._playheadLayer.syncPlayhead(frameIndex);
+    if (this._playing) {
+      this._playheadLayer.playFrom(time);
+    }
   };
 
   WaveformZoomView.prototype.beginZoom = function() {
