@@ -174,6 +174,12 @@ define('peaks', [
       playheadTextColor:     Colors.gray,
 
       /**
+       * Show current time position by the play head marker
+       * (zoom view only)
+       */
+      showPlayheadTime:      false,
+
+      /**
        * Colour of the axis gridlines
        */
       axisGridlineColor:     '#ccc',

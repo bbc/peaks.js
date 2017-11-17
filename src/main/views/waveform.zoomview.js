@@ -96,7 +96,13 @@ define([
 
     var playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
 
-    self._playheadLayer = new PlayheadLayer(peaks, self.stage, self, true, playheadPixel);
+    self._playheadLayer = new PlayheadLayer(
+        peaks,
+        self.stage,
+        self,
+        self.options.showPlayheadTime,
+        playheadPixel
+    );
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {

@@ -204,6 +204,10 @@ var options = {
   // Colour of the play head text
   playheadTextColor: '#aaa',
 
+  // Show current time next to the play head
+  // (zoom view only)
+  showPlayheadTime: false,
+
   // the color of a point marker
   pointMarkerColor: '#FF0000',
 
