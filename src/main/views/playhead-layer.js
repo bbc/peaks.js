@@ -36,6 +36,7 @@ define([
 
     this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
 
+    this.zoomLevelChanged();
     this.syncPlayhead(playheadPixel);
   }
 
@@ -190,6 +191,7 @@ define([
 
       if (playheadPosition !== lastPlayheadPosition) {
         self.syncPlayhead(playheadPosition);
+        lastPlayheadPosition = playheadPosition;
       }
     }, self._playheadLayer);
 
