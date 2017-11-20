@@ -382,9 +382,10 @@ define([
   };
 
   WaveformZoomView.prototype.updatePlayheadTime = function(time) {
-    var frameIndex = this.timeToPixels(time);
+    var pixelIndex = this.timeToPixels(time);
 
-    this._playheadLayer.syncPlayhead(frameIndex);
+    this._playheadLayer.syncPlayhead(pixelIndex);
+
     if (this._playing) {
       this._playheadLayer.playFrom(time);
     }
