@@ -1,5 +1,12 @@
 # Peaks.js
 
+## 0.9.3 (2017/11/24)
+
+ * (#201) Added showPlayheadTime option to control display of the current time
+   position next to the playhead marker (@chrisn)
+
+ * (#202) Keep playhead layer in sync with timeupdate events (@jdelStrother)
+
 ## 0.9.2 (2017/09/27)
 
  * (#199) The playhead position is now correctly updated in the zoomable
