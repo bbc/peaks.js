@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.9.4 (2017/11/24)
+
+ * Version bump to refresh npm and browserify cached releases (@chrisn)
+
 ## 0.9.3 (2017/11/24)
 
  * (#201) Added showPlayheadTime option to control display of the current time
