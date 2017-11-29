@@ -50,7 +50,6 @@ define([
 
     self.options = peaks.options;
 
-    self._playing = false;
     self.playheadVisible = false;
 
     self.data = null;
@@ -183,12 +182,7 @@ define([
     });
 
     self.peaks.on('player_play', function(time) {
-      self._playing = true;
       self.updatePlayheadTime(time);
-    });
-
-    self.peaks.on('player_pause', function(time) {
-      self._playing = false;
     });
 
     self.peaks.on('zoom.update', function(currentScale, previousScale) {
@@ -414,14 +408,6 @@ define([
     var time = this.peaks.player.getCurrentTime();
 
     this.seekFrame(this.timeToPixels(time));
-  };
-
-  /**
-   * @returns <code>true</code> if the audio is currently playing.
-   */
-
-  WaveformZoomView.prototype.isPlaying = function() {
-    return this._playing;
   };
 
   WaveformZoomView.prototype.destroy = function() {

@@ -82,7 +82,6 @@ define([
     var playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
 
     self._playheadLayer = new PlayheadLayer(peaks, self.stage, self, false, playheadPixel);
-    self._playing = false;
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {
@@ -111,12 +110,7 @@ define([
     // Events
 
     self.peaks.on('player_play', function(time) {
-      self._playing = true;
       self.updatePlayheadTime(time);
-    });
-
-    self.peaks.on('player_pause', function(time) {
-      self._playing = false;
     });
 
     peaks.on('player_time_update', function(time) {
@@ -230,14 +224,6 @@ define([
     var pixelIndex = this.timeToPixels(time);
 
     this._playheadLayer.syncPlayhead(pixelIndex);
-  };
-
-  /**
-   * @returns <code>true</code> if the audio is currently playing.
-   */
-
-  WaveformOverview.prototype.isPlaying = function() {
-    return this._playing;
   };
 
   WaveformOverview.prototype.destroy = function() {
