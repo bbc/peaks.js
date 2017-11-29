@@ -29,6 +29,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     self._listeners = [];
     self._mediaElement = mediaElement;
     self._duration = self.getDuration();
+    self._isPlaying = false;
 
     if (self._mediaElement.readyState === 4) {
       self._peaks.emit('player_load', self);
@@ -39,10 +40,12 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     });
 
     self._addMediaListener('play', function() {
+      self._setPlaying(true);
       self._peaks.emit('player_play', self.getCurrentTime());
     });
 
     self._addMediaListener('pause', function() {
+      self._setPlaying(false);
       self._peaks.emit('player_pause', self.getCurrentTime());
     });
 
@@ -51,6 +54,9 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     });
 
     self._interval = null;
+    self._animationFrame = null;
+
+    self._fireFakeTimeUpdate = self._fireFakeTimeUpdate.bind(self);
   }
 
   /**
@@ -64,6 +70,36 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   Player.prototype._addMediaListener = function(type, callback) {
     this._listeners.push({ type: type, callback: callback });
     this._mediaElement.addEventListener(type, callback);
+  };
+
+  /**
+    * Records whether the playing is currently playing.
+    # If it is, start firing requestAnimationFrame events to trigger time_update
+    *
+    * @private
+    * @param {boolean} flag Whether the player is playing
+    */
+
+  Player.prototype._setPlaying = function(flag) {
+    if (this._animationFrame) {
+      cancelAnimationFrame(this._animationFrame);
+      this._animationFrame = null;
+    }
+    if (flag) {
+      this._animationFrame = requestAnimationFrame(this._fireFakeTimeUpdate);
+    }
+    this._isPlaying = flag;
+  };
+
+  /**
+   * Fire a fake player_time_update event, at a much higher
+   * rate than the native timeupdate events.
+   *
+   * @private
+   */
+  Player.prototype._fireFakeTimeUpdate = function() {
+    this._peaks.emit('player_time_update', this.getCurrentTime());
+    this._animationFrame = requestAnimationFrame(this._fireFakeTimeUpdate);
   };
 
   /**

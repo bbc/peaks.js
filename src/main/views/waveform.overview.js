@@ -112,13 +112,11 @@ define([
 
     self.peaks.on('player_play', function(time) {
       self._playing = true;
-      self._playheadLayer.playFrom(time);
+      self.updatePlayheadTime(time);
     });
 
     self.peaks.on('player_pause', function(time) {
       self._playing = false;
-
-      self._playheadLayer.stop(time);
     });
 
     peaks.on('player_time_update', function(time) {
@@ -138,8 +136,6 @@ define([
       self.data = self.originalWaveformData.resample(self.width);
       self.stage.setWidth(self.width);
       self.container.removeAttribute('hidden');
-
-      self._playheadLayer.zoomLevelChanged();
     });
 
     peaks.emit('waveform_ready.overview', this);
@@ -234,10 +230,6 @@ define([
     var pixelIndex = this.timeToPixels(time);
 
     this._playheadLayer.syncPlayhead(pixelIndex);
-
-    if (this._playing) {
-      this._playheadLayer.playFrom(time);
-    }
   };
 
   /**

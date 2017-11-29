@@ -189,8 +189,6 @@ define([
 
     self.peaks.on('player_pause', function(time) {
       self._playing = false;
-
-      self._playheadLayer.stop(time);
     });
 
     self.peaks.on('zoom.update', function(currentScale, previousScale) {
@@ -266,8 +264,6 @@ define([
     this.frameOffset = apexPixel - playheadOffsetPixels;
 
     this.updateWaveform(this.frameOffset);
-
-    this._playheadLayer.zoomLevelChanged();
 
     // Update the playhead position after zooming.
     this.updatePlayheadTime(currentTime);
@@ -391,10 +387,6 @@ define([
     var pixelIndex = this.timeToPixels(time);
 
     this._playheadLayer.syncPlayhead(pixelIndex);
-
-    if (this._playing) {
-      this._playheadLayer.playFrom(time);
-    }
   };
 
   WaveformZoomView.prototype.beginZoom = function() {

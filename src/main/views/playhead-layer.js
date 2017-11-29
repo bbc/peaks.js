@@ -31,48 +31,12 @@ define([
     this._stage = stage;
     this._view  = view;
     this._playheadPixel = 0;
-    this._playheadLineAnimation = null;
     this._playheadVisible = false;
 
     this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
 
-    this.zoomLevelChanged();
     this.syncPlayhead(playheadPixel);
   }
-
-  /**
-   * Decides whether to use an animation to update the playhead position.
-   *
-   * If the zoom level is such that the number of pixels per second of audio is
-   * low, we can use timeupdate events from the HTMLMediaElement to
-   * set the playhead position. Otherwise, we use an animation to update the
-   * playhead position more smoothly. The animation is CPU intensive, so we
-   * avoid using it where possible.
-   */
-
-  PlayheadLayer.prototype.zoomLevelChanged = function() {
-    var pixelsPerSecond = this._view.timeToPixels(1.0);
-    var time;
-
-    this._useAnimation = pixelsPerSecond >= 5;
-
-    if (this._useAnimation) {
-      if (this._view.isPlaying() && !this._playheadLineAnimation) {
-        // Start the animation
-        time = this._peaks.player.getCurrentTime();
-
-        this.playFrom(time);
-      }
-    }
-    else {
-      if (this._playheadLineAnimation) {
-        // Stop the animation
-        time = this._peaks.player.getCurrentTime();
-
-        this.stop(time);
-      }
-    }
-  };
 
   /**
    * Creates the playhead UI objects.
@@ -159,50 +123,6 @@ define([
         this._playheadLayer.draw();
       }
     }
-  };
-
-  /**
-   * Creates a playhead animation in sync with the media playback.
-   *
-   * @param {Number} startTime Start time of the playhead animation, in seconds.
-   */
-
-  PlayheadLayer.prototype.playFrom = function(startTime) {
-    var self = this;
-
-    if (self._playheadLineAnimation) {
-      self._playheadLineAnimation.stop();
-      self._playheadLineAnimation = null;
-    }
-
-    if (!self._useAnimation) {
-      return;
-    }
-
-    var lastPlayheadPosition = null;
-
-    self._playheadLineAnimation = new Konva.Animation(function(frame) {
-      // Elapsed time since animation started (seconds).
-      var elapsed = frame.time / 1000;
-
-      var playheadPosition = self._view.timeToPixels(startTime + elapsed);
-
-      if (playheadPosition !== lastPlayheadPosition) {
-        self.syncPlayhead(playheadPosition);
-        lastPlayheadPosition = playheadPosition;
-      }
-    }, self._playheadLayer);
-
-    self._playheadLineAnimation.start();
-  };
-
-  PlayheadLayer.prototype.stop = function(time) {
-    if (this._playheadLineAnimation) {
-      this._playheadLineAnimation.stop();
-      this._playheadLineAnimation = null;
-    }
-
-    this.syncPlayhead(this._view.timeToPixels(time));
   };
 
   PlayheadLayer.prototype.getPlayheadOffset = function() {
