@@ -57,7 +57,7 @@ define([
     this._useAnimation = pixelsPerSecond >= 5;
 
     if (this._useAnimation) {
-      if (this._view.isPlaying() && !this._playheadLineAnimation) {
+      if (this._peaks.player.isPlaying() && !this._playheadLineAnimation) {
         // Start the animation
         time = this._peaks.player.getCurrentTime();
 
