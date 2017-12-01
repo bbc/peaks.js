@@ -182,10 +182,8 @@ define([
     var lastPlayheadPosition = null;
 
     self._playheadLineAnimation = new Konva.Animation(function(frame) {
-      // Elapsed time since animation started (seconds).
-      var elapsed = frame.time / 1000;
-
-      var playheadPosition = self._view.timeToPixels(startTime + elapsed);
+      var time = self._peaks.player.getCurrentTime();
+      var playheadPosition = self._view.timeToPixels(time);
 
       if (playheadPosition !== lastPlayheadPosition) {
         self.syncPlayhead(playheadPosition);
