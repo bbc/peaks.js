@@ -29,6 +29,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     self._listeners = [];
     self._mediaElement = mediaElement;
     self._duration = self.getDuration();
+    self._isPlaying = false;
 
     if (self._mediaElement.readyState === 4) {
       self._peaks.emit('player_load', self);
@@ -39,10 +40,12 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     });
 
     self._addMediaListener('play', function() {
+      self._isPlaying = true;
       self._peaks.emit('player_play', self.getCurrentTime());
     });
 
     self._addMediaListener('pause', function() {
+      self._isPlaying = false;
       self._peaks.emit('player_pause', self.getCurrentTime());
     });
 
@@ -111,6 +114,15 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
 
   Player.prototype.pause = function() {
     this._mediaElement.pause();
+  };
+
+  /**
+   * @returns {Boolean} <code>true</code> if playing, <code>false</code>
+   * otherwise.
+   */
+
+  Player.prototype.isPlaying = function() {
+    return this._isPlaying;
   };
 
   /**
