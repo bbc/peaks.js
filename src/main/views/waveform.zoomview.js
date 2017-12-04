@@ -382,11 +382,7 @@ define([
   };
 
   WaveformZoomView.prototype.updatePlayheadTime = function(time) {
-    this._playheadLayer.syncPlayhead(time);
-
-    if (this.peaks.player.isPlaying()) {
-      this._playheadLayer.playFrom(time);
-    }
+    this._playheadLayer.updatePlayheadTime(time);
   };
 
   WaveformZoomView.prototype.beginZoom = function() {

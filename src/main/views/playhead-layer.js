@@ -121,6 +121,14 @@ define([
     this._stage.add(this._playheadLayer);
   };
 
+  PlayheadLayer.prototype.updatePlayheadTime = function(time) {
+    this.syncPlayhead(time);
+
+    if (this._peaks.player.isPlaying()) {
+      this.playFrom(time);
+    }
+  };
+
   /**
    * Updates the playhead position.
    *
