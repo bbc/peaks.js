@@ -23,10 +23,10 @@ define([
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} showTime If <code>true</code> The playback time position
    *   is shown next to the playhead.
-   * @param {Number} playheadPixel Initial position of the playhead, in pixels.
+   * @param {Number} time Initial position of the playhead, in seconds.
    */
 
-  function PlayheadLayer(peaks, stage, view, showTime, playheadPixel) {
+  function PlayheadLayer(peaks, stage, view, showTime, time) {
     this._peaks = peaks;
     this._stage = stage;
     this._view  = view;
@@ -37,7 +37,7 @@ define([
     this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
 
     this.zoomLevelChanged();
-    this.syncPlayhead(playheadPixel);
+    this.syncPlayhead(time);
   }
 
   /**
@@ -124,10 +124,12 @@ define([
   /**
    * Updates the playhead position.
    *
-   * @param {Number} pixelIndex Current playhead position, in pixels.
+   * @param {Number} time Current playhead position, in seconds.
    */
 
-  PlayheadLayer.prototype.syncPlayhead = function(pixelIndex) {
+  PlayheadLayer.prototype.syncPlayhead = function(time) {
+    var pixelIndex = this._view.timeToPixels(time);
+
     var isVisible = (pixelIndex >= this._view.frameOffset) &&
                     (pixelIndex <  this._view.frameOffset + this._view.width);
 
@@ -144,7 +146,7 @@ define([
       this._playheadGroup.setAttr('x', playheadX);
 
       if (this._playheadText) {
-        var text = Utils.formatTime(this._view.pixelsToTime(this._playheadPixel), false);
+        var text = Utils.formatTime(time, false);
 
         this._playheadText.setText(text);
       }
@@ -186,7 +188,7 @@ define([
       var playheadPosition = self._view.timeToPixels(time);
 
       if (playheadPosition !== lastPlayheadPosition) {
-        self.syncPlayhead(playheadPosition);
+        self.syncPlayhead(time);
         lastPlayheadPosition = playheadPosition;
       }
     }, self._playheadLayer);
@@ -200,7 +202,7 @@ define([
       this._playheadLineAnimation = null;
     }
 
-    this.syncPlayhead(this._view.timeToPixels(time));
+    this.syncPlayhead(time);
   };
 
   PlayheadLayer.prototype.getPlayheadOffset = function() {
