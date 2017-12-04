@@ -93,7 +93,7 @@ define([
 
         var time = self.pixelsToTime(mousePosX);
 
-        self.updatePlayheadTime(time);
+        self._playheadLayer.updatePlayheadTime(time);
 
         self.peaks.emit('user_seek', time);
       },
@@ -105,7 +105,7 @@ define([
 
         // Update the playhead position. This gives a smoother visual update
         // than if we only use the player_time_update event.
-        self.updatePlayheadTime(time);
+        self._playheadLayer.updatePlayheadTime(time);
 
         self.peaks.emit('user_seek', time);
       }
@@ -114,7 +114,7 @@ define([
     // Events
 
     self.peaks.on('player_play', function(time) {
-      self._playheadLayer.playFrom(time);
+      self._playheadLayer.updatePlayheadTime(time);
     });
 
     self.peaks.on('player_pause', function(time) {
@@ -122,7 +122,7 @@ define([
     });
 
     peaks.on('player_time_update', function(time) {
-      self.updatePlayheadTime(time);
+      self._playheadLayer.updatePlayheadTime(time);
     });
 
     peaks.on('zoomview.displaying', function(startTime, endTime) {
@@ -228,10 +228,6 @@ define([
     });
 
     this.highlightLayer.draw();
-  };
-
-  WaveformOverview.prototype.updatePlayheadTime = function(time) {
-    this._playheadLayer.updatePlayheadTime(time);
   };
 
   WaveformOverview.prototype.destroy = function() {

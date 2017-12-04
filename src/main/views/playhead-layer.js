@@ -37,7 +37,7 @@ define([
     this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
 
     this.zoomLevelChanged();
-    this.syncPlayhead(time);
+    this._syncPlayhead(time);
   }
 
   /**
@@ -61,7 +61,7 @@ define([
         // Start the animation
         time = this._peaks.player.getCurrentTime();
 
-        this.playFrom(time);
+        this._playFrom(time);
       }
     }
     else {
@@ -121,21 +121,28 @@ define([
     this._stage.add(this._playheadLayer);
   };
 
-  PlayheadLayer.prototype.updatePlayheadTime = function(time) {
-    this.syncPlayhead(time);
-
-    if (this._peaks.player.isPlaying()) {
-      this.playFrom(time);
-    }
-  };
-
   /**
    * Updates the playhead position.
    *
    * @param {Number} time Current playhead position, in seconds.
    */
 
-  PlayheadLayer.prototype.syncPlayhead = function(time) {
+  PlayheadLayer.prototype.updatePlayheadTime = function(time) {
+    this._syncPlayhead(time);
+
+    if (this._peaks.player.isPlaying()) {
+      this._playFrom(time);
+    }
+  };
+
+  /**
+   * Updates the playhead position.
+   *
+   * @private
+   * @param {Number} time Current playhead position, in seconds.
+   */
+
+  PlayheadLayer.prototype._syncPlayhead = function(time) {
     var pixelIndex = this._view.timeToPixels(time);
 
     var isVisible = (pixelIndex >= this._view.frameOffset) &&
@@ -174,10 +181,11 @@ define([
   /**
    * Creates a playhead animation in sync with the media playback.
    *
+   * @private
    * @param {Number} startTime Start time of the playhead animation, in seconds.
    */
 
-  PlayheadLayer.prototype.playFrom = function(startTime) {
+  PlayheadLayer.prototype._playFrom = function(startTime) {
     var self = this;
 
     if (self._playheadLineAnimation) {
@@ -196,7 +204,7 @@ define([
       var playheadPosition = self._view.timeToPixels(time);
 
       if (playheadPosition !== lastPlayheadPosition) {
-        self.syncPlayhead(time);
+        self._syncPlayhead(time);
         lastPlayheadPosition = playheadPosition;
       }
     }, self._playheadLayer);
@@ -210,8 +218,15 @@ define([
       this._playheadLineAnimation = null;
     }
 
-    this.syncPlayhead(time);
+    this._syncPlayhead(time);
   };
+
+  /**
+   * Returns the position of the playhead marker, in pixels relative to the
+   * left hand side of the waveform view.
+   *
+   * @return {Number}
+   */
 
   PlayheadLayer.prototype.getPlayheadOffset = function() {
     return this._playheadPixel - this._view.frameOffset;
