@@ -231,11 +231,7 @@ define([
   };
 
   WaveformOverview.prototype.updatePlayheadTime = function(time) {
-    this._playheadLayer.syncPlayhead(time);
-
-    if (this.peaks.player.isPlaying()) {
-      this._playheadLayer.playFrom(time);
-    }
+    this._playheadLayer.updatePlayheadTime(time);
   };
 
   WaveformOverview.prototype.destroy = function() {
