@@ -79,9 +79,13 @@ define([
 
     self.createHighlightRect();
 
-    var playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
-
-    self._playheadLayer = new PlayheadLayer(peaks, self.stage, self, false, playheadPixel);
+    self._playheadLayer = new PlayheadLayer(
+      peaks,
+      self.stage,
+      self,
+      false, // showPlayheadTime
+      self.options.mediaElement.currentTime
+    );
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {
@@ -227,9 +231,7 @@ define([
   };
 
   WaveformOverview.prototype.updatePlayheadTime = function(time) {
-    var pixelIndex = this.timeToPixels(time);
-
-    this._playheadLayer.syncPlayhead(pixelIndex);
+    this._playheadLayer.syncPlayhead(time);
 
     if (this.peaks.player.isPlaying()) {
       this._playheadLayer.playFrom(time);

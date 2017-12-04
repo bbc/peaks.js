@@ -93,14 +93,12 @@ define([
     self._segmentsLayer = new SegmentsLayer(peaks, self.stage, self, true);
     self._pointsLayer = new PointsLayer(peaks, self.stage, self, true, true);
 
-    var playheadPixel = self.timeToPixels(self.options.mediaElement.currentTime);
-
     self._playheadLayer = new PlayheadLayer(
         peaks,
         self.stage,
         self,
         self.options.showPlayheadTime,
-        playheadPixel
+        self.options.mediaElement.currentTime
     );
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
@@ -370,7 +368,7 @@ define([
     // Display playhead if it is within the zoom frame width.
     var playheadPixel = this._playheadLayer.getPlayheadPixel();
 
-    this._playheadLayer.syncPlayhead(playheadPixel);
+    this._playheadLayer.syncPlayhead(this.pixelsToTime(playheadPixel));
 
     this.waveformLayer.draw();
 
@@ -384,9 +382,7 @@ define([
   };
 
   WaveformZoomView.prototype.updatePlayheadTime = function(time) {
-    var pixelIndex = this.timeToPixels(time);
-
-    this._playheadLayer.syncPlayhead(pixelIndex);
+    this._playheadLayer.syncPlayhead(time);
 
     if (this.peaks.player.isPlaying()) {
       this._playheadLayer.playFrom(time);
