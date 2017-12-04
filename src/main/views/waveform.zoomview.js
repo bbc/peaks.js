@@ -131,7 +131,7 @@ define([
           var time = self.pixelsToTime(pixelIndex);
 
           self.updateWaveform(pixelIndex - mouseDownX);
-          self.updatePlayheadTime(time);
+          self._playheadLayer.updatePlayheadTime(time);
 
           self.peaks.player.seek(time);
         }
@@ -145,7 +145,7 @@ define([
         return;
       }
 
-      self.updatePlayheadTime(time);
+      self._playheadLayer.updatePlayheadTime(time);
 
       var pixelIndex = self.timeToPixels(time);
 
@@ -172,7 +172,7 @@ define([
       var frameIndex = self.timeToPixels(time);
 
       self.updateWaveform(frameIndex - Math.floor(self.width / 2));
-      self.updatePlayheadTime(time);
+      self._playheadLayer.updatePlayheadTime(time);
     });
 
     self.peaks.on('user_scroll.zoomview', function(pixelOffset) {
@@ -180,7 +180,7 @@ define([
     });
 
     self.peaks.on('player_play', function(time) {
-      self.updatePlayheadTime(time);
+      self._playheadLayer.updatePlayheadTime(time);
     });
 
     self.peaks.on('player_pause', function(time) {
@@ -264,7 +264,7 @@ define([
     this._playheadLayer.zoomLevelChanged();
 
     // Update the playhead position after zooming.
-    this.updatePlayheadTime(currentTime);
+    this._playheadLayer.updatePlayheadTime(currentTime);
 
     // var adapter = this.createZoomAdapter(currentScale, previousScale);
 
@@ -368,7 +368,7 @@ define([
     // Display playhead if it is within the zoom frame width.
     var playheadPixel = this._playheadLayer.getPlayheadPixel();
 
-    this._playheadLayer.syncPlayhead(this.pixelsToTime(playheadPixel));
+    this._playheadLayer.updatePlayheadTime(this.pixelsToTime(playheadPixel));
 
     this.waveformLayer.draw();
 
@@ -379,10 +379,6 @@ define([
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
 
     this.peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
-  };
-
-  WaveformZoomView.prototype.updatePlayheadTime = function(time) {
-    this._playheadLayer.updatePlayheadTime(time);
   };
 
   WaveformZoomView.prototype.beginZoom = function() {
