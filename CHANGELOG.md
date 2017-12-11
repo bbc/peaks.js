@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 0.9.5 (2017/12/11)
+
+ * (#207) Prevent jump in playhead motion after starting playback
+   (@chrisn, @jdelStrother)
+
 ## 0.9.4 (2017/11/24)
 
  * Version bump to refresh npm and browserify cached releases (@chrisn)
@@ -14,8 +19,8 @@
 ## 0.9.2 (2017/09/27)
 
  * (#199) The playhead position is now correctly updated in the zoomable
-   view after calling player.seek()
- * Added parameter validation to player.seek()
+   view after calling player.seek() (@chrisn)
+ * Added parameter validation to player.seek() (@chrisn)
  * Show the time when dragging point markers (@chrisn)
  * Use a fixed set of default colors instead of random colors for segments
    (@chrisn)
