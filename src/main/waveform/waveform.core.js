@@ -12,14 +12,16 @@
   'peaks/views/waveform.overview',
   'peaks/views/waveform.zoomview',
   'peaks/markers/waveform.segments',
-  'peaks/markers/waveform.points'
+  'peaks/markers/waveform.points',
+  'peaks/waveform/waveform.utils'
   ], function(
     WaveformData,
     webaudioBuilder,
     WaveformOverview,
     WaveformZoomView,
     WaveformSegments,
-    WaveformPoints) {
+    WaveformPoints,
+    Utils) {
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
@@ -42,6 +44,7 @@
    * Loads the waveform data and creates the overview and zoom view waveform UI
    * components.
    *
+   * @private
    * @param {Object} ui Container elements for the UI components. See the
    *   <code>template</code> option.
    * @param {HTMLElement} ui.player Overall container HTML element.
@@ -55,7 +58,24 @@
     this.ui = ui; // See getUiElements in main.js
     this.onResize = this.onResize.bind(this);
 
-    this.getRemoteData(this.peaks.options);
+    this._getRemoteData(this.peaks.options);
+  };
+
+  Waveform.prototype._getRemoteData = function(options) {
+    if (options.dataUri && options.audioContext) {
+      // eslint-disable-next-line max-len
+      throw new Error('Peaks.init(): You must pass an AudioContext or dataUri to render waveform data, not both');
+    }
+    else if (options.dataUri) {
+      return this._getRemoteWaveformData(options);
+    }
+    else if (options.audioContext) {
+      return this._buildWaveformDataUsingWebAudio(options);
+    }
+    else {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): You must pass an AudioContext or dataUri to render waveform data');
+    }
   };
 
   /* eslint-disable max-len */
@@ -63,6 +83,7 @@
   /**
    * Fetches waveform data, based on the given options.
    *
+   * @private
    * @param {Object} options
    * @param {String|Object} options.dataUri
    * @param {String} options.dataUri.arraybuffer Waveform data URL
@@ -70,7 +91,6 @@
    * @param {String} options.dataUri.json Waveform data URL (JSON format)
    * @param {String} options.defaultUriFormat Either 'arraybuffer' (for binary
    *   data) or 'json'
-   * @param {HTMLMediaElement} options.mediaElement
    *
    * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
    *   for details of the binary and JSON waveform data formats.
@@ -78,47 +98,116 @@
 
   /* eslint-enable max-len */
 
-  Waveform.prototype.getRemoteData = function(options) {
+  Waveform.prototype._getRemoteWaveformData = function(options) {
+    var self = this;
+    var dataUri = null;
+    var requestType = null;
+    var url;
+
+    if (Utils.isObject(options.dataUri)) {
+      dataUri = options.dataUri;
+    }
+    else if (Utils.isString(options.dataUri)) {
+      // Backward compatibility
+      dataUri = {};
+      dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
+    }
+    else {
+      throw new Error('Peaks.init(): The dataUri option must be an object');
+    }
+
+    ['ArrayBuffer', 'JSON'].some(function(connector) {
+      if (window[connector]) {
+        requestType = connector.toLowerCase();
+        url = dataUri[requestType];
+
+        return Boolean(url);
+      }
+    });
+
+    if (!url) {
+      // eslint-disable-next-line max-len
+      throw new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser');
+    }
+
+    var xhr = self._createXHR(url, requestType, function(response) {
+      if (this.readyState !== 4) {
+        return;
+      }
+
+      if (this.status !== 200) {
+        self._handleRemoteData(
+          new Error('Unable to fetch remote data. HTTP status ' + this.status)
+        );
+
+        return;
+      }
+
+      self._handleRemoteData(null, response.target, xhr);
+    });
+
+    xhr.send();
+  };
+
+  /**
+   * Fetches the audio content, based on the given options, and creates waveform
+   * data using the Web Audio API.
+   *
+   * @private
+   * @param {Object} options
+   * @param {AudioContext} options.audioContext
+   * @param {HTMLMediaElement} options.mediaElement
+   */
+
+  Waveform.prototype._buildWaveformDataUsingWebAudio = function(options) {
+    var self = this;
+
+    if (!(options.audioContext instanceof AudioContext)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): The audioContext option must be a valid AudioContext');
+    }
+
+    var url = options.mediaElement.currentSrc || options.mediaElement.src;
+
+    var xhr = self._createXHR(url, 'arraybuffer', function(response) {
+      if (this.readyState !== 4) {
+        return;
+      }
+
+      if (this.status !== 200) {
+        self._handleRemoteData(
+          new Error('Unable to fetch remote data. HTTP status ' + this.status)
+        );
+
+        return;
+      }
+
+      webaudioBuilder(
+        options.audioContext,
+        response.target.response,
+        options.waveformBuilderOptions,
+        self._handleRemoteData.bind(self)
+      );
+    });
+
+    xhr.send();
+  };
+
+  /**
+   * @private
+   * @param {String} url
+   * @param {String} requestType
+   * @param {Function} onLoad
+   *
+   * @returns {XMLHttpRequest}
+   */
+
+  Waveform.prototype._createXHR = function(url, requestType, onLoad) {
     var self = this;
     var xhr = new XMLHttpRequest();
-    var uri = null;
-    var requestType = null;
-    var builder = null;
-
-    if (options.dataUri) {
-      // Backward compatibility
-      if (typeof options.dataUri === 'string') {
-        var dataUri = {};
-
-        dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
-        options.dataUri = dataUri;
-      }
-
-      if (typeof options.dataUri === 'object') {
-        ['ArrayBuffer', 'JSON'].some(function(connector) {
-          if (window[connector]) {
-            requestType = connector.toLowerCase();
-            uri = options.dataUri[requestType];
-
-            return Boolean(uri);
-          }
-        });
-      }
-    }
-
-    // WebAudio Builder
-    if (!options.dataUri && options.audioContext) {
-      requestType = 'arraybuffer';
-      uri = options.mediaElement.currentSrc || options.mediaElement.src;
-      builder = webaudioBuilder;
-    }
-
-    if (!uri) {
-      throw new Error('Unable to determine a compatible dataUri format for this browser.');
-    }
 
     // open an XHR request to the data source file
-    xhr.open('GET', uri, true);
+    xhr.open('GET', url, true);
 
     if (isXhr2) {
       try {
@@ -130,31 +219,7 @@
       }
     }
 
-    xhr.onload = function(response) {
-      if (this.readyState !== 4) {
-        return;
-      }
-
-      if (this.status !== 200) {
-        self.handleRemoteData(
-          new Error('Unable to fetch remote data. HTTP status ' + this.status)
-        );
-
-        return;
-      }
-
-      if (builder) {
-        webaudioBuilder(
-          options.audioContext,
-          response.target.response,
-          options.waveformBuilderOptions,
-          self.handleRemoteData.bind(self)
-        );
-      }
-      else {
-        self.handleRemoteData(null, response.target, xhr);
-      }
-    };
+    xhr.onload = onLoad;
 
     xhr.onerror = function(err) {
       // Allow the application to call instance.on('error') before
@@ -164,18 +229,18 @@
       }, 0);
     };
 
-    xhr.send();
+    return xhr;
   };
 
   /**
    *
+   * @private
    * @param err {Error}
    * @param remoteData {WaveformData|ProgressEvent}
    * @param xhr {XMLHttpRequest}
-   * @private
    */
 
-  Waveform.prototype.handleRemoteData = function(err, remoteData, xhr) {
+  Waveform.prototype._handleRemoteData = function(err, remoteData, xhr) {
     if (err) {
       this.peaks.emit('error', err);
       return;

@@ -64,6 +64,36 @@ describe('Peaks', function() {
         }).to.throw(/HTMLMediaElement/);
       });
 
+      it('should throw an exception if both a dataUri and audioContext are provided', function() {
+        expect(function() {
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            mediaElement: document.getElementById('audioElement'),
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' },
+            audioContext: new TestAudioContext()
+          });
+        }).to.throw(/not both/);
+      });
+
+      it('should throw an exception if neither a dataUri nor an audioContext are provided', function() {
+        expect(function() {
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            mediaElement: document.getElementById('audioElement')
+          });
+        }).to.throw(/AudioContext or dataUri/);
+      });
+
+      it('should throw an exception if the dataUri is not an object', function() {
+        expect(function() {
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            mediaElement: document.getElementById('audioElement'),
+            dataUri: true
+          });
+        }).to.throw(/dataUri/);
+      });
+
       it('should throw an exception if no container is provided', function() {
         expect(function() {
           Peaks.init({
@@ -224,7 +254,7 @@ describe('Peaks', function() {
         dataUri: 'base/test_data/sample.json'
       });
 
-      var spy = sinon.spy(p.waveform, 'handleRemoteData');
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
 
       p.on('peaks.ready', function() {
         var xhr = spy.getCall(0).args[1];
@@ -270,7 +300,7 @@ describe('Peaks', function() {
         }
       });
 
-      var spy = sinon.spy(p.waveform, 'handleRemoteData');
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
 
       p.on('peaks.ready', function() {
         var xhr = spy.getCall(0).args[1];
@@ -290,7 +320,7 @@ describe('Peaks', function() {
         }
       });
 
-      var spy = sinon.spy(p.waveform, 'handleRemoteData');
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
 
       p.on('peaks.ready', function() {
         var xhr = spy.getCall(0).args[1];
@@ -323,7 +353,7 @@ describe('Peaks', function() {
         }
       });
 
-      var spy = sinon.spy(p.waveform, 'handleRemoteData');
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
       var expectedContentType = window.ArrayBuffer ? 'text/plain' : 'application/json';
 
       p.on('peaks.ready', function() {
@@ -342,7 +372,7 @@ describe('Peaks', function() {
         audioContext: new TestAudioContext()
       });
 
-      var spy = sinon.spy(p.waveform, 'handleRemoteData');
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
 
       p.on('peaks.ready', function() {
         expect(spy).to.have.been.calledOnce;

@@ -295,16 +295,6 @@ define('peaks', [
       throw new TypeError('Peaks.init(): The logger option should be a function');
     }
 
-    if (!opts.dataUri && !(opts.audioContext instanceof AudioContext)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): You must pass an AudioContext to render waveform data or a dataUri');
-    }
-
-    if (opts.dataUri && opts.audioContext) {
-      // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass in either an AudioContext or dataUri to render waveform data, not both');
-    }
-
     var instance = new Peaks(opts.container);
 
     Utils.extend(instance.options, opts);
