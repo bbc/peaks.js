@@ -150,8 +150,7 @@
   };
 
   /**
-   * Fetches the audio content, based on the given options, and creates waveform
-   * data using the Web Audio API.
+   * Creates waveform data using the Web Audio API.
    *
    * @private
    * @param {Object} options
@@ -167,7 +166,48 @@
       throw new TypeError('Peaks.init(): The audioContext option must be a valid AudioContext');
     }
 
-    var url = options.mediaElement.currentSrc || options.mediaElement.src;
+    // If the media element has already selected which source to play, its
+    // currentSrc attribute will contain the source media URL. Otherwise,
+    // we wait for a canplay event to tell us when the media is ready.
+
+    var mediaSourceUrl = self.peaks.player.getCurrentSource();
+
+    if (mediaSourceUrl) {
+      self._requestAudioAndBuildWaveformData(
+        mediaSourceUrl,
+        options.audioContext,
+        options.waveformBuilderOptions
+      );
+    }
+    else {
+      self.peaks.on('player_canplay', function(player) {
+        self._requestAudioAndBuildWaveformData(
+          player.getCurrentSource(),
+          options.audioContext,
+          options.waveformBuilderOptions
+        );
+      });
+    }
+  };
+
+  /**
+   * Fetches the audio content, based on the given options, and creates waveform
+   * data using the Web Audio API.
+   *
+   * @private
+   * @param {url} The media source URL
+   * @param {AudioContext} audioContext
+   * @param {Object} waveformBuilderOptions
+   */
+
+  Waveform.prototype._requestAudioAndBuildWaveformData = function(url,
+    audioContext, waveformBuilderOptions) {
+    var self = this;
+
+    if (!url) {
+      self.peaks.logger('Peaks.init(): The mediaElement src is invalid');
+      return;
+    }
 
     var xhr = self._createXHR(url, 'arraybuffer', function(response) {
       if (this.readyState !== 4) {
@@ -183,9 +223,9 @@
       }
 
       webaudioBuilder(
-        options.audioContext,
+        audioContext,
         response.target.response,
-        options.waveformBuilderOptions,
+        waveformBuilderOptions,
         self._handleRemoteData.bind(self)
       );
     });

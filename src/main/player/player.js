@@ -53,6 +53,10 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
       self._peaks.emit('player_seek', self.getCurrentTime());
     });
 
+    self._addMediaListener('canplay', function() {
+      self._peaks.emit('player_canplay', self);
+    });
+
     self._interval = null;
   }
 
@@ -98,6 +102,10 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
 
   Player.prototype.getSource = function() {
     return this._mediaElement.src;
+  };
+
+  Player.prototype.getCurrentSource = function() {
+    return this._mediaElement.currentSrc;
   };
 
   /**

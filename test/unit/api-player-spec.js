@@ -5,7 +5,7 @@ var Peaks = require('../../src/main');
 describe('Peaks.player', function() {
   var p, logger;
 
-  beforeEach(function beforeEach(done) {
+  beforeEach(function(done) {
     logger = sinon.spy();
 
     p = Peaks.init({
@@ -92,6 +92,12 @@ describe('Peaks.player', function() {
       p.player.pause();
 
       expect(p.logger.notCalled);
+    });
+  });
+
+  describe('getCurrentSource', function() {
+    it('should return the media url', function() {
+      expect(p.player.getCurrentSource()).to.match(/http:\/\/localhost:8080\/base\/test_data\/sample.(?:mp3|ogg)/);
     });
   });
 });
