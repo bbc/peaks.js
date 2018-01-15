@@ -166,6 +166,10 @@
       throw new TypeError('Peaks.init(): The audioContext option must be a valid AudioContext');
     }
 
+    if (options.waveformBuilderOptions.scale !== options.zoomLevels[0]) {
+      options.waveformBuilderOptions.scale = options.zoomLevels[0];
+    }
+
     // If the media element has already selected which source to play, its
     // currentSrc attribute will contain the source media URL. Otherwise,
     // we wait for a canplay event to tell us when the media is ready.

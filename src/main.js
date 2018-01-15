@@ -307,9 +307,13 @@ define('peaks', [
     if (!Array.isArray(instance.options.zoomLevels)) {
       throw new TypeError('Peaks.init(): The zoomLevels option should be an array');
     }
-
-    if (instance.options.zoomLevels.length === 0) {
+    else if (instance.options.zoomLevels.length === 0) {
       throw new Error('Peaks.init(): The zoomLevels array must not be empty');
+    }
+    else {
+      if (!Utils.isInAscendingOrder(instance.options.zoomLevels)) {
+        throw new Error('Peaks.init(): The zoomLevels array must be sorted in ascending order');
+      }
     }
 
     /*

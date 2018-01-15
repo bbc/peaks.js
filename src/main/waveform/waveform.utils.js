@@ -89,6 +89,31 @@ define(function() {
     },
 
     /**
+     * Checks whether the given array contains values in ascending order.
+     *
+     * @param {Array<Number>} array The array to test
+     * @returns {Boolean}
+     */
+
+    isInAscendingOrder: function(array) {
+      if (array.length === 0) {
+        return true;
+      }
+
+      var value = array[0];
+
+      for (var i = 1; i < array.length; i++) {
+        if (value >= array[i]) {
+          return false;
+        }
+
+        value = array[i];
+      }
+
+      return true;
+    },
+
+    /**
      * Checks whether the given value is a number.
      *
      * @param {Number} value The value to test

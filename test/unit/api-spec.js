@@ -174,6 +174,17 @@ describe('Peaks', function() {
           });
         }).to.throw(/zoomLevels/);
       });
+
+      it('should throw an exception if the zoomLevels option is not in ascending order', function() {
+        expect(function() {
+          Peaks.init({
+            container: document.getElementById('waveform-visualiser-container'),
+            mediaElement: document.querySelector('audio'),
+            dataUri: 'base/test_data/sample.json',
+            zoomLevels: [1024, 512]
+          });
+        }).to.throw(/zoomLevels/);
+      });
     });
   });
 

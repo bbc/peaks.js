@@ -60,6 +60,24 @@ describe('Utils', function() {
     });
   });
 
+  describe('isInAscendingOrder', function() {
+    it('should accept an empty array', function() {
+      expect(Utils.isInAscendingOrder([])).to.equal(true);
+    });
+
+    it('should accept a sorted array', function() {
+      expect(Utils.isInAscendingOrder([1, 2, 3, 4])).to.equal(true);
+    });
+
+    it('should reject an array with duplicate values', function() {
+      expect(Utils.isInAscendingOrder([1, 1, 2, 3])).to.equal(false);
+    });
+
+    it('should reject an array in the wrong order', function() {
+      expect(Utils.isInAscendingOrder([4, 3, 2, 1])).to.equal(false);
+    });
+  });
+
   describe('isValidTime', function() {
     it('should accept valid numbers', function() {
       expect(Utils.isValidTime(1.0)).to.equal(true);
