@@ -10,30 +10,6 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
   'use strict';
 
   /**
-   * Rounds the given value up to the nearest given multiple.
-   *
-   * @param {Number} value
-   * @param {Number} multiple
-   * @returns {Number}
-   *
-   * @example
-   * roundUpToNearest(5.5, 3); // returns 6
-   * roundUpToNearest(141.0, 10); // returns 150
-   * roundUpToNearest(-5.5, 3); // returns -6
-   */
-
-  function roundUpToNearest(value, multiple) {
-    var remainder = value % multiple;
-
-    if (remainder === 0) {
-      return value;
-    }
-    else {
-      return value + multiple - remainder;
-    }
-  }
-
-  /**
    * Creates the waveform axis shapes and adds them to the given view layer.
    *
    * @class
@@ -112,7 +88,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     var axisLabelIntervalSecs = this.getAxisLabelScale(view);
 
     // Time of first axis marker (seconds)
-    var firstAxisLabelSecs = roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
+    var firstAxisLabelSecs = Utils.roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
 
     // Distance between waveform start time and first axis marker (seconds)
     var axisLabelOffsetSecs = firstAxisLabelSecs - currentFrameStartTime;
@@ -147,6 +123,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       context.stroke();
 
       var label      = Utils.formatTime(secs, true);
+
       // TODO: handle this with Konva.Text:
       var labelWidth = context._context.measureText(label).width;
       var labelX     = x - labelWidth / 2;

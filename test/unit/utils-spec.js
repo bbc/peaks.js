@@ -43,6 +43,26 @@ describe('Utils', function() {
     });
   });
 
+  describe('roundUpToNearest', function() {
+    it('should return an integer', function() {
+      expect(Utils.roundUpToNearest(0.1523809523809524, 1)).to.equal(1);
+    });
+
+    it('should round upwards', function() {
+      expect(Utils.roundUpToNearest(5.5, 3)).to.equal(6);
+      expect(Utils.roundUpToNearest(38.9, 5)).to.equal(40);
+      expect(Utils.roundUpToNearest(141.0, 10)).to.equal(150);
+    });
+
+    it('should round negative values towards negative infinity', function() {
+      expect(Utils.roundUpToNearest(-5.5, 3)).to.equal(-6);
+    });
+
+    it('should return 0 given a multiple of 0', function() {
+      expect(Utils.roundUpToNearest(5.5, 0)).to.equal(0);
+    });
+  });
+
   describe('clamp', function() {
     it('should given value if in range', function() {
       expect(Utils.clamp(15, 10, 20)).to.equal(15);

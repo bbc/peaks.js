@@ -66,6 +66,36 @@ define(function() {
       return result;
     },
 
+    /**
+     * Rounds the given value up to the nearest given multiple.
+     *
+     * @param {Number} value
+     * @param {Number} multiple
+     * @returns {Number}
+     *
+     * @example
+     * roundUpToNearest(5.5, 3); // returns 6
+     * roundUpToNearest(141.0, 10); // returns 150
+     * roundUpToNearest(-5.5, 3); // returns -6
+     */
+
+    roundUpToNearest: function(value, multiple) {
+      if (multiple === 0) {
+          return 0;
+      }
+
+      var multiplier = 1;
+
+      if (value < 0.0) {
+          multiplier = -1;
+          value = -value;
+      }
+
+      var roundedUp = Math.ceil(value);
+
+      return multiplier * (((roundedUp + multiple - 1) / multiple) | 0) * multiple;
+    },
+
     clamp: function(value, min, max) {
       if (value < min) {
         return min;
