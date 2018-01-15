@@ -173,6 +173,10 @@
 
           var peaksInstance = Peaks.init(options);
 
+          peaksInstance.on('peaks.ready', function() {
+            console.log('peaks.ready');
+          });
+
           var renderSegments = function(peaks) {
             var segmentsContainer = document.getElementById('segments');
             var segments = peaks.segments.getSegments();
