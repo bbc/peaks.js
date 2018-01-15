@@ -78,10 +78,6 @@ define(function() {
       }
     },
 
-    isNumber: function(value) {
-      return typeof value === 'number';
-    },
-
     extend: function(to, from) {
       for (var key in from) {
         if (from.hasOwnProperty(key)) {
@@ -90,6 +86,17 @@ define(function() {
       }
 
       return to;
+    },
+
+    /**
+     * Checks whether the given value is a number.
+     *
+     * @param {Number} value The value to test
+     * @returns {Boolean}
+     */
+
+    isNumber: function(value) {
+      return typeof value === 'number';
     },
 
     /**
