@@ -2,9 +2,9 @@
 
 ## 0.9.6 (2018/01/13)
 
- * (#112) Fixed a race condition where an <audio> element that contains
-   one or more <source> elements is added to a page, and Peaks.init()
-   is called before the <audio> element has selected which <source>
+ * (#112) Fixed a race condition where an audio element that contains
+   one or more source elements is added to a page, and Peaks.init()
+   is called before the audio element has selected which source
    to use. Also improved error reporting, to avoid a misleading "Unable to
    determine a compatible dataUri format for this browser" error (@chrisn)
 
