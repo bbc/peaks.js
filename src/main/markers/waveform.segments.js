@@ -382,6 +382,7 @@ define([
 
   WaveformSegments.prototype.removeAll = function() {
     this._segments = [];
+    this._segmentsById = {};
     this._peaks.emit('segments.remove_all');
   };
 

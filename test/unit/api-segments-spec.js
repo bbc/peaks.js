@@ -396,12 +396,28 @@ describe('Peaks.segments', function() {
 
       p.segments.removeById('segment_id.2');
     });
+
+    it('should allow a segment with the same id to be subsequently added', function() {
+      p.segments.removeById('segment_id.1');
+
+      p.segments.add({ startTime: 6, endTime: 7, id: 'segment_id.1' });
+
+      var segments = p.segments.getSegments();
+
+      expect(segments.length).to.equal(2);
+      expect(segments[0].startTime).to.equal(15);
+      expect(segments[1].startTime).to.equal(6);
+
+      // expect(p.segments.getSegments().length).to.equal(2);
+    });
   });
 
   describe('removeAll', function() {
     beforeEach(function() {
-      p.segments.add({ startTime: 10, endTime: 12 });
-      p.segments.add({ startTime: 5,  endTime: 12 });
+      p.segments.add([
+        { startTime: 10, endTime: 12, id: 'segment_id.1' },
+        { startTime: 5,  endTime: 12, id: 'segment_id.2' }
+      ]);
     });
 
     it('should remove all segment objects', function() {
@@ -429,6 +445,19 @@ describe('Peaks.segments', function() {
       var result = p.segments.removeAll();
 
       expect(result).to.be.undefined;
+    });
+
+    it('should allow the same segment ids to be subsequently added', function() {
+      p.segments.removeAll();
+
+      p.segments.add({ startTime: 6, endTime: 7, id: 'segment_id.1' });
+      p.segments.add({ startTime: 8, endTime: 9, id: 'segment_id.2' });
+
+      var segments = p.segments.getSegments();
+
+      expect(segments.length).to.equal(2);
+      expect(segments[0].startTime).to.equal(6);
+      expect(segments[1].startTime).to.equal(8);
     });
   });
 });

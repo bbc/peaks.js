@@ -315,6 +315,7 @@ define([
 
   WaveformPoints.prototype.removeAll = function() {
     this._points = [];
+    this._pointsById = {};
     this._peaks.emit('points.remove_all');
   };
 

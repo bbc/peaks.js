@@ -314,18 +314,29 @@ describe('Peaks.points', function() {
   });
 
   describe('removeById', function() {
-    it('should remove the point by matching id', function() {
+    beforeEach(function() {
       p.points.add([
         { time: 0,  id: 'point_id.1' },
         { time: 15, id: 'point_id.2' }
       ]);
+    });
 
+    it('should remove the point with the given id', function() {
       p.points.removeById('point_id.1');
 
       var remainingPoints = p.points.getPoints();
 
       expect(remainingPoints).to.have.a.lengthOf(1);
       expect(remainingPoints[0].id).to.eq('point_id.2');
+    });
+
+    it('should return the removed points', function() {
+      var removed = p.points.removeById('point_id.1');
+
+      expect(removed).to.be.an.instanceOf(Array);
+      expect(removed.length).to.equal(1);
+      expect(removed[0]).to.be.an.instanceOf(Point);
+      expect(removed[0].time).to.equal(0);
     });
 
     it('should emit an event with the removed points', function(done) {
@@ -339,20 +350,26 @@ describe('Peaks.points', function() {
         done();
       });
 
-      p.points.add([
-        { time: 0,  id: 'point_id.1' },
-        { time: 15, id: 'point_id.2' },
-        { time: 30, id: 'point_id.3' }
-      ]);
-
       p.points.removeById('point_id.2');
+    });
+
+    it('should allow a point with the same id to be subsequently added', function() {
+      p.points.removeById('point_id.1');
+
+      p.points.add({ time: 6, id: 'point_id.1' });
+
+      var points = p.points.getPoints();
+
+      expect(points.length).to.equal(2);
+      expect(points[0].time).to.equal(15);
+      expect(points[1].time).to.equal(6);
     });
   });
 
   describe('removeAll', function() {
     beforeEach(function() {
-      p.points.add({ time: 10 });
-      p.points.add({ time: 5  });
+      p.points.add({ time: 10, id: 'point_id.1' });
+      p.points.add({ time: 5,  id: 'point_id.2' });
     });
 
     it('should remove all point objects', function() {
@@ -380,6 +397,19 @@ describe('Peaks.points', function() {
       var result = p.points.removeAll();
 
       expect(result).to.be.undefined;
+    });
+
+    it('should allow the same point ids to be subsequently added', function() {
+      p.points.removeAll();
+
+      p.points.add({ time: 6, id: 'point_id.1' });
+      p.points.add({ time: 7, id: 'point_id.2' });
+
+      var points = p.points.getPoints();
+
+      expect(points.length).to.equal(2);
+      expect(points[0].time).to.equal(6);
+      expect(points[1].time).to.equal(7);
     });
   });
 });
