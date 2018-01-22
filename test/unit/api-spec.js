@@ -81,7 +81,7 @@ describe('Peaks', function() {
             container: document.getElementById('waveform-visualiser-container'),
             mediaElement: document.getElementById('audioElement')
           });
-        }).to.throw(/AudioContext or dataUri/);
+        }).to.throw(/audioContext or dataUri/);
       });
 
       it('should throw an exception if the dataUri is not an object', function() {

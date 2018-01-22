@@ -64,7 +64,7 @@
   Waveform.prototype._getRemoteData = function(options) {
     if (options.dataUri && options.audioContext) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass an AudioContext or dataUri to render waveform data, not both');
+      throw new Error('Peaks.init(): You must pass an audioContext or dataUri to render waveform data, not both');
     }
     else if (options.dataUri) {
       return this._getRemoteWaveformData(options);
@@ -74,7 +74,7 @@
     }
     else {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): You must pass an AudioContext or dataUri to render waveform data');
+      throw new Error('Peaks.init(): You must pass an audioContext or dataUri to render waveform data');
     }
   };
 
