@@ -407,8 +407,6 @@ describe('Peaks.segments', function() {
       expect(segments.length).to.equal(2);
       expect(segments[0].startTime).to.equal(15);
       expect(segments[1].startTime).to.equal(6);
-
-      // expect(p.segments.getSegments().length).to.equal(2);
     });
   });
 
