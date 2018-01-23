@@ -161,6 +161,10 @@ var options = {
     json: '../test_data/sample.json',
   },
 
+  // If true, peaks will send credentials with all network requests
+  // i.e. when fetching waveform data.
+  withCredentials: false,
+
   // A Web Audio AudioContext instance which can be used
   // to render the waveform if dataUri is not provided
   audioContext: new AudioContext(),
