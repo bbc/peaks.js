@@ -273,6 +273,10 @@
       }, 0);
     };
 
+    if (isXhr2 && this.peaks.withCredentials) {
+      xhr.withCredentials = true;
+    }
+
     return xhr;
   };
 
