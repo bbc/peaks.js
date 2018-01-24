@@ -322,6 +322,47 @@ describe('Peaks', function() {
       });
     });
 
+    it('should not use credentials if withCredentials is no set', function(done) {
+      p = Peaks.init({
+        container: document.getElementById('waveform-visualiser-container'),
+        mediaElement: document.querySelector('audio'),
+        dataUri: {
+          json: 'base/test_data/sample.json'
+        }
+      });
+
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
+
+      p.on('peaks.ready', function() {
+        var xhr = spy.getCall(0).args[1];
+
+        expect(xhr.withCredentials).to.equal(false);
+
+        done();
+      });
+    });
+
+    it('should use credentials if withCredentials is set', function(done) {
+      p = Peaks.init({
+        container: document.getElementById('waveform-visualiser-container'),
+        mediaElement: document.querySelector('audio'),
+        withCredentials: true,
+        dataUri: {
+          json: 'base/test_data/sample.json'
+        }
+      });
+
+      var spy = sinon.spy(p.waveform, '_handleRemoteData');
+
+      p.on('peaks.ready', function() {
+        var xhr = spy.getCall(0).args[1];
+
+        expect(xhr.withCredentials).to.equal(true);
+
+        done();
+      });
+    });
+
     ('ArrayBuffer' in window) && it('should use the arraybuffer dataUri connector or fail if not available', function(done) {
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
