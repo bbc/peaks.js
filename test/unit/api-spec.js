@@ -322,7 +322,7 @@ describe('Peaks', function() {
       });
     });
 
-    it('should not use credentials if withCredentials is no set', function(done) {
+    it('should not use credentials if withCredentials is not set', function(done) {
       p = Peaks.init({
         container: document.getElementById('waveform-visualiser-container'),
         mediaElement: document.querySelector('audio'),
