@@ -273,7 +273,7 @@
       }, 0);
     };
 
-    if (isXhr2 && this.peaks.withCredentials) {
+    if (isXhr2 && this.peaks.options.withCredentials) {
       xhr.withCredentials = true;
     }
 
