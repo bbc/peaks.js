@@ -96,6 +96,14 @@ define('peaks', [
       dataUriDefaultFormat:  'json',
 
       /**
+       * If true, all ajax requests (e.g. to fetch waveform data) will be made
+       * with credentials (i.e. browser-controlled cookies).
+       *
+       * @type {Boolean}
+       */
+      withCredentials: false,
+
+      /**
        * Will report errors to that function
        *
        * @type {Function=}
