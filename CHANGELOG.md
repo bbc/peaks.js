@@ -1,5 +1,21 @@
 # Peaks.js
 
+## 0.9.7
+
+ * (#104) Prevent "zoom level too low" exception when using the Web Audio API
+   to compute the waveform data (@chrisn)
+
+ * (#213) Added withCredentials option to allow users to send credentials
+   when requesting waveform data files using XHR (@bennypowers)
+
+ * (#212) Fixed points.removeAll() and segments.removeAll() (@chrisn)
+
+ * Fixed a bug where the time axis would show the wrong times next to the
+   axis markers (@chrisn)
+
+ * Peaks.js is now available via cdnjs. Added a link to the ReadMe
+   (@extend1994)
+
 ## 0.9.6 (2018/01/13)
 
  * (#112) Fixed a race condition where an audio element that contains
