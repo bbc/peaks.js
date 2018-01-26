@@ -75,217 +75,215 @@
     </style>
   </head>
   <body>
-      <div id="titles">
-        <h1>Peaks.js Demo</h1>
+    <div id="titles">
+      <h1>Peaks.js Demo</h1>
 
-        <p>Peaks.js is a modular client-side JavaScript component designed for
-        the display of and interaction with audio waveforms in the browser.</p>
+      <p>Peaks.js is a modular client-side JavaScript component designed for
+      the display of and interaction with audio waveforms in the browser.</p>
 
-        <p>Peaks.js was developed by <a href="http://www.bbc.co.uk/rd">BBC R&amp;D</a>
-        to allow users to make accurate clippings of audio content in the browser.</p>
+      <p>Peaks.js was developed by <a href="http://www.bbc.co.uk/rd">BBC R&amp;D</a>
+      to allow users to make accurate clippings of audio content in the browser.</p>
 
-        <p>Peaks.js uses HTML5 canvas technology to display the audio waveform at
-        different zoom levels and provides some basic convenience methods for
-        interacting with waveforms and creating time-based visual sections for
-        denoting content to be clipped or for reference eg: distinguishing music
-        from speech or identifying different music tracks.</p>
+      <p>Peaks.js uses HTML5 canvas technology to display the audio waveform at
+      different zoom levels and provides some basic convenience methods for
+      interacting with waveforms and creating time-based visual sections for
+      denoting content to be clipped or for reference eg: distinguishing music
+      from speech or identifying different music tracks.</p>
 
-        <p>You can read more about the project
-        <a href="http://waveform.prototyping.bbc.co.uk/">here</a>.</p>
-      </div>
+      <p>You can read more about the project
+      <a href="http://waveform.prototyping.bbc.co.uk/">here</a>.</p>
+    </div>
 
-      <div id="first-waveform-visualiser-container"></div>
+    <div id="first-waveform-visualiser-container"></div>
 
-      <div id="demo-controls">
-        <div>
-          <audio controls=controls>
-            <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
-            <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
-            Your browser does not support the audio element.
-          </audio>
+    <div id="demo-controls">
+      <div>
+        <audio controls=controls>
+          <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
+          <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
 
-          <div id="controls">
-            <div>
-              <button data-action="zoom-in">Zoom in</button>
-              <button data-action="zoom-out">Zoom out</button>
-              <button data-action="add-segment">Add a Segment at current time</button>
-              <button data-action="add-point">Add a Point at current time</button>
-              <button data-action="log-data">Log segments/points</button>
-            </div>
-            <div>
-              <input type="text" id="seek-time" value="0.0">
-              <button data-action="seek">Seek</button>
-            </div>
+        <div id="controls">
+          <div>
+            <button data-action="zoom-in">Zoom in</button>
+            <button data-action="zoom-out">Zoom out</button>
+            <button data-action="add-segment">Add a Segment at current time</button>
+            <button data-action="add-point">Add a Point at current time</button>
+            <button data-action="log-data">Log segments/points</button>
+          </div>
+          <div>
+            <input type="text" id="seek-time" value="0.0">
+            <button data-action="seek">Seek</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="log">
-
-        <div id="segments" class="hide">
-          <h2>Segments</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Label</th>
-                <th>Start time</th>
-                <th>End time</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-
-        <div id="points" class="hide">
-          <h2>Points</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Label</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-
+    <div class="log">
+      <div id="segments" class="hide">
+        <h2>Segments</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Label</th>
+              <th>Start time</th>
+              <th>End time</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
 
-      <script src="peaks.js"></script>
-      <script>
-        (function(Peaks){
-          var options = {
-            container: document.getElementById('first-waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio'),
-            dataUri: {
-              arraybuffer: '/test_data/TOL_6min_720p_download.dat',
-              json: '/test_data/TOL_6min_720p_download.json'
-            },
-            keyboard: true,
-            pointMarkerColor: '#006eb0',
-            showPlayheadTime: true
-          };
+      <div id="points" class="hide">
+        <h2>Points</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Label</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-          var peaksInstance = Peaks.init(options);
+    <script src="peaks.js"></script>
+    <script>
+      (function(Peaks) {
+        var options = {
+          container: document.getElementById('first-waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: {
+            arraybuffer: '/test_data/TOL_6min_720p_download.dat',
+            json: '/test_data/TOL_6min_720p_download.json'
+          },
+          keyboard: true,
+          pointMarkerColor: '#006eb0',
+          showPlayheadTime: true
+        };
 
-          peaksInstance.on('peaks.ready', function() {
-            console.log('peaks.ready');
-          });
+        var peaksInstance = Peaks.init(options);
 
-          var renderSegments = function(peaks) {
-            var segmentsContainer = document.getElementById('segments');
-            var segments = peaks.segments.getSegments();
-            var html = '';
+        peaksInstance.on('peaks.ready', function() {
+          console.log('peaks.ready');
+        });
 
-            for (var i = 0; i < segments.length; i++) {
-              var segment = segments[i];
+        var renderSegments = function(peaks) {
+          var segmentsContainer = document.getElementById('segments');
+          var segments = peaks.segments.getSegments();
+          var html = '';
 
-              var row = '<tr>' +
-                '<td>' + segment.id + '</td>' +
-                '<td>' + segment.labelText + '</td>' +
-                '<td>' + segment.startTime + '</td>' +
-                '<td>' + segment.endTime + '</td>' +
-                '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
-                '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
-                '</tr>';
+          for (var i = 0; i < segments.length; i++) {
+            var segment = segments[i];
 
-              html += row;
-            }
+            var row = '<tr>' +
+              '<td>' + segment.id + '</td>' +
+              '<td>' + segment.labelText + '</td>' +
+              '<td>' + segment.startTime + '</td>' +
+              '<td>' + segment.endTime + '</td>' +
+              '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
+              '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
+              '</tr>';
 
-            segmentsContainer.querySelector('tbody').innerHTML = html;
-
-            if (html.length) {
-              segmentsContainer.classList = '';
-            }
+            html += row;
           }
 
-          var renderPoints = function(peaks) {
-            var pointsContainer = document.getElementById('points');
-            var points = peaks.points.getPoints();
-            var html = '';
+          segmentsContainer.querySelector('tbody').innerHTML = html;
 
-            for (var i = 0; i < points.length; i++) {
-              var point = points[i];
+          if (html.length) {
+            segmentsContainer.classList = '';
+          }
+        }
 
-              var row = '<tr>' +
-                '<td>' + point.id + '</td>' +
-                '<td>' + point.labelText + '</td>' +
-                '<td>' + point.time + '</td>' +
-                '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
-                '</tr>';
+        var renderPoints = function(peaks) {
+          var pointsContainer = document.getElementById('points');
+          var points = peaks.points.getPoints();
+          var html = '';
 
-              html += row;
-            }
+          for (var i = 0; i < points.length; i++) {
+            var point = points[i];
 
-            pointsContainer.querySelector('tbody').innerHTML = html;
+            var row = '<tr>' +
+              '<td>' + point.id + '</td>' +
+              '<td>' + point.labelText + '</td>' +
+              '<td>' + point.time + '</td>' +
+              '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
+              '</tr>';
 
-            if (html.length) {
-              pointsContainer.classList = '';
-            }
+            html += row;
           }
 
-          document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
-            peaksInstance.zoom.zoomIn();
+          pointsContainer.querySelector('tbody').innerHTML = html;
+
+          if (html.length) {
+            pointsContainer.classList = '';
+          }
+        }
+
+        document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
+          peaksInstance.zoom.zoomIn();
+        });
+
+        document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
+          peaksInstance.zoom.zoomOut();
+        });
+
+        document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
+          peaksInstance.segments.add({
+            startTime: peaksInstance.player.getCurrentTime(),
+            endTime: peaksInstance.player.getCurrentTime() + 10,
+            labelText: "Test segment",
+            editable: true
           });
+        });
 
-          document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
-            peaksInstance.zoom.zoomOut();
+        document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
+          peaksInstance.points.add({
+            time: peaksInstance.player.getCurrentTime(),
+            labelText: "Test point",
+            editable: true
           });
+        });
 
-          document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
-            peaksInstance.segments.add({
-              startTime: peaksInstance.player.getCurrentTime(),
-              endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: "Test segment",
-              editable: true
-            });
-          });
+        document.querySelector('button[data-action="log-data"]').addEventListener('click', function(event) {
+          renderSegments(peaksInstance);
+          renderPoints(peaksInstance);
+        });
 
-          document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
-            peaksInstance.points.add({
-              time: peaksInstance.player.getCurrentTime(),
-              labelText: "Test point",
-              editable: true
-            });
-          });
+        document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
+          var time = document.getElementById('seek-time').value;
+          var seconds = parseFloat(time);
 
-          document.querySelector('button[data-action="log-data"]').addEventListener('click', function(event) {
-            renderSegments(peaksInstance);
-            renderPoints(peaksInstance);
-          });
+          if (!Number.isNaN(seconds)) {
+            peaksInstance.player.seek(seconds);
+          }
+        });
 
-          document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
-            var time = document.getElementById('seek-time').value;
-            var seconds = parseFloat(time);
+        document.querySelector('body').addEventListener('click', function(event) {
+          var element = event.target;
+          var action  = element.getAttribute('data-action');
+          var id      = element.getAttribute('data-id');
 
-            if (!Number.isNaN(seconds)) {
-              peaksInstance.player.seek(seconds);
-            }
-          });
+          if (action === 'play-segment') {
+            var segment = peaksInstance.segments.getSegment(id);
+            peaksInstance.player.playSegment(segment);
+          }
+          else if (action === 'remove-point') {
+            peaksInstance.points.removeById(id);
+          }
+          else if (action === 'remove-segment') {
+            peaksInstance.segments.removeById(id);
+          }
+        });
 
-          document.querySelector('body').addEventListener('click', function(event) {
-            var element = event.target;
-            var action  = element.getAttribute('data-action');
-            var id      = element.getAttribute('data-id');
-
-            if (action === 'play-segment') {
-              var segment = peaksInstance.segments.getSegment(id);
-              peaksInstance.player.playSegment(segment);
-            }
-            else if (action === 'remove-point') {
-              peaksInstance.points.removeById(id);
-            }
-            else if (action === 'remove-segment') {
-              peaksInstance.segments.removeById(id);
-            }
-          });
-
-        })(peaks);
-      </script>
+      })(peaks);
+    </script>
   </body>
 </html>
