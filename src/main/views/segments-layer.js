@@ -145,7 +145,7 @@ define([
         draggable:    editable,
         height:       this._view.height,
         color:        this._peaks.options.outMarkerColor,
-        imMarker:     false,
+        inMarker:     false,
         segmentGroup: segmentGroup,
         segment:      segment,
         layer:        self._layer,
