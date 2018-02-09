@@ -88,7 +88,7 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
       );
     }
 
-    this.listeners = [];
+    this._listeners.length = 0;
 
     if (this._interval !== null) {
       clearTimeout(this._interval);

@@ -100,4 +100,12 @@ describe('Peaks.player', function() {
       expect(p.player.getCurrentSource()).to.match(/http:\/\/localhost:8080\/base\/test_data\/sample.(?:mp3|ogg)/);
     });
   });
+
+  describe.only('destroy', function() {
+    it('should remove all event listeners', function() {
+      p.player.destroy();
+
+      expect(p.player._listeners).to.be.empty;
+    });
+  });
 });
