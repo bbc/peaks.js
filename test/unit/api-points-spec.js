@@ -235,8 +235,9 @@ describe('Peaks.points', function() {
 
       var removed = p.points.remove(points[0]);
 
-      expect(removed).to.be.an.instanceOf(Point);
-      expect(removed.time).to.equal(10);
+      expect(removed).to.be.an.instanceOf(Array);
+      expect(removed).to.have.lengthOf(1);
+      expect(removed[0].time).to.equal(10);
 
       var remainingPoints = p.points.getPoints();
 

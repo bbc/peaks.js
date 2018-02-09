@@ -309,7 +309,7 @@ define([
    * Removes the given segment.
    *
    * @param {Segment} segment The segment to remove.
-   * @returns {Segment} The removed segment.
+   * @returns {Array<Segment>} The removed segment.
    */
 
   WaveformSegments.prototype.remove = function(segment) {
@@ -324,12 +324,9 @@ define([
     else if (removed.length > 1) {
       // eslint-disable-next-line max-len
       this._peaks.logger('peaks.segments.remomve(): Found multiple matching segments: ' + String(segment));
+    }
 
-      return removed;
-    }
-    else {
-      return removed[0];
-    }
+    return removed;
   };
 
   /**

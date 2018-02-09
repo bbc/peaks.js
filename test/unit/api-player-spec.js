@@ -101,7 +101,7 @@ describe('Peaks.player', function() {
     });
   });
 
-  describe.only('destroy', function() {
+  describe('destroy', function() {
     it('should remove all event listeners', function() {
       p.player.destroy();
 

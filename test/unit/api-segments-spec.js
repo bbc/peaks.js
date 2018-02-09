@@ -254,7 +254,11 @@ describe('Peaks.segments', function() {
     it('should return the deleted segment object if properly deleted', function() {
       var segment = p.segments.getSegments()[0];
 
-      expect(p.segments.remove(segment)).to.equal(segment);
+      var removed = p.segments.remove(segment);
+
+      expect(removed).to.be.an.instanceOf(Array);
+      expect(removed).to.have.lengthOf(1);
+      expect(removed[0]).to.equal(segment);
     });
 
     it('should remove the segment from the segments array', function() {

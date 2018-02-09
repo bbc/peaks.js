@@ -240,7 +240,7 @@ define([
    * @private
    * @param {Function} predicate A predicate function that identifies which
    *   points to remove.
-   * @returns {Array<Points>} The removed {@link Points} objects.
+   * @returns {Array<Point>} The removed {@link Points} objects.
    */
 
   WaveformPoints.prototype._removePoints = function(predicate) {
@@ -257,7 +257,7 @@ define([
    * Removes the given point.
    *
    * @param {Point} point The point to remove.
-   * @returns {Point} The removed point.
+   * @returns {Array<Point>} The removed points.
    */
 
   WaveformPoints.prototype.remove = function(point) {
@@ -272,12 +272,9 @@ define([
     else if (removed.length > 1) {
       // eslint-disable-next-line max-len
       this._peaks.logger('peaks.points.remomve(): Found multiple matching points: ' + String(point));
+    }
 
-      return removed;
-    }
-    else {
-      return removed[0];
-    }
+    return removed;
   };
 
   /**
