@@ -313,20 +313,9 @@ define([
    */
 
   WaveformSegments.prototype.remove = function(segment) {
-    var removed = this._removeSegments(function(s) {
+    return this._removeSegments(function(s) {
       return s === segment;
     });
-
-    if (removed.length === 0) {
-      // eslint-disable-next-line max-len
-      throw new Error('peaks.segments.remove(): Unable to find the segment: ' + String(segment));
-    }
-    else if (removed.length > 1) {
-      // eslint-disable-next-line max-len
-      this._peaks.logger('peaks.segments.remomve(): Found multiple matching segments: ' + String(segment));
-    }
-
-    return removed;
   };
 
   /**

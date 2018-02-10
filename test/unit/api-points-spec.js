@@ -237,13 +237,19 @@ describe('Peaks.points', function() {
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed).to.have.lengthOf(1);
-      expect(removed[0].time).to.equal(10);
+      expect(removed[0].id).to.equal('point1');
+    });
+
+    it('should remove the point from the points array', function() {
+      var points = p.points.getPoints();
+
+      p.points.remove(points[0]);
 
       var remainingPoints = p.points.getPoints();
 
       expect(remainingPoints).to.have.lengthOf(2);
-      expect(remainingPoints[0].time).to.equal(5);
-      expect(remainingPoints[1].time).to.equal(3);
+      expect(remainingPoints[0].id).to.equal('point2');
+      expect(remainingPoints[1].id).to.equal('point3');
     });
 
     it('should emit an event with the removed points', function(done) {
@@ -251,7 +257,7 @@ describe('Peaks.points', function() {
         expect(points).to.be.an.instanceOf(Array);
         expect(points).to.have.lengthOf(1);
         expect(points[0]).to.be.an.instanceOf(Point);
-        expect(points[0].time).to.equal(5);
+        expect(points[0].id).to.equal('point2');
 
         done();
       });
@@ -259,6 +265,13 @@ describe('Peaks.points', function() {
       var points = p.points.getPoints();
 
       p.points.remove(points[1]);
+    });
+
+    it('should return an empty array if the point is not found', function() {
+      var removed = p.points.remove({});
+
+      expect(removed).to.be.an.instanceOf(Array);
+      expect(removed).to.be.empty;
     });
   });
 

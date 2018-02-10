@@ -244,42 +244,52 @@ describe('Peaks.segments', function() {
 
   describe('remove', function() {
     beforeEach(function() {
-      p.segments.add({ startTime: 10, endTime: 12 });
+      p.segments.add({ startTime: 10, endTime: 12, id: 'segment1' });
+      p.segments.add({ startTime: 13, endTime: 15, id: 'segment2' });
+      p.segments.add({ startTime: 16, endTime: 18, id: 'segment3' });
     });
 
-    it('should throw an exception if the segment does not exist', function() {
-      expect(function() { p.segments.remove({}); }).to.throw();
-    });
+    it('should remove the given segment object', function() {
+      var segments = p.segments.getSegments();
 
-    it('should return the deleted segment object if properly deleted', function() {
-      var segment = p.segments.getSegments()[0];
-
-      var removed = p.segments.remove(segment);
+      var removed = p.segments.remove(segments[0]);
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed).to.have.lengthOf(1);
-      expect(removed[0]).to.equal(segment);
+      expect(removed[0].id).to.equal('segment1');
     });
 
     it('should remove the segment from the segments array', function() {
-      var segment = p.segments.getSegments()[0];
+      var segments = p.segments.getSegments();
 
-      p.segments.remove(segment);
+      p.segments.remove(segments[0]);
 
-      expect(p.segments.getSegments()).to.not.include(segment);
+      var remainingSegments = p.segments.getSegments();
+
+      expect(remainingSegments).to.have.lengthOf(2);
+      expect(remainingSegments[0].id).to.equal('segment2');
+      expect(remainingSegments[1].id).to.equal('segment3');
     });
 
     it('should emit an event with the removed segment', function(done) {
-      var segment = p.segments.getSegments()[0];
-
       p.on('segments.remove', function(segments) {
         expect(segments).to.be.an.instanceOf(Array);
         expect(segments).to.have.lengthOf(1);
-        expect(segments[0]).to.deep.equal(segment);
+        expect(segments[0]).to.be.an.instanceOf(Segment);
+        expect(segments[0].id).to.equal('segment2');
         done();
       });
 
-      p.segments.remove(segment);
+      var segments = p.segments.getSegments();
+
+      p.segments.remove(segments[1]);
+    });
+
+    it('should return an empty array if the segment is not found', function() {
+      var removed = p.segments.remove({});
+
+      expect(removed).to.be.an.instanceOf(Array);
+      expect(removed).to.be.empty;
     });
   });
 

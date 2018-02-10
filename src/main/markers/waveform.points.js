@@ -261,20 +261,9 @@ define([
    */
 
   WaveformPoints.prototype.remove = function(point) {
-    var removed = this._removePoints(function(p) {
+    return this._removePoints(function(p) {
       return p === point;
     });
-
-    if (removed.length === 0) {
-      // eslint-disable-next-line max-len
-      throw new Error('peaks.points.remove(): Unable to find the point: ' + String(point));
-    }
-    else if (removed.length > 1) {
-      // eslint-disable-next-line max-len
-      this._peaks.logger('peaks.points.remomve(): Found multiple matching points: ' + String(point));
-    }
-
-    return removed;
   };
 
   /**
