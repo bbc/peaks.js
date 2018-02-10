@@ -1,6 +1,18 @@
 # Peaks.js
 
-## 0.9.7
+## 0.9.8 (2018/02/10)
+
+ * Ensure resources used by Player object are released on calling
+   peaks.destroy() (@chrisn)
+
+ * points.remove() and segments.remove() no longer throw an exception
+   if multiple matching markers are found. The removed markers are returned
+   in an array (@chrisn)
+
+ * Updated to eventemitter2 v5.0.1, also updated development dependencies
+   (@chrisn)
+
+## 0.9.7 (2018/01/25)
 
  * (#104) Prevent "zoom level too low" exception when using the Web Audio API
    to compute the waveform data (@chrisn)
