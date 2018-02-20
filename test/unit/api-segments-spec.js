@@ -210,7 +210,7 @@ describe('Peaks.segments', function() {
 
     it('should throw an exception if the startTime is NaN', function() {
       expect(function() {
-        p.points.add({ startTime: NaN, endTime: 1.0 });
+        p.segments.add({ startTime: NaN, endTime: 1.0 });
       }).to.throw(TypeError);
     });
 
