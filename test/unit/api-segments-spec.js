@@ -240,6 +240,36 @@ describe('Peaks.segments', function() {
       expect(segments[0].endTime).to.equal(30);
       expect(segments[0].id).to.equal('segment1');
     });
+
+    it('should add segment atomically', function() {
+      p.segments.add([
+        { startTime: 0,  endTime: 10 },
+        { startTime: 10, endTime: 20 },
+        { startTime: 20, endTime: 30 }
+      ]);
+
+      expect(p.segments.getSegments()).to.have.lengthOf(3);
+
+      var segmentsToAdd = [
+        { startTime: 30, endTime: 40 },
+        { startTime: 40, endTime: 35 },
+        { startTime: 40, endTime: 50 }
+      ];
+
+      expect(function() {
+        p.segments.add(segmentsToAdd);
+      }).to.throw(Error, /startTime/);
+
+      var segments = p.segments.getSegments();
+
+      expect(segments).to.have.lengthOf(3);
+      expect(segments[0].startTime).to.equal(0);
+      expect(segments[0].endTime).to.equal(10);
+      expect(segments[1].startTime).to.equal(10);
+      expect(segments[1].endTime).to.equal(20);
+      expect(segments[2].startTime).to.equal(20);
+      expect(segments[2].endTime).to.equal(30);
+    });
   });
 
   describe('remove', function() {

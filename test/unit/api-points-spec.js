@@ -221,6 +221,36 @@ describe('Peaks.points', function() {
       expect(points[0].time).to.equal(20);
       expect(points[0].id).to.equal('point1');
     });
+
+    it('should add points atomically', function() {
+      p.points.add([
+        { time: 0,  id: 'point1' },
+        { time: 10, id: 'point2' },
+        { time: 20, id: 'point3' }
+      ]);
+
+      expect(p.points.getPoints()).to.have.lengthOf(3);
+
+      var pointsToAdd = [
+        { time: 30, id: 'point4' },
+        { time: 40, id: 'point1' },
+        { time: 40, id: 'point6' }
+      ];
+
+      expect(function() {
+        p.points.add(pointsToAdd);
+      }).to.throw(Error, /duplicate id/);
+
+      var points = p.points.getPoints();
+
+      expect(points).to.have.lengthOf(3);
+      expect(points[0].time).to.equal(0);
+      expect(points[0].id).to.equal('point1');
+      expect(points[1].time).to.equal(10);
+      expect(points[1].id).to.equal('point2');
+      expect(points[2].time).to.equal(20);
+      expect(points[2].id).to.equal('point3');
+    });
   });
 
   describe('remove', function() {
