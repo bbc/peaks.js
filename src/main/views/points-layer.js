@@ -152,20 +152,18 @@ define([
   };
 
   /**
-   * @param {Konva.Group} pointGroup
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleMouseOver = function(pointGroup, point) {
+  PointsLayer.prototype._onPointHandleMouseOver = function(point) {
     this._peaks.emit('points.mouseover', point);
   };
 
   /**
-   * @param {Konva.Group} pointGroup
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleMouseLeave = function(pointGroup, point) {
+  PointsLayer.prototype._onPointHandleMouseLeave = function(point) {
     this._peaks.emit('points.mouseleave', point);
   };
 
