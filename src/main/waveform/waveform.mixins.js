@@ -163,6 +163,8 @@ define(['konva'], function(Konva) {
    * @property {Function} onDrag Callback after drag completed.
    * @property {Function} onDblClick
    * @property {Function} onDragEnd
+   * @property {Function} onMouseOver
+   * @property {Function} onMouseLeave
    */
 
   /**
