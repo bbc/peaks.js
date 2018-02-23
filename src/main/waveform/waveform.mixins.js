@@ -206,6 +206,18 @@ define(['konva'], function(Konva) {
       });
     }
 
+    if (options.onMouseOver) {
+      group.on('mouseover', function(event) {
+        options.onMouseOver(options.point);
+      });
+    }
+
+    if (options.onMouseLeave) {
+      group.on('mouseout', function(event) {
+        options.onMouseLeave(options.point);
+      });
+    }
+
     // Label
     var text = null;
 
