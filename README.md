@@ -623,6 +623,8 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.remove`           | `Array<Point> points` |
 | `points.remove_all`       | (none)                |
 | `points.dragged`          | `Point point`         |
+| `points.mouseenter`       | `Point point`         |
+| `points.mouseleave`       | `Point point`         |
 
 # Building Peaks.js
 

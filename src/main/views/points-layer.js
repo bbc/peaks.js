@@ -104,7 +104,9 @@ define([
       layer:       this._layer,
       onDrag:      editable ? this._onPointHandleDrag.bind(this) : null,
       onDblClick:  this._peaks.options.pointDblClickHandler,
-      onDragEnd:   editable ? this._peaks.options.pointDragEndHandler : null
+      onDragEnd:   editable ? this._peaks.options.pointDragEndHandler : null,
+      onMouseOver: this._onPointHandleMouseOver.bind(this),
+      onMouseLeave: this._onPointHandleMouseLeave.bind(this)
     });
 
     pointGroup.add(pointGroup.marker);
@@ -147,6 +149,24 @@ define([
     }
 
     this._peaks.emit('points.dragged', point);
+  };
+
+  /**
+   * @param {Konva.Group} pointGroup
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._onPointHandleMouseOver = function(pointGroup, point) {
+    this._peaks.emit('points.mouseover', point);
+  };
+
+  /**
+   * @param {Konva.Group} pointGroup
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._onPointHandleMouseLeave = function(pointGroup, point) {
+    this._peaks.emit('points.mouseleave', point);
   };
 
   /**
