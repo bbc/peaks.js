@@ -625,6 +625,7 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.dragged`          | `Point point`         |
 | `points.mouseenter`       | `Point point`         |
 | `points.mouseleave`       | `Point point`         |
+| `points.dblclick`         | `Point point`         |
 
 # Building Peaks.js
 

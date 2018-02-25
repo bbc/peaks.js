@@ -95,17 +95,17 @@ define([
     var editable = this._allowEditing && point.editable;
 
     pointGroup.marker = this._peaks.options.createPointMarker({
-      draggable:   editable,
-      showLabel:   this._showLabels,
-      handleColor: point.color ? point.color : this._peaks.options.pointMarkerColor,
-      height:      this._view.height,
-      pointGroup:  pointGroup,
-      point:       point,
-      layer:       this._layer,
-      onDrag:      editable ? this._onPointHandleDrag.bind(this) : null,
-      onDblClick:  this._peaks.options.pointDblClickHandler,
-      onDragEnd:   editable ? this._peaks.options.pointDragEndHandler : null,
-      onMouseOver: this._onPointHandleMouseOver.bind(this),
+      draggable:    editable,
+      showLabel:    this._showLabels,
+      handleColor:  point.color ? point.color : this._peaks.options.pointMarkerColor,
+      height:       this._view.height,
+      pointGroup:   pointGroup,
+      point:        point,
+      layer:        this._layer,
+      onDrag:       editable ? this._onPointHandleDrag.bind(this) : null,
+      onDblClick:   this._onPointHandleDblClick.bind(this),
+      onDragEnd:    editable ? this._peaks.options.pointDragEndHandler : null,
+      onMouseEnter: this._onPointHandleMouseEnter.bind(this),
       onMouseLeave: this._onPointHandleMouseLeave.bind(this)
     });
 
@@ -155,8 +155,8 @@ define([
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleMouseOver = function(point) {
-    this._peaks.emit('points.mouseover', point);
+  PointsLayer.prototype._onPointHandleMouseEnter = function(point) {
+    this._peaks.emit('points.mouseenter', point);
   };
 
   /**
@@ -165,6 +165,14 @@ define([
 
   PointsLayer.prototype._onPointHandleMouseLeave = function(point) {
     this._peaks.emit('points.mouseleave', point);
+  };
+
+  /**
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._onPointHandleDblClick = function(point) {
+    this._peaks.emit('points.dblclick', point);
   };
 
   /**

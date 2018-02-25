@@ -283,6 +283,23 @@
           }
         });
 
+        // Points mouse events
+
+        peaksInstance.on('points.mouseenter', function(point) {
+          console.log('points.mouseenter:', point);
+        });
+
+        peaksInstance.on('points.mouseleave', function(point) {
+          console.log('points.mouseleave:', point);
+        });
+
+        peaksInstance.on('points.dblclick', function(point) {
+          console.log('points.dblclick:', point);
+        });
+
+        peaksInstance.on('points.dragged', function(point) {
+          console.log('points.dragged:', point);
+        });
       })(peaks);
     </script>
   </body>

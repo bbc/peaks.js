@@ -324,6 +324,11 @@ define('peaks', [
       }
     }
 
+    if (instance.options.pointDblClickHandler) {
+      opts.deprecationLogger('Peaks.init(): The pointDblClickHandler option is deprecated, please use the points.dblclick event instead');
+      instance.on('points.dblclick', instance.options.pointDblClickHandler);
+    }
+
     /*
      Setup the logger
      */

@@ -208,14 +208,14 @@ define(['konva'], function(Konva) {
       });
     }
 
-    if (options.onMouseOver) {
-      group.on('mouseover', function(event) {
-        options.onMouseOver(options.point);
+    if (options.onMouseEnter) {
+      group.on('mouseenter', function(event) {
+        options.onMouseEnter(options.point);
       });
     }
 
     if (options.onMouseLeave) {
-      group.on('mouseout', function(event) {
+      group.on('mouseleave', function(event) {
         options.onMouseLeave(options.point);
       });
     }
