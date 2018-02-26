@@ -188,6 +188,24 @@ describe('Peaks', function() {
     });
   });
 
+  describe('constructor', function() {
+    context('with valid options', function() {
+      it('should construct a Peaks object', function(done) {
+        p = new Peaks({
+          container: document.getElementById('waveform-visualiser-container'),
+          mediaElement: document.querySelector('audio'),
+          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+        });
+
+        expect(p).to.be.an.instanceof(Peaks);
+
+        p.on('peaks.ready', function() {
+          done();
+        });
+      });
+    });
+  });
+
   describe('destroy', function() {
     var container;
 

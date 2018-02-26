@@ -41,17 +41,18 @@ define('peaks', [
   }
 
   /**
-   * Creates a new Peaks.js object.
+   * Creates and initialises a new Peaks instance with the given options.
    *
    * @class
    * @alias Peaks
    *
-   * @param {HTMLElement} container An HTML element to contain the Peaks.js
-   *  user interface elements.
+   * @param {Object} opts Configuration options
    */
 
-  function Peaks(container) {
+  function Peaks(opts) {
     EventEmitter.call(this, { wildcard: true });
+
+    opts = opts || {};
 
     this.options = {
 
@@ -249,7 +250,7 @@ define('peaks', [
      *
      * @type {HTMLElement}
      */
-    this.container = container;
+    this.container = opts.container;
 
     /**
      * Asynchronous errors logger.
@@ -258,18 +259,6 @@ define('peaks', [
      */
     // eslint-disable-next-line no-console
     this.logger = console.error.bind(console);
-  }
-
-  /**
-   * Creates and initialises a new Peaks instance with the given options.
-   *
-   * @param {Object} opts Configuration options
-   *
-   * @return {Peaks}
-   */
-
-  Peaks.init = function init(opts) {
-    opts = opts || {};
 
     // eslint-disable-next-line no-console
     opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
@@ -303,94 +292,106 @@ define('peaks', [
       throw new TypeError('Peaks.init(): The logger option should be a function');
     }
 
-    var instance = new Peaks(opts.container);
-
-    Utils.extend(instance.options, opts);
-    Utils.extend(instance.options, {
+    Utils.extend(this.options, opts);
+    Utils.extend(this.options, {
       createSegmentMarker: mixins.createSegmentMarker,
       createSegmentLabel:  mixins.createSegmentLabel,
       createPointMarker:   mixins.createPointMarker
     });
 
-    if (!Array.isArray(instance.options.zoomLevels)) {
+    if (!Array.isArray(this.options.zoomLevels)) {
       throw new TypeError('Peaks.init(): The zoomLevels option should be an array');
     }
-    else if (instance.options.zoomLevels.length === 0) {
+    else if (this.options.zoomLevels.length === 0) {
       throw new Error('Peaks.init(): The zoomLevels array must not be empty');
     }
     else {
-      if (!Utils.isInAscendingOrder(instance.options.zoomLevels)) {
+      if (!Utils.isInAscendingOrder(this.options.zoomLevels)) {
         throw new Error('Peaks.init(): The zoomLevels array must be sorted in ascending order');
       }
     }
 
-    if (instance.options.pointDblClickHandler) {
+    if (this.options.pointDblClickHandler) {
       opts.deprecationLogger('Peaks.init(): The pointDblClickHandler option is deprecated, please use the points.dblclick event instead');
-      instance.on('points.dblclick', instance.options.pointDblClickHandler);
+      this.on('points.dblclick', this.options.pointDblClickHandler);
     }
 
     /*
      Setup the logger
      */
     if (opts.logger) {
-      instance.logger = opts.logger;
+      this.logger = opts.logger;
     }
 
-    instance.on('error', instance.logger.bind(null));
+    this.on('error', this.logger.bind(null));
 
     /*
      Setup the layout
      */
-    if (typeof instance.options.template === 'string') {
-      instance.container.innerHTML = instance.options.template;
+    if (typeof this.options.template === 'string') {
+      this.container.innerHTML = this.options.template;
     }
-    else if (instance.options.template instanceof HTMLElement) {
-      instance.container.appendChild(instance.options.template);
+    else if (this.options.template instanceof HTMLElement) {
+      this.container.appendChild(this.options.template);
     }
     else {
       // eslint-disable-next-line max-len
       throw new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object');
     }
 
-    if (instance.options.keyboard) {
-      instance.keyboardHandler = new KeyboardHandler(instance);
+    if (this.options.keyboard) {
+      this.keyboardHandler = new KeyboardHandler(this);
     }
 
-    instance.player = new Player(instance, instance.options.mediaElement);
+    this.player = new Player(this, this.options.mediaElement);
 
-    instance.segments = new WaveformSegments(instance);
-    instance.points = new WaveformPoints(instance);
+    this.segments = new WaveformSegments(this);
+    this.points = new WaveformPoints(this);
 
     /*
      Setup the UI components
      */
-    instance.waveform = new Waveform(instance);
-    instance.waveform.init(buildUi(instance.container));
+    this.waveform = new Waveform(this);
+    this.waveform.init(buildUi(this.container));
 
-    instance.zoom = new ZoomController(instance, instance.options.zoomLevels);
-    instance.time = new TimeController(instance);
+    this.zoom = new ZoomController(this, this.options.zoomLevels);
+    this.time = new TimeController(this);
 
-    instance.on('peaks.ready', function() {
-      if (instance.options.segments) {
-        if (!Array.isArray(instance.options.segments)) {
+    var self = this;
+
+    this.on('peaks.ready', function() {
+      if (self.options.segments) {
+        if (!Array.isArray(self.options.segments)) {
           // eslint-disable-next-line max-len
           throw new TypeError('Peaks.init(): options.segments must be an array of segment objects');
         }
 
-        instance.segments.add(instance.options.segments);
+        self.segments.add(self.options.segments);
       }
 
-      if (instance.options.points) {
-        if (!Array.isArray(instance.options.points)) {
+      if (self.options.points) {
+        if (!Array.isArray(self.options.points)) {
           // eslint-disable-next-line max-len
           throw new TypeError('Peaks.init(): options.points must be an array of point objects');
         }
 
-        instance.points.add(instance.options.points);
+        self.points.add(self.options.points);
       }
     });
 
-    return instance;
+    return this;
+  }
+
+  /**
+   * Creates and initialises a new Peaks instance with the given options.
+   *
+   * @param {Object} opts Configuration options
+   *
+   * @return {Peaks}
+   */
+
+  Peaks.init = function(opts) {
+    return new Peaks(opts);
   };
 
   Peaks.prototype = Object.create(EventEmitter.prototype);
