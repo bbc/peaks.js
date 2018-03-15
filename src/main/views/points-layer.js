@@ -102,9 +102,10 @@ define([
       pointGroup:   pointGroup,
       point:        point,
       layer:        this._layer,
-      onDrag:       editable ? this._onPointHandleDrag.bind(this) : null,
       onDblClick:   this._onPointHandleDblClick.bind(this),
-      onDragEnd:    editable ? this._peaks.options.pointDragEndHandler : null,
+      onDragStart:  this._onPointHandleDragStart.bind(this),
+      onDragMove:   this._onPointHandleDragMove.bind(this),
+      onDragEnd:    this._onPointHandleDragEnd.bind(this),
       onMouseEnter: this._onPointHandleMouseEnter.bind(this),
       onMouseLeave: this._onPointHandleMouseLeave.bind(this)
     });
@@ -137,7 +138,7 @@ define([
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleDrag = function(pointGroup, point) {
+  PointsLayer.prototype._onPointHandleDragMove = function(pointGroup, point) {
     var markerX = pointGroup.marker.getX();
 
     if (markerX > 0 && markerX < this._view.width) {
@@ -148,7 +149,7 @@ define([
       point.time = this._view.pixelsToTime(offset);
     }
 
-    this._peaks.emit('points.dragged', point);
+    this._peaks.emit('points.dragmove', point);
   };
 
   /**
@@ -173,6 +174,22 @@ define([
 
   PointsLayer.prototype._onPointHandleDblClick = function(point) {
     this._peaks.emit('points.dblclick', point);
+  };
+
+  /**
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._onPointHandleDragStart = function(point) {
+    this._peaks.emit('points.dragstart', point);
+  };
+
+  /**
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._onPointHandleDragEnd = function(point) {
+    this._peaks.emit('points.dragend', point);
   };
 
   /**

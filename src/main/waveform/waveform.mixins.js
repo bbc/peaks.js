@@ -160,8 +160,9 @@ define(['konva'], function(Konva) {
    * @property {Konva.Group} pointGroup  Point marker UI object.
    * @property {Object} point Point object with timestamp.
    * @property {Konva.Layer} layer Layer that contains the pointGroup.
-   * @property {Function} onDrag Callback after drag completed.
    * @property {Function} onDblClick
+   * @property {Function} onDragStart
+   * @property {Function} onDragMove Callback during mouse drag operations.
    * @property {Function} onDragEnd
    * @property {Function} onMouseOver
    * @property {Function} onMouseLeave
@@ -190,21 +191,27 @@ define(['konva'], function(Konva) {
       }
     });
 
-    if (options.draggable && options.onDrag) {
+    if (options.onDragStart) {
+      group.on('dragstart', function(event) {
+        options.onDragStart(options.point);
+      });
+    }
+
+    if (options.onDragMove) {
       group.on('dragmove', function(event) {
-        options.onDrag(options.pointGroup, options.point);
+        options.onDragMove(options.point);
+      });
+    }
+
+    if (options.onDragEnd) {
+      group.on('dragend', function(event) {
+        options.onDragEnd(options.point);
       });
     }
 
     if (options.onDblClick) {
       group.on('dblclick', function(event) {
         options.onDblClick(options.point);
-      });
-    }
-
-    if (options.draggable && options.onDragEnd) {
-      group.on('dragend', function(event) {
-        options.onDragEnd(options.point);
       });
     }
 
