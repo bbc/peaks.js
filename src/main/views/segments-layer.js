@@ -21,25 +21,28 @@ define([
    * @alias SegmentsLayer
    *
    * @param {Peaks} peaks
-   * @param {Konva.Stage} stage
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} allowEditing
    */
 
-  function SegmentsLayer(peaks, stage, view, allowEditing) {
-    this._peaks        = peaks;
-    this._stage        = stage;
-    this._view         = view;
-    this._allowEditing = allowEditing;
-
+  function SegmentsLayer(peaks, view, allowEditing) {
+    this._peaks         = peaks;
+    this._view          = view;
+    this._allowEditing  = allowEditing;
     this._segmentGroups = {};
-    this._createLayer();
+    this._layer         = new Konva.Layer();
+
     this._registerEventHandlers();
   }
 
-  SegmentsLayer.prototype._createLayer = function() {
-    this._layer = new Konva.Layer();
-    this._stage.add(this._layer);
+  /**
+   * Adds the layer to the given {Konva.Stage}.
+   *
+   * @param {Konva.Stage} stage
+   */
+
+  SegmentsLayer.prototype.addToStage = function(stage) {
+    stage.add(this._layer);
   };
 
   SegmentsLayer.prototype._registerEventHandlers = function() {

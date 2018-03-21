@@ -74,18 +74,22 @@ define([
 
     self.createWaveform();
 
-    self._segmentsLayer = new SegmentsLayer(peaks, self.stage, self, false);
-    self._pointsLayer = new PointsLayer(peaks, self.stage, self, false, false);
+    self._segmentsLayer = new SegmentsLayer(peaks, self, false);
+    self._segmentsLayer.addToStage(self.stage);
+
+    self._pointsLayer = new PointsLayer(peaks, self, false, false);
+    self._pointsLayer.addToStage(self.stage);
 
     self.createHighlightRect();
 
     self._playheadLayer = new PlayheadLayer(
       peaks,
-      self.stage,
       self,
       false, // showPlayheadTime
       self.options.mediaElement.currentTime
     );
+
+    self._playheadLayer.addToStage(self.stage);
 
     self.mouseDragHandler = new MouseDragHandler(self.stage, {
       onMouseDown: function(mousePosX) {

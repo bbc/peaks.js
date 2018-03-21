@@ -19,26 +19,36 @@ define([
    * @alias PlayheadLayer
    *
    * @param {Peaks} peaks
-   * @param {Konva.Stage} stage
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} showTime If <code>true</code> The playback time position
    *   is shown next to the playhead.
    * @param {Number} time Initial position of the playhead, in seconds.
    */
 
-  function PlayheadLayer(peaks, stage, view, showTime, time) {
+  function PlayheadLayer(peaks, view, showTime, time) {
     this._peaks = peaks;
-    this._stage = stage;
     this._view  = view;
     this._playheadPixel = 0;
     this._playheadLineAnimation = null;
     this._playheadVisible = false;
+
+    this._playheadLayer = new Konva.Layer();
 
     this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
 
     this.zoomLevelChanged();
     this._syncPlayhead(time);
   }
+
+  /**
+   * Adds the layer to the given {Konva.Stage}.
+   *
+   * @param {Konva.Stage} stage
+   */
+
+  PlayheadLayer.prototype.addToStage = function(stage) {
+    stage.add(this._playheadLayer);
+  };
 
   /**
    * Decides whether to use an animation to update the playhead position.
@@ -86,8 +96,6 @@ define([
    */
 
   PlayheadLayer.prototype._createPlayhead = function(showTime, playheadColor, playheadTextColor) {
-    this._playheadLayer = new Konva.Layer();
-
     this._playheadLine = new Konva.Line({
       points: [0.5, 0, 0.5, this._view.height],
       stroke: playheadColor,
@@ -118,7 +126,6 @@ define([
     }
 
     this._playheadLayer.add(this._playheadGroup);
-    this._stage.add(this._playheadLayer);
   };
 
   /**

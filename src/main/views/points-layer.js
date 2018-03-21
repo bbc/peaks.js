@@ -20,26 +20,30 @@ define([
    * @alias PointsLayer
    *
    * @param {Peaks} peaks
-   * @param {Konva.Stage} stage
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} allowEditing
+   * @param {Boolean} showLabels
    */
 
-  function PointsLayer(peaks, stage, view, allowEditing, showLabels) {
+  function PointsLayer(peaks, view, allowEditing, showLabels) {
     this._peaks        = peaks;
-    this._stage        = stage;
     this._view         = view;
     this._allowEditing = allowEditing;
     this._showLabels   = showLabels;
+    this._pointGroups  = {};
+    this._layer        = new Konva.Layer();
 
-    this._pointGroups = {};
-    this._createLayer();
     this._registerEventHandlers();
   }
 
-  PointsLayer.prototype._createLayer = function() {
-    this._layer = new Konva.Layer();
-    this._stage.add(this._layer);
+  /**
+   * Adds the layer to the given {Konva.Stage}.
+   *
+   * @param {Konva.Stage} stage
+   */
+
+  PointsLayer.prototype.addToStage = function(stage) {
+    stage.add(this._layer);
   };
 
   PointsLayer.prototype._registerEventHandlers = function() {
