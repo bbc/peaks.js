@@ -316,6 +316,11 @@ define('peaks', [
       this.on('points.dblclick', this.options.pointDblClickHandler);
     }
 
+    if (this.options.pointDragEndHandler) {
+      opts.deprecationLogger('Peaks.init(): The pointDragEndHandler option is deprecated, please use the points.dragend event instead');
+      this.on('points.dragend', this.options.pointDragEndHandler);
+    }
+
     /*
      Setup the logger
      */
