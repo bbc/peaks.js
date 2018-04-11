@@ -77,6 +77,11 @@ define([
       self._layer.draw();
     });
 
+    this._peaks.on('points.dragmove', function(point) {
+      self._updatePoint(point);
+      self._layer.draw();
+    });
+
     this._peaks.on('points.dragged', function(point) {
       self._updatePoint(point);
       self._layer.draw();
