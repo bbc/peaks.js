@@ -121,9 +121,9 @@ Refer to the man page audiowaveform(1) for full details of the available command
 
 ## Web Audio based waveforms
 
-Since `0.3.0`, Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you would not have to pre-generate a `dat` or `json` file beforehand.
+Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you do not have to pre-generate a `dat` or `json` file beforehand. However, note that this requires the browser to download the entire audio file before the waveform can be shouwn, and this process can be CPU intensive, so is not recommended for long audio files.
 
-To do so, omit the `dataUri` option and make sure you pass in a valid `AudioContext` instance as the `audioContext` option. You may also want to make sure [your browser is compatible with Web Audio](https://caniuse.com/#feat=audio-api).
+To use Web Audio, omit the `dataUri` option and make sure you pass in a valid `AudioContext` instance as the `audioContext` option. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
 var myAudioContext = new AudioContext();
