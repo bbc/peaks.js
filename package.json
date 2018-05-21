@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "JavaScript UI component for displaying audio waveforms",
   "main": "./peaks.js",
   "contributors": [

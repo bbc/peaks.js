@@ -1,5 +1,22 @@
 # Peaks.js
 
+## 0.9.9 (2018/05/21)
+
+* Allow Peaks objects to be created using the new operator (@chrisn)
+
+* The points.add() and segments.add() methods now operate atomically. This
+  change ensures that the input point/segment objects are validated before
+  storing, so that if an exception is thrown, we leave the state of the
+  points/segments array as it was before the function was called (@chrisn)
+
+* Added 'points.mouseenter' and 'points.mouseleave' events. Also added
+  'points.dblclick', which replaces the (previously undocumented)
+  pointDblClickHandler config option (@markjongkind, @chrisn)
+
+* Added 'points.dragstart' and 'points.dragend' events, and renamed
+  'points.dragged' to 'points.dragmove'. The (also undocumented)
+  pointDragEndHandler config option is deprecated (@chrisn)
+
 ## 0.9.8 (2018/02/10)
 
  * Ensure resources used by Player object are released on calling
