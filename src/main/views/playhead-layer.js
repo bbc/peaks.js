@@ -69,9 +69,7 @@ define([
     if (this._useAnimation) {
       if (this._peaks.player.isPlaying() && !this._playheadLineAnimation) {
         // Start the animation
-        time = this._peaks.player.getCurrentTime();
-
-        this._playFrom(time);
+        this._start();
       }
     }
     else {
@@ -138,7 +136,7 @@ define([
     this._syncPlayhead(time);
 
     if (this._peaks.player.isPlaying()) {
-      this._playFrom(time);
+      this._start();
     }
   };
 
@@ -186,13 +184,12 @@ define([
   };
 
   /**
-   * Creates a playhead animation in sync with the media playback.
+   * Starts a playhead animation in sync with the media playback.
    *
    * @private
-   * @param {Number} startTime Start time of the playhead animation, in seconds.
    */
 
-  PlayheadLayer.prototype._playFrom = function(startTime) {
+  PlayheadLayer.prototype._start = function() {
     var self = this;
 
     if (self._playheadLineAnimation) {
