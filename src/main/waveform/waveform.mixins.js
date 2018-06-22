@@ -199,7 +199,7 @@ define(['konva'], function(Konva) {
 
     if (options.onDragMove) {
       group.on('dragmove', function(event) {
-        options.onDragMove(options.pointGroup, options.point);
+        options.onDragMove(options.point);
       });
     }
 

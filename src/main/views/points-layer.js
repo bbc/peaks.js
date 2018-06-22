@@ -77,15 +77,16 @@ define([
       self._layer.draw();
     });
 
-    this._peaks.on('points.dragmove', function(point) {
-      self._updatePoint(point);
-      self._layer.draw();
-    });
+    var pointDragHandler = this._pointDragHandler.bind(this);
 
-    this._peaks.on('points.dragged', function(point) {
-      self._updatePoint(point);
-      self._layer.draw();
-    });
+    this._peaks.on('points.dragstart', pointDragHandler);
+    this._peaks.on('points.dragmove', pointDragHandler);
+    this._peaks.on('points.dragend', pointDragHandler);
+  };
+
+  PointsLayer.prototype._pointDragHandler = function(point) {
+    this._updatePoint(point);
+    this._layer.draw();
   };
 
   /**
@@ -143,11 +144,12 @@ define([
   };
 
   /**
-   * @param {Konva.Group} pointGroup
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleDragMove = function(pointGroup, point) {
+  PointsLayer.prototype._onPointHandleDragMove = function(point) {
+    var pointGroup = this._pointGroups[point.id];
+
     var markerX = pointGroup.marker.getX();
 
     if (markerX > 0 && markerX < this._view.width) {
