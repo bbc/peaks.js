@@ -162,6 +162,7 @@
     var self = this;
 
     var audioContext = window.AudioContext || window.webkitAudioContext;
+
     if (!(options.audioContext instanceof audioContext)) {
       // eslint-disable-next-line max-len
       throw new TypeError('Peaks.init(): The audioContext option must be a valid AudioContext');
