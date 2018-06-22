@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 0.9.10 (2018/06/23)
+
+* Fixed use of Web Audio API in Safari (@ibobobo)
+
+* Fixed point drag event handling (@anthonytex, @chrisn)
+
 ## 0.9.9 (2018/05/21)
 
 * Allow Peaks objects to be created using the new operator (@chrisn)
