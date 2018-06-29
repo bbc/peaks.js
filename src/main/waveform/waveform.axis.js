@@ -123,9 +123,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       context.stroke();
 
       var label      = Utils.formatTime(secs, true);
-
-      // TODO: handle this with Konva.Text:
-      var labelWidth = context._context.measureText(label).width;
+      var labelWidth = context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
       var labelY     = view.height - 1 - markerHeight;
 
