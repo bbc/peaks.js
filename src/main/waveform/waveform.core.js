@@ -186,7 +186,7 @@
       );
     }
     else {
-      self.peaks.on('player_canplay', function(player) {
+      self.peaks.once('player_canplay', function(player) {
         self._requestAudioAndBuildWaveformData(
           player.getCurrentSource(),
           options.audioContext,
