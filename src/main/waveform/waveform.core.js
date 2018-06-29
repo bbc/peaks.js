@@ -11,16 +11,12 @@
   'waveform-data/webaudio',
   'peaks/views/waveform.overview',
   'peaks/views/waveform.zoomview',
-  'peaks/markers/waveform.segments',
-  'peaks/markers/waveform.points',
   'peaks/waveform/waveform.utils'
   ], function(
     WaveformData,
     webaudioBuilder,
     WaveformOverview,
     WaveformZoomView,
-    WaveformSegments,
-    WaveformPoints,
     Utils) {
   'use strict';
 
