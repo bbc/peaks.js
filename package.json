@@ -66,7 +66,7 @@
     "chai": "~4.1.1",
     "deamdify": "~0.3.0",
     "derequire": "~2.0.3",
-    "eslint": "~4.19.1",
+    "eslint": "~5.0.0",
     "exorcist": "~1.0.1",
     "jsdoc": "~3.5.4",
     "karma": "~2.0.4",
