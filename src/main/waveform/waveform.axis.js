@@ -79,7 +79,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
    */
 
   WaveformAxis.prototype.drawAxis = function(context, view) {
-    var currentFrameStartTime = view.pixelsToTime(view.frameOffset);
+    var currentFrameStartTime = view.pixelsToTime(view.getFrameOffset());
 
     // Draw axis markers
     var markerHeight = 10;

@@ -28,6 +28,7 @@
     "peaks/views/playhead-layer": "./src/main/views/playhead-layer.js",
     "peaks/views/points-layer": "./src/main/views/points-layer.js",
     "peaks/views/segments-layer": "./src/main/views/segments-layer.js",
+    "peaks/views/waveform-shape": "./src/main/views/waveform-shape.js",
     "peaks/views/waveform.overview": "./src/main/views/waveform.overview.js",
     "peaks/views/waveform.timecontroller": "./src/main/views/waveform.timecontroller.js",
     "peaks/views/waveform.zoomcontroller": "./src/main/views/waveform.zoomcontroller.js",
@@ -38,8 +39,7 @@
     "peaks/markers/point": "./src/main/markers/point",
     "peaks/markers/segment": "./src/main/markers/segment",
     "peaks/markers/waveform.points": "./src/main/markers/waveform.points.js",
-    "peaks/markers/waveform.segments": "./src/main/markers/waveform.segments.js",
-    "peaks/markers/shapes/waveform": "./src/main/markers/shapes/waveform.js"
+    "peaks/markers/waveform.segments": "./src/main/markers/waveform.segments.js"
   },
   "repository": {
     "type": "git",

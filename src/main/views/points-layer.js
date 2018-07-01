@@ -50,8 +50,11 @@ define([
     var self = this;
 
     this._peaks.on('points.add', function(points) {
-      var frameStartTime = self._view.pixelsToTime(self._view.frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(self._view.frameOffset + self._view.width);
+      var frameOffset = self._view.getFrameOffset();
+      var width = self._view.getWidth();
+
+      var frameStartTime = self._view.pixelsToTime(frameOffset);
+      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
 
       points.forEach(function(point) {
         if (point.isVisible(frameStartTime, frameEndTime)) {
@@ -108,7 +111,7 @@ define([
       draggable:    editable,
       showLabel:    this._showLabels,
       handleColor:  point.color ? point.color : this._peaks.options.pointMarkerColor,
-      height:       this._view.height,
+      height:       this._view.getHeight(),
       pointGroup:   pointGroup,
       point:        point,
       layer:        this._layer,
@@ -152,8 +155,8 @@ define([
 
     var markerX = pointGroup.marker.getX();
 
-    if (markerX > 0 && markerX < this._view.width) {
-      var offset = this._view.frameOffset +
+    if (markerX > 0 && markerX < this._view.getWidth()) {
+      var offset = this._view.getFrameOffset() +
                    markerX +
                    pointGroup.marker.getWidth();
 
@@ -239,7 +242,7 @@ define([
     // Point is visible
     var timestampOffset = this._view.timeToPixels(point.time);
 
-    var startPixel = timestampOffset - this._view.frameOffset;
+    var startPixel = timestampOffset - this._view.getFrameOffset();
 
     if (pointGroup.marker) {
       pointGroup.marker.setX(startPixel);

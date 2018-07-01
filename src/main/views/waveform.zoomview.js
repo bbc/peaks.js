@@ -8,22 +8,22 @@
 
 define([
   'peaks/waveform/waveform.axis',
-  'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
+  'peaks/views/waveform-shape',
   'peaks/views/helpers/mousedraghandler',
   'peaks/views/zooms/animated',
   'peaks/views/zooms/static',
   'konva'
   ], function(
     WaveformAxis,
-    mixins,
     Utils,
     PlayheadLayer,
     PointsLayer,
     SegmentsLayer,
+    WaveformShape,
     MouseDragHandler,
     AnimatedZoomAdapter,
     StaticZoomAdapter,
@@ -71,18 +71,6 @@ define([
       width: self.width,
       height: self.height
     });
-
-    self.backgroundLayer = new Konva.Layer();
-
-    self.background = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: self.width,
-      height: self.height
-    });
-
-    self.backgroundLayer.add(self.background);
-    self.stage.add(self.backgroundLayer);
 
     self.waveformLayer = new Konva.FastLayer();
 
@@ -319,25 +307,43 @@ define([
     return ZoomAdapter.create(currentScale, previousScale, this);
   };
 
+  /**
+   * @returns {Number} The start position of the waveform shown in the view,
+   *   in pixels.
+   */
+
+  WaveformZoomView.prototype.getFrameOffset = function() {
+    return this.frameOffset;
+  };
+
+  /**
+   * @returns {Number} The width of the view, in pixels.
+   */
+
+  WaveformZoomView.prototype.getWidth = function() {
+    return this.width;
+  };
+
+  /**
+   * @returns {Number} The height of the view, in pixels.
+   */
+
+  WaveformZoomView.prototype.getHeight = function() {
+    return this.height;
+  };
+
+  /**
+   * @returns {WaveformData} The view's waveform data.
+   */
+
+  WaveformZoomView.prototype.getWaveformData = function() {
+    return this.data;
+  };
+
   WaveformZoomView.prototype.createWaveform = function() {
-    var self = this;
-
-    this.waveformShape = new Konva.Shape({
-      fill: this.options.zoomWaveformColor,
-      strokeWidth: 0,
-      sceneFunc: function(context) {
-        mixins.drawWaveform(
-          context,
-          self.data,
-          self.frameOffset,
-          self.frameOffset,
-          self.frameOffset + self.width,
-          self.width,
-          self.height
-        );
-
-        context.fillStrokeShape(this);
-      }
+    this.waveformShape = new WaveformShape({
+      color: this.options.zoomWaveformColor,
+      view: this
     });
 
     this.waveformLayer.add(this.waveformShape);

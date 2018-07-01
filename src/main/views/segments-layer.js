@@ -7,10 +7,10 @@
  */
 
 define([
-  'peaks/markers/shapes/waveform',
+  'peaks/views/waveform-shape',
   'peaks/waveform/waveform.utils',
   'konva'
-  ], function(WaveformSegmentShape, Utils, Konva) {
+  ], function(WaveformShape, Utils, Konva) {
   'use strict';
 
   /**
@@ -49,8 +49,11 @@ define([
     var self = this;
 
     this._peaks.on('segments.add', function(segments) {
-      var frameStartTime = self._view.pixelsToTime(self._view.frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(self._view.frameOffset + self._view.width);
+      var frameOffset = self._view.getFrameOffset();
+      var width = self._view.getWidth();
+
+      var frameStartTime = self._view.pixelsToTime(frameOffset);
+      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
 
       segments.forEach(function(segment) {
         if (segment.isVisible(frameStartTime, frameEndTime)) {
@@ -97,7 +100,11 @@ define([
 
     segmentGroup.segment = segment;
 
-    segmentGroup.waveformShape = WaveformSegmentShape.create(segment, self._view);
+    segmentGroup.waveformShape = new WaveformShape({
+      color: segment.color,
+      view: self._view,
+      segment: segment
+    });
 
     // Set up event handlers to show/hide the segment label text when the user
     // hovers the mouse over the segment.
@@ -133,7 +140,7 @@ define([
     if (editable) {
       segmentGroup.inMarker = this._peaks.options.createSegmentMarker({
         draggable:    editable,
-        height:       this._view.height,
+        height:       this._view.getHeight(),
         color:        this._peaks.options.inMarkerColor,
         inMarker:     true,
         segmentGroup: segmentGroup,
@@ -146,7 +153,7 @@ define([
 
       segmentGroup.outMarker = this._peaks.options.createSegmentMarker({
         draggable:    editable,
-        height:       this._view.height,
+        height:       this._view.getHeight(),
         color:        this._peaks.options.outMarkerColor,
         inMarker:     false,
         segmentGroup: segmentGroup,
@@ -185,19 +192,22 @@ define([
    */
 
   SegmentsLayer.prototype._onSegmentHandleDrag = function(segmentGroup, segment) {
+    var frameOffset = this._view.getFrameOffset();
+    var width = this._view.getWidth();
+
     var inMarkerX  = segmentGroup.inMarker.getX();
     var outMarkerX = segmentGroup.outMarker.getX();
 
     if (inMarkerX > 0) {
-      var inOffset = this._view.frameOffset +
+      var inOffset = frameOffset +
                      inMarkerX +
                      segmentGroup.inMarker.getWidth();
 
       segment.startTime = this._view.pixelsToTime(inOffset);
     }
 
-    if (outMarkerX < this._view.width) {
-      var outOffset = this._view.frameOffset + outMarkerX;
+    if (outMarkerX < width) {
+      var outOffset = frameOffset + outMarkerX;
 
       segment.endTime = this._view.pixelsToTime(outOffset);
     }
@@ -241,8 +251,8 @@ define([
     var segmentStartOffset = this._view.timeToPixels(segment.startTime);
     var segmentEndOffset   = this._view.timeToPixels(segment.endTime);
 
-    var frameStartOffset = this._view.frameOffset;
-    // var frameEndOffset   = this._view.frameOffset + this._view.width;
+    var frameStartOffset = this._view.getFrameOffset();
+    // var frameEndOffset   = frameStartOffset + this._view.getWidth();
 
     var startPixel = segmentStartOffset - frameStartOffset;
     var endPixel   = segmentEndOffset   - frameStartOffset;

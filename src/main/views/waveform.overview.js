@@ -10,18 +10,18 @@ define([
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
+  'peaks/views/waveform-shape',
   'peaks/views/helpers/mousedraghandler',
   'peaks/waveform/waveform.axis',
-  'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
   'konva'
 ], function(
   PlayheadLayer,
   PointsLayer,
   SegmentsLayer,
+  WaveformShape,
   MouseDragHandler,
   WaveformAxis,
-  mixins,
   Utils,
   Konva) {
   'use strict';
@@ -48,7 +48,6 @@ define([
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
 
-    self.frameOffset = 0;
     self.data = waveformData.resample(self.width);
 
     self.stage = new Konva.Stage({
@@ -57,18 +56,7 @@ define([
       height: self.height
     });
 
-    self.backgroundLayer = new Konva.Layer();
     self.waveformLayer = new Konva.FastLayer();
-
-    self.background = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: self.width,
-      height: self.height
-    });
-
-    self.backgroundLayer.add(self.background);
-    self.stage.add(self.backgroundLayer);
 
     self.axis = new WaveformAxis(self, self.waveformLayer);
 
@@ -171,25 +159,48 @@ define([
     return pixels * this.data.adapter.scale / this.data.adapter.sample_rate;
   };
 
+  /**
+   * @returns {Number} The start position of the waveform shown in the view,
+   *   in pixels.
+   */
+
+  WaveformOverview.prototype.getFrameOffset = function() {
+    return 0;
+  };
+
+  /**
+   * @returns {Number} The width of the view, in pixels.
+   */
+
+  WaveformOverview.prototype.getWidth = function() {
+    return this.width;
+  };
+
+  /**
+   * @returns {Number} The height of the view, in pixels.
+   */
+
+  WaveformOverview.prototype.getHeight = function() {
+    return this.height;
+  };
+
+  /**
+   * @returns {WaveformData} The view's waveform data.
+   */
+
+  WaveformOverview.prototype.getWaveformData = function() {
+    return this.data;
+  };
+
+  /**
+   * Creates a {WaveformShape} object that draws the waveform in the view,
+   * and adds it to the wav
+   */
+
   WaveformOverview.prototype.createWaveform = function() {
-    var self = this;
-
-    this.waveformShape = new Konva.Shape({
-      fill: this.options.overviewWaveformColor,
-      strokeWidth: 0,
-      sceneFunc: function(context) {
-        mixins.drawWaveform(
-          context,
-          self.data,
-          self.frameOffset,
-          0,
-          self.width,
-          self.width,
-          self.height
-        );
-
-        context.fillStrokeShape(this);
-      }
+    this.waveformShape = new WaveformShape({
+      color: this.options.overviewWaveformColor,
+      view: this
     });
 
     this.waveformLayer.add(this.waveformShape);

@@ -56,8 +56,11 @@ define(function() {
       return;
     }
 
-    if (event.target.attrs.draggable ||
-        event.target.parent.attrs.draggable) {
+    if (event.target.attrs.draggable) {
+      return;
+    }
+
+    if (event.target.parent && event.target.parent.attrs.draggable) {
       return;
     }
 

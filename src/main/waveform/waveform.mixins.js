@@ -314,68 +314,9 @@ define(['konva'], function(Konva) {
     return group;
   }
 
-  /**
-   * Scales the waveform data for drawing on a canvas context.
-   *
-   * @param {Number} amplitude The waveform data point amplitude.
-   * @param {Number} height The height of the waveform, in pixels.
-   * @returns {Number} The scaled waveform data point.
-   */
-
-  function scaleY(amplitude, height) {
-    var range = 256;
-    var offset = 128;
-
-    return height - ((amplitude + offset) * height) / range;
-  }
-
-  /**
-   * Draws a waveform on a canvas context.
-   *
-   * @param {Konva.Context} context  The canvas context to draw on.
-   * @param {WaveformData} waveformData  The waveform data to draw.
-   * @param {Int} frameOffset
-   * @param {Int} startPixels
-   * @param {Int} endPixels
-   * @param {Int} width The width of the waveform area, in pixels.
-   * @param {Int} height The height of the waveform area, in pixels.
-   */
-
-  function drawWaveform(context, waveformData, frameOffset, startPixels, endPixels, width, height) {
-    if (startPixels < frameOffset) {
-      startPixels = frameOffset;
-    }
-
-    var limit = frameOffset + width;
-
-    if (endPixels > limit) {
-      endPixels = limit;
-    }
-
-    var adapter = waveformData.adapter;
-    var x, val;
-
-    context.beginPath();
-
-    for (x = startPixels; x < endPixels; x++) {
-      val = adapter.at(2 * x);
-
-      context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
-    }
-
-    for (x = endPixels - 1; x >= startPixels; x--) {
-      val = adapter.at(2 * x + 1);
-
-      context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
-    }
-
-    context.closePath();
-  }
-
   // Public API
 
   return {
-    drawWaveform: drawWaveform,
     createSegmentMarker: createSegmentMarker,
     createPointMarker: createPointMarker,
     createSegmentLabel: createSegmentLabel

@@ -95,7 +95,7 @@ define([
 
   PlayheadLayer.prototype._createPlayhead = function(showTime, playheadColor, playheadTextColor) {
     this._playheadLine = new Konva.Line({
-      points: [0.5, 0, 0.5, this._view.height],
+      points: [0.5, 0, 0.5, this._view.getHeight()],
       stroke: playheadColor,
       strokeWidth: 1
     });
@@ -150,13 +150,16 @@ define([
   PlayheadLayer.prototype._syncPlayhead = function(time) {
     var pixelIndex = this._view.timeToPixels(time);
 
-    var isVisible = (pixelIndex >= this._view.frameOffset) &&
-                    (pixelIndex <  this._view.frameOffset + this._view.width);
+    var frameOffset = this._view.getFrameOffset();
+    var width = this._view.getWidth();
+
+    var isVisible = (pixelIndex >= frameOffset) &&
+                    (pixelIndex <  frameOffset + width);
 
     this._playheadPixel = pixelIndex;
 
     if (isVisible) {
-      var playheadX = this._playheadPixel - this._view.frameOffset;
+      var playheadX = this._playheadPixel - frameOffset;
 
       if (!this._playheadVisible) {
         this._playheadVisible = true;
@@ -203,7 +206,7 @@ define([
 
     var lastPlayheadPosition = null;
 
-    self._playheadLineAnimation = new Konva.Animation(function(frame) {
+    self._playheadLineAnimation = new Konva.Animation(function() {
       var time = self._peaks.player.getCurrentTime();
       var playheadPosition = self._view.timeToPixels(time);
 
@@ -233,7 +236,7 @@ define([
    */
 
   PlayheadLayer.prototype.getPlayheadOffset = function() {
-    return this._playheadPixel - this._view.frameOffset;
+    return this._playheadPixel - this._view.getFrameOffset();
   };
 
   PlayheadLayer.prototype.getPlayheadPixel = function() {
