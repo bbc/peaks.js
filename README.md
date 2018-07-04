@@ -6,11 +6,11 @@ Peaks.js is a modular client-side JavaScript component designed for the display 
 
 ![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
 
-Peaks.js was developed by [BBC R&D](http://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio content in the browser, using a backend API that serves the waveform data.
+Peaks.js was developed by [BBC R&D](https://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio content in the browser, using a backend API that serves the waveform data.
 
 Peaks.js uses HTML5 canvas technology to display waveform at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, eg: distinguishing music from speech or identifying different music tracks.
 
-You can read more about the project [here](http://waveform.prototyping.bbc.co.uk/).
+You can read more about the project and see a demo [here](https://waveform.prototyping.bbc.co.uk/).
 
 # Installation
 
