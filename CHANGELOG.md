@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.9.12 (2018/07/27)
+
+ * Version bump to after updating npm access token (@chrisn)
+
 ## 0.9.11 (2018/07/27)
 
 * Refactored waveform rendering code, added WaveformShape class (@chrisn)
