@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 0.9.11 (2018/07/27)
+
+* Refactored waveform rendering code, added WaveformShape class (@chrisn)
+
+* Removed background layer, to reduce the number of Konva layers used (@chrisn)
+
+* Avoid building waveform data multiple times when using the Web Audio API
+  (@cky917)
+
 ## 0.9.10 (2018/06/23)
 
 * Fixed use of Web Audio API in Safari (@ibobobo)
