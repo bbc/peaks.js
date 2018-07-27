@@ -16,7 +16,7 @@ deploy:
   email: irfs@bbc.co.uk
   skip_cleanup: true
   api_key:
-    secure: iNixDFMVzkiVGMYf6GljIQLSXcOe8oZu0EQKXiFMghX7LbZ59jLDSOhuhOBFRleWiojAyCko+B3T25zWUeTjKULhNlG5F/bYQYJLD8Vyg78P82DdfTLmAiInwhcCymbE7KXF3NTrNqOMFAkcuyBDan0J6+A4TlFZ57pQkFy8hoA=
+    secure: cSuf3iiNYM2jSjrk7xNxVLuZn+7S78jktze5MyFdK0rchgOessLY0yIDF9MZbhVbCXGgVbygp+dP5IMHPIDFCqC77WyaWCKdRfretb//RoiRAkEL9B6j8kJ//Sl7LPZ5yYpzotC2tF8zDrw0cucz1sXDTRN9x0C1do2O83hS/qk=
   on:
     tags: true
     repo: bbc/peaks.js
