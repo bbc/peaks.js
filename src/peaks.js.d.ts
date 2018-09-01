@@ -28,18 +28,26 @@ declare module 'peaks.js' {
     mediaElement: Element;
   }
 
-  interface OptionalOptions {
+  interface WebAudioOptions {
+    // A Web Audio AudioContext instance which can be used
+    // to render the waveform if dataUri is not provided
+    audioContext: AudioContext;
+  }
+
+  interface PreGeneratedWaveformOptions {
     // URI to waveform data file in binary or JSON
-    dataUri?: {
-      arrayBuffer: string;
-      json: string;
+    dataUri: {
+      arraybuffer: string; // '../test_data/sample.dat'
+      json: string; // '../test_data/sample.json'
     };
+  }
+
+  type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
+
+  interface OptionalOptions {
     // If true, peaks will send credentials with all network requests
     // i.e. when fetching waveform data.
     withCredentials?: boolean;
-    // A Web Audio AudioContext instance which can be used
-    // to render the waveform if dataUri is not provided
-    audioContext?: AudioContext;
     // async logging function
     logger?: (...args: any[]) => void;
     // default height of the waveform canvases in pixels
@@ -149,6 +157,8 @@ declare module 'peaks.js' {
     on: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
   }
 
-  export interface PeaksOptions extends RequiredOptions, OptionalOptions {}
+  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
+
+  export type PeaksOptions = PeaksOptionsWithoutAudioOptions & AudioOptions;
   export function init(options: PeaksOptions): PeaksInstance;
 }
