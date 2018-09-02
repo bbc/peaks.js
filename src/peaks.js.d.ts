@@ -36,10 +36,7 @@ declare module 'peaks.js' {
 
   interface PreGeneratedWaveformOptions {
     // URI to waveform data file in binary or JSON
-    dataUri: {
-      arraybuffer: string; // '../test_data/sample.dat'
-      json: string; // '../test_data/sample.json'
-    };
+    dataUri: { arraybuffer: string } | { json: string };
   }
 
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
