@@ -2,7 +2,7 @@
 
 ## 0.9.12 (2018/07/27)
 
- * Version bump to after updating npm access token (@chrisn)
+ * Version bump after updating npm access token (@chrisn)
 
 ## 0.9.11 (2018/07/27)
 
