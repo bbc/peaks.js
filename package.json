@@ -3,6 +3,7 @@
   "version": "0.9.12",
   "description": "JavaScript UI component for displaying audio waveforms",
   "main": "./peaks.js",
+  "types": "./peaks.js.d.ts",
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
     "Thomas Parisot (https://github.com/oncletom)",
