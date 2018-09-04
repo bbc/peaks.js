@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.9.13 (2018/09/04)
+
+ * Added TypeScript declarations (@evanlouie)
+
 ## 0.9.12 (2018/07/27)
 
  * Version bump after updating npm access token (@chrisn)
