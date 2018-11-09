@@ -395,7 +395,7 @@ describe('Peaks', function() {
       p.on('peaks.ready', function() {
         var xhr = spy.getCall(0).args[1];
 
-        expect(xhr.getResponseHeader('content-type')).to.equal('text/plain');
+        expect(xhr.getResponseHeader('content-type')).to.equal('application/octet-stream');
 
         done();
       });
@@ -424,7 +424,7 @@ describe('Peaks', function() {
       });
 
       var spy = sinon.spy(p.waveform, '_handleRemoteData');
-      var expectedContentType = window.ArrayBuffer ? 'text/plain' : 'application/json';
+      var expectedContentType = window.ArrayBuffer ? 'application/octet-stream' : 'application/json';
 
       p.on('peaks.ready', function() {
         var xhr = spy.getCall(0).args[1];

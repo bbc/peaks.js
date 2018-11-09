@@ -11,7 +11,8 @@ module.exports = function(config) {
 
   // Karma configuration
   config.set({
-    // base path, that will be used to resolve files and exclude
+    // The root path location that will be used to resolve all relative paths
+    // defined in 'files' and 'exclude'.
     basePath: '',
 
     frameworks: ['mocha', 'chai-sinon', 'browserify'],
@@ -37,10 +38,14 @@ module.exports = function(config) {
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
-      { pattern: 'test/*.html' },
-      'test/load-fixtures.js',
-      'test/unit/**/*.js'
+      { pattern: 'test/*.html', included: true },
+      { pattern: 'test/load-fixtures.js', included: true },
+      { pattern: 'test/unit/**/*.js', included: true }
     ],
+
+    mime: {
+      'application/octet-stream': ['dat']
+    },
 
     preprocessors: {
       'test/unit/**/*.js': ['browserify'],
