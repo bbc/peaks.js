@@ -331,6 +331,16 @@ var instance = Peaks.init({ … });
 console.log(instance.player.getCurrentTime()); // -> 0
 ```
 
+### `instance.player.getDuration()`
+
+Returns the duration of the media, in seconds.
+
+```js
+var instance = Peaks.init({ … });
+
+console.log(instance.player.getDuration());
+```
+
 ### `instance.player.seek(time)`
 
 Seeks the media element to the given time, in seconds.
@@ -686,4 +696,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](https://github.com/chrisn)
 
-Copyright 2017 British Broadcasting Corporation
+Copyright 2018 British Broadcasting Corporation
