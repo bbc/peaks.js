@@ -104,19 +104,22 @@ define(['konva'], function(Konva) {
       endPixels = limit;
     }
 
-    var adapter = waveformData.adapter;
+    if (endPixels > waveformData.adapter.length) {
+      endPixels = waveformData.adapter.length;
+    }
+
     var x, val;
 
     context.beginPath();
 
     for (x = startPixels; x < endPixels; x++) {
-      val = adapter.at(2 * x);
+      val = waveformData.min_sample(x);
 
       context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
-      val = adapter.at(2 * x + 1);
+      val = waveformData.max_sample(x);
 
       context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
     }
