@@ -101,7 +101,7 @@ define(['konva'], function(Konva) {
     });
 
     // Events
-    
+
     if (options.draggable && options.onDrag) {
       group.on('dragmove', function(event) {
         options.onDrag(options.segmentGroup, options.segment);
@@ -118,7 +118,7 @@ define(['konva'], function(Konva) {
         options.layer.draw();
       });
     }
-    
+
     handle.on('mouseover touchstart', function(event) {
       if (options.inMarker) {
         text.setX(xPosition - text.getWidth());
@@ -266,15 +266,6 @@ define(['konva'], function(Konva) {
         height: handleHeight,
         fill:   options.handleColor
       });
-      group.on('dragstart', function(event) {
-        time.setX(-24 - time.getWidth());
-        time.show();
-        options.layer.draw();
-      });
-      group.on('dragend', function(event) {
-        time.hide();
-        options.layer.draw();
-      });
     }
 
     // Line
@@ -315,6 +306,18 @@ define(['konva'], function(Konva) {
         time.hide();
         options.layer.draw();
       });
+      
+      group.on('dragstart', function(event) {
+        time.setX(-24 - time.getWidth());
+        time.show();
+        options.layer.draw();
+      });
+      
+      group.on('dragend', function(event) {
+        time.hide();
+        options.layer.draw();
+      });
+      
     }
 
     if (handle) {
