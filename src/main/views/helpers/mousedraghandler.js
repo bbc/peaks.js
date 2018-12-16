@@ -96,7 +96,7 @@ define(function() {
 
   MouseDragHandler.prototype.mouseMove = function(event) {
     var clientX = null;
-    
+
     if (event.type === 'touchmove') {
       clientX = parseInt(event.changedTouches[0].clientX, 10);
     }
@@ -126,14 +126,14 @@ define(function() {
 
   MouseDragHandler.prototype.mouseUp = function(event) {
     var clientX = null;
-    
+
     if (event.type === 'touchend') {
       clientX = parseInt(event.changedTouches[0].clientX, 10);
     }
     else {
       clientX = event.clientX;
     }
-    
+
     if (this._handlers.onMouseUp) {
       var mousePosX = this._getMousePosX(clientX);
 
