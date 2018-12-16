@@ -306,18 +306,18 @@ define(['konva'], function(Konva) {
         time.hide();
         options.layer.draw();
       });
-      
+
       group.on('dragstart', function(event) {
         time.setX(-24 - time.getWidth());
         time.show();
         options.layer.draw();
       });
-      
+
       group.on('dragend', function(event) {
         time.hide();
         options.layer.draw();
       });
-      
+
     }
 
     if (handle) {
