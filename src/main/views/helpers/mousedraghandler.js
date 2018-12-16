@@ -66,7 +66,7 @@ define(function() {
     }
 
     if (event.type === 'touchstart') {
-      this._mouseDownClientX = event.evt.touches[0].clientX;
+      this._mouseDownClientX = parseInt(event.evt.touches[0].clientX, 10);
     }
     else {
       this._mouseDownClientX = event.evt.clientX;
@@ -98,7 +98,7 @@ define(function() {
     var clientX = null;
     
     if (event.type === 'touchmove') {
-      clientX = event.changedTouches[0].clientX;
+      clientX = parseInt(event.changedTouches[0].clientX, 10);
     }
     else {
       clientX = event.clientX;
@@ -128,7 +128,7 @@ define(function() {
     var clientX = null;
     
     if (event.type === 'touchend') {
-      clientX = event.changedTouches[0].clientX;
+      clientX = parseInt(event.changedTouches[0].clientX, 10);
     }
     else {
       clientX = event.clientX;
