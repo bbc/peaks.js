@@ -66,7 +66,7 @@ define(function() {
     }
 
     if (event.type === 'touchstart') {
-      this._mouseDownClientX = parseInt(event.evt.touches[0].clientX, 10);
+      this._mouseDownClientX = Math.floor(event.evt.touches[0].clientX);
     }
     else {
       this._mouseDownClientX = event.evt.clientX;
@@ -98,7 +98,7 @@ define(function() {
     var clientX = null;
 
     if (event.type === 'touchmove') {
-      clientX = parseInt(event.changedTouches[0].clientX, 10);
+      clientX = Math.floor(event.changedTouches[0].clientX);
     }
     else {
       clientX = event.clientX;
@@ -128,7 +128,7 @@ define(function() {
     var clientX = null;
 
     if (event.type === 'touchend') {
-      clientX = parseInt(event.changedTouches[0].clientX, 10);
+      clientX = Math.floor(event.changedTouches[0].clientX);
     }
     else {
       clientX = event.clientX;
