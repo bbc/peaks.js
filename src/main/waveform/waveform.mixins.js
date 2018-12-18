@@ -65,12 +65,6 @@ define(['konva'], function(Konva) {
       }
     });
 
-    if (options.draggable && options.onDrag) {
-      group.on('dragmove', function(event) {
-        options.onDrag(options.segmentGroup, options.segment);
-      });
-    }
-
     var xPosition = options.inMarker ? -24 : 24;
 
     var text = new Konva.Text({
@@ -108,7 +102,24 @@ define(['konva'], function(Konva) {
 
     // Events
 
-    handle.on('mouseover', function(event) {
+    if (options.draggable && options.onDrag) {
+      group.on('dragmove', function(event) {
+        options.onDrag(options.segmentGroup, options.segment);
+      });
+      group.on('dragstart', function(event) {
+        if (options.inMarker) {
+          text.setX(xPosition - text.getWidth());
+        }
+        text.show();
+        options.layer.draw();
+      });
+      group.on('dragend', function(event) {
+        text.hide();
+        options.layer.draw();
+      });
+    }
+
+    handle.on('mouseover touchstart', function(event) {
       if (options.inMarker) {
         text.setX(xPosition - text.getWidth());
       }
@@ -116,7 +127,7 @@ define(['konva'], function(Konva) {
       options.layer.draw();
     });
 
-    handle.on('mouseout', function(event) {
+    handle.on('mouseout touchend', function(event) {
       text.hide();
       options.layer.draw();
     });
@@ -284,17 +295,29 @@ define(['konva'], function(Konva) {
       time.hide();
       group.time = time;
 
-      handle.on('mouseover', function(event) {
+      handle.on('mouseover touchstart', function(event) {
         // Position text to the left of the marker
         time.setX(-24 - time.getWidth());
         time.show();
         options.layer.draw();
       });
 
-      handle.on('mouseout', function(event) {
+      handle.on('mouseout touchend', function(event) {
         time.hide();
         options.layer.draw();
       });
+
+      group.on('dragstart', function(event) {
+        time.setX(-24 - time.getWidth());
+        time.show();
+        options.layer.draw();
+      });
+
+      group.on('dragend', function(event) {
+        time.hide();
+        options.layer.draw();
+      });
+
     }
 
     if (handle) {
