@@ -152,8 +152,14 @@ The available options for configuration of the viewer are as follows:
 ```javascript
 var options = {
   /** REQUIRED OPTIONS **/
-  // Containing element
+  // Containing element: either
   container: document.getElementById('peaks-container'),
+
+  // or:
+  containers: {
+    zoomview: document.getElementById('zoomview-container'),
+    overview: document.getElementById('overview-container')
+  },
 
   // HTML5 Media element containing an audio track
   mediaElement: document.querySelector('audio'),
@@ -293,8 +299,8 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 Returns a new `Peaks` instance with the [assigned options](#Configuration). You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
 ```js
-var peaksInstance = Peaks.init({ … });
-var secondPeaksInstance = Peaks.init({ … });
+var instance = Peaks.init({ … });
+var anotherInstance = Peaks.init({ … });
 ```
 
 ## Player API

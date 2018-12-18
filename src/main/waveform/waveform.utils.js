@@ -168,7 +168,7 @@ define(function() {
     /**
      * Checks whether the given value is a valid object.
      *
-     * @param {Number} value The value to test
+     * @param {Object|Array} value The value to test
      * @returns {Boolean}
      */
 
@@ -208,6 +208,17 @@ define(function() {
 
     isFunction: function(value) {
       return typeof value === 'function';
+    },
+
+    /**
+     * Checks whether the given value is a valid HTML element.
+     *
+     * @param {HTMLElement} value The value to test
+     * @returns {Boolean}
+     */
+
+    isHTMLElement: function(value) {
+      return value instanceof HTMLElement;
     }
   };
 });

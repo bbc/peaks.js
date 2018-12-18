@@ -44,7 +44,7 @@
    * @param {Object} ui Container elements for the UI components. See the
    *   <code>template</code> option.
    * @param {HTMLElement} ui.player Overall container HTML element.
-   * @param {HTMLElement} ui.zoom HTML element container for the zoomable
+   * @param {HTMLElement} ui.zoomview HTML element container for the zoomable
    *   waveform view.
    * @param {HTMLElement} ui.overview HTML element container for the overview
    *   waveform.
@@ -299,17 +299,23 @@
                                   remoteData :
                                   WaveformData.create(remoteData);
 
-      this.waveformOverview = new WaveformOverview(
-        this.originalWaveformData,
-        this.ui.overview,
-        this.peaks
-      );
+      if (this.ui.overview) {
+        this.waveformOverview = new WaveformOverview(
+          this.originalWaveformData,
+          this.ui.overview,
+          this.peaks
+        );
+      }
 
-      this.waveformZoomView = new WaveformZoomView(
-        this.originalWaveformData,
-        this.ui.zoom,
-        this.peaks
-      );
+      var zoomview = this.ui.zoomview || this.ui.zoom;
+
+      if (zoomview) {
+        this.waveformZoomView = new WaveformZoomView(
+          this.originalWaveformData,
+          zoomview,
+          this.peaks
+        );
+      }
 
       // TODO: Deprecated, use peaks.ready instead.
       this.peaks.emit('segments.ready');
@@ -356,16 +362,12 @@
   Waveform.prototype.onResize = function() {
     var self = this;
 
-    self.peaks.emit('window_resize');
-
     if (self.resizeTimeoutId) {
       clearTimeout(self.resizeTimeoutId);
     }
 
     self.resizeTimeoutId = setTimeout(function() {
-      var width = self.ui.player.clientWidth;
-
-      self.peaks.emit('window_resize_complete', width);
+      self.peaks.emit('window_resize_complete');
     }, 500);
   };
 

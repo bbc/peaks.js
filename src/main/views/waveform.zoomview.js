@@ -183,15 +183,12 @@ define([
       self.setZoomLevel(currentScale, previousScale);
     });
 
-    peaks.on('window_resize', function() {
-      self.container.hidden = true;
-    });
-
-    self.peaks.on('window_resize_complete', function(width) {
-      self.width = width;
-      self.stage.setWidth(self.width);
-      self.updateWaveform(self.frameOffset);
-      self.container.removeAttribute('hidden');
+    self.peaks.on('window_resize_complete', function() {
+      if (self.container.clientWidth !== self.width && self.container.clientWidth !== 0) {
+        self.width = self.container.clientWidth;
+        self.stage.setWidth(self.width);
+        self.updateWaveform(self.frameOffset);
+      }
     });
 
     function nudgeFrame(direction, large) {

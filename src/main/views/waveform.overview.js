@@ -45,6 +45,7 @@ define([
     self.peaks = peaks;
 
     self.options = peaks.options;
+
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
 
@@ -121,17 +122,13 @@ define([
       self.updateHighlightRect(startTime, endTime);
     });
 
-    peaks.on('window_resize', function() {
-      self.container.hidden = true;
-    });
-
-    peaks.on('window_resize_complete', function(width) {
-      self.width = width;
-      self.data = self.originalWaveformData.resample(self.width);
-      self.stage.setWidth(self.width);
-      self.container.removeAttribute('hidden');
-
-      self._playheadLayer.zoomLevelChanged();
+    peaks.on('window_resize_complete', function() {
+      if (self.container.clientWidth !== self.width && self.container.clientWidth !== 0) {
+        self.width = self.container.clientWidth;
+        self.data = self.originalWaveformData.resample(self.width);
+        self.stage.setWidth(self.width);
+        self._playheadLayer.zoomLevelChanged();
+      }
     });
 
     peaks.emit('waveform_ready.overview', this);

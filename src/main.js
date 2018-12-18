@@ -35,7 +35,7 @@ define('peaks', [
   function buildUi(container) {
     return {
       player:   container.querySelector('.waveform'),
-      zoom:     container.querySelector('.zoom-container'),
+      zoomview: container.querySelector('.zoom-container'),
       overview: container.querySelector('.overview-container')
     };
   }
@@ -247,12 +247,6 @@ define('peaks', [
     };
 
     /**
-     *
-     * @type {HTMLElement}
-     */
-    this.container = opts.container;
-
-    /**
      * Asynchronous errors logger.
      *
      * @type {Function}
@@ -266,7 +260,7 @@ define('peaks', [
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
         // eslint-disable-next-line max-len
-      opts.deprecationLogger('Peaks.init(): the audioElement option is deprecated, please use mediaElement instead');
+      opts.deprecationLogger('Peaks.init(): The audioElement option is deprecated, please use mediaElement instead');
     }
 
     if (!opts.mediaElement) {
@@ -278,13 +272,20 @@ define('peaks', [
       throw new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
     }
 
-    if (!opts.container) {
-      throw new Error('Peaks.init(): Missing container option');
+    if (!opts.container && !opts.containers) {
+      throw new Error('Peaks.init(): Please specify either a container or containers option');
+    }
+    else if (Boolean(opts.container) === Boolean(opts.containers)) {
+      throw new Error('Peaks.init(): Please specify either a container or containers option, but not both');
     }
 
-    if ((opts.container.clientWidth > 0) === false) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): Please ensure that the container has a width');
+    if (opts.template && opts.containers) {
+      throw new Error('Peaks.init(): Please specify either a template or a containers option, but not both');
+    }
+
+    // The 'containers' option overrides 'template'.
+    if (opts.containers) {
+      opts.template = null;
     }
 
     if (opts.logger && !Utils.isFunction(opts.logger)) {
@@ -333,15 +334,43 @@ define('peaks', [
     /*
      Setup the layout
      */
+
+    var containers = null;
+
     if (typeof this.options.template === 'string') {
-      this.container.innerHTML = this.options.template;
+      opts.container.innerHTML = this.options.template;
+
+      containers = buildUi(this.options.container);
     }
-    else if (this.options.template instanceof HTMLElement) {
+    else if (Utils.isHTMLElement(this.options.template)) {
       this.container.appendChild(this.options.template);
+
+      containers = buildUi(this.options.container);
+    }
+    else if (this.options.containers) {
+      containers = this.options.containers;
     }
     else {
       // eslint-disable-next-line max-len
       throw new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object');
+    }
+
+    var zoomviewContainer = containers.zoomview || containers.zoom;
+
+    if (!Utils.isHTMLElement(zoomviewContainer) &&
+        !Utils.isHTMLElement(containers.overview)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements');
+    }
+
+    if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width');
+    }
+
+    if (containers.overview && containers.overview.clientWidth <= 0) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width');
     }
 
     if (this.options.keyboard) {
@@ -357,7 +386,7 @@ define('peaks', [
      Setup the UI components
      */
     this.waveform = new Waveform(this);
-    this.waveform.init(buildUi(this.container));
+    this.waveform.init(containers);
 
     this.zoom = new ZoomController(this, this.options.zoomLevels);
     this.time = new TimeController(this);
