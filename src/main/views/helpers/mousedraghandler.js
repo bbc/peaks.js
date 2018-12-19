@@ -129,6 +129,9 @@ define(function() {
 
     if (event.type === 'touchend') {
       clientX = Math.floor(event.changedTouches[0].clientX);
+      if (event.cancelable) {
+        event.preventDefault();
+      }
     }
     else {
       clientX = event.clientX;
