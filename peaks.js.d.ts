@@ -95,24 +95,24 @@ declare module 'peaks.js' {
   }
 
   interface InstanceEvents {
-    error: (err: Error) => any;
     'peaks.ready': () => any;
-    'user_seek.overview': (time: number) => any;
-    'user_seek.zoomview': (time: number) => any;
-    'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
-    'segments.add': (segments: Segment[]) => any;
-    'segments.remove': (segments: Segment[]) => any;
-    'segments.remove_all': () => any;
-    'segments.dragged': (segment: Segment) => any;
     'points.add': (points: Point[]) => any;
-    'points.remove': (points: Point[]) => any;
-    'points.remove_all': () => any;
-    'points.dragstart': (point: Point) => any;
-    'points.dragmove': (point: Point) => any;
+    'points.dblclick': (point: Point) => any;
     'points.dragend': (point: Point) => any;
+    'points.dragmove': (point: Point) => any;
+    'points.dragstart': (point: Point) => any;
     'points.mouseenter': (point: Point) => any;
     'points.mouseleave': (point: Point) => any;
-    'points.dblclick': (point: Point) => any;
+    'points.remove_all': () => any;
+    'points.remove': (points: Point[]) => any;
+    'segments.add': (segments: Segment[]) => any;
+    'segments.dragged': (segment: Segment) => any;
+    'segments.remove_all': () => any;
+    'segments.remove': (segments: Segment[]) => any;
+    'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
+    error: (err: Error) => any;
+    player_seek: (time: number) => any;
+    user_seek: (time: number) => any;
   }
 
   interface PeaksInstance {
