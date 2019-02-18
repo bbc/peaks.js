@@ -145,8 +145,6 @@ p.on('peaks.ready', function() {
 });
 ```
 
-**Notice**: be aware **it can be CPU intensive** if your audio file has a long duration.
-
 # Configuration
 
 The available options for configuration of the viewer are as follows:
