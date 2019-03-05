@@ -1,5 +1,15 @@
 # Peaks.js
 
+## 0.9.14 (2019/03/05)
+
+ * (#249, #251, #252) Enabled touch events for waveform container
+   and point and segment markers (@rfrei)
+
+ * Updated to Konva 3.1.6 and waveform-data.js 2.1.2, and updated
+   development dependencies (@chrisn)
+
+ * Updated TypeScript declarations (@evanlouie)
+
 ## 0.9.13 (2018/09/04)
 
  * Added TypeScript declarations (@evanlouie)
