@@ -49,7 +49,14 @@ define([
     self.width = container.clientWidth;
     self.height = container.clientHeight || self.options.height;
 
-    self.data = waveformData.resample(self.width);
+    if (self.width !== 0) {
+      self.data = waveformData.resample(self.width);
+    }
+    else {
+      self.data = waveformData;
+    }
+
+    self.resizeTimeoutId = null;
 
     self.stage = new Konva.Stage({
       container: container,
@@ -119,15 +126,30 @@ define([
     });
 
     peaks.on('zoomview.displaying', function(startTime, endTime) {
+      self.highlightRectStartTime = startTime;
+      self.highlightRectEndTime = endTime;
+
       self.updateHighlightRect(startTime, endTime);
     });
 
-    peaks.on('window_resize_complete', function() {
-      if (self.container.clientWidth !== self.width && self.container.clientWidth !== 0) {
+    peaks.on('window_resize', function() {
+      if (self.resizeTimeoutId) {
+        clearTimeout(self.resizeTimeoutId);
+        self.resizeTimeoutId = null;
+      }
+
+      // Avoid resampling waveform data to zero width
+      if (self.container.clientWidth !== 0) {
         self.width = self.container.clientWidth;
-        self.data = self.originalWaveformData.resample(self.width);
         self.stage.setWidth(self.width);
-        self._playheadLayer.zoomLevelChanged();
+
+        self.resizeTimeoutId = setTimeout(function() {
+          self.width = self.container.clientWidth;
+          self.data = self.originalWaveformData.resample(self.width);
+          self.stage.setWidth(self.width);
+
+          self._updateWaveform();
+        }, 500);
       }
     });
 
@@ -205,6 +227,9 @@ define([
   };
 
   WaveformOverview.prototype.createHighlightRect = function() {
+    this.highlightRectStartTime = 0;
+    this.highlightRectEndTime = 0;
+
     this.highlightLayer = new Konva.FastLayer();
 
     this.highlightRect = new Konva.Rect({
@@ -242,7 +267,28 @@ define([
     this.highlightLayer.draw();
   };
 
+  WaveformOverview.prototype._updateWaveform = function() {
+    this.waveformLayer.draw();
+
+    var playheadTime = this.peaks.player.getCurrentTime();
+
+    this._playheadLayer.updatePlayheadTime(playheadTime);
+
+    this.updateHighlightRect(this.highlightRectStartTime, this.highlightRectEndTime);
+
+    var frameStartTime = 0;
+    var frameEndTime   = this.pixelsToTime(this.width);
+
+    this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
+    this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
+  };
+
   WaveformOverview.prototype.destroy = function() {
+    if (this.resizeTimeoutId) {
+      clearTimeout(this.resizeTimeoutId);
+      this.resizeTimeoutId = null;
+    }
+
     if (this.stage) {
       this.stage.destroy();
       this.stage = null;

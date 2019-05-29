@@ -317,7 +317,6 @@ define(['konva'], function(Konva) {
         time.hide();
         options.layer.draw();
       });
-
     }
 
     if (handle) {

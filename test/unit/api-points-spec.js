@@ -10,8 +10,8 @@ describe('Peaks.points', function() {
     deprecationLogger = sinon.spy();
 
     p = Peaks.init({
-      container: document.getElementById('waveform-visualiser-container'),
-      mediaElement: document.querySelector('audio'),
+      container: document.getElementById('container'),
+      mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
       keyboard: true,
       height: 240,

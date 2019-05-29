@@ -7,8 +7,8 @@ describe('Peaks.zoom', function() {
 
   beforeEach(function(done) {
     p = Peaks.init({
-      container: document.getElementById('waveform-visualiser-container'),
-      mediaElement: document.querySelector('audio'),
+      container: document.getElementById('container'),
+      mediaElement: document.getElementById('media'),
       dataUri: {
         json: 'base/test_data/sample.json'
       },

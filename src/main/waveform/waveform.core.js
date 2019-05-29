@@ -352,23 +352,12 @@
     }
 
     window.removeEventListener('resize', this.onResize);
-
-    if (this.resizeTimeoutId) {
-      clearTimeout(this.resizeTimeoutId);
-      this.resizeTimeoutId = null;
-    }
   };
 
   Waveform.prototype.onResize = function() {
     var self = this;
 
-    if (self.resizeTimeoutId) {
-      clearTimeout(self.resizeTimeoutId);
-    }
-
-    self.resizeTimeoutId = setTimeout(function() {
-      self.peaks.emit('window_resize_complete');
-    }, 500);
+    self.peaks.emit('window_resize');
   };
 
   return Waveform;

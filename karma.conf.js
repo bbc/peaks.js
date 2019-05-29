@@ -38,8 +38,6 @@ module.exports = function(config) {
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
-      { pattern: 'test/*.html', included: true },
-      { pattern: 'test/load-fixtures.js', included: true },
       { pattern: 'test/unit/**/*.js', included: true }
     ],
 
@@ -48,8 +46,7 @@ module.exports = function(config) {
     },
 
     preprocessors: {
-      'test/unit/**/*.js': ['browserify'],
-      'test/*.html': ['html2js']
+      'test/unit/**/*.js': ['browserify']
     },
 
     // test results reporter to use

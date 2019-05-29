@@ -5,11 +5,12 @@ var Peaks = require('../../src/main');
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
 describe('Peaks', function() {
-  var p;
+  var p = null;
 
   afterEach(function() {
     if (p) {
       p.destroy();
+      p = null;
     }
   });
 
@@ -17,8 +18,8 @@ describe('Peaks', function() {
     context('with valid options', function() {
       it('should emit peaks.ready and segments.ready events when initialised', function(done) {
         p = Peaks.init({
-          container: document.getElementById('waveform-visualiser-container'),
-          mediaElement: document.querySelector('audio'),
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: 'base/test_data/sample.dat' }
         });
 
@@ -48,7 +49,7 @@ describe('Peaks', function() {
       it('should throw an exception if no mediaElement is provided', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
+            container: document.getElementById('container'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/Missing mediaElement option/);
@@ -57,7 +58,7 @@ describe('Peaks', function() {
       it('should throw an exception if mediaElement is not an HTMLMediaElement', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
+            container: document.getElementById('container'),
             mediaElement: document.createElement('div'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
@@ -67,8 +68,8 @@ describe('Peaks', function() {
       it('should throw an exception if both a dataUri and audioContext are provided', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.getElementById('audioElement'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' },
             audioContext: new TestAudioContext()
           });
@@ -78,8 +79,8 @@ describe('Peaks', function() {
       it('should throw an exception if neither a dataUri nor an audioContext are provided', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.getElementById('audioElement')
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media')
           });
         }).to.throw(/audioContext or dataUri/);
       });
@@ -87,8 +88,8 @@ describe('Peaks', function() {
       it('should throw an exception if the dataUri is not an object', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.getElementById('audioElement'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: true
           });
         }).to.throw(/dataUri/);
@@ -97,17 +98,17 @@ describe('Peaks', function() {
       it('should throw an exception if no container is provided', function() {
         expect(function() {
           Peaks.init({
-            mediaElement: document.querySelector('audio'),
+            mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
-        }).to.throw(/Missing container option/);
+        }).to.throw(/container or containers option/);
       });
 
       it('should throw an exception if the container has no layout', function() {
         expect(function() {
           Peaks.init({
             container: document.createElement('div'),
-            mediaElement: document.querySelector('audio'),
+            mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' }
           });
         }).to.throw(/width/);
@@ -116,8 +117,8 @@ describe('Peaks', function() {
       it('should throw an exception if the template is not a string or an HTMLElement', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: 'base/test_data/sample.dat' },
             template: null
           });
@@ -127,8 +128,8 @@ describe('Peaks', function() {
       it('should throw an exception if the logger is defined and not a function', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: 'base/test_data/sample.json',
             logger: 'foo'
           });
@@ -139,8 +140,8 @@ describe('Peaks', function() {
         var logger = sinon.spy();
 
         p = Peaks.init({
-          container: document.getElementById('waveform-visualiser-container'),
-          mediaElement: document.querySelector('audio'),
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
           dataUri: 'base/test_data/sample.json',
           logger: logger
         });
@@ -156,8 +157,8 @@ describe('Peaks', function() {
       it('should throw an exception if the zoomLevels option is missing', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: 'base/test_data/sample.json',
             zoomLevels: null
           });
@@ -167,8 +168,8 @@ describe('Peaks', function() {
       it('should throw an exception if the zoomLevels option is empty', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: 'base/test_data/sample.json',
             zoomLevels: []
           });
@@ -178,8 +179,8 @@ describe('Peaks', function() {
       it('should throw an exception if the zoomLevels option is not in ascending order', function() {
         expect(function() {
           Peaks.init({
-            container: document.getElementById('waveform-visualiser-container'),
-            mediaElement: document.querySelector('audio'),
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
             dataUri: 'base/test_data/sample.json',
             zoomLevels: [1024, 512]
           });
@@ -192,8 +193,8 @@ describe('Peaks', function() {
     context('with valid options', function() {
       it('should construct a Peaks object', function(done) {
         p = new Peaks({
-          container: document.getElementById('waveform-visualiser-container'),
-          mediaElement: document.querySelector('audio'),
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: 'base/test_data/sample.dat' }
         });
 
@@ -204,24 +205,87 @@ describe('Peaks', function() {
         });
       });
     });
+
+    context('with containers option', function() {
+      var overviewContainer;
+      var zoomviewContainer;
+
+      beforeEach(function() {
+        overviewContainer = document.createElement('div');
+        overviewContainer.style.width = '400px';
+        overviewContainer.style.height = '100px';
+        document.body.appendChild(overviewContainer);
+
+        zoomviewContainer = document.createElement('div');
+        zoomviewContainer.style.width = '400px';
+        zoomviewContainer.style.height = '100px';
+        document.body.appendChild(zoomviewContainer);
+      });
+
+      it('should construct a Peaks object with overview and zoomable waveforms', function(done) {
+        p = new Peaks({
+          containers: {
+            overview: overviewContainer,
+            zoomview: zoomviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+        });
+
+        expect(p).to.be.an.instanceof(Peaks);
+
+        p.on('peaks.ready', function() {
+          done();
+        });
+      });
+
+      it('should construct a Peaks object with an overview waveform only', function(done) {
+        p = new Peaks({
+          containers: {
+            overview: overviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+        });
+
+        expect(p).to.be.an.instanceof(Peaks);
+
+        p.on('peaks.ready', function() {
+          done();
+        });
+      });
+
+      it('should construct a Peaks object with a zoomable waveform only', function(done) {
+        p = new Peaks({
+          containers: {
+            zoomview: zoomviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+        });
+
+        expect(p).to.be.an.instanceof(Peaks);
+
+        p.on('peaks.ready', function() {
+          done();
+        });
+      });
+
+      it('should throw an error if no containers are given', function() {
+        expect(function() {
+          p = new Peaks({
+              containers: {
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+          });
+        }).to.throw(/must be valid HTML elements/);
+      });
+    });
   });
 
   describe('destroy', function() {
     var container;
-
-    beforeEach(function() {
-      var regularContainer = document.getElementById('waveform-visualiser-container');
-      container = document.createElement('div');
-      container.style.width = '400px';
-      container.style.height = '100px';
-      regularContainer.parentNode.appendChild(container);
-    });
-
-    afterEach(function() {
-      if (container.parentNode) {
-        container.parentNode.removeChild(container);
-      }
-    });
 
     it('should clean up event listeners', function(done) {
       var errorSpy = sinon.spy().named('window.onerror');
@@ -230,16 +294,14 @@ describe('Peaks', function() {
       window.onerror = errorSpy;
 
       p = Peaks.init({
-        container: container,
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         audioContext: new TestAudioContext()
       });
 
       p.on('window_resized', resizeSpy);
 
       p.on('waveform_ready.overview', function() {
-        container.parentNode.removeChild(container);
-
         // Give peaks chance to bind its resize listener:
         setTimeout(function() {
           p.destroy();
@@ -262,8 +324,8 @@ describe('Peaks', function() {
 
     it('should be safe to call more than once', function(done) {
       var p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: { arraybuffer: 'base/test_data/sample.dat' }
       });
 
@@ -278,8 +340,8 @@ describe('Peaks', function() {
   describe('core#getRemoteData', function() {
     it('should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: 'base/test_data/sample.json'
       });
 
@@ -296,8 +358,8 @@ describe('Peaks', function() {
 
     it('should emit an error if the data handling fails', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: 'base/test_data/404-file.json'
       });
 
@@ -308,8 +370,8 @@ describe('Peaks', function() {
 
     it('should emit an error if the data handling fails due to a network error', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: 'file:///test.json'
       });
 
@@ -322,8 +384,8 @@ describe('Peaks', function() {
 
     it('should use the JSON dataUri connector', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: {
           json: 'base/test_data/sample.json'
         }
@@ -342,8 +404,8 @@ describe('Peaks', function() {
 
     it('should not use credentials if withCredentials is not set', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: {
           json: 'base/test_data/sample.json'
         }
@@ -362,8 +424,8 @@ describe('Peaks', function() {
 
     it('should use credentials if withCredentials is set', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         withCredentials: true,
         dataUri: {
           json: 'base/test_data/sample.json'
@@ -383,8 +445,8 @@ describe('Peaks', function() {
 
     ('ArrayBuffer' in window) && it('should use the arraybuffer dataUri connector or fail if not available', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: {
           arraybuffer: 'base/test_data/sample.dat'
         }
@@ -404,8 +466,8 @@ describe('Peaks', function() {
     !('ArrayBuffer' in window) && it('should throw an exception if the only available format is browser incompatible', function() {
       expect(function() {
         Peaks.init({
-          container: document.getElementById('waveform-visualiser-container'),
-          mediaElement: document.querySelector('audio'),
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
           dataUri: {
             arraybuffer: 'base/test_data/sample.dat'
           }
@@ -415,8 +477,8 @@ describe('Peaks', function() {
 
     it('should pick the arraybuffer format over the JSON one', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         dataUri: {
           arraybuffer: 'base/test_data/sample.dat',
           json: 'base/test_data/sample.json'
@@ -437,8 +499,8 @@ describe('Peaks', function() {
 
     ('AudioBuffer' in window) && it('should build using WebAudio if the API is available and no dataUri is provided', function(done) {
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
         audioContext: new TestAudioContext()
       });
 

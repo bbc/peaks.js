@@ -183,12 +183,10 @@ define([
       self.setZoomLevel(currentScale, previousScale);
     });
 
-    self.peaks.on('window_resize_complete', function() {
-      if (self.container.clientWidth !== self.width && self.container.clientWidth !== 0) {
-        self.width = self.container.clientWidth;
-        self.stage.setWidth(self.width);
-        self.updateWaveform(self.frameOffset);
-      }
+    self.peaks.on('window_resize', function() {
+      self.width = self.container.clientWidth;
+      self.stage.setWidth(self.width);
+      self.updateWaveform(self.frameOffset);
     });
 
     function nudgeFrame(direction, large) {
