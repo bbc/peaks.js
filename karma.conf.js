@@ -22,7 +22,7 @@ module.exports = function(config) {
         includeStack: true
       },
       mocha: {
-        timeout: 10000
+        timeout: 5000
       }
     },
 
