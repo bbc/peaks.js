@@ -22,11 +22,25 @@ declare module 'peaks.js' {
   }
 
   interface RequiredOptions {
-    // Containing element
-    container: HTMLElement;
     // HTML5 Media element containing an audio track
     mediaElement: Element;
   }
+
+  interface SingleContainerOptions {
+    // Container element for the waveform views
+    container: HTMLElement;
+  }
+
+  interface ViewContainerOptions {
+    containers: {
+      // Container element for the overview (non-zoomable) waveform view
+      overview?: HTMLElement;
+      // Container element for the zoomable waveform view
+      zoomview?: HTMLElement;
+    }
+  }
+
+  type ContainerOptions = SingleContainerOptions | ViewContainerOptions;
 
   interface WebAudioOptions {
     // A Web Audio AudioContext instance which can be used
@@ -156,6 +170,6 @@ declare module 'peaks.js' {
 
   interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
 
-  export type PeaksOptions = PeaksOptionsWithoutAudioOptions & AudioOptions;
+  export type PeaksOptions = PeaksOptionsWithoutAudioOptions & AudioOptions & ContainerOptions;
   export function init(options: PeaksOptions): PeaksInstance;
 }
