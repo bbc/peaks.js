@@ -56,7 +56,7 @@ define([
       self.data = waveformData;
     }
 
-    self.resizeTimeoutId = null;
+    self._resizeTimeoutId = null;
 
     self.stage = new Konva.Stage({
       container: container,
@@ -133,9 +133,9 @@ define([
     });
 
     peaks.on('window_resize', function() {
-      if (self.resizeTimeoutId) {
-        clearTimeout(self.resizeTimeoutId);
-        self.resizeTimeoutId = null;
+      if (self._resizeTimeoutId) {
+        clearTimeout(self._resizeTimeoutId);
+        self._resizeTimeoutId = null;
       }
 
       // Avoid resampling waveform data to zero width
@@ -143,7 +143,7 @@ define([
         self.width = self.container.clientWidth;
         self.stage.setWidth(self.width);
 
-        self.resizeTimeoutId = setTimeout(function() {
+        self._resizeTimeoutId = setTimeout(function() {
           self.width = self.container.clientWidth;
           self.data = self.originalWaveformData.resample(self.width);
           self.stage.setWidth(self.width);
@@ -284,9 +284,9 @@ define([
   };
 
   WaveformOverview.prototype.destroy = function() {
-    if (this.resizeTimeoutId) {
-      clearTimeout(this.resizeTimeoutId);
-      this.resizeTimeoutId = null;
+    if (this._resizeTimeoutId) {
+      clearTimeout(this._resizeTimeoutId);
+      this._resizeTimeoutId = null;
     }
 
     if (this.stage) {
