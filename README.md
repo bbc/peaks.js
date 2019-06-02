@@ -28,7 +28,10 @@ Peaks.js can be included in any web page by following these steps:
 1. initialise Peaks.js
 
 ```html
-<div id="peaks-container"></div>
+<div id="peaks-container">
+  <div id="zoomview-container"></div>
+  <div id="overview-container"></div>
+</div>
 <audio>
   <source src="test_data/sample.mp3" type="audio/mpeg">
   <source src="test_data/sample.ogg" type="audio/ogg">
@@ -55,7 +58,10 @@ requirejs.config({
 // require it
 require(['peaks'], function(Peaks) {
   var p = Peaks.init({
-    container: document.querySelector('#peaks-container'),
+    containers: {
+      overview: document.getElementById('overview-container'),
+      zoomview: document.getElementById('zoomview-container')
+    }
     mediaElement: document.querySelector('audio'),
     dataUri: 'test_data/sample.json'
   });
@@ -135,7 +141,10 @@ To use Web Audio, omit the `dataUri` option and make sure you pass in a valid `A
 var myAudioContext = new AudioContext();
 
 var p = Peaks.init({
-  container: document.querySelector('#peaks-container'),
+  containers: {
+    overview: document.getElementById('overview-waveform'),
+    zoomview: document.getElementById('zoomview-waveform')
+  },
   mediaElement: document.querySelector('audio'),
   audioContext: myAudioContext
 });
@@ -155,7 +164,7 @@ var options = {
   // Containing element: either
   container: document.getElementById('peaks-container'),
 
-  // or:
+  // or (preferred):
   containers: {
     zoomview: document.getElementById('zoomview-container'),
     overview: document.getElementById('overview-container')
