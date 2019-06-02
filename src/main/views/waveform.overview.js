@@ -76,7 +76,7 @@ define([
     self._pointsLayer = new PointsLayer(peaks, self, false, false);
     self._pointsLayer.addToStage(self.stage);
 
-    self.createHighlightRect();
+    self._createHighlightLayer();
 
     self._playheadLayer = new PlayheadLayer(
       peaks,
@@ -126,10 +126,11 @@ define([
     });
 
     peaks.on('zoomview.displaying', function(startTime, endTime) {
-      self.highlightRectStartTime = startTime;
-      self.highlightRectEndTime = endTime;
+      if (!self._highlightRect) {
+        self._createHighlightRect(startTime, endTime);
+      }
 
-      self.updateHighlightRect(startTime, endTime);
+      self._updateHighlightRect(startTime, endTime);
     });
 
     peaks.on('window_resize', function() {
@@ -226,16 +227,22 @@ define([
     this.stage.add(this.waveformLayer);
   };
 
-  WaveformOverview.prototype.createHighlightRect = function() {
-    this.highlightRectStartTime = 0;
-    this.highlightRectEndTime = 0;
+  WaveformOverview.prototype._createHighlightLayer = function() {
+    this._highlightLayer = new Konva.FastLayer();
+    this.stage.add(this._highlightLayer);
+  };
 
-    this.highlightLayer = new Konva.FastLayer();
+  WaveformOverview.prototype._createHighlightRect = function(startTime, endTime) {
+    this._highlightRectStartTime = startTime;
+    this._highlightRectEndTime = endTime;
 
-    this.highlightRect = new Konva.Rect({
-      x: 0,
+    var startOffset = this.timeToPixels(startTime);
+    var endOffset   = this.timeToPixels(endTime);
+
+    this._highlightRect = new Konva.Rect({
+      startOffset: 0,
       y: 11,
-      width: 0,
+      width: endOffset - startOffset,
       stroke: this.options.overviewHighlightRectangleColor,
       strokeWidth: 1,
       height: this.height - (11 * 2),
@@ -244,8 +251,7 @@ define([
       cornerRadius: 2
     });
 
-    this.highlightLayer.add(this.highlightRect);
-    this.stage.add(this.highlightLayer);
+    this._highlightLayer.add(this._highlightRect);
   };
 
   /**
@@ -255,16 +261,19 @@ define([
    * @param {Number} endTime The end of the highlight region, in seconds.
    */
 
-  WaveformOverview.prototype.updateHighlightRect = function(startTime, endTime) {
+  WaveformOverview.prototype._updateHighlightRect = function(startTime, endTime) {
+    this._highlightRectStartTime = startTime;
+    this._highlightRectEndTime = endTime;
+
     var startOffset = this.timeToPixels(startTime);
     var endOffset   = this.timeToPixels(endTime);
 
-    this.highlightRect.setAttrs({
+    this._highlightRect.setAttrs({
       x:     startOffset,
       width: endOffset - startOffset
     });
 
-    this.highlightLayer.draw();
+    this._highlightLayer.draw();
   };
 
   WaveformOverview.prototype._updateWaveform = function() {
@@ -274,7 +283,7 @@ define([
 
     this._playheadLayer.updatePlayheadTime(playheadTime);
 
-    this.updateHighlightRect(this.highlightRectStartTime, this.highlightRectEndTime);
+    this._updateHighlightRect(this._highlightRectStartTime, this._highlightRectEndTime);
 
     var frameStartTime = 0;
     var frameEndTime   = this.pixelsToTime(this.width);
