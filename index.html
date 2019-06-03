@@ -21,6 +21,10 @@
         line-height: 0;
       }
 
+      .zoom-container {
+        height: 200px;
+      }
+
       .overview-container {
         height: 85px;
       }
@@ -204,7 +208,7 @@
           segmentsContainer.querySelector('tbody').innerHTML = html;
 
           if (html.length) {
-            segmentsContainer.classList = '';
+            segmentsContainer.classList.remove('hide');
           }
         }
 
@@ -229,7 +233,7 @@
           pointsContainer.querySelector('tbody').innerHTML = html;
 
           if (html.length) {
-            pointsContainer.classList = '';
+            pointsContainer.classList.remove('hide');
           }
         }
 

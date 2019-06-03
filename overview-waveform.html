@@ -13,12 +13,13 @@
         width: 1000px;
       }
 
-      #overview-waveform {
+      #overview-container {
         box-shadow: 3px 3px 20px #919191;
         margin: 0 0 24px 0;
         -moz-box-shadow: 3px 3px 20px #919191;
         -webkit-box-shadow: 3px 3px 20px #919191;
         line-height: 0;
+        height: 200px;
       }
 
       #demo-controls {
@@ -40,9 +41,9 @@
         width: 4em;
       }
 
-      /* #controls {
-        float: left;
-      } */
+      #controls {
+        float: right;
+      }
     </style>
   </head>
   <body>
@@ -77,12 +78,12 @@
     </div>
 
     <div id="waveform-container">
-      <div id="overview-waveform"></div>
+      <div id="overview-container"></div>
     </div>
 
     <div id="demo-controls">
       <div>
-        <audio controls=controls>
+        <audio id="audio" controls="controls">
           <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
           <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
           Your browser does not support the audio element.
@@ -102,9 +103,9 @@
       (function(Peaks) {
         var peaksInstance = Peaks.init({
           containers: {
-            overview: document.getElementById('overview-waveform')
+            overview: document.getElementById('overview-container')
           },
-          mediaElement: document.querySelector('audio'),
+          mediaElement: document.getElementById('audio'),
           dataUri: {
             arraybuffer: '/test_data/TOL_6min_720p_download.dat',
             json: '/test_data/TOL_6min_720p_download.json'
