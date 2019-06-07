@@ -180,12 +180,18 @@
           var segments = peaks.segments.getSegments();
           var html = '';
 
+          window.segmentUpdated = function(i, prop, value) {
+            var segments = peaksInstance.segments.getSegments();
+            var segment = segments[i];
+            segment[prop] = value;
+          };
+
           for (var i = 0; i < segments.length; i++) {
             var segment = segments[i];
 
             var row = '<tr>' +
               '<td>' + segment.id + '</td>' +
-              '<td>' + segment.labelText + '</td>' +
+              '<td><input oninput="segmentUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + segment.labelText + '"></td>' +
               '<td>' + segment.startTime + '</td>' +
               '<td>' + segment.endTime + '</td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +

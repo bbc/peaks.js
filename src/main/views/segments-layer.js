@@ -48,6 +48,12 @@ define([
   SegmentsLayer.prototype._registerEventHandlers = function() {
     var self = this;
 
+    this._peaks.on('segments.update', function(segment) {
+      var segmentGroup = self._segmentGroups[segment.id];
+
+      segmentGroup.label.setText(segment.labelText);
+    });
+
     this._peaks.on('segments.add', function(segments) {
       var frameOffset = self._view.getFrameOffset();
       var width = self._view.getWidth();
