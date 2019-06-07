@@ -75,11 +75,13 @@ define([
       }
     },
     id: {
+      enumerable: true,
       get: function() {
         return this._id;
       }
     },
     startTime: {
+      enumerable: true,
       get: function() {
         return this._startTime;
       },
@@ -90,6 +92,7 @@ define([
       }
     },
     endTime: {
+      enumerable: true,
       get: function() {
         return this._endTime;
       },
@@ -100,6 +103,7 @@ define([
       }
     },
     labelText: {
+      enumerable: true,
       get: function() {
         return this._labelText;
       },
@@ -109,6 +113,7 @@ define([
       }
     },
     color: {
+      enumerable: true,
       get: function() {
         return this._color;
       },
@@ -118,6 +123,7 @@ define([
       }
     },
     editable: {
+      enumerable: true,
       get: function() {
         return this._editable;
       },
