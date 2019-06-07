@@ -51,7 +51,9 @@ define([
     this._peaks.on('segments.update', function(segment) {
       var segmentGroup = self._segmentGroups[segment.id];
 
-      segmentGroup.label.setText(segment.labelText);
+      if (segmentGroup) {
+        segmentGroup.label.setText(segment.labelText);
+      }
     });
 
     this._peaks.on('segments.add', function(segments) {
