@@ -39,13 +39,15 @@ describe('Segment', function() {
     });
   });
 
-  describe('startTime', function() {
+  describe('time', function() {
     it('should be possible to update programatically', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
       var segment = p.segments.getSegments()[0];
 
-      expect(segment.startTime = 3).to.equal(3);
+      segment.updateTime(2, 4);
+      expect(segment.startTime).to.equal(2);
+      expect(segment.endTime).to.equal(4);
     });
 
     it('should not allow invalid updates', function() {
@@ -54,33 +56,13 @@ describe('Segment', function() {
       var segment = p.segments.getSegments()[0];
 
       expect(function() {
-        segment.startTime = NaN;
+        segment.updateTime(NaN, 10);
       }).to.throw(TypeError);
       expect(function() {
-        segment.startTime = 12;
-      }).to.throw(RangeError);
-    });
-  });
-
-  describe('endTime', function() {
-    it('should be possible to update programatically', function() {
-      p.segments.add({ startTime: 5, endTime: 10 });
-
-      var segment = p.segments.getSegments()[0];
-
-      expect(segment.endTime = 20).to.equal(20);
-    });
-
-    it('should not allow invalid updates', function() {
-      p.segments.add({ startTime: 5, endTime: 10 });
-
-      var segment = p.segments.getSegments()[0];
-
-      expect(function() {
-        segment.endTime = NaN;
+        segment.updateTime(0, NaN);
       }).to.throw(TypeError);
       expect(function() {
-        segment.endTime = 3;
+        segment.updateTime(8, 3);
       }).to.throw(RangeError);
     });
   });

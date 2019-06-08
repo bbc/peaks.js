@@ -161,10 +161,10 @@ describe('Peaks.segments', function() {
       p.segments.add(segments);
 
       expect(p.segments.getSegments()).to.have.lengthOf(2);
-      expect(p.segments.getSegments()[0]).to.have.property('startTime', 0);
-      expect(p.segments.getSegments()[0]).to.have.property('endTime', 10);
-      expect(p.segments.getSegments()[1]).to.have.property('startTime', 5);
-      expect(p.segments.getSegments()[1]).to.have.property('endTime', 10);
+      expect(p.segments.getSegments()[0].startTime).to.equal(0);
+      expect(p.segments.getSegments()[0].endTime).to.equal(10);
+      expect(p.segments.getSegments()[1].startTime).to.equal(5);
+      expect(p.segments.getSegments()[1].endTime).to.equal(10);
     });
 
     it('should emit an event with an array containing a single segment object', function(done) {

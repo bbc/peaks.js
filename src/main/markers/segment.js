@@ -65,9 +65,6 @@ define([
     this._editable  = editable;
   }
 
-  /**
-   * Segment instance API
-   */
   Object.defineProperties(Segment.prototype, {
     parent: {
       get: function() {
@@ -84,22 +81,12 @@ define([
       enumerable: true,
       get: function() {
         return this._startTime;
-      },
-      set: function(val) {
-        validateSegment(val, this.endTime, 'startTime');
-        this._startTime = val;
-        this._parent._peaks.emit('segments.update', this);
       }
     },
     endTime: {
       enumerable: true,
       get: function() {
         return this._endTime;
-      },
-      set: function(val) {
-        validateSegment(this.startTime, val, 'endTime');
-        this._endTime = val;
-        this._parent._peaks.emit('segments.update', this);
       }
     },
     labelText: {
@@ -133,6 +120,13 @@ define([
         }
     }
   });
+
+  Segment.prototype.updateTime = function(startTime, endTime) {
+    validateSegment(startTime, endTime, 'updateTime()');
+    this._startTime = startTime;
+    this._endTime = endTime;
+    this._parent._peaks.emit('segments.update', this);
+  };
 
   /**
    * Returns <code>true</code> if the segment overlaps a given time region.
