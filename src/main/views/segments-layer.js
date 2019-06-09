@@ -50,9 +50,24 @@ define([
 
     this._peaks.on('segments.update', function(segment) {
       var segmentGroup = self._segmentGroups[segment.id];
+      var frameOffset = self._view.getFrameOffset();
+      var width = self._view.getWidth();
+      var redraw = false;
+      var frameStartTime = self._view.pixelsToTime(frameOffset);
+      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
 
       if (segmentGroup) {
-        segmentGroup.label.setText(segment.labelText);
+        self._removeSegment(segment);
+        redraw = true;
+      }
+
+      if (segment.isVisible(frameStartTime, frameEndTime)) {
+        self._addSegmentGroup(segment);
+        redraw = true;
+      }
+
+      if (redraw) {
+        self._layer.draw();
       }
     });
 
