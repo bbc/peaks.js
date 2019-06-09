@@ -4,50 +4,46 @@ var Peaks = require('../../src/main');
 var Segment = require('../../src/main/markers/segment');
 
 describe('Segment', function() {
-  var p, deprecationLogger;
+  describe('update()', function() {
+    var p, deprecationLogger;
 
-  beforeEach(function(done) {
-    deprecationLogger = sinon.spy();
-    p = Peaks.init({
-      container: document.getElementById('waveform-visualiser-container'),
-      mediaElement: document.querySelector('audio'),
-      dataUri: {
-        json: 'base/test_data/sample.json'
-      },
-      keyboard: true,
-      height: 240,
-      deprecationLogger: deprecationLogger
+    beforeEach(function(done) {
+      deprecationLogger = sinon.spy();
+      p = Peaks.init({
+        container: document.getElementById('waveform-visualiser-container'),
+        mediaElement: document.querySelector('audio'),
+        dataUri: {
+          json: 'base/test_data/sample.json'
+        },
+        keyboard: true,
+        height: 240,
+        deprecationLogger: deprecationLogger
+      });
+      p.on('peaks.ready', done);
     });
-    p.on('peaks.ready', done);
-  });
 
-  afterEach(function() {
-    if (p) {
-      p.destroy();
-    }
-  });
+    afterEach(function() {
+      if (p) {
+        p.destroy();
+      }
+    });
 
-  describe('labelText', function() {
-    it('should be possible to update programatically', function() {
+    it('should be possible to update all properties programatically', function() {
       p.segments.add({ startTime: 0, endTime: 10, labelText: 'label text' });
 
       var newLabelText = 'new label text';
+      var newStartTime = 2;
+      var newEndTime = 9;
       var segment = p.segments.getSegments()[0];
 
-      segment.labelText = newLabelText;
+      segment.update({
+        startTime: newStartTime,
+        endTime: newEndTime,
+        labelText: newLabelText
+      });
+      expect(segment.startTime).to.equal(newStartTime);
+      expect(segment.endTime).to.equal(newEndTime);
       expect(segment.labelText).to.equal(newLabelText);
-    });
-  });
-
-  describe('time', function() {
-    it('should be possible to update programatically', function() {
-      p.segments.add({ startTime: 0, endTime: 10 });
-
-      var segment = p.segments.getSegments()[0];
-
-      segment.updateTime(2, 4);
-      expect(segment.startTime).to.equal(2);
-      expect(segment.endTime).to.equal(4);
     });
 
     it('should not allow invalid updates', function() {
@@ -56,13 +52,13 @@ describe('Segment', function() {
       var segment = p.segments.getSegments()[0];
 
       expect(function() {
-        segment.updateTime(NaN, 10);
+        segment.update({ startTime: NaN });
       }).to.throw(TypeError);
       expect(function() {
-        segment.updateTime(0, NaN);
+        segment.update({ endTime: NaN });
       }).to.throw(TypeError);
       expect(function() {
-        segment.updateTime(8, 3);
+        segment.update({ startTime: 8, endTime: 3 });
       }).to.throw(RangeError);
     });
   });

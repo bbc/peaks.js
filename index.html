@@ -183,7 +183,7 @@
           window.segmentUpdated = function(i, prop, value) {
             var segments = peaksInstance.segments.getSegments();
             var segment = segments[i];
-            segment[prop] = value;
+            segment.update({[prop]: value});
           };
 
           for (var i = 0; i < segments.length; i++) {
@@ -191,9 +191,9 @@
 
             var row = '<tr>' +
               '<td>' + segment.id + '</td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + segment.labelText + '"></td>' +
-              '<td>' + segment.startTime + '</td>' +
-              '<td>' + segment.endTime + '</td>' +
+              '<td><input oninput="segmentUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + segment.labelText + '" /></td>' +
+              '<td><input oninput="segmentUpdated(' + i + ',\'startTime\',parseInt(this.value))" type="number" value="' + segment.startTime + '" /></td>' +
+              '<td><input oninput="segmentUpdated(' + i + ',\'endTime\',parseInt(this.value))" type="number" value="' + segment.endTime + '" /></td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
               '</tr>';

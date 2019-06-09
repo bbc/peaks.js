@@ -93,38 +93,36 @@ define([
       enumerable: true,
       get: function() {
         return this._labelText;
-      },
-      set: function(val) {
-        this._labelText = val;
-        this._parent._peaks.emit('segments.update', this);
       }
     },
     color: {
       enumerable: true,
       get: function() {
         return this._color;
-      },
-      set: function(val) {
-        this._color = val;
-        this._parent._peaks.emit('segments.update', this);
       }
     },
     editable: {
       enumerable: true,
       get: function() {
         return this._editable;
-      },
-      set: function(val) {
-         this._editable = val;
-         this._parent._peaks.emit('segments.update', this);
-        }
+      }
     }
   });
 
-  Segment.prototype.updateTime = function(startTime, endTime) {
+  Segment.prototype.update = function(options) {
+    var startTime = options.hasOwnProperty('startTime') ? options.startTime : this.startTime;
+    var endTime = options.hasOwnProperty('endTime') ? options.endTime : this.endTime;
+    var labelText = options.hasOwnProperty('labelText') ? options.labelText : this.labelText;
+    var color = options.hasOwnProperty('color') ? options.color : this.color;
+    var editable = options.hasOwnProperty('editable') ? options.editable : this.editable;
+
     validateSegment(startTime, endTime, 'updateTime()');
+
     this._startTime = startTime;
     this._endTime = endTime;
+    this._labelText = labelText;
+    this._color = color;
+    this._editable = editable;
     this._parent._peaks.emit('segments.update', this);
   };
 
