@@ -621,13 +621,13 @@ Updates an existing point. Accepts a single parameter - `options` - with the fol
 
 ```js
 var instance = Peaks.init({ ... });
-instance.segments.add({ ... });
-var segment = instance.segments.getSegments()[0]
-// Or use instance.segments.getSegment(id)
+instance.points.add({ ... });
+var point = instance.points.getPoints()[0]
+// Or use instance.points.getPoint(id)
 
-segment.update({ startTime: 7 });
-segment.update({ startTime: 7, labelText: "new label text" });
-segment.udpate({ startTime: 7, endTime: 9, labelText: 'new label text' });
+point.update({ time: 7 });
+point.update({ time: 7, labelText: "new label text" });
+point.udpate({ time: 7 });
 // etc.
 ```
 
