@@ -627,7 +627,6 @@ var point = instance.points.getPoints()[0]
 
 point.update({ time: 7 });
 point.update({ time: 7, labelText: "new label text" });
-point.udpate({ time: 7 });
 // etc.
 ```
 
