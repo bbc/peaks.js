@@ -11,6 +11,7 @@ declare module 'peaks.js' {
     color?: string;
     labelText?: string;
     id?: string;
+    update: (options: Object) => void;
   }
 
   interface Point {
@@ -19,6 +20,7 @@ declare module 'peaks.js' {
     color?: string;
     labelText?: string;
     id?: string;
+    update: (options: Object) => void;
   }
 
   interface RequiredOptions {
