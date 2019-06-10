@@ -214,7 +214,6 @@
           var html = '';
 
           window.pointUpdated = function(i, prop, value) {
-            console.log(i, prop, value);
             var points = peaksInstance.points.getPoints();
             var segment = points[i];
             point.update({[prop]: value});
