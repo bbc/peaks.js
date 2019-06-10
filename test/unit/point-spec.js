@@ -5,20 +5,15 @@ var Point = require('../../src/main/markers/point');
 
 describe('Point', function() {
   describe('update()', function() {
-    var p, deprecationLogger;
+    var p;
 
     beforeEach(function(done) {
-      deprecationLogger = sinon.spy();
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
-        dataUri: {
-          json: 'base/test_data/sample.json'
-        },
-        keyboard: true,
-        height: 240,
-        deprecationLogger: deprecationLogger
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
+        dataUri: { arraybuffer: 'base/test_data/sample.dat' }
       });
+
       p.on('peaks.ready', done);
     });
 
@@ -39,6 +34,7 @@ describe('Point', function() {
         time: newTime,
         labelText: newLabelText
       });
+
       expect(point.time).to.equal(newTime);
       expect(point.labelText).to.equal(newLabelText);
     });
@@ -51,9 +47,11 @@ describe('Point', function() {
       expect(function() {
         point.update({ time: NaN });
       }).to.throw(TypeError);
+
       expect(function() {
         point.update({ time: -10 });
       }).to.throw(TypeError);
+
       point.update({ labelText: undefined });
       expect(point.labelText).to.equal('');
     });

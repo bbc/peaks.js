@@ -5,20 +5,15 @@ var Segment = require('../../src/main/markers/segment');
 
 describe('Segment', function() {
   describe('update()', function() {
-    var p, deprecationLogger;
+    var p;
 
     beforeEach(function(done) {
-      deprecationLogger = sinon.spy();
       p = Peaks.init({
-        container: document.getElementById('waveform-visualiser-container'),
-        mediaElement: document.querySelector('audio'),
-        dataUri: {
-          json: 'base/test_data/sample.json'
-        },
-        keyboard: true,
-        height: 240,
-        deprecationLogger: deprecationLogger
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
+        dataUri: { arraybuffer: 'base/test_data/sample.dat' }
       });
+
       p.on('peaks.ready', done);
     });
 
@@ -54,9 +49,11 @@ describe('Segment', function() {
       expect(function() {
         segment.update({ startTime: NaN });
       }).to.throw(TypeError);
+
       expect(function() {
         segment.update({ endTime: NaN });
       }).to.throw(TypeError);
+
       expect(function() {
         segment.update({ startTime: 8, endTime: 3 });
       }).to.throw(RangeError);
