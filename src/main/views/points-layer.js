@@ -49,6 +49,20 @@ define([
   PointsLayer.prototype._registerEventHandlers = function() {
     var self = this;
 
+    this._peaks.on('points.update', function(point) {
+      var frameOffset = self._view.getFrameOffset();
+      var width = self._view.getWidth();
+      var frameStartTime = self._view.pixelsToTime(frameOffset);
+      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+
+      self._removePoint(point);
+      if (point.isVisible(frameStartTime, frameEndTime)) {
+        self._addPointGroup(point);
+      }
+
+      self.updatePoints(frameStartTime, frameEndTime);
+    });
+
     this._peaks.on('points.add', function(points) {
       var frameOffset = self._view.getFrameOffset();
       var width = self._view.getWidth();

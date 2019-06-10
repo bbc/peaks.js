@@ -126,32 +126,8 @@ define([
       throw new TypeError('peaks.segments.add(): expected a Segment object parameter');
     }
 
-    if (!Utils.isValidTime(options.startTime)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.add(): startTime should be a valid number');
-    }
-
-    if (!Utils.isValidTime(options.endTime)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.add(): endTime should be a valid number');
-    }
-
-    if (options.startTime < 0) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.add(): startTime should not be negative');
-    }
-
-    if (options.endTime < 0) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.add(): endTime should not be negative');
-    }
-
-    if (options.endTime <= options.startTime) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.add(): endTime should be greater than startTime');
-    }
-
     var segment = new Segment(
+      this,
       Utils.isNullOrUndefined(options.id) ? this._getNextSegmentId() : options.id,
       options.startTime,
       options.endTime,

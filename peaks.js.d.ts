@@ -4,6 +4,15 @@
  */
 
 declare module 'peaks.js' {
+
+  interface SegmentUpdateOptions {
+    startTime?: number;
+    endTime?: number;
+    editable?: boolean;
+    color?: string;
+    labelText?: string;
+  }
+
   interface Segment {
     startTime: number;
     endTime: number;
@@ -11,6 +20,14 @@ declare module 'peaks.js' {
     color?: string;
     labelText?: string;
     id?: string;
+    update: (options: SegmentUpdateOptions) => void;
+  }
+
+  interface PointUpdateOptions {
+    time?: number;
+    labelText?: string;
+    color?: string;
+    editable?: boolean;
   }
 
   interface Point {
@@ -19,6 +36,7 @@ declare module 'peaks.js' {
     color?: string;
     labelText?: string;
     id?: string;
+    update: (options: PointUpdateOptions) => void;
   }
 
   interface RequiredOptions {

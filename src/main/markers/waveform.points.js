@@ -84,25 +84,8 @@ define([
       options.time = options.timestamp;
     }
 
-    if (!Utils.isValidTime(options.time)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.points.add(): time should be a numeric value');
-    }
-
-    if (options.time < 0) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.points.add(): time should not be negative');
-    }
-
-    if (Utils.isNullOrUndefined(options.labelText)) {
-      // Set default label text
-      options.labelText = '';
-    }
-    else if (!Utils.isString(options.labelText)) {
-      throw new TypeError('peaks.points.add(): labelText must be a string');
-    }
-
     var point = new Point(
+      this,
       Utils.isNullOrUndefined(options.id) ? this._getNextPointId() : options.id,
       options.time,
       options.labelText,

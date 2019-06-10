@@ -427,9 +427,9 @@ Adds a segment to the waveform timeline. Accepts the following parameters:
 * `endTime`: the segment end time (seconds)
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
 * `color`: (optional) the segment color. If not specified, the segment is given a default color (see the `segmentColor` and
-`randomizeSegmentColor` [options](#Configuration)).
-* `labelText`: (option) a text label which is displayed when the user hovers the mouse pointer over the segment.
-* `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
+`randomizeSegmentColor` [options](#Configuration))
+* `labelText`: (option) a text label which is displayed when the user hovers the mouse pointer over the segment
+* `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier
 
 ```js
 var instance = Peaks.init({ … });
@@ -503,6 +503,31 @@ var instance = Peaks.init({ … });
 instance.segments.removeAll();
 ```
 
+## Segment API
+A **segment**'s properties can be updated programatically.
+
+### `segment.update({startTime, endTime, labelText, color, editable})`
+
+Updates an existing segment. Accepts a single parameter - `options` - with the following keys:
+
+* `startTime`: (optional) the segment start time (seconds, defaults to current value)
+* `endTime`: (optional)  the segment end time (seconds, defaults to current value)
+* `editable`: (optional) sets whether the segment is user editable (boolean, defaults to current value)
+* `color`: (optional) the segment color (defaults to current value)
+* `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the segment (defaults to current value)
+
+```js
+var instance = Peaks.init({ ... });
+instance.segments.add({ ... });
+var segment = instance.segments.getSegments()[0]
+// Or use instance.segments.getSegment(id)
+
+segment.update({ startTime: 7 });
+segment.update({ startTime: 7, labelText: "new label text" });
+segment.udpate({ startTime: 7, endTime: 9, labelText: 'new label text' });
+// etc.
+```
+
 ## Points API
 
 **Points** give the ability to visually tag points in time of the audio media.
@@ -514,9 +539,9 @@ Adds one or more points to the waveform timeline. Accepts the following paramete
 
 * `time`: the point time (seconds)
 * `editable`: (optional) sets whether the point is user editable (boolean, defaults to `false`)
-* `color`: (optional) the point color. If not specified, the point is given a default color (see the `pointMarkerColor` [option](#Configuration)).
-* `labelText`: (optional) a text label which is displayed next to the segment. If not given, the point's time is displayed.
-* `id`: (optional) the point identifier. If not specified, the point is automatically given a unique identifier.
+* `color`: (optional) the point color. If not specified, the point is given a default color (see the `pointMarkerColor` [option](#Configuration))
+* `labelText`: (optional) a text label which is displayed next to the segment. If not given, the point's time is displayed
+* `id`: (optional) the point identifier. If not specified, the point is automatically given a unique identifier
 
 ```js
 var instance = Peaks.init({ … });
@@ -580,6 +605,29 @@ Removes all points.
 var instance = Peaks.init({ … });
 
 instance.points.removeAll();
+```
+
+## Point API
+A **point**'s properties can be updated programatically.
+
+### `point.update({time, labelText, color, editable})`
+
+Updates an existing point. Accepts a single parameter - `options` - with the following keys:
+
+* `time`: (optional) the point's time (seconds, defaults to current value)
+* `editable`: (optional) sets whether the point is user editable (boolean, defaults to current value)
+* `color`: (optional) the point color (defaults to current value)
+* `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the point (defaults to current value)
+
+```js
+var instance = Peaks.init({ ... });
+instance.points.add({ ... });
+var point = instance.points.getPoints()[0]
+// Or use instance.points.getPoint(id)
+
+point.update({ time: 7 });
+point.update({ time: 7, labelText: "new label text" });
+// etc.
 ```
 
 ## Destruction
