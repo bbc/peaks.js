@@ -39,6 +39,9 @@ Peaks.js can be included in any web page by following these steps:
 <script src="bower_components/requirejs/require.js" data-main="app.js"></script>
 ```
 
+Note that the container `div`s should be left empty, as shown above, as their
+content will be replaced by the waveform view `canvas` elements.
+
 ## Start using AMD and [require.js](http://requirejs.org/)
 
 AMD modules work out of the box without any optimiser.
