@@ -175,6 +175,18 @@
           console.log('peaks.ready');
         });
 
+        peaksInstance.on('segments.mouseenter', function(segment) {
+          console.log('segments.mouseenter event triggered', segment);
+        });
+
+        peaksInstance.on('segments.mouseleave', function(segment) {
+          console.log('segments.mouseleave event triggered', segment);
+        });
+        
+        peaksInstance.on('segments.click', function(segment) {
+          console.log('segments.click event triggered', segment);
+        });        
+
         var renderSegments = function(peaks) {
           var segmentsContainer = document.getElementById('segments');
           var segments = peaks.segments.getSegments();
