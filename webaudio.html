@@ -234,7 +234,7 @@
 
           var audioElement = document.getElementById('audio');
 
-          var peaksInstance = Peaks.init({
+          var options = {
             containers: {
               zoomview: document.getElementById('zoomview-container'),
               overview: document.getElementById('overview-container')
@@ -247,94 +247,94 @@
             waveformBuilderOptions: {
               scale: 128,
               amplitudeScale: 1.0
-            }
-            // zoomLevels: [64, 256, 512, 1024, 2048, 4096]
-          });
+            },
+            zoomLevels: [128, 256, 512, 1024, 2048, 4096]
+          };
 
-          peaksInstance.on('peaks.ready', function() {
-            console.log('peaks.ready');
-          });
+          Peaks.init(options, function(err, peaksInstance) {
+            console.log('Peaks instance ready');
 
-          document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
-            peaksInstance.zoom.zoomIn();
-          });
-
-          document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
-            peaksInstance.zoom.zoomOut();
-          });
-
-          document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
-            peaksInstance.segments.add({
-              startTime: peaksInstance.player.getCurrentTime(),
-              endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: "Test segment",
-              editable: true
+            document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
+              peaksInstance.zoom.zoomIn();
             });
-          });
 
-          document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
-            peaksInstance.points.add({
-              time: peaksInstance.player.getCurrentTime(),
-              labelText: "Test point",
-              editable: true
+            document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
+              peaksInstance.zoom.zoomOut();
             });
-          });
 
-          document.querySelector('button[data-action="log-data"]').addEventListener('click', function(event) {
-            renderSegments(peaksInstance);
-            renderPoints(peaksInstance);
-          });
+            document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
+              peaksInstance.segments.add({
+                startTime: peaksInstance.player.getCurrentTime(),
+                endTime: peaksInstance.player.getCurrentTime() + 10,
+                labelText: "Test segment",
+                editable: true
+              });
+            });
 
-          document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
-            var time = document.getElementById('seek-time').value;
-            var seconds = parseFloat(time);
+            document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
+              peaksInstance.points.add({
+                time: peaksInstance.player.getCurrentTime(),
+                labelText: "Test point",
+                editable: true
+              });
+            });
 
-            if (!Number.isNaN(seconds)) {
-              peaksInstance.player.seek(seconds);
-            }
-          });
+            document.querySelector('button[data-action="log-data"]').addEventListener('click', function(event) {
+              renderSegments(peaksInstance);
+              renderPoints(peaksInstance);
+            });
 
-          document.querySelector('body').addEventListener('click', function(event) {
-            var element = event.target;
-            var action  = element.getAttribute('data-action');
-            var id      = element.getAttribute('data-id');
+            document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
+              var time = document.getElementById('seek-time').value;
+              var seconds = parseFloat(time);
 
-            if (action === 'play-segment') {
-              var segment = peaksInstance.segments.getSegment(id);
-              peaksInstance.player.playSegment(segment);
-            }
-            else if (action === 'remove-point') {
-              peaksInstance.points.removeById(id);
-            }
-            else if (action === 'remove-segment') {
-              peaksInstance.segments.removeById(id);
-            }
-          });
+              if (!Number.isNaN(seconds)) {
+                peaksInstance.player.seek(seconds);
+              }
+            });
 
-          // Points mouse events
+            document.querySelector('body').addEventListener('click', function(event) {
+              var element = event.target;
+              var action  = element.getAttribute('data-action');
+              var id      = element.getAttribute('data-id');
 
-          peaksInstance.on('points.mouseenter', function(point) {
-            console.log('points.mouseenter:', point);
-          });
+              if (action === 'play-segment') {
+                var segment = peaksInstance.segments.getSegment(id);
+                peaksInstance.player.playSegment(segment);
+              }
+              else if (action === 'remove-point') {
+                peaksInstance.points.removeById(id);
+              }
+              else if (action === 'remove-segment') {
+                peaksInstance.segments.removeById(id);
+              }
+            });
 
-          peaksInstance.on('points.mouseleave', function(point) {
-            console.log('points.mouseleave:', point);
-          });
+            // Points mouse events
 
-          peaksInstance.on('points.dblclick', function(point) {
-            console.log('points.dblclick:', point);
-          });
+            peaksInstance.on('points.mouseenter', function(point) {
+              console.log('points.mouseenter:', point);
+            });
 
-          peaksInstance.on('points.dragstart', function(point) {
-            console.log('points.dragstart:', point);
-          });
+            peaksInstance.on('points.mouseleave', function(point) {
+              console.log('points.mouseleave:', point);
+            });
 
-          peaksInstance.on('points.dragmove', function(point) {
-            console.log('points.dragmove:', point);
-          });
+            peaksInstance.on('points.dblclick', function(point) {
+              console.log('points.dblclick:', point);
+            });
 
-          peaksInstance.on('points.dragend', function(point) {
-            console.log('points.dragend:', point);
+            peaksInstance.on('points.dragstart', function(point) {
+              console.log('points.dragstart:', point);
+            });
+
+            peaksInstance.on('points.dragmove', function(point) {
+              console.log('points.dragmove:', point);
+            });
+
+            peaksInstance.on('points.dragend', function(point) {
+              console.log('points.dragend:', point);
+            });
           });
         });
       })(peaks);

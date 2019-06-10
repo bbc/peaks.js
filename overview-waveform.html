@@ -101,7 +101,7 @@
     <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
-        var peaksInstance = Peaks.init({
+        var options = {
           containers: {
             overview: document.getElementById('overview-container')
           },
@@ -113,19 +113,19 @@
           keyboard: true,
           pointMarkerColor: '#006eb0',
           showPlayheadTime: true
-        });
+        };
 
-        peaksInstance.on('peaks.ready', function() {
-          console.log('peaks.ready');
-        });
+        Peaks.init(options, function(err, peaksInstance) {
+          console.log('Peaks instance ready');
 
-        document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
-          var time = document.getElementById('seek-time').value;
-          var seconds = parseFloat(time);
+          document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
+            var time = document.getElementById('seek-time').value;
+            var seconds = parseFloat(time);
 
-          if (!Number.isNaN(seconds)) {
-            peaksInstance.player.seek(seconds);
-          }
+            if (!Number.isNaN(seconds)) {
+              peaksInstance.player.seek(seconds);
+            }
+          });
         });
       })(peaks);
     </script>

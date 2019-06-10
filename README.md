@@ -57,17 +57,17 @@ requirejs.config({
 
 // require it
 require(['peaks'], function(Peaks) {
-  var p = Peaks.init({
+  const options = {
     containers: {
       overview: document.getElementById('overview-container'),
       zoomview: document.getElementById('zoomview-container')
     }
     mediaElement: document.querySelector('audio'),
     dataUri: 'test_data/sample.json'
-  });
+  };
 
-  p.on('peaks.ready', function() {
-    // do something when the waveform is displayed and ready
+  Peaks.init(options, function(err, peaks) {
+    // Do something when the waveform is displayed and ready.
   });
 });
 ```
@@ -87,7 +87,11 @@ This works well with systems such as [Meteor](https://www.meteor.com/), [webpack
 ```js
 import Peaks from 'peaks.js';
 
-const p = Peaks.init({ … });
+const options = { ... };
+
+Peaks.init(options, function(err, peaks) {
+  // ...
+});
 ```
 
 ## Start using CommonJS module loader
@@ -97,7 +101,11 @@ This works well with systems such as [Meteor](https://www.meteor.com/), [webpack
 ```js
 var Peaks = require('peaks.js');
 
-var p = Peaks.init({ … });
+const options = { ... };
+
+Peaks.init(options, function(err, peaks) {
+  // ...
+});
 ```
 
 ## Start using vanilla JavaScript
@@ -106,7 +114,11 @@ var p = Peaks.init({ … });
 <script src="node_modules/peaks.js/peaks.js"></script>
 <script>
 (function(Peaks) {
-  var p = Peaks.init({ … });
+  const options = { ... };
+
+  Peaks.init(options, function(err, peaks) {
+    // ...
+  });
 })(peaks);
 </script>
 ```
@@ -138,19 +150,19 @@ Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generat
 To use Web Audio, omit the `dataUri` option and make sure you pass in a valid `AudioContext` instance as the `audioContext` option. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
-var myAudioContext = new AudioContext();
+const myAudioContext = new AudioContext();
 
-var p = Peaks.init({
+const options = {
   containers: {
     overview: document.getElementById('overview-waveform'),
     zoomview: document.getElementById('zoomview-waveform')
   },
   mediaElement: document.querySelector('audio'),
   audioContext: myAudioContext
-});
+};
 
-p.on('peaks.ready', function() {
-  // do something when the waveform is displayed and ready
+Peaks.init(options, function(err, peaks) {
+  // Do something when the waveform is displayed and ready
 });
 ```
 
@@ -303,13 +315,28 @@ and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
 
 The top level `Peaks` object exposes a factory function to create new `Peaks` instances.
 
-### `Peaks.init(options)`
+### `Peaks.init(options, callback)`
 
-Returns a new `Peaks` instance with the [assigned options](#Configuration). You can create and manage several `Peaks` instances within a single page with one or several configurations.
+Returns a new `Peaks` instance with the [assigned options](#Configuration).
+The callback is invoked after the instance has been created and initialised.
+You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
 ```js
-var instance = Peaks.init({ … });
-var anotherInstance = Peaks.init({ … });
+const options = { ... };
+
+Peaks.init(options, function(err, peaks) {
+  console.log(peaks.player.getCurrentTime());
+});
+```
+
+For backwards compatibility, you can still create a new `Peaks` instance using:
+
+```js
+const peaks = Peaks.init({ ... });
+
+peaks.on('ready', function() {
+  console.log(peaks.player.getCurrentTime());
+});
 ```
 
 ## Player API
@@ -319,9 +346,7 @@ var anotherInstance = Peaks.init({ … });
 Starts media playback, from the current time position.
 
 ```js
-var instance = Peaks.init({ … });
-
-console.log(instance.player.play());
+instance.player.play();
 ```
 
 ### `instance.player.pause()`
@@ -329,9 +354,7 @@ console.log(instance.player.play());
 Pauses media playback.
 
 ```js
-var instance = Peaks.init({ … });
-
-console.log(instance.player.pause());
+instance.player.pause();
 ```
 
 ### `instance.player.getCurrentTime()`
@@ -339,9 +362,7 @@ console.log(instance.player.pause());
 Returns the current time from the associated media element, in seconds.
 
 ```js
-var instance = Peaks.init({ … });
-
-console.log(instance.player.getCurrentTime()); // -> 0
+const time = instance.player.getCurrentTime();
 ```
 
 ### `instance.player.getDuration()`
@@ -349,9 +370,7 @@ console.log(instance.player.getCurrentTime()); // -> 0
 Returns the duration of the media, in seconds.
 
 ```js
-var instance = Peaks.init({ … });
-
-console.log(instance.player.getDuration());
+const duration = instance.player.getDuration();
 ```
 
 ### `instance.player.seek(time)`
@@ -359,10 +378,8 @@ console.log(instance.player.getDuration());
 Seeks the media element to the given time, in seconds.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.player.seek(5.85);
-console.log(instance.player.getCurrentTime()); // -> 5.85
+const time = instance.player.getCurrentTime();
 ```
 
 ### `instance.player.playSegment(segment)`
@@ -370,9 +387,7 @@ console.log(instance.player.getCurrentTime()); // -> 5.85
 Plays a given segment of the media.
 
 ```js
-var instance = Peaks.init({ … });
-
-var segment = instance.segments.add({
+const segment = instance.segments.add({
   startTime: 5.0,
   endTime: 15.0,
   editable: true
@@ -387,6 +402,8 @@ instance.player.playSegment(segment);
 ### `instance.zoom.zoomOut()`
 
 Zooms in the waveform zoom view by one level.
+
+Assuming the Peaks instance has been created with zoom levels: 512, 1024, 2048, 4096
 
 ```js
 var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
@@ -447,17 +464,13 @@ Adds a segment to the waveform timeline. Accepts the following parameters:
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier.
 
 ```js
-var instance = Peaks.init({ … });
-
 // Add non-editable segment, from 0 to 10.5 seconds, with a random color
-instance.segments.add({startTime: 0, endTime: 10.5});
+instance.segments.add({ startTime: 0, endTime: 10.5 });
 ```
 
 Alternatively, provide an array of segment objects to add all those segments at once.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.segments.add([
   {
     startTime: 0,
@@ -476,9 +489,17 @@ instance.segments.add([
 
 Returns an array of all segments present on the timeline.
 
+```js
+const segments = instance.segments.getSegments();
+```
+
 ### `instance.segments.getSegment(id)`
 
 Returns the segment with the given id, or `null` if not found.
+
+```js
+const segment = instance.segments.getSegment('peaks.segment.3');
+```
 
 ### `instance.segments.removeByTime(startTime[, endTime])`
 
@@ -487,14 +508,15 @@ Removes any segment which starts at `startTime` (seconds), and which optionally 
 The return value indicates the number of deleted segments.
 
 ```js
-var instance = Peaks.init({ … });
+instance.segments.add([
+  { startTime: 10, endTime: 12 },
+  { startTime: 10, endTime: 20 }
+]);
 
-instance.segments.add([{ startTime: 10, endTime: 12 }, { startTime: 10, endTime: 20 }]);
-
-// remove both segments as they start at `10`
+// Remove both segments as they start at `10`
 instance.segments.removeByTime(10);
 
-// remove only the first segment
+// Remove only the first segment
 instance.segments.removeByTime(10, 12);
 ```
 
@@ -503,8 +525,6 @@ instance.segments.removeByTime(10, 12);
 Removes segments with the given identifier.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.segments.removeById('peaks.segment.3');
 ```
 
@@ -513,8 +533,6 @@ instance.segments.removeById('peaks.segment.3');
 Removes all segments.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.segments.removeAll();
 ```
 
@@ -534,8 +552,6 @@ Adds one or more points to the waveform timeline. Accepts the following paramete
 * `id`: (optional) the point identifier. If not specified, the point is automatically given a unique identifier.
 
 ```js
-var instance = Peaks.init({ … });
-
 // Add non-editable point, with a random color
 instance.points.add({ time: 3.5 });
 ```
@@ -543,8 +559,6 @@ instance.points.add({ time: 3.5 });
 Alternatively, provide an array of point objects to add several at once.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.points.add([
   {
     time: 3.5,
@@ -563,17 +577,23 @@ instance.points.add([
 
 Returns an array of all points present on the timeline.
 
+```js
+const points = instance.points.getPoints();
+```
+
 ### `instance.points.getPoint(id)`
 
 Returns the point with the given id, or `null` if not found.
+
+```js
+const point = instance.points.getPoint('peaks.point.3');
+```
 
 ### `instance.points.removeByTime(time)`
 
 Removes any point at the given `time` (seconds).
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.points.removeByTime(10);
 ```
 
@@ -582,8 +602,6 @@ instance.points.removeByTime(10);
 Removes points with the given identifier.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.points.removeById('peaks.point.3');
 ```
 
@@ -592,8 +610,6 @@ instance.points.removeById('peaks.point.3');
 Removes all points.
 
 ```js
-var instance = Peaks.init({ … });
-
 instance.points.removeAll();
 ```
 
@@ -604,9 +620,6 @@ instance.points.removeAll();
 Releases resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
 
 ```js
-var instance = Peaks.init({ … });
-
-// later:
 instance.destroy();
 ```
 
@@ -614,20 +627,11 @@ instance.destroy();
 
 Peaks instances emit events to enable you to extend its behaviour according to your needs.
 
-### General
-
-| Event name                | Arguments       |
-| ------------------------- | --------------- |
-| `error`                   | `Error err`     |
-
 ### Media / User interactions
 
-| Event name                    | Arguments     |
-| ----------------------------- | ------------- |
-| `peaks.ready`                 | (none)        |
-| `segments.ready` (deprecated) | (none)        |
-| `user_seek.overview`          | `Number time` |
-| `user_seek.zoomview`          | `Number time` |
+| Event name    | Arguments |
+| ------------- | --------- |
+| `peaks.ready` | (none)    |
 
 ### Waveforms
 

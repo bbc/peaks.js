@@ -43,6 +43,102 @@ describe('Peaks', function() {
           readyHandler();
         });
       });
+
+      it('should invoke callback when initialised', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+        },
+        function(err, instance) {
+          expect(err).to.equal(null);
+          expect(instance).to.be.an.instanceOf(Peaks);
+          instance.destroy();
+          done();
+        });
+      });
+
+      context('with containers option', function() {
+        var overviewContainer;
+        var zoomviewContainer;
+
+        beforeEach(function() {
+          overviewContainer = document.createElement('div');
+          overviewContainer.style.width = '400px';
+          overviewContainer.style.height = '100px';
+          document.body.appendChild(overviewContainer);
+
+          zoomviewContainer = document.createElement('div');
+          zoomviewContainer.style.width = '400px';
+          zoomviewContainer.style.height = '100px';
+          document.body.appendChild(zoomviewContainer);
+        });
+
+        afterEach(function() {
+          document.body.removeChild(overviewContainer);
+          document.body.removeChild(zoomviewContainer);
+        });
+
+        it('should construct a Peaks object with overview and zoomable waveforms', function(done) {
+          p = Peaks.init({
+            containers: {
+              overview: overviewContainer,
+              zoomview: zoomviewContainer
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+          });
+
+          expect(p).to.be.an.instanceof(Peaks);
+
+          p.on('peaks.ready', function() {
+            done();
+          });
+        });
+
+        it('should construct a Peaks object with an overview waveform only', function(done) {
+          p = Peaks.init({
+            containers: {
+              overview: overviewContainer
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+          });
+
+          expect(p).to.be.an.instanceof(Peaks);
+
+          p.on('peaks.ready', function() {
+            done();
+          });
+        });
+
+        it('should construct a Peaks object with a zoomable waveform only', function(done) {
+          p = Peaks.init({
+            containers: {
+              zoomview: zoomviewContainer
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+          });
+
+          expect(p).to.be.an.instanceof(Peaks);
+
+          p.on('peaks.ready', function() {
+            done();
+          });
+        });
+
+        it('should throw an error if no containers are given', function() {
+          expect(function() {
+            p = Peaks.init({
+              containers: {
+              },
+              mediaElement: document.getElementById('media'),
+              dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            });
+          }).to.throw(/must be valid HTML elements/);
+        });
+      });
     });
 
     context('with invalid options', function() {
@@ -136,24 +232,6 @@ describe('Peaks', function() {
         }).to.throw(/logger/);
       });
 
-      it('should report errors to a configurable logger', function(done) {
-        var logger = sinon.spy();
-
-        p = Peaks.init({
-          container: document.getElementById('container'),
-          mediaElement: document.getElementById('media'),
-          dataUri: 'base/test_data/sample.json',
-          logger: logger
-        });
-
-        p.emit('error', new Error('Expected to be logged.'));
-
-        setTimeout(function() {
-          expect(p.logger).to.have.been.calledOnce;
-          done();
-        }, 0);
-      });
-
       it('should throw an exception if the zoomLevels option is missing', function() {
         expect(function() {
           Peaks.init({
@@ -189,107 +267,9 @@ describe('Peaks', function() {
     });
   });
 
-  describe('constructor', function() {
-    context('with valid options', function() {
-      it('should construct a Peaks object', function(done) {
-        p = new Peaks({
-          container: document.getElementById('container'),
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
-        });
-
-        expect(p).to.be.an.instanceof(Peaks);
-
-        p.on('peaks.ready', function() {
-          done();
-        });
-      });
-    });
-
-    context('with containers option', function() {
-      var overviewContainer;
-      var zoomviewContainer;
-
-      beforeEach(function() {
-        overviewContainer = document.createElement('div');
-        overviewContainer.style.width = '400px';
-        overviewContainer.style.height = '100px';
-        document.body.appendChild(overviewContainer);
-
-        zoomviewContainer = document.createElement('div');
-        zoomviewContainer.style.width = '400px';
-        zoomviewContainer.style.height = '100px';
-        document.body.appendChild(zoomviewContainer);
-      });
-
-      it('should construct a Peaks object with overview and zoomable waveforms', function(done) {
-        p = new Peaks({
-          containers: {
-            overview: overviewContainer,
-            zoomview: zoomviewContainer
-          },
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
-        });
-
-        expect(p).to.be.an.instanceof(Peaks);
-
-        p.on('peaks.ready', function() {
-          done();
-        });
-      });
-
-      it('should construct a Peaks object with an overview waveform only', function(done) {
-        p = new Peaks({
-          containers: {
-            overview: overviewContainer
-          },
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
-        });
-
-        expect(p).to.be.an.instanceof(Peaks);
-
-        p.on('peaks.ready', function() {
-          done();
-        });
-      });
-
-      it('should construct a Peaks object with a zoomable waveform only', function(done) {
-        p = new Peaks({
-          containers: {
-            zoomview: zoomviewContainer
-          },
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
-        });
-
-        expect(p).to.be.an.instanceof(Peaks);
-
-        p.on('peaks.ready', function() {
-          done();
-        });
-      });
-
-      it('should throw an error if no containers are given', function() {
-        expect(function() {
-          p = new Peaks({
-              containers: {
-            },
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
-          });
-        }).to.throw(/must be valid HTML elements/);
-      });
-    });
-  });
-
   describe('destroy', function() {
-    var container;
-
     it('should clean up event listeners', function(done) {
       var errorSpy = sinon.spy().named('window.onerror');
-      var resizeSpy = sinon.spy().named('window_resized');
       var oldOnError = window.onerror;
       window.onerror = errorSpy;
 
@@ -299,9 +279,7 @@ describe('Peaks', function() {
         audioContext: new TestAudioContext()
       });
 
-      p.on('window_resized', resizeSpy);
-
-      p.on('waveform_ready.overview', function() {
+      p.on('peaks.ready', function() {
         // Give peaks chance to bind its resize listener:
         setTimeout(function() {
           p.destroy();
@@ -314,7 +292,6 @@ describe('Peaks', function() {
           // Our resize handler is asynchronously throttled, so give it a little time to settle.
           setTimeout(function() {
             window.onerror = oldOnError;
-            expect(resizeSpy).to.not.have.been.called;
             expect(errorSpy).to.not.have.been.called;
             done();
           }, 600);
@@ -332,183 +309,6 @@ describe('Peaks', function() {
       p.on('peaks.ready', function() {
         p.destroy();
         p.destroy();
-        done();
-      });
-    });
-  });
-
-  describe('core#getRemoteData', function() {
-    it('should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: 'base/test_data/sample.json'
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-
-      p.on('peaks.ready', function() {
-        var xhr = spy.getCall(0).args[1];
-
-        expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
-
-        done();
-      });
-    });
-
-    it('should emit an error if the data handling fails', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: 'base/test_data/404-file.json'
-      });
-
-      p.on('error', function(err) {
-        done();
-      });
-    });
-
-    it('should emit an error if the data handling fails due to a network error', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: 'file:///test.json'
-      });
-
-      p.on('error', function(err) {
-        expect(err).to.be.an.instanceof(Error);
-        expect(err.message).to.equal('XHR Failed');
-        done();
-      });
-    });
-
-    it('should use the JSON dataUri connector', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: {
-          json: 'base/test_data/sample.json'
-        }
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-
-      p.on('peaks.ready', function() {
-        var xhr = spy.getCall(0).args[1];
-
-        expect(xhr.getResponseHeader('content-type')).to.equal('application/json');
-
-        done();
-      });
-    });
-
-    it('should not use credentials if withCredentials is not set', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: {
-          json: 'base/test_data/sample.json'
-        }
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-
-      p.on('peaks.ready', function() {
-        var xhr = spy.getCall(0).args[1];
-
-        expect(xhr.withCredentials).to.equal(false);
-
-        done();
-      });
-    });
-
-    it('should use credentials if withCredentials is set', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        withCredentials: true,
-        dataUri: {
-          json: 'base/test_data/sample.json'
-        }
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-
-      p.on('peaks.ready', function() {
-        var xhr = spy.getCall(0).args[1];
-
-        expect(xhr.withCredentials).to.equal(true);
-
-        done();
-      });
-    });
-
-    ('ArrayBuffer' in window) && it('should use the arraybuffer dataUri connector or fail if not available', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: {
-          arraybuffer: 'base/test_data/sample.dat'
-        }
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-
-      p.on('peaks.ready', function() {
-        var xhr = spy.getCall(0).args[1];
-
-        expect(xhr.getResponseHeader('content-type')).to.equal('application/octet-stream');
-
-        done();
-      });
-    });
-
-    !('ArrayBuffer' in window) && it('should throw an exception if the only available format is browser incompatible', function() {
-      expect(function() {
-        Peaks.init({
-          container: document.getElementById('container'),
-          mediaElement: document.getElementById('media'),
-          dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
-          }
-        });
-      }).to.throw();
-    });
-
-    it('should pick the arraybuffer format over the JSON one', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        dataUri: {
-          arraybuffer: 'base/test_data/sample.dat',
-          json: 'base/test_data/sample.json'
-        }
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-      var expectedContentType = window.ArrayBuffer ? 'application/octet-stream' : 'application/json';
-
-      p.on('peaks.ready', function() {
-        var xhr = spy.getCall(0).args[1];
-
-        expect(xhr.getResponseHeader('content-type')).to.equal(expectedContentType);
-
-        done();
-      });
-    });
-
-    ('AudioBuffer' in window) && it('should build using WebAudio if the API is available and no dataUri is provided', function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
-        mediaElement: document.getElementById('media'),
-        audioContext: new TestAudioContext()
-      });
-
-      var spy = sinon.spy(p.waveform, '_handleRemoteData');
-
-      p.on('peaks.ready', function() {
-        expect(spy).to.have.been.calledOnce;
-
         done();
       });
     });

@@ -95,7 +95,7 @@ define([
 
         self._playheadLayer.updatePlayheadTime(time);
 
-        self.peaks.emit('user_seek', time);
+        self.peaks.player.seek(time);
       },
 
       onMouseMove: function(mousePosX) {
@@ -107,7 +107,7 @@ define([
         // than if we only use the player_time_update event.
         self._playheadLayer.updatePlayheadTime(time);
 
-        self.peaks.emit('user_seek', time);
+        self.peaks.player.seek(time);
       }
     });
 
@@ -153,8 +153,6 @@ define([
         }, 500);
       }
     });
-
-    peaks.emit('waveform_ready.overview', this);
   }
 
   /**
@@ -283,7 +281,12 @@ define([
 
     this._playheadLayer.updatePlayheadTime(playheadTime);
 
-    this._updateHighlightRect(this._highlightRectStartTime, this._highlightRectEndTime);
+    if (this._highlightRect) {
+      this._updateHighlightRect(
+        this._highlightRectStartTime,
+        this._highlightRectEndTime
+      );
+    }
 
     var frameStartTime = 0;
     var frameEndTime   = this.pixelsToTime(this.width);

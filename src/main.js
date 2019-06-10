@@ -12,9 +12,10 @@ define('peaks', [
   'peaks/markers/waveform.points',
   'peaks/markers/waveform.segments',
   'peaks/player/player',
+  'peaks/views/view-controller',
   'peaks/views/waveform.timecontroller',
   'peaks/views/waveform.zoomcontroller',
-  'peaks/waveform/waveform.core',
+  'peaks/waveform/waveform-builder',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
   'peaks/player/player.keyboard'
@@ -24,9 +25,10 @@ define('peaks', [
     WaveformPoints,
     WaveformSegments,
     Player,
+    ViewController,
     TimeController,
     ZoomController,
-    Waveform,
+    WaveformBuilder,
     mixins,
     Utils,
     KeyboardHandler) {
@@ -41,7 +43,7 @@ define('peaks', [
   }
 
   /**
-   * Creates and initialises a new Peaks instance with the given options.
+   * Initialises a new Peaks instance with default option settings.
    *
    * @class
    * @alias Peaks
@@ -49,10 +51,8 @@ define('peaks', [
    * @param {Object} opts Configuration options
    */
 
-  function Peaks(opts) {
+  function Peaks() {
     EventEmitter.call(this, { wildcard: true });
-
-    opts = opts || {};
 
     this.options = {
 
@@ -254,6 +254,122 @@ define('peaks', [
     // eslint-disable-next-line no-console
     this.logger = console.error.bind(console);
 
+    return this;
+  }
+
+  Peaks.prototype = Object.create(EventEmitter.prototype);
+
+  /**
+   * Creates and initialises a new Peaks instance with the given options.
+   *
+   * @param {Object} opts Configuration options
+   *
+   * @return {Peaks}
+   */
+
+  Peaks.init = function(opts, callback) {
+    var instance = new Peaks();
+
+    opts = opts || {};
+
+    instance._setOptions(opts);
+
+    /*
+     Setup the layout
+     */
+
+    var containers = null;
+
+    if (typeof instance.options.template === 'string') {
+      opts.container.innerHTML = instance.options.template;
+
+      containers = buildUi(instance.options.container);
+    }
+    else if (Utils.isHTMLElement(instance.options.template)) {
+      this.container.appendChild(instance.options.template);
+
+      containers = buildUi(instance.options.container);
+    }
+    else if (instance.options.containers) {
+      containers = instance.options.containers;
+    }
+    else {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object');
+    }
+
+    var zoomviewContainer = containers.zoomview || containers.zoom;
+
+    if (!Utils.isHTMLElement(zoomviewContainer) &&
+        !Utils.isHTMLElement(containers.overview)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements');
+    }
+
+    if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width');
+    }
+
+    if (containers.overview && containers.overview.clientWidth <= 0) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width');
+    }
+
+    if (instance.options.keyboard) {
+      instance.keyboardHandler = new KeyboardHandler(self);
+    }
+
+    instance.player = new Player(instance, instance.options.mediaElement);
+    instance.segments = new WaveformSegments(instance);
+    instance.points = new WaveformPoints(instance);
+    instance.zoom = new ZoomController(instance, instance.options.zoomLevels);
+    instance.time = new TimeController(instance);
+    instance.views = new ViewController(instance);
+
+    // Setup the UI components
+    var waveformBuilder = new WaveformBuilder(instance);
+
+    waveformBuilder.init(instance.options, function(err, waveformData) {
+      if (err) {
+        if (callback) {
+          callback(err);
+        }
+        return;
+      }
+
+      if (containers.overview) {
+        instance.views.createOverview(waveformData, containers.overview);
+      }
+
+      if (zoomviewContainer) {
+        instance.views.createZoomview(waveformData, zoomviewContainer);
+      }
+
+      instance._addWindowResizeHandler();
+
+      if (instance.options.segments) {
+        instance.segments.add(instance.options.segments);
+      }
+
+      if (instance.options.points) {
+        instance.points.add(instance.options.points);
+      }
+
+      // TODO: Deprecated, use peaks.ready instead.
+      instance.emit('segments.ready');
+
+      instance.emit('peaks.ready');
+
+      if (callback) {
+        callback(null, instance);
+      }
+    });
+
+    return instance;
+  };
+
+  Peaks.prototype._setOptions = function(opts) {
     // eslint-disable-next-line no-console
     opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
 
@@ -293,6 +409,16 @@ define('peaks', [
       throw new TypeError('Peaks.init(): The logger option should be a function');
     }
 
+    if (opts.segments && !Array.isArray(opts.segments)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): options.segments must be an array of segment objects');
+    }
+
+    if (opts.points && !Array.isArray(opts.points)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Peaks.init(): options.points must be an array of point objects');
+    }
+
     Utils.extend(this.options, opts);
     Utils.extend(this.options, {
       createSegmentMarker: mixins.createSegmentMarker,
@@ -328,116 +454,35 @@ define('peaks', [
     if (opts.logger) {
       this.logger = opts.logger;
     }
-
-    this.on('error', this.logger.bind(null));
-
-    /*
-     Setup the layout
-     */
-
-    var containers = null;
-
-    if (typeof this.options.template === 'string') {
-      opts.container.innerHTML = this.options.template;
-
-      containers = buildUi(this.options.container);
-    }
-    else if (Utils.isHTMLElement(this.options.template)) {
-      this.container.appendChild(this.options.template);
-
-      containers = buildUi(this.options.container);
-    }
-    else if (this.options.containers) {
-      containers = this.options.containers;
-    }
-    else {
-      // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object');
-    }
-
-    var zoomviewContainer = containers.zoomview || containers.zoom;
-
-    if (!Utils.isHTMLElement(zoomviewContainer) &&
-        !Utils.isHTMLElement(containers.overview)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements');
-    }
-
-    if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width');
-    }
-
-    if (containers.overview && containers.overview.clientWidth <= 0) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width');
-    }
-
-    if (this.options.keyboard) {
-      this.keyboardHandler = new KeyboardHandler(this);
-    }
-
-    this.player = new Player(this, this.options.mediaElement);
-
-    this.segments = new WaveformSegments(this);
-    this.points = new WaveformPoints(this);
-
-    /*
-     Setup the UI components
-     */
-    this.waveform = new Waveform(this);
-    this.waveform.init(containers);
-
-    this.zoom = new ZoomController(this, this.options.zoomLevels);
-    this.time = new TimeController(this);
-
-    var self = this;
-
-    this.on('peaks.ready', function() {
-      if (self.options.segments) {
-        if (!Array.isArray(self.options.segments)) {
-          // eslint-disable-next-line max-len
-          throw new TypeError('Peaks.init(): options.segments must be an array of segment objects');
-        }
-
-        self.segments.add(self.options.segments);
-      }
-
-      if (self.options.points) {
-        if (!Array.isArray(self.options.points)) {
-          // eslint-disable-next-line max-len
-          throw new TypeError('Peaks.init(): options.points must be an array of point objects');
-        }
-
-        self.points.add(self.options.points);
-      }
-    });
-
-    return this;
-  }
-
-  /**
-   * Creates and initialises a new Peaks instance with the given options.
-   *
-   * @param {Object} opts Configuration options
-   *
-   * @return {Peaks}
-   */
-
-  Peaks.init = function(opts) {
-    return new Peaks(opts);
   };
 
-  Peaks.prototype = Object.create(EventEmitter.prototype);
+  Peaks.prototype._addWindowResizeHandler = function() {
+    this._onResize = this._onResize.bind(this);
+    window.addEventListener('resize', this._onResize);
+  };
+
+  Peaks.prototype._onResize = function() {
+    this.emit('window_resize');
+  };
+
+  Peaks.prototype._removeWindowResizeHandler = function() {
+    window.removeEventListener('resize', this._onResize);
+  };
 
   /**
    * Cleans up a Peaks instance after use.
    */
 
   Peaks.prototype.destroy = function() {
-    this.removeAllListeners();
-    this.waveform.destroy();
-    this.player.destroy();
+    this._removeWindowResizeHandler();
+
+    if (this.views) {
+      this.views.destroy();
+    }
+
+    if (this.player) {
+      this.player.destroy();
+    }
   };
 
   return Peaks;

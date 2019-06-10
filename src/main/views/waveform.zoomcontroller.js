@@ -83,29 +83,5 @@ define([], function() {
     return this._zoomLevelIndex;
   };
 
-  /**
-   * Sets the zoom level to an overview level.
-   */
-
-  ZoomController.prototype.overview = function zoomToOverview() {
-    this._peaks.emit(
-      'zoom.update',
-      this.peaks.waveform.waveformOverview.data.adapter.scale,
-      this._zoomLevels[this._zoomLevelIndex]
-    );
-  };
-
-  /**
-   * Sets the zoom level to an overview level.
-   */
-
-  ZoomController.prototype.reset = function resetOverview() {
-    this._peaks.emit(
-      'zoom.update',
-      this._zoomLevels[this._zoomLevelIndex],
-      this._peaks.waveform.waveformOverview.data.adapter.scale
-    );
-  };
-
   return ZoomController;
 });

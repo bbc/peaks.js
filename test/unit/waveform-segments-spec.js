@@ -27,7 +27,11 @@ describe('SegmentsLayer', function() {
 
   describe('segments.add', function() {
     it('should redraw the view after adding a segment that is visible', function() {
-      var spy = sinon.spy(p.waveform.waveformZoomView._segmentsLayer._layer, 'draw');
+      var zoomview = p.views.getView('zoomview');
+
+      expect(zoomview).to.be.ok;
+
+      var spy = sinon.spy(zoomview._segmentsLayer._layer, 'draw');
 
       p.segments.add({ startTime: 0, endTime: 10, editable: true, id: 'segment1' });
 
@@ -35,7 +39,11 @@ describe('SegmentsLayer', function() {
     });
 
     it('should not redraw the view after adding a segment that is not visible', function() {
-      var spy = sinon.spy(p.waveform.waveformZoomView._segmentsLayer._layer, 'draw');
+      var zoomview = p.views.getView('zoomview');
+
+      expect(zoomview).to.be.ok;
+
+      var spy = sinon.spy(zoomview._segmentsLayer._layer, 'draw');
 
       p.segments.add({ startTime: 28, endTime: 32, editable: true, id: 'segment2' });
 

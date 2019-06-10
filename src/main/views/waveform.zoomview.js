@@ -206,8 +206,6 @@ define([
     self.peaks.on('keyboard.right', nudgeFrame.bind(self, 1, false));
     self.peaks.on('keyboard.shift_left', nudgeFrame.bind(self, -1, true));
     self.peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 1, true));
-
-    self.peaks.emit('waveform_ready.zoomview', this);
   }
 
   /**
