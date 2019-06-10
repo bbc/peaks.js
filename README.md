@@ -676,6 +676,9 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `segments.remove`         | `Array<Segment> segments` |
 | `segments.remove_all`     | (none)                    |
 | `segments.dragged`        | `Segment segment`         |
+| `segments.mouseenter`     | `Segment segment`         |
+| `segments.mouseleave`     | `Segment segment`         |
+| `segments.click`          | `Segment segment`         |
 
 ### Points
 

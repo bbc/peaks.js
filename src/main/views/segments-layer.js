@@ -140,6 +140,7 @@ define([
 
       event.target.parent.label.show();
       self._layer.draw();
+      self._peaks.emit('segments.mouseenter', event.target._segment);
     });
 
     segmentGroup.waveformShape.on('mouseleave', function(event) {
@@ -150,6 +151,16 @@ define([
 
       event.target.parent.label.hide();
       self._layer.draw();
+      self._peaks.emit('segments.mouseleave', event.target._segment);
+    });
+
+    segmentGroup.waveformShape.on('click', function(event) {
+      if (!event.target.parent) {
+        self._peaks.logger('No parent for object:', event.target);
+        return;
+      }
+
+      self._peaks.emit('segments.click', event.target._segment);
     });
 
     segmentGroup.add(segmentGroup.waveformShape);

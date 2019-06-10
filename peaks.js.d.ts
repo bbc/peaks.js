@@ -127,6 +127,9 @@ declare module 'peaks.js' {
     'segments.dragged': (segment: Segment) => any;
     'segments.remove_all': () => any;
     'segments.remove': (segments: Segment[]) => any;
+    'segments.mouseenter': (segment: Segment) => any;
+    'segments.mouseleave': (segment: Segment) => any;
+    'segments.click':    (segment: Segment) => any;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
     error: (err: Error) => any;
     player_seek: (time: number) => any;
