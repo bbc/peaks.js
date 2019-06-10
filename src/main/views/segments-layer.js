@@ -48,6 +48,29 @@ define([
   SegmentsLayer.prototype._registerEventHandlers = function() {
     var self = this;
 
+    this._peaks.on('segments.update', function(segment) {
+      var redraw = false;
+      var segmentGroup = self._segmentGroups[segment.id];
+      var frameOffset = self._view.getFrameOffset();
+      var width = self._view.getWidth();
+      var frameStartTime = self._view.pixelsToTime(frameOffset);
+      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+
+      if (segmentGroup) {
+        self._removeSegment(segment);
+        redraw = true;
+      }
+
+      if (segment.isVisible(frameStartTime, frameEndTime)) {
+        self._addSegmentGroup(segment);
+        redraw = true;
+      }
+
+      if (redraw) {
+        self._layer.draw();
+      }
+    });
+
     this._peaks.on('segments.add', function(segments) {
       var frameOffset = self._view.getFrameOffset();
       var width = self._view.getWidth();
@@ -117,6 +140,7 @@ define([
 
       event.target.parent.label.show();
       self._layer.draw();
+      self._peaks.emit('segments.mouseenter', event.target._segment);
     });
 
     segmentGroup.waveformShape.on('mouseleave', function(event) {
@@ -127,6 +151,16 @@ define([
 
       event.target.parent.label.hide();
       self._layer.draw();
+      self._peaks.emit('segments.mouseleave', event.target._segment);
+    });
+
+    segmentGroup.waveformShape.on('click', function(event) {
+      if (!event.target.parent) {
+        self._peaks.logger('No parent for object:', event.target);
+        return;
+      }
+
+      self._peaks.emit('segments.click', event.target._segment);
     });
 
     segmentGroup.add(segmentGroup.waveformShape);

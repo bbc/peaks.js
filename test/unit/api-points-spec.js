@@ -88,7 +88,8 @@ describe('Peaks.points', function() {
       p.points.add(points);
 
       expect(p.points.getPoints()).to.have.lengthOf(2);
-      expect(p.points.getPoints()[1]).to.include.keys('time', 'labelText');
+      expect(p.points.getPoints()[1].time).to.equal(12);
+      expect(p.points.getPoints()[1].labelText).to.equal('Another point');
     });
 
     it('should accept a list of properties for a single point (deprecated)', function() {
