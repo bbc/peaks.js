@@ -213,13 +213,20 @@
           var points = peaks.points.getPoints();
           var html = '';
 
+          window.pointUpdated = function(i, prop, value) {
+            console.log(i, prop, value);
+            var points = peaksInstance.points.getPoints();
+            var segment = points[i];
+            point.update({[prop]: value});
+          };
+
           for (var i = 0; i < points.length; i++) {
             var point = points[i];
 
             var row = '<tr>' +
               '<td>' + point.id + '</td>' +
-              '<td>' + point.labelText + '</td>' +
-              '<td>' + point.time + '</td>' +
+              '<td><input oninput="pointUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + point.labelText + '" /></td>' +
+              '<td><input oninput="pointUpdated(' + i + ',\'time\',parseFloat(this.value))" type="number" step="any" value="' + point.time + '" /></td>' +
               '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
               '</tr>';
 

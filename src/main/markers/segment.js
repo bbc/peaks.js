@@ -8,7 +8,7 @@
 
 define([
   'peaks/waveform/waveform.utils'
-],function(Utils) {
+], function(Utils) {
   'use strict';
 
   function validateSegment(startTime, endTime, validationContext) {
@@ -111,18 +111,18 @@ define([
 
   Segment.prototype.update = function(options) {
     var startTime = options.hasOwnProperty('startTime') ? options.startTime : this.startTime;
-    var endTime = options.hasOwnProperty('endTime') ? options.endTime : this.endTime;
+    var endTime   = options.hasOwnProperty('endTime')   ? options.endTime   : this.endTime;
     var labelText = options.hasOwnProperty('labelText') ? options.labelText : this.labelText;
-    var color = options.hasOwnProperty('color') ? options.color : this.color;
-    var editable = options.hasOwnProperty('editable') ? options.editable : this.editable;
+    var color     = options.hasOwnProperty('color')     ? options.color     : this.color;
+    var editable  = options.hasOwnProperty('editable')  ? options.editable  : this.editable;
 
     validateSegment(startTime, endTime, 'updateTime()');
 
     this._startTime = startTime;
-    this._endTime = endTime;
+    this._endTime   = endTime;
     this._labelText = labelText;
-    this._color = color;
-    this._editable = editable;
+    this._color     = color;
+    this._editable  = editable;
     this._parent._peaks.emit('segments.update', this);
   };
 

@@ -49,10 +49,10 @@ define([
     var self = this;
 
     this._peaks.on('segments.update', function(segment) {
+      var redraw = false;
       var segmentGroup = self._segmentGroups[segment.id];
       var frameOffset = self._view.getFrameOffset();
       var width = self._view.getWidth();
-      var redraw = false;
       var frameStartTime = self._view.pixelsToTime(frameOffset);
       var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
 

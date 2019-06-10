@@ -607,6 +607,30 @@ var instance = Peaks.init({ … });
 instance.points.removeAll();
 ```
 
+## Point API
+A **point**'s properties can be updated programatically.
+
+### `point.update({time, labelText, color, editable})`
+
+Updates an existing point. Accepts a single parameter - `options` - with the following keys:
+
+* `time`: (optional) the point's time (seconds, defaults to current value)
+* `editable`: (optional) sets whether the point is user editable (boolean, defaults to current value)
+* `color`: (optional) the point color (defaults to current value)
+* `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the point (defaults to current value)
+
+```js
+var instance = Peaks.init({ ... });
+instance.segments.add({ ... });
+var segment = instance.segments.getSegments()[0]
+// Or use instance.segments.getSegment(id)
+
+segment.update({ startTime: 7 });
+segment.update({ startTime: 7, labelText: "new label text" });
+segment.udpate({ startTime: 7, endTime: 9, labelText: 'new label text' });
+// etc.
+```
+
 ## Destruction
 
 ### `instance.destroy()`
