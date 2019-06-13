@@ -15,8 +15,6 @@ describe('Peaks.segments', function() {
       dataUri: {
         json: 'base/test_data/sample.json'
       },
-      keyboard: true,
-      height: 240,
       deprecationLogger: deprecationLogger
     });
 

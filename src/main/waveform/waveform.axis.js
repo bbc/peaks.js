@@ -17,10 +17,15 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
    *
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Konva.Layer} layer
+   * @param {Object} options
+   * @param {String} options.axisGridlineColor
+   * @param {String} options.axisLabelColor
    */
 
-  function WaveformAxis(view, layer) {
+  function WaveformAxis(view, layer, options) {
     var self = this;
+
+    self._options = options;
 
     var axisShape = new Konva.Shape({
       fill: 'rgba(38, 255, 161, 1)',
@@ -96,36 +101,39 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     // Distance between waveform start time and first axis marker (pixels)
     var axisLabelOffsetPixels = view.timeToPixels(axisLabelOffsetSecs);
 
-    context.setAttr('strokeStyle', view.options.axisGridlineColor);
+    context.setAttr('strokeStyle', this._options.axisGridlineColor);
     context.setAttr('lineWidth', 1);
 
     // Set text style
     context.setAttr('font', '11px sans-serif');
-    context.setAttr('fillStyle', view.options.axisLabelColor);
+    context.setAttr('fillStyle', this._options.axisLabelColor);
     context.setAttr('textAlign', 'left');
     context.setAttr('textBaseline', 'bottom');
 
     var secs = firstAxisLabelSecs;
     var x;
 
+    var width = view.getWidth();
+    var height = view.getHeight();
+
     for (;;) {
       // Position of axis marker (pixels)
       x = axisLabelOffsetPixels + view.timeToPixels(secs - firstAxisLabelSecs);
-      if (x >= view.width) {
+      if (x >= width) {
         break;
       }
 
       context.beginPath();
       context.moveTo(x + 0.5, 0);
       context.lineTo(x + 0.5, 0 + markerHeight);
-      context.moveTo(x + 0.5, view.height);
-      context.lineTo(x + 0.5, view.height - markerHeight);
+      context.moveTo(x + 0.5, height);
+      context.lineTo(x + 0.5, height - markerHeight);
       context.stroke();
 
       var label      = Utils.formatTime(secs, true);
       var labelWidth = context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
-      var labelY     = view.height - 1 - markerHeight;
+      var labelY     = height - 1 - markerHeight;
 
       if (labelX >= 0) {
         context.fillText(label, labelX, labelY);

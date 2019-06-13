@@ -13,8 +13,6 @@ describe('Peaks.points', function() {
       container: document.getElementById('container'),
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
-      keyboard: true,
-      height: 240,
       deprecationLogger: deprecationLogger
     });
 

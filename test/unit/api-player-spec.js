@@ -3,20 +3,16 @@
 var Peaks = require('../../src/main');
 
 describe('Peaks.player', function() {
-  var p, logger;
+  var p;
 
   beforeEach(function(done) {
-    logger = sinon.spy();
-
     p = Peaks.init({
       container: document.getElementById('container'),
       mediaElement: document.getElementById('media'),
       dataUri: {
         json: 'base/test_data/sample.json'
       },
-      keyboard: true,
-      height: 240,
-      logger: logger
+      logger: sinon.spy()
     });
 
     p.on('peaks.ready', done);

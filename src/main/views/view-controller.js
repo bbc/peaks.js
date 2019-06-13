@@ -31,7 +31,9 @@ define([
     this._zoomview = null;
   }
 
-  ViewController.prototype.createOverview = function(waveformData, container) {
+  ViewController.prototype.createOverview = function(container) {
+    var waveformData = this._peaks.getWaveformData();
+
     this._overview = new WaveformOverview(
       waveformData,
       container,
@@ -41,7 +43,9 @@ define([
     return this._overview;
   };
 
-  ViewController.prototype.createZoomview = function(waveformData, container) {
+  ViewController.prototype.createZoomview = function(container) {
+    var waveformData = this._peaks.getWaveformData();
+
     this._zoomview = new WaveformZoomView(
       waveformData,
       container,

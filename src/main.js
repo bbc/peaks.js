@@ -335,15 +335,18 @@ define('peaks', [
         if (callback) {
           callback(err);
         }
+
         return;
       }
 
+      instance._waveformData = waveformData;
+
       if (containers.overview) {
-        instance.views.createOverview(waveformData, containers.overview);
+        instance.views.createOverview(containers.overview);
       }
 
       if (zoomviewContainer) {
-        instance.views.createZoomview(waveformData, zoomviewContainer);
+        instance.views.createZoomview(zoomviewContainer);
       }
 
       instance._addWindowResizeHandler();
@@ -454,6 +457,10 @@ define('peaks', [
     if (opts.logger) {
       this.logger = opts.logger;
     }
+  };
+
+  Peaks.prototype.getWaveformData = function() {
+    return this._waveformData;
   };
 
   Peaks.prototype._addWindowResizeHandler = function() {
