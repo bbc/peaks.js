@@ -81,12 +81,20 @@ define([
       enumerable: true,
       get: function() {
         return this._startTime;
+      },
+
+      set: function(time) {
+        this._startTime = time;
       }
     },
     endTime: {
       enumerable: true,
       get: function() {
         return this._endTime;
+      },
+
+      set: function(time) {
+        this._endTime = time;
       }
     },
     labelText: {
