@@ -94,6 +94,8 @@
       <div id="controls">
         <input type="text" id="seek-time" value="0.0">
         <button data-action="seek">Seek</button>
+        <label for="amplitude-scale">Amplitude scale</label>
+        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
       </div>
     </div>
 
@@ -124,6 +126,27 @@
             if (!Number.isNaN(seconds)) {
               peaksInstance.player.seek(seconds);
             }
+          });
+
+          var amplitudeScales = {
+            "0": 0.0,
+            "1": 0.1,
+            "2": 0.25,
+            "3": 0.5,
+            "4": 0.75,
+            "5": 1.0,
+            "6": 1.5,
+            "7": 2.0,
+            "8": 3.0,
+            "9": 4.0,
+            "10": 5.0
+          };
+
+          document.getElementById('amplitude-scale').addEventListener('input', function() {
+            var scale = amplitudeScales[this.value];
+            var view = peaksInstance.views.getView();
+
+            view.setAmplitudeScale(scale);
           });
         });
       })(peaks);

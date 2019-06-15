@@ -6,7 +6,7 @@
  * @module peaks/views/waveform-shape
  */
 
-define(['konva'], function(Konva) {
+define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
   'use strict';
 
   /**
@@ -14,14 +14,17 @@ define(['konva'], function(Konva) {
    *
    * @param {Number} amplitude The waveform data point amplitude.
    * @param {Number} height The height of the waveform, in pixels.
+   * @param {Number} scale Amplitude scaling factor.
    * @returns {Number} The scaled waveform data point.
    */
 
-  function scaleY(amplitude, height) {
+  function scaleY(amplitude, height, scale) {
     var range = 256;
     var offset = 128;
 
-    return height - ((amplitude + offset) * height) / range;
+    var scaledAmplitude = (amplitude * scale + offset) * height / range;
+
+    return height - Utils.clamp(height - scaledAmplitude, 0, height);
   }
 
   /**
@@ -53,11 +56,16 @@ define(['konva'], function(Konva) {
 
     this._view = options.view;
     this._segment = options.segment;
+    this._scale = 1.0;
 
     this.sceneFunc(this._sceneFunc);
   }
 
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
+
+  WaveformShape.prototype.setAmplitudeScale = function(scale) {
+    this._scale = scale;
+  };
 
   WaveformShape.prototype._sceneFunc = function(context) {
     var frameOffset = this._view.getFrameOffset();
@@ -115,13 +123,13 @@ define(['konva'], function(Konva) {
     for (x = startPixels; x < endPixels; x++) {
       val = waveformData.min_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, scaleY(val, height, this._scale) + 0.5);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
       val = waveformData.max_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, scaleY(val, height) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, scaleY(val, height, this._scale) + 0.5);
     }
 
     context.closePath();

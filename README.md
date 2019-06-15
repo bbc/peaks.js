@@ -400,6 +400,38 @@ const segment = instance.segments.add({
 instance.player.playSegment(segment);
 ```
 
+## Views API
+
+A single Peaks instance may have up to two associated waveform views: a zoomable view, or "zoomview", and a non-zoomable view, or "overview".
+
+The Views API allows you to create or obtain references to these views.
+
+### `instance.views.getView(name)`
+
+Returns a reference to one of the views. The `name` parameter can be omitted if there is only one view, otherwise it should be set to either `'zoomview'` or `'overview'`.
+
+```js
+const view = instance.views.getView('zoomview');
+```
+
+### `instance.views.createZoomview(container)`
+
+Creates a zoomable waveform view in the given container element.
+
+```js
+const container = document.getElementById('zoomview-container');
+const view = instance.createZoomview(container);
+```
+
+### `instance.views.createOverview(container)`
+
+Creates a non-zoomable ("overview") waveform view in the given container element.
+
+```js
+const container = document.getElementById('overview-container');
+const view = instance.createOverview(container);
+```
+
 ## Zoom API
 
 ### `instance.zoom.zoomOut()`
@@ -643,6 +675,7 @@ instance.points.removeAll();
 ```
 
 ## Point API
+
 A **point**'s properties can be updated programatically.
 
 ### `point.update({time, labelText, color, editable})`
@@ -663,6 +696,19 @@ const point = instance.points.getPoints()[0]
 point.update({ time: 7 });
 point.update({ time: 7, labelText: "new label text" });
 // etc.
+```
+
+## View Settings API
+
+Some view properties can be updated programmatically.
+
+### `view.setAmplitudeScale(scale)`
+
+Changes the amplitude (vertical) waveform scale. The default scale is 1.0. If greater than 1.0, the waveform is increased in height. If between 0.0 and 1.0, the waveform is reduced in height.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setAmplitudeScale(1.0);
 ```
 
 ## Destruction

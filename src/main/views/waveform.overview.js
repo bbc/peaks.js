@@ -203,6 +203,22 @@ define([
   };
 
   /**
+   * Adjusts the amplitude scale of waveform shown in the view, which allows
+   * users to zoom the waveform vertically.
+   *
+   * @param {Number} scale The new amplitude scale factor
+   */
+
+  WaveformOverview.prototype.setAmplitudeScale = function(scale) {
+    if (!Utils.isNumber(scale) || !Number.isFinite(scale)) {
+       throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
+    }
+
+    this._waveformShape.setAmplitudeScale(scale);
+    this._waveformLayer.draw();
+  };
+
+  /**
    * @returns {WaveformData} The view's waveform data.
    */
 
