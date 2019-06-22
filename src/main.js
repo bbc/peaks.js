@@ -317,7 +317,7 @@ define('peaks', [
     }
 
     if (instance.options.keyboard) {
-      instance.keyboardHandler = new KeyboardHandler(self);
+      instance.keyboardHandler = new KeyboardHandler(instance);
     }
 
     instance.player = new Player(instance, instance.options.mediaElement);
