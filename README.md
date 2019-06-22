@@ -19,6 +19,18 @@ You can read more about the project and see a demo [here](https://waveform.proto
 - [Browserify CDN](https://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
 - [cdnjs](https://cdnjs.com/): `https://cdnjs.com/libraries/peaks.js`
 
+# Demos
+
+The [demo](demo) folder contains some working examples if Peaks.js in use. To view these, enter the following commands:
+
+```bash
+git clone git@github.com:bbc/peaks.js.git
+cd peaks.js
+npm start
+```
+
+and then open your browser at http://localhost:8080.
+
 # Using Peaks.js in your own project
 
 Peaks.js can be included in any web page by following these steps:
@@ -74,14 +86,6 @@ require(['peaks'], function(Peaks) {
   });
 });
 ```
-
-A working example is provided in [`index.html`](index.html). To see the example, enter the following command:
-
-```bash
-npm start
-```
-
-and then open your browser at http://localhost:8080.
 
 ## Start using ES2015 module loader
 
@@ -735,16 +739,6 @@ npm run build
 ```
 
 The output of the build is a file named `peaks.js`, alongside its associated [source map](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
-
-## Live Demo
-
-This command will serve a local demo page containing a single Peaks instance. Look at the file [index.html](https://github.com/bbc/peaks.js/blob/master/index.html) to see an example of Peaks.js in use.
-
-```bash
-npm start
-```
-
-Then open http://localhost:9000 in a Web browser.
 
 # Testing
 

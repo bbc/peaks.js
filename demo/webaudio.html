@@ -13,7 +13,7 @@
         width: 1000px;
       }
 
-      .zoom-container, .overview-container {
+      #zoomview-container, #overview-container {
         box-shadow: 3px 3px 20px #919191;
         margin: 0 0 24px 0;
         -moz-box-shadow: 3px 3px 20px #919191;
@@ -21,21 +21,19 @@
         line-height: 0;
       }
 
-      .zoom-container {
+      #zoomview-container {
         height: 200px;
       }
 
-      .overview-container {
+      #overview-container {
         height: 85px;
       }
 
       #demo-controls {
         margin: 0 auto 24px auto;
         width: 1000px;
-      }
-
-      #demo-controls > * {
-        vertical-align: middle;
+        display: flex;
+        align-items: center;
       }
 
       #demo-controls button {
@@ -44,12 +42,17 @@
         cursor: pointer;
       }
 
-      #seek-time {
-        width: 4em;
+      #audio {
+        flex: 0 0 30%;
       }
 
       #controls {
-        float: right;
+        flex: 1;
+        margin-left: 1em;
+      }
+
+      #seek-time {
+        width: 4em;
       }
 
       .log {
@@ -93,43 +96,41 @@
         The following pages demonstrate various configuration options:
       </p>
       <p>
-        Precomputed Waveform Data |
-        <a href="webaudio.html">Web Audio API</a> |
+        <a href="index.html">Precomputed Waveform Data</a> |
+        Web Audio API |
         <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
         <a href="overview-waveform.html">Single Fixed Waveform</a>
       </p>
       <h2>Demo: Precomputed Waveform Data</h2>
       <p>
-        This demo shows how to use waveform data precomputed using
-        <a href="https://github.com/bbc/audiowaveform">audiowaveform</a>.
-        The data is requested from the web server in binary or JSON format.
+        This demo shows how to use an
+        <a href="https://www.w3.org/TR/webaudio/#AudioContext">AudioContext</a>
+        to compute the waveform in the browser. Due to the memory requirements
+        and processing time needed, this only works well for short duration
+        audio.
       </p>
     </div>
 
-    <div id="waveform-container"></div>
+    <div id="waveform-container">
+      <div id="zoomview-container"></div>
+      <div id="overview-container"></div>
+    </div>
 
     <div id="demo-controls">
-      <div>
-        <audio id="audio" controls="controls">
-          <source src="/test_data/TOL_6min_720p_download.mp3" type="audio/mpeg">
-          <source src="/test_data/TOL_6min_720p_download.ogg" type="audio/ogg">
-          Your browser does not support the audio element.
-        </audio>
+      <audio id="audio" controls="controls">
+        <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
+        <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+      </audio>
 
-        <div id="controls">
-          <div>
-            <button data-action="zoom-in">Zoom in</button>
-            <button data-action="zoom-out">Zoom out</button>
-            <button data-action="add-segment">Add a Segment at current time</button>
-            <button data-action="add-point">Add a Point at current time</button>
-            <button data-action="log-data">Log segments/points</button>
-          </div>
-          <div>
-            <input type="text" id="seek-time" value="0.0">
-            <button data-action="seek">Seek</button>
-            <button data-action="destroy">Destroy</button>
-          </div>
-        </div>
+      <div id="controls">
+        <button data-action="zoom-in">Zoom in</button>
+        <button data-action="zoom-out">Zoom out</button>
+        <button data-action="add-segment">Add a Segment at current time</button>
+        <button data-action="add-point">Add a Point at current time</button>
+        <button data-action="log-data">Log segments/points</button>
+        <input type="text" id="seek-time" value="0.0">
+        <button data-action="seek">Seek</button>
       </div>
     </div>
 
@@ -175,20 +176,14 @@
           var segments = peaks.segments.getSegments();
           var html = '';
 
-          window.segmentUpdated = function(i, prop, value) {
-            var segments = peaksInstance.segments.getSegments();
-            var segment = segments[i];
-            segment.update({[prop]: value});
-          };
-
           for (var i = 0; i < segments.length; i++) {
             var segment = segments[i];
 
             var row = '<tr>' +
               '<td>' + segment.id + '</td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + segment.labelText + '" /></td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'startTime\',parseInt(this.value))" type="number" value="' + segment.startTime + '" /></td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'endTime\',parseInt(this.value))" type="number" value="' + segment.endTime + '" /></td>' +
+              '<td>' + segment.labelText + '</td>' +
+              '<td>' + segment.startTime + '</td>' +
+              '<td>' + segment.endTime + '</td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
               '</tr>';
@@ -208,19 +203,13 @@
           var points = peaks.points.getPoints();
           var html = '';
 
-          window.pointUpdated = function(i, prop, value) {
-            var points = peaksInstance.points.getPoints();
-            var segment = points[i];
-            point.update({[prop]: value});
-          };
-
           for (var i = 0; i < points.length; i++) {
             var point = points[i];
 
             var row = '<tr>' +
               '<td>' + point.id + '</td>' +
-              '<td><input oninput="pointUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + point.labelText + '" /></td>' +
-              '<td><input oninput="pointUpdated(' + i + ',\'time\',parseFloat(this.value))" type="number" step="any" value="' + point.time + '" /></td>' +
+              '<td>' + point.labelText + '</td>' +
+              '<td>' + point.time + '</td>' +
               '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
               '</tr>';
 
@@ -234,20 +223,29 @@
           }
         }
 
+        var audioContext = new AudioContext();
+
+        var audioElement = document.getElementById('audio');
+
         var options = {
-          container: document.getElementById('waveform-container'),
-          mediaElement: document.getElementById('audio'),
-          dataUri: {
-            arraybuffer: '/test_data/TOL_6min_720p_download.dat',
-            json: '/test_data/TOL_6min_720p_download.json'
+          containers: {
+            zoomview: document.getElementById('zoomview-container'),
+            overview: document.getElementById('overview-container')
           },
+          mediaElement: audioElement,
+          audioContext: audioContext,
           keyboard: true,
           pointMarkerColor: '#006eb0',
-          showPlayheadTime: true
+          showPlayheadTime: true,
+          waveformBuilderOptions: {
+            scale: 128,
+            amplitudeScale: 1.0
+          },
+          zoomLevels: [128, 256, 512, 1024, 2048, 4096]
         };
 
         Peaks.init(options, function(err, peaksInstance) {
-          console.log("Peaks instance ready");
+          console.log('Peaks instance ready');
 
           document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
             peaksInstance.zoom.zoomIn();
@@ -286,10 +284,6 @@
             if (!Number.isNaN(seconds)) {
               peaksInstance.player.seek(seconds);
             }
-          });
-
-          document.querySelector('button[data-action="destroy"]').addEventListener('click', function(event) {
-            peaksInstance.destroy();
           });
 
           document.querySelector('body').addEventListener('click', function(event) {
@@ -333,18 +327,6 @@
 
           peaksInstance.on('points.dragend', function(point) {
             console.log('points.dragend:', point);
-          });
-          
-          peaksInstance.on('segments.mouseenter', function(segment) {
-            console.log('segments.mouseenter:', segment);
-          });
-
-          peaksInstance.on('segments.mouseleave', function(segment) {
-            console.log('segments.mouseleave:', segment);
-          });
-        
-          peaksInstance.on('segments.click', function(segment) {
-            console.log('segments.click:', segment);
           });
         });
       })(peaks);

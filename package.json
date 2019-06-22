@@ -54,6 +54,7 @@
   "scripts": {
     "prebuild": "npm run lint",
     "build": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
+    "postbuild": "cp peaks.js demo && cp peaks.js.map demo",
     "doc": "jsdoc --private --destination docs --recurse src",
     "lint": "eslint src/**/*.js test/**/*.js",
     "pretest": "npm run build",
@@ -61,7 +62,7 @@
     "test-watch": "npm test -- --auto-watch --no-single-run",
     "prestart": "npm run build",
     "prepublish": "npm run build",
-    "start": "serve --listen 8080 --no-clipboard"
+    "start": "serve --listen 8080 --no-clipboard demo"
   },
   "devDependencies": {
     "browserify": "~16.2.3",
