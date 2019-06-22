@@ -1,5 +1,19 @@
 # Peaks.js
 
+## 0.10.0 (2019/06/22)
+
+ * (#247) Added update() methods to allow changes to segment and point
+   properties (@zachsa)
+
+ * (#250) Added 'segments.mouseenter', 'segments.mouseleave', and
+   'segments.click' events (@zachsa)
+
+ * (#258) Added new 'containers' option, to allow creation of zoomable
+   and non-zoomable ('overview') waveform views. Added example pages,
+   in the 'demo' folder (@chrisn)
+
+ * Updated to Konva 3.3.3 (@chrisn)
+
 ## 0.9.14 (2019/03/05)
 
  * (#249, #251, #252) Enabled touch events for waveform container
