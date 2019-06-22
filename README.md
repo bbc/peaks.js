@@ -21,7 +21,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
 
 # Demos
 
-The [demo](demo) folder contains some working examples if Peaks.js in use. To view these, enter the following commands:
+The [demo](demo) folder contains some working examples of Peaks.js in use. To view these, enter the following commands:
 
 ```bash
 git clone git@github.com:bbc/peaks.js.git
@@ -409,7 +409,7 @@ Zooms in the waveform zoom view by one level.
 Assuming the Peaks instance has been created with zoom levels: 512, 1024, 2048, 4096
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomOut(); // zoom level is now 1024
 ```
@@ -419,7 +419,7 @@ instance.zoom.zoomOut(); // zoom level is now 1024
 Zooms in the waveform zoom view by one level.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomIn(); // zoom level is still 512
 
@@ -432,7 +432,7 @@ instance.zoom.zoomIn(); // zoom level is now 512 again
 Sets the zoom level to the element in the `options.zoomLevels` array at index `index`.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.setZoom(3); // zoom level is now 4096
 ```
@@ -442,7 +442,7 @@ instance.zoom.setZoom(3); // zoom level is now 4096
 Returns the current zoom level, as an index into the `options.zoomLevels` array.
 
 ```js
-var instance = Peaks.init({ …, zoomLevels: [512, 1024, 2048, 4096] });
+const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.zoomOut();
 console.log(instance.zoom.getZoom()); // -> 1
@@ -554,9 +554,9 @@ Updates an existing segment. Accepts a single parameter - `options` - with the f
 * `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the segment (defaults to current value)
 
 ```js
-var instance = Peaks.init({ ... });
+const instance = Peaks.init({ ... });
 instance.segments.add({ ... });
-var segment = instance.segments.getSegments()[0]
+const segment = instance.segments.getSegments()[0]
 // Or use instance.segments.getSegment(id)
 
 segment.update({ startTime: 7 });
@@ -655,9 +655,9 @@ Updates an existing point. Accepts a single parameter - `options` - with the fol
 * `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the point (defaults to current value)
 
 ```js
-var instance = Peaks.init({ ... });
+const instance = Peaks.init({ ... });
 instance.points.add({ ... });
-var point = instance.points.getPoints()[0]
+const point = instance.points.getPoints()[0]
 // Or use instance.points.getPoint(id)
 
 point.update({ time: 7 });
@@ -758,4 +758,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](https://github.com/chrisn)
 
-Copyright 2018 British Broadcasting Corporation
+Copyright 2019 British Broadcasting Corporation
