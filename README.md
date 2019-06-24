@@ -788,9 +788,12 @@ The output of the build is a file named `peaks.js`, alongside its associated [so
 
 # Testing
 
-`npm test` should work for simple one time testing.
+Tests run in Karma using Mocha + Chai + Sinon.
 
-If you are developing and want to repeatedly run tests in a browser on your machine simply launch `npm run test-watch`.
+ - `npm test` should work for simple one time testing.
+ - `npm test -- --glob %pattern%` to run selected test suite(s) only
+ - `npm run test-watch` if you are developing and want to repeatedly run tests in a browser on your machine.
+ - `npm run test-watch -- --glob %pattern%` is also available
 
 # License
 
