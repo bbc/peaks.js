@@ -1,16 +1,16 @@
 'use strict';
-/* eslint-disable */
-
-function filterBrowsers(browsers, re) {
-  return Object.keys(browsers).filter(function(key) {
-    return re.test(key);
-  });
-}
+/* global process, module */
 
 module.exports = function(config) {
   var isCI = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
+  var glob = config.glob || '**/*.js';
 
-  var glob = config.glob || '**/*.js'
+  function filterBrowsers(browsers, re) {
+    return Object.keys(browsers).filter(function(key) {
+      return re.test(key);
+    });
+  }
+
   // Karma configuration
   config.set({
     // The root path location that will be used to resolve all relative paths
@@ -40,7 +40,7 @@ module.exports = function(config) {
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
-      { pattern: 'test/unit/'+glob, included: true }
+      { pattern: 'test/unit/' + glob, included: true }
     ],
 
     mime: {
