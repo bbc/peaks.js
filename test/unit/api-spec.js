@@ -1,5 +1,6 @@
 'use strict';
 
+require('./setup.js');
 var Peaks = require('../../src/main');
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;

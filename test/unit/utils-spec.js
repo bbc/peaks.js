@@ -1,5 +1,6 @@
 'use strict';
 
+require('./setup.js');
 var Utils = require('../../src/main/waveform/waveform.utils');
 
 describe('Utils', function() {
