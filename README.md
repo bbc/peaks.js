@@ -798,6 +798,17 @@ const view = instance.views.getView('zoomview');
 view.showPlayeadTime(false); // Remove the time from the playhead marker.
 ```
 
+## Cue events
+
+Emit events when the playhead reaches a point or segment boundary:
+
+```js
+const cues = new Peaks.CueEmitter(instance);
+cues.on('cue.point', function(id, time) { /* ... */ });
+cues.on('cue.segment.in', function(id, time) { /* ... */ });
+cues.on('cue.segment.out', function(id, time) { /* ... */ });
+```
+
 ## Destruction
 
 ### `instance.destroy()`
@@ -849,6 +860,23 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.mouseenter`       | `Point point`         |
 | `points.mouseleave`       | `Point point`         |
 | `points.dblclick`         | `Point point`         |
+
+
+### Cue Events
+
+NB: Emitted on CueEmitter instance (not on Peaks)
+
+When the playhead reaches a point or segment boundary, a cue event is emitted.
+   
+| Event name               | Arguments                |
+| ------------------------ | ------------------------ |
+| `cue.point`              | `String id, Number time` |
+| `cue.segment.in`         | `String id, Number time` |
+| `cue.segment.out`        | `String id, Number time` |
+
+When the media element's `.playbackRate` is set to negative (playing backwards on supported browsers only), 
+segment events are emitted in reverse (i.e. `.in` on the `segmentEnd` boundary and `.out` on the `segmentStart` boundary).
+
 
 # Building Peaks.js
 
