@@ -18,7 +18,8 @@ define('peaks', [
   'peaks/waveform/waveform-builder',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
-  'peaks/player/player.keyboard'
+  'peaks/player/player.keyboard',
+  'peaks/cues/cue-emitter'
   ], function(
     Colors,
     EventEmitter,
@@ -31,7 +32,8 @@ define('peaks', [
     WaveformBuilder,
     mixins,
     Utils,
-    KeyboardHandler) {
+    KeyboardHandler,
+    CueEmitter) {
   'use strict';
 
   function buildUi(container) {
@@ -490,7 +492,10 @@ define('peaks', [
     if (this.player) {
       this.player.destroy();
     }
+    this.emit('destroyed');
   };
+
+  Peaks.CueEmitter = CueEmitter;
 
   return Peaks;
 });
