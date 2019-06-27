@@ -8,8 +8,10 @@ define([
 ], function(EventEmitter, CueMark) {
   'use strict';
 
+  var isHeadless = /HeadlessChrome/.test(navigator.userAgent);
+
   function windowIsVisible() {
-    if (navigator.webdriver) {
+    if (isHeadless || navigator.webdriver) {
       return false;
     }
     return (typeof document === 'object') &&
