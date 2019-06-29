@@ -56,7 +56,7 @@
     "build": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
     "postbuild": "cp peaks.js demo && cp peaks.js.map demo",
     "doc": "jsdoc --private --destination docs --recurse src",
-    "lint": "eslint src/**/*.js test/**/*.js",
+    "lint": "eslint src/**/*.js test/**/*.js karma.conf.js",
     "pretest": "npm run build",
     "test": "./node_modules/karma/bin/karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",

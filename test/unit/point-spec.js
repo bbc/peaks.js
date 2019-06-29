@@ -1,6 +1,7 @@
 'use strict';
 
-require('./setup.js');
+require('./setup');
+
 var Peaks = require('../../src/main');
 var Point = require('../../src/main/markers/point');
 

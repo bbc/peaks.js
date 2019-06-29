@@ -1,6 +1,7 @@
 'use strict';
 
-require('./setup.js');
+require('./setup');
+
 var WaveformBuilder = require('../../src/main/waveform/waveform-builder');
 var WaveformData = require('waveform-data');
 
