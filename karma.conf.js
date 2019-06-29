@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-env node */
 
 function filterBrowsers(browsers, re) {
   return Object.keys(browsers).filter(function(key) {
@@ -8,6 +9,7 @@ function filterBrowsers(browsers, re) {
 
 module.exports = function(config) {
   var isCI = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
+  var glob = config.glob || '**/*.js';
 
   // Karma configuration
   config.set({
@@ -38,7 +40,7 @@ module.exports = function(config) {
       { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
       { pattern: 'test_data/sample.{dat,json}', included: false, served: true },
-      { pattern: 'test/unit/**/*.js', included: true }
+      { pattern: 'test/unit/' + glob, included: true }
     ],
 
     mime: {
