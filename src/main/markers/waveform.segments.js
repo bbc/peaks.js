@@ -47,6 +47,7 @@ define([
     this._segmentsById = {};
     this._segmentIdCounter = 0;
     this._colorIndex = 0;
+    this._bindTextTrackHandlers();
   }
 
   /**
@@ -348,9 +349,49 @@ define([
    */
 
   WaveformSegments.prototype.removeAll = function() {
+    if (this._segments.length > 0) {
+      var track = this._peaks.player.getSegmentTextTrack();
+
+      this._segments.forEach(function(segment) {
+        track.removeCue(segment.id);
+      });
+    }
+
     this._segments = [];
     this._segmentsById = {};
     this._peaks.emit('segments.remove_all');
+  };
+
+  WaveformSegments.prototype._bindTextTrackHandlers = function() {
+    var self = this;
+
+    self._peaks.on('segments.add', function(segments) {
+      var track = self._peaks.player.getSegmentTextTrack();
+
+      segments.forEach(function(segment) {
+        track.addCue(segment.id, segment.startTime, segment.endTime);
+      });
+    });
+
+    self._peaks.on('segments.update', function(segment) {
+      var track = self._peaks.player.getSegmentTextTrack();
+
+      track.updateCue(segment.id, segment.startTime, segment.endTime);
+    });
+
+    self._peaks.on('segments.dragged', function(segment) {
+      var track = self._peaks.player.getSegmentTextTrack();
+
+      track.updateCue(segment.id, segment.startTime, segment.endTime);
+    });
+
+    self._peaks.on('segments.remove', function(segments) {
+      var track = self._peaks.player.getSegmentTextTrack();
+
+      segments.forEach(function(segment) {
+        track.removeCue(segment.id);
+      });
+    });
   };
 
   return WaveformSegments;

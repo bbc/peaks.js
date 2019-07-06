@@ -6,7 +6,11 @@
  * @module peaks/player/player
  */
 
-define(['peaks/waveform/waveform.utils'], function(Utils) {
+define([
+  'peaks/player/point-text-track',
+  'peaks/player/segment-text-track',
+  'peaks/waveform/waveform.utils'
+  ], function(PointTextTrack, SegmentTextTrack, Utils) {
   'use strict';
 
   /**
@@ -202,6 +206,22 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
         self._mediaElement.pause();
       }
     }, 30);
+  };
+
+  Player.prototype.getSegmentTextTrack = function() {
+    if (!this._segmentTextTrack) {
+      this._segmentTextTrack = new SegmentTextTrack(this._peaks, this._mediaElement);
+    }
+
+    return this._segmentTextTrack;
+  };
+
+  Player.prototype.getPointTextTrack = function() {
+    if (!this._pointTextTrack) {
+      this._pointTextTrack = new PointTextTrack(this._peaks, this._mediaElement);
+    }
+
+    return this._pointTextTrack;
   };
 
   return Player;

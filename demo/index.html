@@ -413,6 +413,16 @@
             console.log('points.dragend:', point);
           });
 
+          // Point enter/exit events
+
+          peaksInstance.on('points.enter', function(point) {
+            console.log('points.enter:', point);
+          });
+
+          peaksInstance.on('points.exit', function(point) {
+            console.log('points.exit:', point);
+          });
+
           // Segments mouse events
 
           peaksInstance.on('segments.mouseenter', function(segment) {
@@ -425,6 +435,16 @@
 
           peaksInstance.on('segments.click', function(segment) {
             console.log('segments.click:', segment);
+          });
+
+          // Segment enter/exit events
+
+          peaksInstance.on('segments.enter', function(segment) {
+            console.log('segments.enter:', segment);
+          });
+
+          peaksInstance.on('segments.exit', function(segment) {
+            console.log('segments.exit:', segment);
           });
         });
       })(peaks);

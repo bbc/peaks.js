@@ -829,18 +829,22 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | Event name                | Arguments                 |
 | ------------------------- | ------------------------- |
 | `segments.add`            | `Array<Segment> segments` |
+| `segments.update`         | `Array<Segment> segments` |
 | `segments.remove`         | `Array<Segment> segments` |
 | `segments.remove_all`     | (none)                    |
 | `segments.dragged`        | `Segment segment`         |
 | `segments.mouseenter`     | `Segment segment`         |
 | `segments.mouseleave`     | `Segment segment`         |
 | `segments.click`          | `Segment segment`         |
+| `segments.enter`          | `Segment segment`         |
+| `segments.exit`           | `Segment segment`         |
 
 ### Points
 
 | Event name                | Arguments             |
 | ------------------------- | --------------------- |
 | `points.add`              | `Array<Point> points` |
+| `points.update`           | `Array<Point> points` |
 | `points.remove`           | `Array<Point> points` |
 | `points.remove_all`       | (none)                |
 | `points.dragstart`        | `Point point`         |
@@ -849,6 +853,8 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.mouseenter`       | `Point point`         |
 | `points.mouseleave`       | `Point point`         |
 | `points.dblclick`         | `Point point`         |
+| `points.enter`            | `Point point`         |
+| `points.exit`             | `Point point`         |
 
 # Building Peaks.js
 

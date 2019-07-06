@@ -44,6 +44,7 @@ define([
     this._points = [];
     this._pointsById = {};
     this._pointIdCounter = 0;
+    this._bindTextTrackHandlers();
   }
 
   /**
@@ -289,9 +290,49 @@ define([
    */
 
   WaveformPoints.prototype.removeAll = function() {
+    if (this._points.length > 0) {
+      var track = this._peaks.player.getPointTextTrack();
+
+      this._points.forEach(function(point) {
+        track.removeCue(point.id);
+      });
+    }
+
     this._points = [];
     this._pointsById = {};
     this._peaks.emit('points.remove_all');
+  };
+
+  WaveformPoints.prototype._bindTextTrackHandlers = function() {
+    var self = this;
+
+    self._peaks.on('points.add', function(points) {
+      var track = self._peaks.player.getPointTextTrack();
+
+      points.forEach(function(point) {
+        track.addCue(point.id, point.time, point.time);
+      });
+    });
+
+    self._peaks.on('points.update', function(point) {
+      var track = self._peaks.player.getPointTextTrack();
+
+      track.updateCue(point.id, point.time, point.time);
+    });
+
+    self._peaks.on('points.dragend', function(point) {
+      var track = self._peaks.player.getPointTextTrack();
+
+      track.updateCue(point.id, point.time, point.time);
+    });
+
+    self._peaks.on('points.remove', function(points) {
+      var track = self._peaks.player.getPointTextTrack();
+
+      points.forEach(function(point) {
+        track.removeCue(point.id);
+      });
+    });
   };
 
   return WaveformPoints;
