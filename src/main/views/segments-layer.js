@@ -67,7 +67,7 @@ define([
       }
 
       if (redraw) {
-        self._layer.draw();
+        self.updateSegments(frameStartTime, frameEndTime);
       }
     });
 
