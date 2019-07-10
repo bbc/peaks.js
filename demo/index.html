@@ -172,20 +172,14 @@
           var segments = peaks.segments.getSegments();
           var html = '';
 
-          window.segmentUpdated = function(i, prop, value) {
-            var segments = peaksInstance.segments.getSegments();
-            var segment = segments[i];
-            segment.update({[prop]: value});
-          };
-
           for (var i = 0; i < segments.length; i++) {
             var segment = segments[i];
 
             var row = '<tr>' +
               '<td>' + segment.id + '</td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + segment.labelText + '" /></td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'startTime\',parseInt(this.value))" type="number" value="' + segment.startTime + '" /></td>' +
-              '<td><input oninput="segmentUpdated(' + i + ',\'endTime\',parseInt(this.value))" type="number" value="' + segment.endTime + '" /></td>' +
+              '<td><input data-action="update-segment-label" type="text" value="' + segment.labelText + '" data-id="' + segment.id + '"/></td>' +
+              '<td><input data-action="update-segment-start-time" type="number" value="' + segment.startTime + '" data-id="' + segment.id + '"/></td>' +
+              '<td><input data-action="update-segment-end-time" type="number" value="' + segment.endTime + '" data-id="' + segment.id + '"/></td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
               '</tr>';
@@ -198,6 +192,67 @@
           if (html.length) {
             segmentsContainer.classList.remove('hide');
           }
+
+          document.querySelectorAll('input[data-action="update-segment-start-time"]').forEach(function(inputElement) {
+            inputElement.addEventListener('input', function(event) {
+              var element = event.target;
+              var id = element.getAttribute('data-id');
+              var segment = peaks.segments.getSegment(id);
+
+              if (segment) {
+                var startTime = parseFloat(element.value);
+
+                if (startTime < 0) {
+                  startTime = 0;
+                  element.value = 0;
+                }
+
+                if (startTime >= segment.endTime) {
+                  startTime = segment.endTime - 0.1;
+                  element.value = startTime;
+                }
+
+                segment.update({ startTime: startTime });
+              }
+            });
+          });
+
+          document.querySelectorAll('input[data-action="update-segment-end-time"]').forEach(function(inputElement) {
+            inputElement.addEventListener('input', function(event) {
+              var element = event.target;
+              var id = element.getAttribute('data-id');
+              var segment = peaks.segments.getSegment(id);
+
+              if (segment) {
+                var endTime = parseFloat(element.value);
+
+                if (endTime < 0) {
+                  endTime = 0;
+                  element.value = 0;
+                }
+
+                if (endTime <= segment.startTime) {
+                  endTime = segment.startTime + 0.1;
+                  element.value = endTime;
+                }
+
+                segment.update({ endTime: endTime });
+              }
+            });
+          });
+
+          document.querySelectorAll('input[data-action="update-segment-label"]').forEach(function(inputElement) {
+            inputElement.addEventListener('input', function(event) {
+              var element = event.target;
+              var id = element.getAttribute('data-id');
+              var segment = peaks.segments.getSegment(id);
+              var labelText = element.labelText;
+
+              if (segment) {
+                segment.update({ labelText: labelText });
+              }
+            });
+          });
         }
 
         var renderPoints = function(peaks) {
@@ -205,19 +260,13 @@
           var points = peaks.points.getPoints();
           var html = '';
 
-          window.pointUpdated = function(i, prop, value) {
-            var points = peaksInstance.points.getPoints();
-            var segment = points[i];
-            point.update({[prop]: value});
-          };
-
           for (var i = 0; i < points.length; i++) {
             var point = points[i];
 
             var row = '<tr>' +
               '<td>' + point.id + '</td>' +
-              '<td><input oninput="pointUpdated(' + i + ',\'labelText\',this.value)" type="text" value="' + point.labelText + '" /></td>' +
-              '<td><input oninput="pointUpdated(' + i + ',\'time\',parseFloat(this.value))" type="number" step="any" value="' + point.time + '" /></td>' +
+              '<td><input data-action="update-point-label" type="text" value="' + point.labelText + '" data-id="' + point.id + '"/></td>' +
+              '<td><input data-action="update-point-time" type="number" value="' + point.time + '" data-id="' + point.id + '"/></td>' +
               '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
               '</tr>';
 
@@ -229,6 +278,38 @@
           if (html.length) {
             pointsContainer.classList.remove('hide');
           }
+
+          document.querySelectorAll('input[data-action="update-point-time"]').forEach(function(inputElement) {
+            inputElement.addEventListener('input', function(event) {
+              var element = event.target;
+              var id = element.getAttribute('data-id');
+              var point = peaks.points.getPoint(id);
+
+              if (point) {
+                var time = parseFloat(element.value);
+
+                if (time < 0) {
+                  time = 0;
+                  element.value = 0;
+                }
+
+                point.update({ time: time });
+              }
+            });
+          });
+
+          document.querySelectorAll('input[data-action="update-point-label"]').forEach(function(inputElement) {
+            inputElement.addEventListener('input', function(event) {
+              var element = event.target;
+              var id = element.getAttribute('data-id');
+              var point = peaks.points.getPoint(id);
+              var labelText = element.labelText;
+
+              if (point) {
+                point.update({ labelText: labelText });
+              }
+            });
+          });
         }
 
         var options = {
