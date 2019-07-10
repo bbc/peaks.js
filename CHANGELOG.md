@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 0.10.1 (2019/07/10)
+
+ * (#211) Added view.setAmplitudeScale() method, and documented new API methods
+   for creating and accessing the waveform views (@chrisn)
+
+ * (#270) Fixed segment rendering after updating startTime or endTime (@chrisn)
+
+ * (#267) Added option to run specific test files by glob pattern (@gmarinov)
+
 ## 0.10.0 (2019/06/22)
 
  * (#247) Added update() methods to allow changes to segment and point
