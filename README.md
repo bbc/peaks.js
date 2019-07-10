@@ -420,7 +420,7 @@ Creates a zoomable waveform view in the given container element.
 
 ```js
 const container = document.getElementById('zoomview-container');
-const view = instance.createZoomview(container);
+const view = instance.views.createZoomview(container);
 ```
 
 ### `instance.views.createOverview(container)`
@@ -429,7 +429,7 @@ Creates a non-zoomable ("overview") waveform view in the given container element
 
 ```js
 const container = document.getElementById('overview-container');
-const view = instance.createOverview(container);
+const view = instance.views.createOverview(container);
 ```
 
 ## Zoom API

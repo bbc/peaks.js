@@ -35,6 +35,110 @@ describe('Peaks.views', function() {
     }
   });
 
+  describe('createZoomview', function() {
+    context('with existing zoomview', function() {
+      beforeEach(function(done) {
+        p = Peaks.init({
+          containers: {
+            zoomview: zoomviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        });
+
+        p.on('peaks.ready', done);
+      });
+
+      it('should return the existing zoomview instance', function() {
+        var view = p.views.getView('zoomview');
+
+        expect(view).to.be.an.instanceOf(WaveformZoomView);
+
+        expect(p.views.createZoomview(zoomviewContainer)).to.equal(view);
+      });
+    });
+
+    context('without existing zoomview', function() {
+      beforeEach(function(done) {
+        p = Peaks.init({
+          containers: {
+            overview: overviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        });
+
+        p.on('peaks.ready', done);
+      });
+
+      it('should return a new zoomview instance', function() {
+        expect(p.views.getView('zoomview')).to.equal(null);
+
+        var view = p.views.createZoomview(zoomviewContainer);
+
+        expect(view).to.be.an.instanceOf(WaveformZoomView);
+
+        expect(p.views.getView('zoomview')).to.equal(view);
+      });
+    });
+  });
+
+  describe('createOverview', function() {
+    context('with existing overview', function() {
+      beforeEach(function(done) {
+        p = Peaks.init({
+          containers: {
+            overview: overviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        });
+
+        p.on('peaks.ready', done);
+      });
+
+      it('should return the existing overview instance', function() {
+        var view = p.views.getView('overview');
+
+        expect(view).to.be.an.instanceOf(WaveformOverview);
+
+        expect(p.views.createOverview(overviewContainer)).to.equal(view);
+      });
+    });
+
+    context('without existing overview', function() {
+      beforeEach(function(done) {
+        p = Peaks.init({
+          containers: {
+            zoomview: zoomviewContainer
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        });
+
+        p.on('peaks.ready', done);
+      });
+
+      it('should return a new overview instance', function() {
+        expect(p.views.getView('overview')).to.equal(null);
+
+        var view = p.views.createOverview(overviewContainer);
+
+        expect(view).to.be.an.instanceOf(WaveformOverview);
+
+        expect(p.views.getView('overview')).to.equal(view);
+      });
+    });
+  });
+
   describe('getView', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
