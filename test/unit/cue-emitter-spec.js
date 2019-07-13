@@ -12,16 +12,17 @@ describe('CueEmitter', function() {
   var cue;
 
   var event = {
-    POINT: 'cue.point',
-    SEGMENT_IN: 'cue.segment.in',
-    SEGMENT_OUT: 'cue.segment.out'
+    POINT: 'points.enter',
+    SEGMENT_IN: 'segments.enter',
+    SEGMENT_OUT: 'segments.exit'
   };
 
   beforeEach(function(done) {
     p = Peaks.init({
       container: document.getElementById('container'),
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json'
+      dataUri: 'base/test_data/sample.json',
+      emitCueEvents: false
     });
 
     cue = new Peaks.CueEmitter(p);
@@ -37,6 +38,7 @@ describe('CueEmitter', function() {
   });
 
   it('should initialise correctly', function(done) {
+    expect(p.cueEmitter).to.be.undefined;
     expect(cue.peaks).equals(p, 'instance did not match');
     expect(cue.marks.length).equals(0, 'mark array not empty');
     done();
@@ -63,8 +65,8 @@ describe('CueEmitter', function() {
     it('should add marks when point is added', function(done) {
       p.points.add({ time: 1.0 });
       expect(cue.marks.length).equals(1, 'mark length did not match');
-      expect(cue.marks[0].getTime()).equals(1.0, 'mark time did not match');
-      expect(cue.marks[0][1]).equals(CueMark.POINT, 'did not match marker type');
+      expect(cue.marks[0].time).equals(1.0, 'mark time did not match');
+      expect(cue.marks[0].type).equals(CueMark.POINT, 'did not match marker type');
 
       p.points.add({ time: 2.0 });
       expect(cue.marks.length).equals(2, 'mark length did not match');
@@ -74,9 +76,9 @@ describe('CueEmitter', function() {
     it('should reorder when point is added earlier', function(done) {
       p.points.add({ time: 1.0 });
       p.points.add({ time: 1.5 });
-      expect(cue.marks[0].getTime()).equals(1.0, 'mark time did not match');
+      expect(cue.marks[0].time).equals(1.0, 'mark time did not match');
       p.points.add({ time: 0.2 });
-      expect(cue.marks[0].getTime()).equals(0.2, "mark time didn't match");
+      expect(cue.marks[0].time).equals(0.2, "mark time didn't match");
       done();
     });
 
@@ -86,13 +88,13 @@ describe('CueEmitter', function() {
       p.points.add({ time: 1.1, id: id });
       p.points.add({ time: 9.1, id: 'other' });
 
-      expect(cue.marks[0][2]).equals(id, 'point id did not match');
-      expect(cue.marks[0].getTime()).equals(1.1, 'time did not match');
-      expect(cue.marks[1].getTime()).equals(9.1, 'time did not match');
+      expect(cue.marks[0].id).equals(id, 'point id did not match');
+      expect(cue.marks[0].time).equals(1.1, 'time did not match');
+      expect(cue.marks[1].time).equals(9.1, 'time did not match');
 
       p.points.getPoint(id).update({ time: 2.2 });
-      expect(cue.marks[0].getTime()).equals(2.2, 'time did not match');
-      expect(cue.marks[1].getTime()).equals(9.1, 'time did not match');
+      expect(cue.marks[0].time).equals(2.2, 'time did not match');
+      expect(cue.marks[1].time).equals(9.1, 'time did not match');
 
       done();
     });
@@ -101,7 +103,7 @@ describe('CueEmitter', function() {
       p.points.add({ time: 1.1, id: 'id1' });
       p.points.add({ time: 9.1 });
       p.points.removeById('id1');
-      expect(cue.marks[0].getTime()).equals(9.1, 'did not match time');
+      expect(cue.marks[0].time).equals(9.1, 'did not match time');
       done();
     });
 
@@ -120,12 +122,12 @@ describe('CueEmitter', function() {
       p.segments.add({ startTime: 2.0, endTime: 3.0 });
       expect(cue.marks.length).equals(2, 'mark length did not match');
 
-      expect(cue.marks[0].getTime()).equals(2.0, 'start mark time did not match');
-      expect(cue.marks[1].getTime()).equals(3.0, 'end mark time did not match');
+      expect(cue.marks[0].time).equals(2.0, 'start mark time did not match');
+      expect(cue.marks[1].time).equals(3.0, 'end mark time did not match');
 
       // test for type
-      expect(cue.marks[0][1]).equals(CueMark.SEGMENT_START, 'mark type did not match');
-      expect(cue.marks[1][1]).equals(CueMark.SEGMENT_END, 'mark type did not match');
+      expect(cue.marks[0].type).equals(CueMark.SEGMENT_START, 'mark type did not match');
+      expect(cue.marks[1].type).equals(CueMark.SEGMENT_END, 'mark type did not match');
 
       done();
     });
@@ -133,16 +135,16 @@ describe('CueEmitter', function() {
     it('should reorder when segment is added earlier', function(done) {
       p.segments.add({ startTime: 2.0, endTime: 3.0, id: 'seg1' });
       p.segments.add({ startTime: 2.5, endTime: 3.3, id: 'seg2' });
-      expect(cue.marks[1].getTime()).equals(2.5, 'seg2 start mark did not match');
-      expect(cue.marks[2].getTime()).equals(3.0, 'seg1 end mark did not match');
+      expect(cue.marks[1].time).equals(2.5, 'seg2 start mark did not match');
+      expect(cue.marks[2].time).equals(3.0, 'seg1 end mark did not match');
       done();
     });
 
     it('should update marks when segment is updated', function(done) {
       p.segments.add({ startTime: 2.0, endTime: 3.0, id: 'seg1' });
       p.segments.getSegment('seg1').update({ startTime: 2.2, endTime: 3.3 });
-      expect(cue.marks[0].getTime()).equals(2.2, 'start mark did not update?');
-      expect(cue.marks[1].getTime()).equals(3.3, 'end mark did not update?');
+      expect(cue.marks[0].time).equals(2.2, 'start mark did not update?');
+      expect(cue.marks[1].time).equals(3.3, 'end mark did not update?');
       done();
     });
 
@@ -151,7 +153,7 @@ describe('CueEmitter', function() {
       p.points.add({ time: 3.3 });
       p.segments.removeById('segx');
       expect(cue.marks.length).equals(1, 'mark length did not match');
-      expect(cue.marks[0][1]).equals(CueMark.POINT, 'did not match remaining mark type');
+      expect(cue.marks[0].type).equals(CueMark.POINT, 'did not match remaining mark type');
       done();
     });
 
@@ -181,8 +183,8 @@ describe('CueEmitter', function() {
       p.points.add({ time: 1.07, id: 'p2' });
       p.points.add({ time: 1.09, id: 'p3' });
 
-      cue.on(event.POINT, function(id) {
-        emitted.push(id);
+      p.on(event.POINT, function(pt) {
+        emitted.push(pt.id);
         if (emitted.length > 2) {
           expect(emitted).eql(['p1', 'p2', 'p3']);
           done();
@@ -198,8 +200,8 @@ describe('CueEmitter', function() {
       p.points.add({ time: 1.07, id: 'p2' });
       p.points.add({ time: 1.09, id: 'p3' });
 
-      cue.on(event.POINT, function(id) {
-        emitted.push(id);
+      p.on(event.POINT, function(pt) {
+        emitted.push(pt.id);
         if (emitted.length > 2) {
           expect(emitted).eql(['p3', 'p2', 'p1']);
           done();
@@ -213,12 +215,12 @@ describe('CueEmitter', function() {
 
       p.segments.add({ startTime: 1.05, endTime: 1.09, id: 'seg1' });
 
-      cue.on(event.SEGMENT_IN, function(id) {
-        expect(id).equals('seg1', 'segment id did not match');
+      p.on(event.SEGMENT_IN, function(seg) {
+        expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.05);
       });
-      cue.on(event.SEGMENT_OUT, function(id) {
-        expect(id).equals('seg1', 'segment id did not match');
+      p.on(event.SEGMENT_OUT, function(seg) {
+        expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.09);
         expect(emitted).eql([1.05, 1.09]);
         done();
@@ -232,12 +234,12 @@ describe('CueEmitter', function() {
 
       p.segments.add({ startTime: 1.05, endTime: 1.09, id: 'seg1' });
 
-      cue.on(event.SEGMENT_IN, function(id) {
-        expect(id).equals('seg1', 'segment id did not match');
+      p.on(event.SEGMENT_IN, function(seg) {
+        expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.09);
       });
-      cue.on(event.SEGMENT_OUT, function(id) {
-        expect(id).equals('seg1', 'segment id did not match');
+      p.on(event.SEGMENT_OUT, function(seg) {
+        expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.05);
         expect(emitted).eql([1.09, 1.05]);
         done();

@@ -3,9 +3,8 @@
  * @module peaks/cues/cue-emitter
  */
 define([
-  'EventEmitter',
   'peaks/cues/cuemark'
-], function(EventEmitter, CueMark) {
+], function(CueMark) {
   'use strict';
 
   var isHeadless = /HeadlessChrome/.test(navigator.userAgent);
@@ -31,44 +30,32 @@ define([
   var rAF = getRAF(window);
 
   /**
-   * This adapter populates the list of timeline entries from Peaks' points and segments
-   * NB: mutates marks, removing the old entries
-   * @param {CueMarkDef[]} marks
+   * this adapter navigates the peaks instance to get a corresponding point or segment
    * @param {Peaks} peaks
+   * @param {CueMark} mark
+   * @return {Point|Segment}
+   * @throws {Error}
    */
-  function populateMarks(marks, peaks) {
-    var segments = peaks.segments.getSegments();
-    var points = peaks.points.getPoints();
-
-    marks.length = 0;
-    points.forEach(function(entry) {
-      marks.push(CueMark.create(entry.time, CueMark.POINT, entry.id));
-    });
-    segments.forEach(function(entry) {
-      marks.push(CueMark.create(entry.startTime, CueMark.SEGMENT_START, entry.id));
-      marks.push(CueMark.create(entry.endTime, CueMark.SEGMENT_END, entry.id));
-    });
-
-    marks.sort(CueMark.sorter);
-  }
-
-  /**
-   * @param {Peaks} peaks
-   * @return {HTMLMediaElement}
-   */
-  function getMediaElement(peaks) {
-    return peaks.player._mediaElement;
+  function getPointOrSegment(peaks, mark) {
+     switch (mark.type) {
+      case CueMark.POINT:
+        return peaks.points.getPoint(mark.id);
+      case CueMark.SEGMENT_START:
+      case CueMark.SEGMENT_END:
+        return peaks.segments.getSegment(mark.id);
+       default:
+         throw new Error('getPointOrSegment: id not found?');
+    }
   }
 
   /**
    * @class
    * @property {Peaks} peaks
-   * @property {Array.<CueMarkDef>} marks
-   * @param peaks
+   * @property {Array.<CueMark>} marks
+   * @param {Peaks} peaks
    * @constructor
    */
   function CueEmitter(peaks) {
-    EventEmitter.call(this);
     this.marks = Array();
     this.peaks = peaks;
     this.previousTime = -1;
@@ -83,11 +70,24 @@ define([
     this.init();
   }
 
-  CueEmitter.prototype = Object.create(EventEmitter.prototype);
-  CueEmitter.prototype.constructor = CueEmitter;
-
+  // updates the list of timeline entries from Peaks' points and segments
   CueEmitter.prototype._updateMarks = function() {
-    populateMarks(this.marks, this.peaks);
+    var marks = this.marks;
+    var segments = this.peaks.segments.getSegments();
+    var points = this.peaks.points.getPoints();
+
+    marks.length = 0;
+
+    points.forEach(function(entry) {
+      marks.push(new CueMark(entry.time, CueMark.POINT, entry.id));
+    });
+
+    segments.forEach(function(entry) {
+      marks.push(new CueMark(entry.startTime, CueMark.SEGMENT_START, entry.id));
+      marks.push(new CueMark(entry.endTime, CueMark.SEGMENT_END, entry.id));
+    });
+
+    marks.sort(CueMark.sorter);
   };
 
   CueEmitter.prototype._onUpdate = function(time, previousTime) {
@@ -110,14 +110,14 @@ define([
     // marks are sorted
     for (var i = start, mark, markTime; isForward ? i < end : i > end; i += step) {
       mark = marks[i];
-      markTime = mark.getTime();
+      markTime = mark.time;
 
       if (isForward ? markTime > previousTime : markTime < previousTime) {
         if (isForward ? markTime > time : markTime < time) {
           break;
         }
         // mark time falls between now and previous call time
-        mark.emitEvent(this, isForward);
+        mark.emitEvent(this.peaks, isForward, getPointOrSegment(this.peaks, mark));
       }
     }
   };
@@ -130,9 +130,9 @@ define([
     if (windowIsVisible()) {
       return;
     }
-    var el = getMediaElement(this.peaks);
+    var player = this.peaks.player;
 
-    if (this.peaks.player.isPlaying() && !el.seeking) {
+    if (player.isPlaying() && !player.isSeeking()) {
       this._onUpdate(time, this.previousTime);
     }
     this.previousTime = time;
@@ -143,16 +143,14 @@ define([
       return;
     } // destroyed
 
-    var peaks = this.peaks;
-    var el = getMediaElement(this.peaks);
-    var time = peaks.player.getCurrentTime();
-    var isPlaying = peaks.player.isPlaying();
+    var player = this.peaks.player;
+    var time = player.getCurrentTime();
 
-    if (!el.seeking) {
+    if (!player.isSeeking()) {
       this._onUpdate(time, this.previousTime);
     }
     this.previousTime = time;
-    if (isPlaying) {
+    if (player.isPlaying()) {
       rAF(this.onAnimationFrame);
     }
   };
