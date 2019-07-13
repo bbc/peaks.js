@@ -225,7 +225,8 @@
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
-          showPlayheadTime: true
+          showPlayheadTime: true,
+          emitCueEvents: true
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -315,22 +316,15 @@
             id: 'testpoint'
           });
 
-          var cues = new Peaks.CueEmitter(peaksInstance);
-          cues.on('cue.point', function(id, time) {
-            console.log('cue.point', id, time, peaksInstance.player.getCurrentTime())
+          peaksInstance.on('points.enter', function(point, time, id) {
+            console.log('points.enter', point, id, time, peaksInstance.player.getCurrentTime())
           });
-          cues.on('cue.segment.in', function(id, time) {
-            console.log('cue.segment.in', id, time, peaksInstance.player.getCurrentTime())
+          peaksInstance.on('segments.enter', function(segment, time, id) {
+            console.log('segments.enter', segment, id, time, peaksInstance.player.getCurrentTime())
           });
-          cues.on('cue.segment.out', function(id, time) {
-            console.log('cue.segment.out', id, time, peaksInstance.player.getCurrentTime())
+          peaksInstance.on('segments.exit', function(segment, time, id) {
+            console.log('segments.exit', segment, id, time, peaksInstance.player.getCurrentTime())
           });
-
-          window.instance = {
-            peaks: peaksInstance,
-            cues: cues
-          };
-
         });
       })(peaks);
     </script>

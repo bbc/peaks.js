@@ -272,6 +272,9 @@ var options = {
 
   // async logging function
   logger: console.error.bind(console),
+  
+  // if true, emit cue events on the peaks instance (see Cue Events) 
+  emitCueEvents: false,
 
   // default height of the waveform canvases in pixels
   height: 200,
@@ -803,10 +806,10 @@ view.showPlayeadTime(false); // Remove the time from the playhead marker.
 Emit events when the playhead reaches a point or segment boundary:
 
 ```js
-const cues = new Peaks.CueEmitter(instance);
-cues.on('cue.point', function(id, time) { /* ... */ });
-cues.on('cue.segment.in', function(id, time) { /* ... */ });
-cues.on('cue.segment.out', function(id, time) { /* ... */ });
+const peaks = Peaks.init({ ..., emitCueEvents: true });
+peaks.on('points.enter', function(point, time, id) { /* ... */ });
+peaks.on('segments.enter', function(segment, time, id) { /* ... */ });
+peaks.on('segments.exit', function(segment, time, id) { /* ... */ });
 ```
 
 ## Destruction
@@ -864,18 +867,19 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 
 ### Cue Events
 
-NB: Emitted on CueEmitter instance (not on Peaks)
+NB: Instantiate peaks with `{ emitCueEvents: true }` option.
 
 When the playhead reaches a point or segment boundary, a cue event is emitted.
    
 | Event name               | Arguments                |
 | ------------------------ | ------------------------ |
-| `cue.point`              | `String id, Number time` |
-| `cue.segment.in`         | `String id, Number time` |
-| `cue.segment.out`        | `String id, Number time` |
+| `points.enter`           | `Point point, Number time, String id` |
+| `segments.enter`         | `Segment segment, Number time, String id` |
+| `segments.exit`          | `Segment segment, Number time, String id` |
 
 When the media element's `.playbackRate` is set to negative (playing backwards on supported browsers only), 
 segment events are emitted in reverse (i.e. `.in` on the `segmentEnd` boundary and `.out` on the `segmentStart` boundary).
+`time` is the time of the point or segment edge just passed by the playhead.
 
 
 # Building Peaks.js
