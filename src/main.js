@@ -245,7 +245,12 @@ define('peaks', [
       /**
        * Use animation on zoom
        */
-      zoomAdapter: 'static'
+      zoomAdapter: 'static',
+
+      /**
+       * Emit cue events
+       */
+      emitCueEvents: false
     };
 
     /**
@@ -371,6 +376,9 @@ define('peaks', [
       }
     });
 
+    if (instance.options.emitCueEvents) {
+      instance.cueEmitter = new CueEmitter(instance);
+    }
     return instance;
   };
 
