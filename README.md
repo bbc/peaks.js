@@ -2,15 +2,77 @@
 
 > A browser based audio waveform visualisation frontend component from BBC R&D.
 
-Peaks.js is a modular client-side JavaScript component designed for the display of and interaction with audio waveforms in the browser.
+Peaks.js is a client-side JavaScript component that allows you display and interact with audio waveforms in the browser.
 
 ![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
 
 Peaks.js was developed by [BBC R&D](https://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio content in the browser, using a backend API that serves the waveform data.
 
-Peaks.js uses HTML5 canvas technology to display waveform at different zoom levels and provides some basic convenience methods for interacting with waveforms and creating time-based visual sections for denoting content to be clipped or for reference, e.g., distinguishing music from speech or identifying different music tracks.
+Peaks.js uses the HTML canvas element to display the waveform at different zoom levels, and has configuration options to allow you to customise the waveform views. Peaks.js allows users to interact with the waveform views, including zooming and scrolling, and creating point or segment markers that denote content to be clipped or for reference, e.g., distinguishing music from speech or identifying different music tracks.
 
 You can read more about the project and see a demo [here](https://waveform.prototyping.bbc.co.uk/).
+
+# Contents
+
+- [Installation](#installation)
+- [Demos](#demos)
+- [Using Peaks.js in your own project](#using-peaksjs-in-your-own-project)
+  - [Start using AMD and require.js](#start-using-amd-and-requirejs)
+  - [Start using ES2015 module loader](#start-using-es2015-module-loader)
+  - [Start using CommonJS module loader](#start-using-commonjs-module-loader)
+  - [Start using vanilla JavaScript](#start-using-vanilla-javascript)
+  - [Generate waveform data](#generate-waveform-data)
+  - [Web Audio based waveforms](#web-audio-based-waveforms)
+- [Configuration](#configuration)
+  - [Advanced configuration](#advanced-configuration)
+- [API](#api)
+  - [Initalisation](#initialisation)
+    - [Peaks.init()](#peaksinitoptions-callback)
+  - [Player API](#player-api)
+    - [instance.player.play()](#instanceplayerplay)
+    - [instance.player.pause()](#instanceplayerpause)
+    - [instance.player.getCurrentTime()](#instanceplayergetcurrenttime)
+    - [instance.player.getDuration()](#instanceplayergetduration)
+    - [instance.player.seek()](#instanceplayerseektime)
+    - [instance.player.playSegment()](#instanceplayerplaysegmentsegment)
+  - [Views API](#views-api)
+    - [instance.views.getView()](#instanceviewsgetviewname)
+    - [instance.views.createZoomview()](#instanceviewscreatezoomviewcontainer)
+    - [instance.views.createOverview()](#instanceviewscreateoverviewcontainer)
+  - [Zoom API](#zoom-api)
+    - [instance.zoom.zoomIn()](#instancezoomzoomin)
+    - [instance.zoom.zoomOut()](#instancezoomzoomout)
+    - [instance.zoom.setZoom()](#instancezoomsetzoomindex)
+    - [instance.zoom.getZoom()](#instancezoomgetzoom)
+  - [Segments API](#segments-api)
+    - [instance.segments.add()](#instancesegmentsaddsegment)
+    - [instance.segments.getSegments()](#instancesegmentsgetsegments)
+    - [instance.segments.getSegment()](#instancesegmentsgetsegmentid)
+    - [instance.segments.removeByTime()](#instancesegmentsremovebytimestarttime-endtime)
+    - [instance.segments.removeById()](#instancesegmentsremovebyidsegmentid)
+    - [instance.segments.removeAll()](#instancesegmentsremoveall)
+  - [Segment API](#segment-api)
+    - [segment.update()](#segmentupdatestarttime-endtime-labeltext-color-editable)
+  - [Points API](#points-api)
+    - [instance.points.add()](#instancepointsaddpoint)
+    - [instance.points.getPoints()](#instancepointsgetpoints)
+    - [instance.points.getPoint()](#instancepointsgetpointid)
+    - [instance.points.removeByTime()](#instancepointsremovebytimetime)
+    - [instance.points.removeById()](#instancepointsremovebyidpointid)
+    - [instance.points.removeAll()](#instancepointsremoveall)
+  - [Point API](#point-api)
+    - [point.update()](#pointupdatetime-labeltext-color-editable)
+  - [View Settings API](#view-settings-api)
+    - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
+    - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
+    - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
+  - [Destruction](#destruction)
+    - [instance.destroy()](#instancedestroy)
+  - [Events](#events)
+- [Building Peaks.js](#building-peaksjs)
+- [Testing](#testing)
+- [License](#license)
+- [Credits](#credits)
 
 # Installation
 
@@ -152,11 +214,12 @@ Refer to the man page audiowaveform(1) for full details of the available command
 
 ## Web Audio based waveforms
 
-Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you do not have to pre-generate a `dat` or `json` file beforehand. However, note that this requires the browser to download the entire audio file before the waveform can be shouwn, and this process can be CPU intensive, so is not recommended for long audio files.
+Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you do not have to pre-generate a `dat` or `json` file beforehand. However, note that this requires the browser to download the entire audio file before the waveform can be shown, and this process can be CPU intensive, so is not recommended for long audio files.
 
-To use Web Audio, omit the `dataUri` option and make sure you pass in a valid `AudioContext` instance as the `audioContext` option. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
+To use Web Audio, omit the `dataUri` option and instead pass an `AudioContext` instance using the `audioContext` option. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
+const AudioContext = window.AudioContext || window.webkitAudioContext;
 const myAudioContext = new AudioContext();
 
 const options = {
@@ -311,6 +374,8 @@ and [Konva Text Example](http://konvajs.github.io/docs/shapes/Text.html)):
   segmentLabelDraw: mixins.defaultSegmentLabelDraw(p.options)
 }
 ```
+
+**Note:** This part of the API is not yet stable, and so may change at any time.
 
 # API
 
@@ -715,6 +780,8 @@ view.setAmplitudeScale(1.0);
 
 Sets the waveform color, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
 
+The initial color is controlled by the `zoomWaveformColor` and `overviewWaveformColor` configuration options.
+
 ```js
 const view = instance.views.getView('zoomview');
 view.setWaveformColor('#800080'); // Purple
@@ -723,6 +790,8 @@ view.setWaveformColor('#800080'); // Purple
 ### `view.showPlayheadTime(show)`
 
 Shows or hides the current playback time, shown next to the playhead.
+
+The initial setting is `false`, for the overview waveform view, or controlled by the `showPlayheadTime` configuration option for the zoomable waveform view.
 
 ```js
 const view = instance.views.getView('zoomview');
