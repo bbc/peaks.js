@@ -118,11 +118,11 @@ define([
   });
 
   Segment.prototype.update = function(options) {
-    var startTime = options.hasOwnProperty('startTime') ? options.startTime : this.startTime;
-    var endTime   = options.hasOwnProperty('endTime')   ? options.endTime   : this.endTime;
-    var labelText = options.hasOwnProperty('labelText') ? options.labelText : this.labelText;
-    var color     = options.hasOwnProperty('color')     ? options.color     : this.color;
-    var editable  = options.hasOwnProperty('editable')  ? options.editable  : this.editable;
+    var startTime = Object.prototype.hasOwnProperty.call(options, 'startTime') ? options.startTime : this.startTime;
+    var endTime   = Object.prototype.hasOwnProperty.call(options, 'endTime')   ? options.endTime   : this.endTime;
+    var labelText = Object.prototype.hasOwnProperty.call(options, 'labelText') ? options.labelText : this.labelText;
+    var color     = Object.prototype.hasOwnProperty.call(options, 'color')     ? options.color     : this.color;
+    var editable  = Object.prototype.hasOwnProperty.call(options, 'editable')  ? options.editable  : this.editable;
 
     validateSegment(startTime, endTime, 'updateTime()');
 

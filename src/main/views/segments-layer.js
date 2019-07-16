@@ -339,7 +339,7 @@ define([
     var count = 0;
 
     for (var segmentId in this._segmentGroups) {
-      if (this._segmentGroups.hasOwnProperty(segmentId)) {
+      if (Object.prototype.hasOwnProperty.call(this._segmentGroups, segmentId)) {
         var segment = this._segmentGroups[segmentId].segment;
 
         if (!segment.isVisible(startTime, endTime)) {
@@ -388,7 +388,7 @@ define([
     var updated = false;
 
     for (var segmentId in this._segmentGroups) {
-      if (this._segmentGroups.hasOwnProperty(segmentId)) {
+      if (Object.prototype.hasOwnProperty.call(this._segmentGroups, segmentId)) {
         var segmentGroup = this._segmentGroups[segmentId];
 
         segmentGroup.waveformShape.setAmplitudeScale(scale);

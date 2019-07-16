@@ -296,7 +296,7 @@ define([
     var count = 0;
 
     for (var pointId in this._pointGroups) {
-      if (this._pointGroups.hasOwnProperty(pointId)) {
+      if (Object.prototype.hasOwnProperty.call(this._pointGroups, pointId)) {
         var point = this._pointGroups[pointId].point;
 
         if (!point.isVisible(startTime, endTime)) {

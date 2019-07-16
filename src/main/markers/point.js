@@ -99,10 +99,10 @@ define([
   });
 
   Point.prototype.update = function(options) {
-    var time      = options.hasOwnProperty('time')      ? options.time            : this.time;
-    var labelText = options.hasOwnProperty('labelText') ? options.labelText || '' : this.labelText;
-    var color     = options.hasOwnProperty('color')     ? options.color           : this.color;
-    var editable  = options.hasOwnProperty('editable')  ? options.editable        : this.editable;
+    var time      = Object.prototype.hasOwnProperty.call(options, 'time')      ? options.time            : this.time;
+    var labelText = Object.prototype.hasOwnProperty.call(options, 'labelText') ? options.labelText || '' : this.labelText;
+    var color     = Object.prototype.hasOwnProperty.call(options, 'color')     ? options.color           : this.color;
+    var editable  = Object.prototype.hasOwnProperty.call(options, 'editable')  ? options.editable        : this.editable;
 
     validatePoint(time, labelText);
 

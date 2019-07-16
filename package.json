@@ -65,18 +65,18 @@
     "start": "serve --listen 8080 --no-clipboard demo"
   },
   "devDependencies": {
-    "browserify": "~16.2.3",
+    "browserify": "~16.3.0",
     "chai": "~4.2.0",
     "deamdify": "~0.3.0",
     "derequire": "~2.0.3",
-    "eslint": "~5.16.0",
+    "eslint": "~6.0.1",
     "exorcist": "~1.0.1",
-    "jsdoc": "~3.6.2",
-    "karma": "~4.1.0",
-    "karma-browserify": "~6.0.0",
+    "jsdoc": "~3.6.3",
+    "karma": "~4.2.0",
+    "karma-browserify": "~6.1.0",
     "karma-browserstack-launcher": "~1.5.1",
     "karma-chai-sinon": "~0.1.5",
-    "karma-chrome-launcher": "~2.2.0",
+    "karma-chrome-launcher": "~3.0.0",
     "karma-firefox-launcher": "~1.1.0",
     "karma-html2js-preprocessor": "~1.1.0",
     "karma-ievms": "~0.1.0",
@@ -84,7 +84,7 @@
     "karma-safari-launcher": "~1.0.0",
     "karma-spec-reporter": "~0.0.32",
     "mocha": "~6.1.4",
-    "serve": "~11.0.1",
+    "serve": "~11.1.0",
     "sinon": "~7.3.2",
     "sinon-chai": "~3.3.0",
     "watchify": "~3.11.1"
@@ -92,7 +92,7 @@
   "dependencies": {
     "colors.css": "~3.0.0",
     "eventemitter2": "~5.0.1",
-    "konva": "~3.3.3",
+    "konva": "~3.4.0",
     "waveform-data": "~2.1.2"
   }
 }

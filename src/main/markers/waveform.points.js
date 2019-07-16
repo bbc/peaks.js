@@ -78,7 +78,8 @@ define([
    */
 
   WaveformPoints.prototype._createPoint = function(options) {
-    if (options.hasOwnProperty('timestamp') || !options.hasOwnProperty('time')) {
+    if (Object.prototype.hasOwnProperty.call(options, 'timestamp') ||
+      !Object.prototype.hasOwnProperty.call(options, 'time')) {
       // eslint-disable-next-line max-len
       this._peaks.options.deprecationLogger("peaks.points.add(): The 'timestamp' attribute is deprecated; use 'time' instead");
       options.time = options.timestamp;
@@ -159,7 +160,7 @@ define([
     points = points.map(function(pointOptions) {
       var point = self._createPoint(pointOptions);
 
-      if (self._pointsById.hasOwnProperty(point.id)) {
+      if (Object.prototype.hasOwnProperty.call(self._pointsById, point.id)) {
         throw new Error('peaks.points.add(): duplicate id');
       }
 
