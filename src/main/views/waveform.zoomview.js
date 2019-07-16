@@ -407,6 +407,15 @@ define([
     this._peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
   };
 
+  WaveformZoomView.prototype.setWaveformColor = function(color) {
+    this._waveformShape.setWaveformColor(color);
+    this._waveformLayer.draw();
+  };
+
+  WaveformZoomView.prototype.showPlayheadTime = function(show) {
+    this._playheadLayer.showPlayheadTime(show);
+  };
+
   /* WaveformZoomView.prototype.beginZoom = function() {
     // Fade out the time axis and the segments
     // this._axis.axisShape.setAttr('opacity', 0);

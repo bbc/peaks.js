@@ -711,6 +711,24 @@ const view = instance.views.getView('zoomview');
 view.setAmplitudeScale(1.0);
 ```
 
+### `view.setWaveformColor(color)`
+
+Sets the waveform color, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+
+```js
+const view = instance.views.getView('zoomview');
+view.setWaveformColor('#800080'); // Purple
+```
+
+### `view.showPlayheadTime(show)`
+
+Shows or hides the current playback time, shown next to the playhead.
+
+```js
+const view = instance.views.getView('zoomview');
+view.showPlayeadTime(false); // Remove the time from the playhead marker.
+```
+
 ## Destruction
 
 ### `instance.destroy()`

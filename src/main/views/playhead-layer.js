@@ -31,10 +31,16 @@ define([
     this._playheadPixel = 0;
     this._playheadLineAnimation = null;
     this._playheadVisible = false;
+    this._playheadColor = peaks.options.playheadColor;
+    this._playheadTextColor = peaks.options.playheadTextColor;
 
     this._playheadLayer = new Konva.Layer();
 
-    this._createPlayhead(showTime, peaks.options.playheadColor, peaks.options.playheadTextColor);
+    this._createPlayhead(this._playheadColor);
+
+    if (showTime) {
+      this._createPlayheadText(this._playheadTextColor);
+    }
 
     this.zoomLevelChanged();
     this._syncPlayhead(time);
@@ -86,31 +92,15 @@ define([
    * Creates the playhead UI objects.
    *
    * @private
-   * @param {Boolean} showTime If <code>true</code> The playback time position
-   *   is shown next to the playhead.
-   * @param {String} playheadColor
-   * @param {String} playheadTextColor If <code>showTime</code> is
-   *   <code>true</code>, the color of the playback time position.
+   * @param {String} color
    */
 
-  PlayheadLayer.prototype._createPlayhead = function(showTime, playheadColor, playheadTextColor) {
+  PlayheadLayer.prototype._createPlayhead = function(color) {
     this._playheadLine = new Konva.Line({
       points: [0.5, 0, 0.5, this._view.getHeight()],
-      stroke: playheadColor,
+      stroke: color,
       strokeWidth: 1
     });
-
-    if (showTime) {
-      this._playheadText = new Konva.Text({
-        x: 2,
-        y: 12,
-        text: '00:00:00',
-        fontSize: 11,
-        fontFamily: 'sans-serif',
-        fill: playheadTextColor,
-        align: 'right'
-      });
-    }
 
     this._playheadGroup = new Konva.Group({
       x: 0,
@@ -118,12 +108,21 @@ define([
     });
 
     this._playheadGroup.add(this._playheadLine);
-
-    if (showTime) {
-      this._playheadGroup.add(this._playheadText);
-    }
-
     this._playheadLayer.add(this._playheadGroup);
+  };
+
+  PlayheadLayer.prototype._createPlayheadText = function(color) {
+    this._playheadText = new Konva.Text({
+      x: 2,
+      y: 12,
+      text: '00:00:00',
+      fontSize: 11,
+      fontFamily: 'sans-serif',
+      fill: color,
+      align: 'right'
+    });
+
+    this._playheadGroup.add(this._playheadText);
   };
 
   /**
@@ -241,6 +240,30 @@ define([
 
   PlayheadLayer.prototype.getPlayheadPixel = function() {
     return this._playheadPixel;
+  };
+
+  PlayheadLayer.prototype.showPlayheadTime = function(show) {
+    var updated = false;
+
+    if (show) {
+      if (!this._playheadText) {
+        // Create it
+        this._createPlayheadText(this._playheadTextColor);
+        updated = true;
+      }
+    }
+    else {
+      if (this._playheadText) {
+        this._playheadText.remove();
+        this._playheadText.destroy();
+        this._playheadText = null;
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      this._playheadLayer.draw();
+    }
   };
 
   return PlayheadLayer;

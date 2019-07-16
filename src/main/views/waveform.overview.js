@@ -311,6 +311,15 @@ define([
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
   };
 
+  WaveformOverview.prototype.setWaveformColor = function(color) {
+    this._waveformShape.setWaveformColor(color);
+    this._waveformLayer.draw();
+  };
+
+  WaveformOverview.prototype.showPlayheadTime = function(show) {
+    this._playheadLayer.showPlayheadTime(show);
+  };
+
   WaveformOverview.prototype.destroy = function() {
     if (this._resizeTimeoutId) {
       clearTimeout(this._resizeTimeoutId);

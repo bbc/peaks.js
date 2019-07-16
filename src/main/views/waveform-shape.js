@@ -135,5 +135,9 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     context.closePath();
   };
 
+  WaveformShape.prototype.setWaveformColor = function(color) {
+    this.fill(color);
+  };
+
   return WaveformShape;
 });
