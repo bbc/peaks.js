@@ -143,12 +143,18 @@ declare module 'peaks.js' {
     'segments.remove': (segments: Segment[]) => any;
     'segments.mouseenter': (segment: Segment) => any;
     'segments.mouseleave': (segment: Segment) => any;
-    'segments.click':    (segment: Segment) => any;
+    'segments.click': (segment: Segment) => any;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
     error: (err: Error) => any;
     player_seek: (time: number) => any;
     user_seek: (time: number) => any;
   }
+
+  interface WaveformView {
+    setAmplitudeScale: (scale: number) => void;
+    setWaveformColor: (color: string) => void;
+    showPlayheadTime: (show: boolean) => void;
+  };
 
   interface PeaksInstance {
     destroy: () => void;
@@ -159,6 +165,12 @@ declare module 'peaks.js' {
       getCurrentTime: () => number;
       seek: (time: number) => void;
       playSegment: (segment: Segment) => void;
+    };
+    // Views API
+    views: {
+      createOverview: (container: HTMLElement) => WaveformView;
+      createZoomview: (container: HTMLElement) => WaveformView;
+      getView: (name: string) => WaveformView | null;
     };
     // Zoom API
     zoom: {
@@ -189,8 +201,10 @@ declare module 'peaks.js' {
     on: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
   }
 
+  type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => any;
+
   interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
 
   export type PeaksOptions = PeaksOptionsWithoutAudioOptions & AudioOptions & ContainerOptions;
-  export function init(options: PeaksOptions): PeaksInstance;
+  export function init(options: PeaksOptions, callback?: PeaksInitCallback): PeaksInstance;
 }
