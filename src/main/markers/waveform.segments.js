@@ -349,14 +349,6 @@ define([
    */
 
   WaveformSegments.prototype.removeAll = function() {
-    if (this._segments.length > 0) {
-      var track = this._peaks.player.getSegmentTextTrack();
-
-      this._segments.forEach(function(segment) {
-        track.removeCue(segment.id);
-      });
-    }
-
     this._segments = [];
     this._segmentsById = {};
     this._peaks.emit('segments.remove_all');
@@ -391,6 +383,12 @@ define([
       segments.forEach(function(segment) {
         track.removeCue(segment.id);
       });
+    });
+
+    self._peaks.on('segments.remove_all', function() {
+      var track = self._peaks.player.getSegmentTextTrack();
+
+      track.removeAllCues();
     });
   };
 

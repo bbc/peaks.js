@@ -290,14 +290,6 @@ define([
    */
 
   WaveformPoints.prototype.removeAll = function() {
-    if (this._points.length > 0) {
-      var track = this._peaks.player.getPointTextTrack();
-
-      this._points.forEach(function(point) {
-        track.removeCue(point.id);
-      });
-    }
-
     this._points = [];
     this._pointsById = {};
     this._peaks.emit('points.remove_all');
@@ -332,6 +324,12 @@ define([
       points.forEach(function(point) {
         track.removeCue(point.id);
       });
+    });
+
+    self._peaks.on('points.remove_all', function() {
+      var track = self._peaks.player.getPointTextTrack();
+
+      track.removeAllCues();
     });
   };
 

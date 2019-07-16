@@ -50,6 +50,14 @@ define([], function() {
     this._textTrack.removeCue(cue);
   };
 
+  TextTrack.prototype.removeAllCues = function() {
+    while (this._textTrack.cues.length > 0) {
+      var cue = this._textTrack.cues[0];
+
+      this._textTrack.removeCue(cue);
+    }
+  };
+
   TextTrack.prototype.onCueEnter = function(event) {
     this._emitEnterEvent(event.target.id);
   };
