@@ -71,6 +71,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Events](#events)
 - [Building Peaks.js](#building-peaksjs)
 - [Testing](#testing)
+- [Contributing](#contributing)
 - [License](#license)
 - [Credits](#credits)
 
@@ -881,6 +882,10 @@ Tests run in Karma using Mocha + Chai + Sinon.
  - `npm test -- --glob %pattern%` to run selected test suite(s) only
  - `npm run test-watch` if you are developing and want to repeatedly run tests in a browser on your machine.
  - `npm run test-watch -- --glob %pattern%` is also available
+
+# Contributing
+
+If you'd like to contribute to Peaks.js, please take a look at our [contributer guidelines](CONTRIBUTING.md).
 
 # License
 
