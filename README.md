@@ -807,9 +807,9 @@ Emit events when the playhead reaches a point or segment boundary:
 
 ```js
 const peaks = Peaks.init({ ..., emitCueEvents: true });
-peaks.on('points.enter', function(point, time, id) { /* ... */ });
-peaks.on('segments.enter', function(segment, time, id) { /* ... */ });
-peaks.on('segments.exit', function(segment, time, id) { /* ... */ });
+peaks.on('points.enter', function(point) { ... });
+peaks.on('segments.enter', function(segment) { ... });
+peaks.on('segments.exit', function(segment) { ... });
 ```
 
 ## Destruction
@@ -873,13 +873,13 @@ When the playhead reaches a point or segment boundary, a cue event is emitted.
    
 | Event name               | Arguments                |
 | ------------------------ | ------------------------ |
-| `points.enter`           | `Point point, Number time, String id` |
-| `segments.enter`         | `Segment segment, Number time, String id` |
-| `segments.exit`          | `Segment segment, Number time, String id` |
+| `points.enter`           | `Point point` |
+| `segments.enter`         | `Segment segment` |
+| `segments.exit`          | `Segment segment` |
 
 When the media element's `.playbackRate` is set to negative (playing backwards on supported browsers only), 
-segment events are emitted in reverse (i.e. `.in` on the `segmentEnd` boundary and `.out` on the `segmentStart` boundary).
-`time` is the time of the point or segment edge just passed by the playhead.
+segment events are emitted in reverse 
+(i.e. `segments.enter` on the `segmentEnd` boundary and `segments.exit` on the `segmentStart` boundary).
 
 
 # Building Peaks.js

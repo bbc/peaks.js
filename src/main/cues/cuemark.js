@@ -63,7 +63,7 @@ define(function() {
   eventNames.reverse[CueMark.SEGMENT_END] = eventNames.forward[CueMark.SEGMENT_START];
 
   /**
-   * @param {EventEmitter|{emit:function(string, *, *, *)}} emitter
+   * @param {EventEmitter|{emit:function(string, *)}} emitter
    * @param {boolean} isForwardPlayback
    * @param {*?} detail
    */
@@ -71,7 +71,7 @@ define(function() {
     var eventName = isForwardPlayback ?
       eventNames.forward[this.type] : eventNames.reverse[this.type];
 
-    emitter.emit(eventName, detail, this.time, this.id);
+    emitter.emit(eventName, detail);
   };
 
   /**

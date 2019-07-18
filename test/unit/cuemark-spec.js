@@ -10,30 +10,29 @@ describe('CueMark', function() {
     SEGMENT_OUT: 'segments.exit'
   };
 
-  it('should not allow overwriting props', function(done) {
+  it('should not allow overwriting props', function() {
     var m = new CueMark(1.1, CueMark.POINT, 'p1');
     expect(function() { m.time = 0; }).to.throw();
     expect(function() { m.id = 'p2'; }).to.throw();
     expect(function() { m.type = -1; }).to.throw();
-    done();
   });
 
   it('should emit correct events for POINT', function(done) {
     var m = new CueMark(1, CueMark.POINT, 'p1');
     var emits = 0;
     var emitter = {
-      emit: function(ev, detail, time, id) {  // eslint-disable-line no-unused-vars
+      emit: function(ev, detail) {  // eslint-disable-line no-unused-vars
         emits += 1;
         expect(ev).equals(event.POINT);
-        expect(id).equals('p1');
+        expect(detail.id).equals('p1');
         if (emits === 2) {
           done();
         }
       }
     };
 
-    m.emitEvent(emitter, true);
-    m.emitEvent(emitter, false);
+    m.emitEvent(emitter, true, m);
+    m.emitEvent(emitter, false, m);
   });
 
   it('should emit correct events for SEGMENT_START', function(done) {
@@ -41,9 +40,9 @@ describe('CueMark', function() {
     var emits = 0;
     var isForward = true;
     var emitter = {
-      emit: function(ev, detail, time, id) {  // eslint-disable-line no-unused-vars
+      emit: function(ev, detail) {  // eslint-disable-line no-unused-vars
         emits += 1;
-        expect(id).equals('s1');
+        expect(detail.id).equals('s1');
         expect(ev).equals(isForward ? event.SEGMENT_IN : event.SEGMENT_OUT);
         if (emits === 2) {
           done();
@@ -51,9 +50,9 @@ describe('CueMark', function() {
       }
     };
 
-    m.emitEvent(emitter, isForward);
+    m.emitEvent(emitter, isForward, m);
     isForward = !isForward;
-    m.emitEvent(emitter, isForward);
+    m.emitEvent(emitter, isForward, m);
   });
 
   it('should emit correct events for SEGMENT_END', function(done) {
@@ -61,9 +60,9 @@ describe('CueMark', function() {
     var emits = 0;
     var isForward = true;
     var emitter = {
-      emit: function(ev, detail, time, id) {  // eslint-disable-line no-unused-vars
+      emit: function(ev, detail) {  // eslint-disable-line no-unused-vars
         emits += 1;
-        expect(id).equals('s1');
+        expect(detail.id).equals('s1');
         expect(ev).equals(isForward ? event.SEGMENT_OUT : event.SEGMENT_IN);
         if (emits === 2) {
           done();
@@ -71,8 +70,8 @@ describe('CueMark', function() {
       }
     };
 
-    m.emitEvent(emitter, isForward);
+    m.emitEvent(emitter, isForward, m);
     isForward = !isForward;
-    m.emitEvent(emitter, isForward);
+    m.emitEvent(emitter, isForward, m);
   });
 });

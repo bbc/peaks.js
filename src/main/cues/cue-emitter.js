@@ -56,7 +56,7 @@ define([
    * @constructor
    */
   function CueEmitter(peaks) {
-    this.marks = Array();
+    this._marks = Array();
     this.peaks = peaks;
     this.previousTime = -1;
     // bound to all Peaks events relating to mutated segments or points
@@ -72,7 +72,7 @@ define([
 
   // updates the list of timeline entries from Peaks' points and segments
   CueEmitter.prototype._updateMarks = function() {
-    var marks = this.marks;
+    var marks = this._marks;
     var segments = this.peaks.segments.getSegments();
     var points = this.peaks.points.getPoints();
 
@@ -91,7 +91,7 @@ define([
   };
 
   CueEmitter.prototype._onUpdate = function(time, previousTime) {
-    var marks = this.marks;
+    var marks = this._marks;
     var isForward = time > previousTime;
     var start;
     var end;
@@ -215,7 +215,7 @@ define([
     this.detach();
     this.peaks = undefined;
     this.previousTime = -1;
-    this.marks.length = 0;
+    this._marks.length = 0;
   };
 
   return CueEmitter;

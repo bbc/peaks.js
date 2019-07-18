@@ -503,7 +503,5 @@ define('peaks', [
     this.emit('destroyed');
   };
 
-  Peaks.CueEmitter = CueEmitter;
-
   return Peaks;
 });
