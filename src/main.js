@@ -502,7 +502,9 @@ define('peaks', [
       this.player.destroy();
     }
 
-    this.emit('destroyed');
+    if (this.cueEmitter) {
+      this.cueEmitter.destroy();
+    }
   };
 
   return Peaks;

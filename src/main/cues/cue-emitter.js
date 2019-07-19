@@ -13,21 +13,23 @@ define([
     if (isHeadless || navigator.webdriver) {
       return false;
     }
+
     return (typeof document === 'object') &&
       ('visibilityState' in document) &&
       (document.visibilityState === 'visible');
   }
 
-  function getRAF(top) {
-    return top ? (
-      top.requestAnimationFrame ||
-      top.webkitRequestAnimationFrame ||
-      top.mozRequestAnimationFrame ||
-      top.msRequestAnimationFrame ||
-      function() {}
-    ) : function() {};
-  }
-  var rAF = getRAF(window);
+  var requestAnimationFrame =
+    window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.msRequestAnimationFrame;
+
+  var cancelAnimationFrame =
+    window.cancelAnimationFrame ||
+    window.mozCancelAnimationFrame ||
+    window.webkitCancelAnimationFrame ||
+    window.msCancelAnimationFrame;
 
   /**
    * this adapter navigates the peaks instance to get a corresponding point or segment
@@ -55,6 +57,7 @@ define([
    * @param {Peaks} peaks
    * @constructor
    */
+
   function CueEmitter(peaks) {
     this._marks = Array();
     this.peaks = peaks;
@@ -62,11 +65,11 @@ define([
     // bound to all Peaks events relating to mutated segments or points
     this._updateMarks = this._updateMarks.bind(this);
     // event handlers
-    this.onPeaksDestroyed = this.onPeaksDestroyed.bind(this);
     this.onPlay = this.onPlay.bind(this);
     this.onSeek = this.onSeek.bind(this);
     this.onTimeUpdate = this.onTimeUpdate.bind(this);
     this.onAnimationFrame = this.onAnimationFrame.bind(this);
+    this._rAFHandle = null;
     this.init();
   }
 
@@ -107,6 +110,7 @@ define([
       end = -1;
       step = -1;
     }
+
     // marks are sorted
     for (var i = start, mark, markTime; isForward ? i < end : i > end; i += step) {
       mark = marks[i];
@@ -130,42 +134,38 @@ define([
     if (windowIsVisible()) {
       return;
     }
+
     var player = this.peaks.player;
 
     if (player.isPlaying() && !player.isSeeking()) {
       this._onUpdate(time, this.previousTime);
     }
+
     this.previousTime = time;
   };
 
   CueEmitter.prototype.onAnimationFrame = function() {
-    if (!this.peaks) {
-      return;
-    } // destroyed
-
     var player = this.peaks.player;
     var time = player.getCurrentTime();
 
     if (!player.isSeeking()) {
       this._onUpdate(time, this.previousTime);
     }
+
     this.previousTime = time;
+
     if (player.isPlaying()) {
-      rAF(this.onAnimationFrame);
+      this._rAFHandle = requestAnimationFrame(this.onAnimationFrame);
     }
   };
 
   CueEmitter.prototype.onPlay = function() {
     this.previousTime = this.peaks.player.getCurrentTime();
-    rAF(this.onAnimationFrame);
+    this._rAFHandle = requestAnimationFrame(this.onAnimationFrame);
   };
 
   CueEmitter.prototype.onSeek = function() {
     this.previousTime = this.peaks.player.getCurrentTime();
-  };
-
-  CueEmitter.prototype.onPeaksDestroyed = function() {
-    this.destroy();
   };
 
   var triggerUpdateOn = Array(
@@ -187,10 +187,11 @@ define([
     peaks.on('player_time_update', this.onTimeUpdate);
     peaks.on('player_play', this.onPlay);
     peaks.on('player_seek', this.onSeek);
-    peaks.on('destroyed', this.onPeaksDestroyed);
+
     for (var i = 0; i < triggerUpdateOn.length; i++) {
       peaks.on(triggerUpdateOn[i], this._updateMarks);
     }
+
     this._updateMarks();
   };
 
@@ -200,7 +201,6 @@ define([
     peaks.off('player_time_update', this.onTimeUpdate);
     peaks.off('player_play', this.onPlay);
     peaks.off('player_seek', this.onSeek);
-    peaks.off('destroyed', this.onPeaksDestroyed);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
       peaks.off(triggerUpdateOn[i], this._updateMarks);
@@ -212,8 +212,13 @@ define([
   };
 
   CueEmitter.prototype.destroy = function() {
+    if (this._rAFHandle) {
+      cancelAnimationFrame(this._rAFHandle);
+      this._rAFHandle = null;
+    }
+
     this.detach();
-    this.peaks = undefined;
+
     this.previousTime = -1;
     this._marks.length = 0;
   };
