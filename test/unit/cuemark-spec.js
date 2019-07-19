@@ -10,13 +10,6 @@ describe('CueMark', function() {
     SEGMENT_OUT: 'segments.exit'
   };
 
-  it('should not allow overwriting props', function() {
-    var m = new CueMark(1.1, CueMark.POINT, 'p1');
-    expect(function() { m.time = 0; }).to.throw();
-    expect(function() { m.id = 'p2'; }).to.throw();
-    expect(function() { m.type = -1; }).to.throw();
-  });
-
   it('should emit correct events for POINT', function(done) {
     var m = new CueMark(1, CueMark.POINT, 'p1');
     var emits = 0;

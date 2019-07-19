@@ -17,32 +17,13 @@ define(function() {
    * @property {number} type
    * @constructor
    * @param {number} time
-   * @param {number} typ
+   * @param {number} type
    * @param {string} id
    */
-  function CueMark(time, typ, id) {
-    Object.defineProperties(this, {
-      time: {
-        get: function() {
-          return time;
-        },
-        enumerable: true
-      },
-
-      type: {
-        get: function() {
-          return typ;
-        },
-        enumerable: true
-      },
-
-      id: {
-        get: function() {
-          return id;
-        },
-        enumerable: true
-      }
-    });
+  function CueMark(time, type, id) {
+    this.time = time;
+    this.type = type;
+    this.id = id;
   }
 
   /**
