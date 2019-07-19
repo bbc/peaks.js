@@ -366,6 +366,10 @@ define('peaks', [
         instance.points.add(instance.options.points);
       }
 
+      if (instance.options.emitCueEvents) {
+        instance.cueEmitter = new CueEmitter(instance);
+      }
+
       // TODO: Deprecated, use peaks.ready instead.
       instance.emit('segments.ready');
 
@@ -376,9 +380,6 @@ define('peaks', [
       }
     });
 
-    if (instance.options.emitCueEvents) {
-      instance.cueEmitter = new CueEmitter(instance);
-    }
     return instance;
   };
 
@@ -500,6 +501,7 @@ define('peaks', [
     if (this.player) {
       this.player.destroy();
     }
+
     this.emit('destroyed');
   };
 
