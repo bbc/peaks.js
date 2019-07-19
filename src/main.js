@@ -367,7 +367,7 @@ define('peaks', [
       }
 
       if (instance.options.emitCueEvents) {
-        instance.cueEmitter = new CueEmitter(instance);
+        instance._cueEmitter = new CueEmitter(instance);
       }
 
       // TODO: Deprecated, use peaks.ready instead.
@@ -502,8 +502,8 @@ define('peaks', [
       this.player.destroy();
     }
 
-    if (this.cueEmitter) {
-      this.cueEmitter.destroy();
+    if (this._cueEmitter) {
+      this._cueEmitter.destroy();
     }
   };
 

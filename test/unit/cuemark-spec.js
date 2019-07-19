@@ -1,7 +1,7 @@
 'use strict';
 
 /** @type CueMark */
-var CueMark = require('../../src/main/cues/cuemark.js');
+var CueMark = require('../../src/main/cues/cuemark');
 
 describe('CueMark', function() {
   var event = {

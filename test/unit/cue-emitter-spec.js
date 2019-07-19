@@ -1,6 +1,7 @@
 'use strict';
 
-require('./setup.js');
+require('./setup');
+
 var Peaks = require('../../src/main');
 /** @type CueEmitter */
 var CueEmitter = require('../../src/main/cues/cue-emitter');
@@ -45,12 +46,23 @@ describe('CueEmitter', function() {
     expect(cue._marks.length).equals(0, 'mark array not empty');
   });
 
-  it('should initialise with already existing points', function() {
-    cue.destroy();
-    p.points.add({ time: 1.0 });
-    p.segments.add({ startTime: 1.1, endTime: 1.2 });
-    cue = new CueEmitter(p);
-    expect(cue._marks.length).equals(3, 'marks length did not match');
+  it('should initialise with already existing points', function(done) {
+    var options = {
+      container: document.getElementById('container'),
+      mediaElement: document.getElementById('media'),
+      dataUri: 'base/test_data/sample.json',
+      emitCueEvents: true,
+      points: [{ time: 1.0 }],
+      segments: [{ startTime: 1.1, endTime: 1.2 }]
+    };
+
+    Peaks.init(options, function(err, peaks) {
+      expect(err).to.equal(null);
+      expect(peaks).to.be.an.instanceOf(Peaks);
+      expect(peaks._cueEmitter).to.be.an.instanceOf(CueEmitter);
+      expect(peaks._cueEmitter._marks.length).to.equal(3);
+      done();
+    });
   });
 
   it('should destroy tracker when peaks is destroyed', function(done) {
@@ -64,10 +76,11 @@ describe('CueEmitter', function() {
     Peaks.init(options, function(err, peaks) {
       expect(err).to.equal(null);
       expect(peaks).to.be.an.instanceOf(Peaks);
+      expect(peaks._cueEmitter).to.be.an.instanceOf(CueEmitter);
 
       p.points.add({ time: 1.0 });
       p.destroy();
-      expect(peaks.cueEmitter._marks.length).to.equal(0, 'did not empty marks');
+      expect(peaks._cueEmitter._marks.length).to.equal(0, 'did not empty marks');
       done();
     });
   });
