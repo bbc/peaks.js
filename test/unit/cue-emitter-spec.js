@@ -53,11 +53,23 @@ describe('CueEmitter', function() {
     expect(cue._marks.length).equals(3, 'marks length did not match');
   });
 
-  it('should destroy tracker when peaks is destroyed', function() {
-    p.points.add({ time: 1.0 });
-    p.destroy();
-    expect(cue.peaks).equals(undefined, 'did not detach from instance');
-    expect(cue._marks.length).equals(0, 'did not empty edges');
+  it('should destroy tracker when peaks is destroyed', function(done) {
+    var options = {
+      container: document.getElementById('container'),
+      mediaElement: document.getElementById('media'),
+      dataUri: 'base/test_data/sample.json',
+      emitCueEvents: true
+    };
+
+    Peaks.init(options, function(err, peaks) {
+      expect(err).to.equal(null);
+      expect(peaks).to.be.an.instanceOf(Peaks);
+
+      p.points.add({ time: 1.0 });
+      p.destroy();
+      expect(peaks.cueEmitter._marks.length).to.equal(0, 'did not empty marks');
+      done();
+    });
   });
 
   describe('points -> marks', function() {
@@ -176,6 +188,7 @@ describe('CueEmitter', function() {
           done();
         }
       });
+
       cue._onUpdate(1.1, 1.0);
     });
 
@@ -193,6 +206,7 @@ describe('CueEmitter', function() {
           done();
         }
       });
+
       cue._onUpdate(1.0, 1.1);
     });
 
@@ -205,6 +219,7 @@ describe('CueEmitter', function() {
         expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.05);
       });
+
       p.on(event.SEGMENT_OUT, function(seg) {
         expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.09);
@@ -224,6 +239,7 @@ describe('CueEmitter', function() {
         expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.09);
       });
+
       p.on(event.SEGMENT_OUT, function(seg) {
         expect(seg.id).equals('seg1', 'segment id did not match');
         emitted.push(1.05);
