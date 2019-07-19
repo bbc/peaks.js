@@ -45,8 +45,8 @@ define([
       case CueMark.SEGMENT_START:
       case CueMark.SEGMENT_END:
         return peaks.segments.getSegment(mark.id);
-       default:
-         throw new Error('getPointOrSegment: id not found?');
+      default:
+        throw new Error('getPointOrSegment: id not found?');
     }
   }
 

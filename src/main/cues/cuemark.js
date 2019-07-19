@@ -46,8 +46,9 @@ define(function() {
   /**
    * @param {EventEmitter|{emit:function(string, *)}} emitter
    * @param {boolean} isForwardPlayback
-   * @param {*?} detail
+   * @param {Point|Segment} detail
    */
+
   CueMark.prototype.emitEvent = function(emitter, isForwardPlayback, detail) {
     var eventName = isForwardPlayback ?
       eventNames.forward[this.type] : eventNames.reverse[this.type];
