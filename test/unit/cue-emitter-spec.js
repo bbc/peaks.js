@@ -41,7 +41,7 @@ describe('CueEmitter', function() {
   });
 
   it('should initialise correctly', function() {
-    expect(p.cueEmitter).to.be.undefined;
+    expect(p._cueEmitter).to.be.undefined;
     expect(cue.peaks).equals(p, 'instance did not match');
     expect(cue._marks.length).equals(0, 'mark array not empty');
   });
