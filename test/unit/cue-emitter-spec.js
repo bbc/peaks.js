@@ -262,5 +262,57 @@ describe('CueEmitter', function() {
 
       cue._onUpdate(1.1, 1.0);
     });
+
+    it('should emit events on seeking', function(done) {
+      var mediaElement = document.getElementById('media');
+
+      var options = {
+        container: document.getElementById('container'),
+        mediaElement: mediaElement,
+        dataUri: 'base/test_data/sample.json',
+        emitCueEvents: true
+      };
+
+      Peaks.init(options, function(err, peaks) {
+        expect(err).to.equal(null);
+        expect(peaks).to.be.an.instanceOf(Peaks);
+
+        peaks.segments.add({ startTime: 2, endTime: 4, id: 'segment.1' });
+        peaks.segments.add({ startTime: 6, endTime: 8, id: 'segment.2' });
+        peaks.segments.add({ startTime: 10, endTime: 12, id: 'segment.3' });
+
+        var events = [];
+        var seekTimes = [3, 11]; // Seek to segment.1 then segment.3
+
+        mediaElement.addEventListener('seeked', function() {
+          var time = seekTimes.shift();
+
+          if (time) {
+            peaks.player.seek(time);
+          }
+          else {
+            expect(events.length).to.equal(3);
+            expect(events[0].type).to.equal('segments.enter');
+            expect(events[0].segment.id).to.equal('segment.1');
+            expect(events[1].type).to.equal('segments.exit');
+            expect(events[1].segment.id).to.equal('segment.1');
+            expect(events[2].type).to.equal('segments.enter');
+            expect(events[2].segment.id).to.equal('segment.3');
+            done();
+          }
+        });
+
+        peaks.on('segments.enter', function(segment) {
+          events.push({ type: 'segments.enter', segment: segment });
+        });
+
+        peaks.on('segments.exit', function(segment) {
+          events.push({ type: 'segments.exit', segment: segment });
+        });
+
+        var time = seekTimes.shift();
+        peaks.player.seek(time);
+      });
+    });
   });
 });
