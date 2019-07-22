@@ -42,7 +42,7 @@ describe('CueEmitter', function() {
 
   it('should initialise correctly', function() {
     expect(p._cueEmitter).to.be.undefined;
-    expect(cue.peaks).equals(p, 'instance did not match');
+    expect(cue._peaks).equals(p, 'instance did not match');
     expect(cue._marks.length).equals(0, 'mark array not empty');
   });
 
@@ -182,9 +182,9 @@ describe('CueEmitter', function() {
   describe('events', function() {
     it('should update internal previous time when seeking', function() {
       p.emit('player_time_update', 1.0);
-      expect(cue.previousTime).equals(1.0, 'did not move previous time');
+      expect(cue._previousTime).equals(1.0, 'did not move previous time');
       p.emit('player_time_update', 2.0);
-      expect(cue.previousTime).equals(2.0, 'did not move previous time');
+      expect(cue._previousTime).equals(2.0, 'did not move previous time');
     });
 
     it('should emit point events in forward', function(done) {

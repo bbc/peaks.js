@@ -38,6 +38,7 @@ define([
    * @return {Point|Segment}
    * @throws {Error}
    */
+
   function getPointOrSegment(peaks, mark) {
      switch (mark.type) {
       case CueMark.POINT:
@@ -60,24 +61,24 @@ define([
 
   function CueEmitter(peaks) {
     this._marks = Array();
-    this.peaks = peaks;
-    this.previousTime = -1;
+    this._peaks = peaks;
+    this._previousTime = -1;
     // bound to all Peaks events relating to mutated segments or points
     this._updateMarks = this._updateMarks.bind(this);
     // event handlers
-    this.onPlay = this.onPlay.bind(this);
-    this.onSeek = this.onSeek.bind(this);
-    this.onTimeUpdate = this.onTimeUpdate.bind(this);
-    this.onAnimationFrame = this.onAnimationFrame.bind(this);
+    this._onPlay = this.onPlay.bind(this);
+    this._onSeek = this.onSeek.bind(this);
+    this._onTimeUpdate = this.onTimeUpdate.bind(this);
+    this._onAnimationFrame = this.onAnimationFrame.bind(this);
     this._rAFHandle = null;
-    this.init();
+    this._init();
   }
 
   // updates the list of timeline entries from Peaks' points and segments
   CueEmitter.prototype._updateMarks = function() {
     var marks = this._marks;
-    var segments = this.peaks.segments.getSegments();
-    var points = this.peaks.points.getPoints();
+    var points = this._peaks.points.getPoints();
+    var segments = this._peaks.segments.getSegments();
 
     marks.length = 0;
 
@@ -120,8 +121,9 @@ define([
         if (isForward ? markTime > time : markTime < time) {
           break;
         }
+
         // mark time falls between now and previous call time
-        mark.emitEvent(this.peaks, isForward, getPointOrSegment(this.peaks, mark));
+        mark.emitEvent(this._peaks, isForward, getPointOrSegment(this._peaks, mark));
       }
     }
   };
@@ -135,37 +137,37 @@ define([
       return;
     }
 
-    var player = this.peaks.player;
+    var player = this._peaks.player;
 
     if (player.isPlaying() && !player.isSeeking()) {
-      this._onUpdate(time, this.previousTime);
+      this._onUpdate(time, this._previousTime);
     }
 
-    this.previousTime = time;
+    this._previousTime = time;
   };
 
   CueEmitter.prototype.onAnimationFrame = function() {
-    var player = this.peaks.player;
+    var player = this._peaks.player;
     var time = player.getCurrentTime();
 
     if (!player.isSeeking()) {
-      this._onUpdate(time, this.previousTime);
+      this._onUpdate(time, this._previousTime);
     }
 
-    this.previousTime = time;
+    this._previousTime = time;
 
     if (player.isPlaying()) {
-      this._rAFHandle = requestAnimationFrame(this.onAnimationFrame);
+      this._rAFHandle = requestAnimationFrame(this._onAnimationFrame);
     }
   };
 
   CueEmitter.prototype.onPlay = function() {
-    this.previousTime = this.peaks.player.getCurrentTime();
-    this._rAFHandle = requestAnimationFrame(this.onAnimationFrame);
+    this._previousTime = this._peaks.player.getCurrentTime();
+    this._rAFHandle = requestAnimationFrame(this._onAnimationFrame);
   };
 
   CueEmitter.prototype.onSeek = function() {
-    this.previousTime = this.peaks.player.getCurrentTime();
+    this._previousTime = this._peaks.player.getCurrentTime();
   };
 
   var triggerUpdateOn = Array(
@@ -181,12 +183,12 @@ define([
     'segments.remove_all'
   );
 
-  CueEmitter.prototype.attach = function() {
-    var peaks = this.peaks;
+  CueEmitter.prototype._attach = function() {
+    var peaks = this._peaks;
 
-    peaks.on('player_time_update', this.onTimeUpdate);
-    peaks.on('player_play', this.onPlay);
-    peaks.on('player_seek', this.onSeek);
+    peaks.on('player_time_update', this._onTimeUpdate);
+    peaks.on('player_play', this._onPlay);
+    peaks.on('player_seek', this._onSeek);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
       peaks.on(triggerUpdateOn[i], this._updateMarks);
@@ -195,20 +197,20 @@ define([
     this._updateMarks();
   };
 
-  CueEmitter.prototype.detach = function() {
-    var peaks = this.peaks;
+  CueEmitter.prototype._detach = function() {
+    var peaks = this._peaks;
 
-    peaks.off('player_time_update', this.onTimeUpdate);
-    peaks.off('player_play', this.onPlay);
-    peaks.off('player_seek', this.onSeek);
+    peaks.off('player_time_update', this._onTimeUpdate);
+    peaks.off('player_play', this._onPlay);
+    peaks.off('player_seek', this._onSeek);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
       peaks.off(triggerUpdateOn[i], this._updateMarks);
     }
   };
 
-  CueEmitter.prototype.init = function() {
-    this.attach();
+  CueEmitter.prototype._init = function() {
+    this._attach();
   };
 
   CueEmitter.prototype.destroy = function() {
@@ -217,7 +219,7 @@ define([
       this._rAFHandle = null;
     }
 
-    this.detach();
+    this._detach();
 
     this.previousTime = -1;
     this._marks.length = 0;
