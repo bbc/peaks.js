@@ -1,8 +1,14 @@
-# Peaks.js [![Build Status](https://travis-ci.org/bbc/peaks.js.svg?branch=master)](https://travis-ci.org/bbc/peaks.js)
+[![Build Status](https://travis-ci.org/bbc/peaks.js.svg?branch=master)](https://travis-ci.org/bbc/peaks.js)
 
-> A browser based audio waveform visualisation frontend component from BBC R&D.
+<p align="center">
+  <a href="https://github.com/bbc/peaks.js"><img src="peaks-logo.svg" alt="Peaks.js" height="120" /></a>
+</p>
 
-Peaks.js is a client-side JavaScript component that allows you display and interact with audio waveforms in the browser.
+#
+
+<p align="center">
+    <strong>A client-side JavaScript component to display and interact with audio waveforms in the browser</strong>
+</p>
 
 ![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
 
