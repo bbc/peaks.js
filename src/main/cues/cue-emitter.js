@@ -82,13 +82,13 @@ define([
 
     marks.length = 0;
 
-    points.forEach(function(entry) {
-      marks.push(new CueMark(entry.time, CueMark.POINT, entry.id));
+    points.forEach(function(point) {
+      marks.push(new CueMark(point.time, CueMark.POINT, point.id));
     });
 
-    segments.forEach(function(entry) {
-      marks.push(new CueMark(entry.startTime, CueMark.SEGMENT_START, entry.id));
-      marks.push(new CueMark(entry.endTime, CueMark.SEGMENT_END, entry.id));
+    segments.forEach(function(segment) {
+      marks.push(new CueMark(segment.startTime, CueMark.SEGMENT_START, segment.id));
+      marks.push(new CueMark(segment.endTime, CueMark.SEGMENT_END, segment.id));
     });
 
     marks.sort(CueMark.sorter);
