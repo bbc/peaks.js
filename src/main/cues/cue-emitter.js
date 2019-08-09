@@ -221,7 +221,7 @@ define([
 
     this._detach();
 
-    this.previousTime = -1;
+    this._previousTime = -1;
     this._marks.length = 0;
   };
 
