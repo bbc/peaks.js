@@ -183,45 +183,56 @@
               var element = event.target;
               var id = element.getAttribute('data-id');
               var segment = peaks.segments.getSegment(id);
+
               if (segment) {
                 var startTime = parseFloat(element.value);
+
                 if (startTime < 0) {
                   startTime = 0;
                   element.value = 0;
                 }
+
                 if (startTime >= segment.endTime) {
                   startTime = segment.endTime - 0.1;
                   element.value = startTime;
                 }
+
                 segment.update({ startTime: startTime });
               }
             });
           });
+
           document.querySelectorAll('input[data-action="update-segment-end-time"]').forEach(function(inputElement) {
             inputElement.addEventListener('input', function(event) {
               var element = event.target;
               var id = element.getAttribute('data-id');
               var segment = peaks.segments.getSegment(id);
+
               if (segment) {
                 var endTime = parseFloat(element.value);
+
                 if (endTime < 0) {
                   endTime = 0;
                   element.value = 0;
                 }
+
                 if (endTime <= segment.startTime) {
                   endTime = segment.startTime + 0.1;
                   element.value = endTime;
                 }
+
                 segment.update({ endTime: endTime });
               }
             });
           });
+
           document.querySelectorAll('input[data-action="update-segment-label"]').forEach(function(inputElement) {
             inputElement.addEventListener('input', function(event) {
               var element = event.target;
               var id = element.getAttribute('data-id');
               var segment = peaks.segments.getSegment(id);
               var labelText = element.labelText;
+
               if (segment) {
                 segment.update({ labelText: labelText });
               }
@@ -264,22 +275,27 @@
               var element = event.target;
               var id = element.getAttribute('data-id');
               var point = peaks.points.getPoint(id);
+
               if (point) {
                 var time = parseFloat(element.value);
+
                 if (time < 0) {
                   time = 0;
                   element.value = 0;
                 }
+
                 point.update({ time: time });
               }
             });
           });
+
           document.querySelectorAll('input[data-action="update-point-label"]').forEach(function(inputElement) {
             inputElement.addEventListener('input', function(event) {
               var element = event.target;
               var id = element.getAttribute('data-id');
               var point = peaks.points.getPoint(id);
               var labelText = element.labelText;
+
               if (point) {
                 point.update({ labelText: labelText });
               }
@@ -390,9 +406,11 @@
           peaksInstance.on('points.enter', function(point) {
             console.log('points.enter', point, peaksInstance.player.getCurrentTime())
           });
+
           peaksInstance.on('segments.enter', function(segment) {
             console.log('segments.enter', segment,peaksInstance.player.getCurrentTime())
           });
+
           peaksInstance.on('segments.exit', function(segment) {
             console.log('segments.exit', segment, peaksInstance.player.getCurrentTime())
           });
