@@ -274,6 +274,49 @@ describe('Peaks.segments', function() {
     });
   });
 
+  describe('getSegmentsAtTime', function() {
+    beforeEach(function() {
+      p.segments.add({ startTime: 10, endTime: 12, id: 'segment1' });
+      p.segments.add({ startTime: 13, endTime: 15, id: 'segment2' });
+      p.segments.add({ startTime: 16, endTime: 18, id: 'segment3' });
+      p.segments.add({ startTime: 17, endTime: 19, id: 'segment4' });
+    });
+
+    it('should return an empty array if no overlapping segments', function() {
+      var segments = p.segments.getSegmentsAtTime(5);
+      expect(segments).to.be.an.instanceOf(Array);
+      expect(segments).to.have.lengthOf(0);
+    });
+
+    it('should return segment with time at the start of the segment', function() {
+      var segments = p.segments.getSegmentsAtTime(10);
+      expect(segments).to.be.an.instanceOf(Array);
+      expect(segments).to.have.lengthOf(1);
+      expect(segments[0].id).to.equal('segment1');
+    });
+
+    it('should not return segment with time at the end of the segment', function() {
+      var segments = p.segments.getSegmentsAtTime(12);
+      expect(segments).to.be.an.instanceOf(Array);
+      expect(segments).to.have.lengthOf(0);
+    });
+
+    it('should return segment with time within the segment', function() {
+      var segments = p.segments.getSegmentsAtTime(11);
+      expect(segments).to.be.an.instanceOf(Array);
+      expect(segments).to.have.lengthOf(1);
+      expect(segments[0].id).to.equal('segment1');
+    });
+
+    it('should return all overlapping segments', function() {
+      var segments = p.segments.getSegmentsAtTime(17);
+      expect(segments).to.be.an.instanceOf(Array);
+      expect(segments).to.have.lengthOf(2);
+      expect(segments[0].id).to.equal('segment3');
+      expect(segments[1].id).to.equal('segment4');
+    });
+  });
+
   describe('remove', function() {
     beforeEach(function() {
       p.segments.add({ startTime: 10, endTime: 12, id: 'segment1' });

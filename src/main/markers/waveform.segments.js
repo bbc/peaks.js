@@ -161,6 +161,19 @@ define([
   };
 
   /**
+   * Returns all segments that overlap a given point in time.
+   *
+   * @param {Number} time
+   * @returns {Array<Segment>}
+   */
+
+  WaveformSegments.prototype.getSegmentsAtTime = function(time) {
+    return this._segments.filter(function(segment) {
+      return time >= segment.startTime && time < segment.endTime;
+    });
+  };
+
+  /**
    * Returns all segments that overlap a given time region.
    *
    * @param {Number} startTime The start of the time region, in seconds.
