@@ -2,68 +2,49 @@
  * @file
  * @module peaks/cues/cuemark
  */
+
 define(function() {
   'use strict';
 
-  var eventNames = {
-    forward: {},
-    reverse: {}
-  };
-
   /**
+   * A cue represents an event to be triggered at some point on the media
+   * timeline.
+   *
    * @class
-   * @property {number} time
-   * @property {string} id
-   * @property {number} type
-   * @constructor
-   * @param {number} time
-   * @param {number} type
-   * @param {string} id
+   * @alias CueMark
+   *
+   * @param {Number} time Cue time, in seconds.
+   * @param {Number} type Cue mark type, either <code>CueMark.POINT</code>,
+   *   <code>CueMark.SEGMENT_START</code>, or <code>CueMark.SEGMENT_END</code>.
+   * @param {String} id The id of the {@link Point} or {@link Segment}.
    */
+
   function CueMark(time, type, id) {
     this.time = time;
     this.type = type;
     this.id = id;
   }
 
-  /**
-   * @typedef {number} CueMark.POINT
-   * @typedef {number} CueMark.SEGMENT_START
-   * @typedef {number} CueMark.SEGMENT_END
-   */
+   /**
+    * @constant
+    * @type {Number}
+    */
+
   CueMark.POINT = 0;
   CueMark.SEGMENT_START = 1;
   CueMark.SEGMENT_END = 2;
 
-  eventNames.forward[CueMark.POINT] = 'points.enter';
-  eventNames.forward[CueMark.SEGMENT_START] = 'segments.enter';
-  eventNames.forward[CueMark.SEGMENT_END] = 'segments.exit';
-
-  eventNames.reverse[CueMark.POINT] = eventNames.forward[CueMark.POINT];
-  eventNames.reverse[CueMark.SEGMENT_START] = eventNames.forward[CueMark.SEGMENT_END];
-  eventNames.reverse[CueMark.SEGMENT_END] = eventNames.forward[CueMark.SEGMENT_START];
-
   /**
-   * @param {EventEmitter|{emit:function(string, *)}} emitter
-   * @param {boolean} isForwardPlayback
-   * @param {Point|Segment} detail
-   */
-
-  CueMark.prototype.emitEvent = function(emitter, isForwardPlayback, detail) {
-    var eventName = isForwardPlayback ?
-      eventNames.forward[this.type] : eventNames.reverse[this.type];
-
-    emitter.emit(eventName, detail);
-  };
-
-  /**
+   * Callback function for use with Array.prototype.sort().
+   *
    * @static
-   * @param e1
-   * @param e2
-   * @return {number}
+   * @param {CueMark} a
+   * @param {CueMark} b
+   * @return {Number}
    */
-  CueMark.sorter = function(e1, e2) {
-    return e1.time - e2.time;
+
+  CueMark.sorter = function(a, b) {
+    return a.time - b.time;
   };
 
   return CueMark;

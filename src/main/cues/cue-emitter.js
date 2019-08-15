@@ -1,7 +1,11 @@
 /**
  * @file
+ *
+ * Defines the {@link CueEmitter} class.
+ *
  * @module peaks/cues/cue-emitter
  */
+
 define([
   'peaks/cues/cuemark'
 ], function(CueMark) {
@@ -31,71 +35,119 @@ define([
     window.webkitCancelAnimationFrame ||
     window.msCancelAnimationFrame;
 
+  var eventTypes = {
+    forward: {},
+    reverse: {}
+  };
+
+  var EVENT_TYPE_POINT = 0;
+  var EVENT_TYPE_SEGMENT_ENTER = 1;
+  var EVENT_TYPE_SEGMENT_EXIT = 2;
+
+  eventTypes.forward[CueMark.POINT] = EVENT_TYPE_POINT;
+  eventTypes.forward[CueMark.SEGMENT_START] = EVENT_TYPE_SEGMENT_ENTER;
+  eventTypes.forward[CueMark.SEGMENT_END] = EVENT_TYPE_SEGMENT_EXIT;
+
+  eventTypes.reverse[CueMark.POINT] = EVENT_TYPE_POINT;
+  eventTypes.reverse[CueMark.SEGMENT_START] = EVENT_TYPE_SEGMENT_EXIT;
+  eventTypes.reverse[CueMark.SEGMENT_END] = EVENT_TYPE_SEGMENT_ENTER;
+
+  var eventNames = {};
+
+  eventNames[EVENT_TYPE_POINT] = 'points.enter';
+  eventNames[EVENT_TYPE_SEGMENT_ENTER] = 'segments.enter';
+  eventNames[EVENT_TYPE_SEGMENT_EXIT] = 'segments.exit';
+
   /**
-   * this adapter navigates the peaks instance to get a corresponding point or segment
+   * Given a cue instance, returns the corresponding {@link Point}
+   * {@link Segment}.
+   *
    * @param {Peaks} peaks
-   * @param {CueMark} mark
+   * @param {CueMark} cue
    * @return {Point|Segment}
    * @throws {Error}
    */
 
-  function getPointOrSegment(peaks, mark) {
-     switch (mark.type) {
+  function getPointOrSegment(peaks, cue) {
+    switch (cue.type) {
       case CueMark.POINT:
-        return peaks.points.getPoint(mark.id);
+        return peaks.points.getPoint(cue.id);
+
       case CueMark.SEGMENT_START:
       case CueMark.SEGMENT_END:
-        return peaks.segments.getSegment(mark.id);
+        return peaks.segments.getSegment(cue.id);
+
       default:
         throw new Error('getPointOrSegment: id not found?');
     }
   }
 
   /**
+   * CueEmitter is responsible for emitting <code>points.enter</code>,
+   * <code>segments.enter</code>, and <code>segments.exit</code> events.
+   *
    * @class
-   * @property {Peaks} peaks
-   * @property {Array.<CueMark>} marks
-   * @param {Peaks} peaks
-   * @constructor
+   * @alias CueEmitter
+   *
+   * @param {Peaks} peaks Parent {@link Peaks} instance.
    */
 
   function CueEmitter(peaks) {
-    this._marks = Array();
+    this._cues = [];
     this._peaks = peaks;
     this._previousTime = -1;
-    // bound to all Peaks events relating to mutated segments or points
-    this._updateMarks = this._updateMarks.bind(this);
-    // event handlers
+    this._updateCues = this._updateCues.bind(this);
+    // Event handlers:
     this._onPlay = this.onPlay.bind(this);
     this._onSeek = this.onSeek.bind(this);
     this._onTimeUpdate = this.onTimeUpdate.bind(this);
     this._onAnimationFrame = this.onAnimationFrame.bind(this);
     this._rAFHandle = null;
-    this._init();
+    this._activeSegments = {};
+    this._attachEventHandlers();
   }
 
-  // updates the list of timeline entries from Peaks' points and segments
-  CueEmitter.prototype._updateMarks = function() {
-    var marks = this._marks;
-    var points = this._peaks.points.getPoints();
-    var segments = this._peaks.segments.getSegments();
+  /**
+   * This function is bound to all {@link Peaks} events relating to mutated
+   * [Points]{@link Point} or [Segments]{@link Segment}, and updates the
+   * list of cues accordingly.
+   *
+   * @private
+   */
 
-    marks.length = 0;
+  CueEmitter.prototype._updateCues = function() {
+    var self = this;
+
+    var points = self._peaks.points.getPoints();
+    var segments = self._peaks.segments.getSegments();
+
+    self._cues.length = 0;
 
     points.forEach(function(point) {
-      marks.push(new CueMark(point.time, CueMark.POINT, point.id));
+      self._cues.push(new CueMark(point.time, CueMark.POINT, point.id));
     });
 
     segments.forEach(function(segment) {
-      marks.push(new CueMark(segment.startTime, CueMark.SEGMENT_START, segment.id));
-      marks.push(new CueMark(segment.endTime, CueMark.SEGMENT_END, segment.id));
+      self._cues.push(new CueMark(segment.startTime, CueMark.SEGMENT_START, segment.id));
+      self._cues.push(new CueMark(segment.endTime, CueMark.SEGMENT_END, segment.id));
     });
 
-    marks.sort(CueMark.sorter);
+    self._cues.sort(CueMark.sorter);
+
+    var time = self._peaks.player.getCurrentTime();
+
+    self._updateActiveSegments(time);
   };
 
+  /**
+   * Emits events for any cues passed through during media playback.
+   *
+   * @param {Number} time The current time on the media timeline.
+   * @param {Number} previousTime The previous time on the media timeline when
+   *   this function was called.
+   */
+
   CueEmitter.prototype._onUpdate = function(time, previousTime) {
-    var marks = this._marks;
     var isForward = time > previousTime;
     var start;
     var end;
@@ -103,27 +155,39 @@ define([
 
     if (isForward) {
       start = 0;
-      end = marks.length;
+      end = this._cues.length;
       step = 1;
     }
     else {
-      start = marks.length - 1;
+      start = this._cues.length - 1;
       end = -1;
       step = -1;
     }
 
-    // marks are sorted
-    for (var i = start, mark, markTime; isForward ? i < end : i > end; i += step) {
-      mark = marks[i];
-      markTime = mark.time;
+    // Cues are sorted
+    for (var i = start; isForward ? i < end : i > end; i += step) {
+      var cue = this._cues[i];
 
-      if (isForward ? markTime > previousTime : markTime < previousTime) {
-        if (isForward ? markTime > time : markTime < time) {
+      if (isForward ? cue.time > previousTime : cue.time < previousTime) {
+        if (isForward ? cue.time > time : cue.time < time) {
           break;
         }
 
-        // mark time falls between now and previous call time
-        mark.emitEvent(this._peaks, isForward, getPointOrSegment(this._peaks, mark));
+        // Cue falls between time and previousTime
+
+        var marker = getPointOrSegment(this._peaks, cue);
+
+        var eventType = isForward ? eventTypes.forward[cue.type] :
+                                    eventTypes.reverse[cue.type];
+
+        if (eventType === EVENT_TYPE_SEGMENT_ENTER) {
+          this._activeSegments[marker.id] = marker;
+        }
+        else if (eventType === EVENT_TYPE_SEGMENT_EXIT) {
+          delete this._activeSegments[marker.id];
+        }
+
+        this._peaks.emit(eventNames[eventType], marker);
       }
     }
   };
@@ -137,9 +201,7 @@ define([
       return;
     }
 
-    var player = this._peaks.player;
-
-    if (player.isPlaying() && !player.isSeeking()) {
+    if (this._peaks.player.isPlaying() && !this._peaks.player.isSeeking()) {
       this._onUpdate(time, this._previousTime);
     }
 
@@ -147,16 +209,15 @@ define([
   };
 
   CueEmitter.prototype.onAnimationFrame = function() {
-    var player = this._peaks.player;
-    var time = player.getCurrentTime();
+    var time = this._peaks.player.getCurrentTime();
 
-    if (!player.isSeeking()) {
+    if (!this._peaks.player.isSeeking()) {
       this._onUpdate(time, this._previousTime);
     }
 
     this._previousTime = time;
 
-    if (player.isPlaying()) {
+    if (this._peaks.player.isPlaying()) {
       this._rAFHandle = requestAnimationFrame(this._onAnimationFrame);
     }
   };
@@ -166,8 +227,50 @@ define([
     this._rAFHandle = requestAnimationFrame(this._onAnimationFrame);
   };
 
-  CueEmitter.prototype.onSeek = function() {
-    this._previousTime = this._peaks.player.getCurrentTime();
+  CueEmitter.prototype.onSeek = function(time) {
+    this._previousTime = time;
+
+    this._updateActiveSegments(time);
+  };
+
+  function getSegmentIdComparator(id) {
+    return function compareSegmentIds(segment) {
+      return segment.id === id;
+    };
+  }
+
+  /**
+   * The active segments is the set of all segments which overlap the current
+   * playhead position. This function updates that set and emits
+   * <code>segments.enter</code> and <code>segments.exit</code> events.
+   */
+
+  CueEmitter.prototype._updateActiveSegments = function(time) {
+    var self = this;
+
+    var activeSegments = self._peaks.segments.getSegmentsAtTime(time);
+
+    // Remove any segments no longer active.
+
+    for (var id in self._activeSegments) {
+      if (Object.prototype.hasOwnProperty.call(self._activeSegments, id)) {
+        var segment = activeSegments.find(getSegmentIdComparator(id));
+
+        if (!segment) {
+          self._peaks.emit('segments.exit', self._activeSegments[id]);
+          delete self._activeSegments[id];
+        }
+      }
+    }
+
+    // Add new active segments.
+
+    activeSegments.forEach(function(segment) {
+      if (!(segment.id in self._activeSegments)) {
+        self._activeSegments[segment.id] = segment;
+        self._peaks.emit('segments.enter', segment);
+      }
+    });
   };
 
   var triggerUpdateOn = Array(
@@ -183,34 +286,26 @@ define([
     'segments.remove_all'
   );
 
-  CueEmitter.prototype._attach = function() {
-    var peaks = this._peaks;
-
-    peaks.on('player_time_update', this._onTimeUpdate);
-    peaks.on('player_play', this._onPlay);
-    peaks.on('player_seek', this._onSeek);
+  CueEmitter.prototype._attachEventHandlers = function() {
+    this._peaks.on('player_time_update', this._onTimeUpdate);
+    this._peaks.on('player_play', this._onPlay);
+    this._peaks.on('player_seek', this._onSeek);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
-      peaks.on(triggerUpdateOn[i], this._updateMarks);
+      this._peaks.on(triggerUpdateOn[i], this._updateCues);
     }
 
-    this._updateMarks();
+    this._updateCues();
   };
 
-  CueEmitter.prototype._detach = function() {
-    var peaks = this._peaks;
-
-    peaks.off('player_time_update', this._onTimeUpdate);
-    peaks.off('player_play', this._onPlay);
-    peaks.off('player_seek', this._onSeek);
+  CueEmitter.prototype._detachEventHandlers = function() {
+    this._peaks.off('player_time_update', this._onTimeUpdate);
+    this._peaks.off('player_play', this._onPlay);
+    this._peaks.off('player_seek', this._onSeek);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
-      peaks.off(triggerUpdateOn[i], this._updateMarks);
+      this._peaks.off(triggerUpdateOn[i], this._updateCues);
     }
-  };
-
-  CueEmitter.prototype._init = function() {
-    this._attach();
   };
 
   CueEmitter.prototype.destroy = function() {
@@ -219,7 +314,7 @@ define([
       this._rAFHandle = null;
     }
 
-    this._detach();
+    this._detachEventHandlers();
 
     this._previousTime = -1;
     this._marks.length = 0;
