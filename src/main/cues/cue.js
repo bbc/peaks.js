@@ -1,6 +1,6 @@
 /**
  * @file
- * @module peaks/cues/cuemark
+ * @module peaks/cues/cue
  */
 
 define(function() {
@@ -11,15 +11,15 @@ define(function() {
    * timeline.
    *
    * @class
-   * @alias CueMark
+   * @alias Cue
    *
    * @param {Number} time Cue time, in seconds.
-   * @param {Number} type Cue mark type, either <code>CueMark.POINT</code>,
-   *   <code>CueMark.SEGMENT_START</code>, or <code>CueMark.SEGMENT_END</code>.
+   * @param {Number} type Cue mark type, either <code>Cue.POINT</code>,
+   *   <code>Cue.SEGMENT_START</code>, or <code>Cue.SEGMENT_END</code>.
    * @param {String} id The id of the {@link Point} or {@link Segment}.
    */
 
-  function CueMark(time, type, id) {
+  function Cue(time, type, id) {
     this.time = time;
     this.type = type;
     this.id = id;
@@ -30,22 +30,22 @@ define(function() {
     * @type {Number}
     */
 
-  CueMark.POINT = 0;
-  CueMark.SEGMENT_START = 1;
-  CueMark.SEGMENT_END = 2;
+  Cue.POINT = 0;
+  Cue.SEGMENT_START = 1;
+  Cue.SEGMENT_END = 2;
 
   /**
    * Callback function for use with Array.prototype.sort().
    *
    * @static
-   * @param {CueMark} a
-   * @param {CueMark} b
+   * @param {Cue} a
+   * @param {Cue} b
    * @return {Number}
    */
 
-  CueMark.sorter = function(a, b) {
+  Cue.sorter = function(a, b) {
     return a.time - b.time;
   };
 
-  return CueMark;
+  return Cue;
 });

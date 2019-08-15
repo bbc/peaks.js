@@ -43,7 +43,7 @@
     "peaks/markers/waveform.points": "./src/main/markers/waveform.points.js",
     "peaks/markers/waveform.segments": "./src/main/markers/waveform.segments.js",
     "peaks/cues/cue-emitter": "./src/main/cues/cue-emitter.js",
-    "peaks/cues/cuemark": "./src/main/cues/cuemark.js"
+    "peaks/cues/cue": "./src/main/cues/cue.js"
   },
   "repository": {
     "type": "git",

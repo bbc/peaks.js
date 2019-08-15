@@ -7,8 +7,8 @@
  */
 
 define([
-  'peaks/cues/cuemark'
-], function(CueMark) {
+  'peaks/cues/cue'
+], function(Cue) {
   'use strict';
 
   var isHeadless = /HeadlessChrome/.test(navigator.userAgent);
@@ -44,13 +44,13 @@ define([
   var EVENT_TYPE_SEGMENT_ENTER = 1;
   var EVENT_TYPE_SEGMENT_EXIT = 2;
 
-  eventTypes.forward[CueMark.POINT] = EVENT_TYPE_POINT;
-  eventTypes.forward[CueMark.SEGMENT_START] = EVENT_TYPE_SEGMENT_ENTER;
-  eventTypes.forward[CueMark.SEGMENT_END] = EVENT_TYPE_SEGMENT_EXIT;
+  eventTypes.forward[Cue.POINT] = EVENT_TYPE_POINT;
+  eventTypes.forward[Cue.SEGMENT_START] = EVENT_TYPE_SEGMENT_ENTER;
+  eventTypes.forward[Cue.SEGMENT_END] = EVENT_TYPE_SEGMENT_EXIT;
 
-  eventTypes.reverse[CueMark.POINT] = EVENT_TYPE_POINT;
-  eventTypes.reverse[CueMark.SEGMENT_START] = EVENT_TYPE_SEGMENT_EXIT;
-  eventTypes.reverse[CueMark.SEGMENT_END] = EVENT_TYPE_SEGMENT_ENTER;
+  eventTypes.reverse[Cue.POINT] = EVENT_TYPE_POINT;
+  eventTypes.reverse[Cue.SEGMENT_START] = EVENT_TYPE_SEGMENT_EXIT;
+  eventTypes.reverse[Cue.SEGMENT_END] = EVENT_TYPE_SEGMENT_ENTER;
 
   var eventNames = {};
 
@@ -63,18 +63,18 @@ define([
    * {@link Segment}.
    *
    * @param {Peaks} peaks
-   * @param {CueMark} cue
+   * @param {Cue} cue
    * @return {Point|Segment}
    * @throws {Error}
    */
 
   function getPointOrSegment(peaks, cue) {
     switch (cue.type) {
-      case CueMark.POINT:
+      case Cue.POINT:
         return peaks.points.getPoint(cue.id);
 
-      case CueMark.SEGMENT_START:
-      case CueMark.SEGMENT_END:
+      case Cue.SEGMENT_START:
+      case Cue.SEGMENT_END:
         return peaks.segments.getSegment(cue.id);
 
       default:
@@ -124,15 +124,15 @@ define([
     self._cues.length = 0;
 
     points.forEach(function(point) {
-      self._cues.push(new CueMark(point.time, CueMark.POINT, point.id));
+      self._cues.push(new Cue(point.time, Cue.POINT, point.id));
     });
 
     segments.forEach(function(segment) {
-      self._cues.push(new CueMark(segment.startTime, CueMark.SEGMENT_START, segment.id));
-      self._cues.push(new CueMark(segment.endTime, CueMark.SEGMENT_END, segment.id));
+      self._cues.push(new Cue(segment.startTime, Cue.SEGMENT_START, segment.id));
+      self._cues.push(new Cue(segment.endTime, Cue.SEGMENT_END, segment.id));
     });
 
-    self._cues.sort(CueMark.sorter);
+    self._cues.sort(Cue.sorter);
 
     var time = self._peaks.player.getCurrentTime();
 
