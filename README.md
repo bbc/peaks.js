@@ -280,6 +280,9 @@ var options = {
   // async logging function
   logger: console.error.bind(console),
 
+  // if true, emit cue events on the Peaks instance (see Cue Events)
+  emitCueEvents: false,
+
   // default height of the waveform canvases in pixels
   height: 200,
 
@@ -805,6 +808,17 @@ const view = instance.views.getView('zoomview');
 view.showPlayeadTime(false); // Remove the time from the playhead marker.
 ```
 
+## Cue events
+
+Emit events when the playhead reaches a point or segment boundary.
+
+```js
+const peaks = Peaks.init({ ..., emitCueEvents: true });
+peaks.on('points.enter', function(point) { ... });
+peaks.on('segments.enter', function(segment) { ... });
+peaks.on('segments.exit', function(segment) { ... });
+```
+
 ## Destruction
 
 ### `instance.destroy()`
@@ -857,10 +871,19 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.mouseleave`       | `Point point`         |
 | `points.dblclick`         | `Point point`         |
 
+### Cue Events
+
+To enable cue events, call `Peaks.init()` with the `{ emitCueEvents: true }` option. When the playhead reaches a point or segment boundary, a cue event is emitted.
+
+| Event name               | Arguments                |
+| ------------------------ | ------------------------ |
+| `points.enter`           | `Point point`            |
+| `segments.enter`         | `Segment segment`        |
+| `segments.exit`          | `Segment segment`        |
+
 # Building Peaks.js
 
-You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests.
-The project bundles everything you need to do so.
+You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests. The project bundles everything you need to do so.
 
 ## Prerequisites
 

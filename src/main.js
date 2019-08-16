@@ -18,7 +18,8 @@ define('peaks', [
   'peaks/waveform/waveform-builder',
   'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
-  'peaks/player/player.keyboard'
+  'peaks/player/player.keyboard',
+  'peaks/cues/cue-emitter'
   ], function(
     Colors,
     EventEmitter,
@@ -31,7 +32,8 @@ define('peaks', [
     WaveformBuilder,
     mixins,
     Utils,
-    KeyboardHandler) {
+    KeyboardHandler,
+    CueEmitter) {
   'use strict';
 
   function buildUi(container) {
@@ -243,7 +245,12 @@ define('peaks', [
       /**
        * Use animation on zoom
        */
-      zoomAdapter: 'static'
+      zoomAdapter: 'static',
+
+      /**
+       * Emit cue events
+       */
+      emitCueEvents: false
     };
 
     /**
@@ -357,6 +364,10 @@ define('peaks', [
 
       if (instance.options.points) {
         instance.points.add(instance.options.points);
+      }
+
+      if (instance.options.emitCueEvents) {
+        instance._cueEmitter = new CueEmitter(instance);
       }
 
       // TODO: Deprecated, use peaks.ready instead.
@@ -489,6 +500,10 @@ define('peaks', [
 
     if (this.player) {
       this.player.destroy();
+    }
+
+    if (this._cueEmitter) {
+      this._cueEmitter.destroy();
     }
   };
 

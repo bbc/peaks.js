@@ -96,17 +96,17 @@
         The following pages demonstrate various configuration options:
       </p>
       <p>
-        Precomputed Waveform Data |
+        <a href="index.html">Precomputed Waveform Data</a> |
         <a href="webaudio.html">Web Audio API</a> |
         <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
         <a href="overview-waveform.html">Single Fixed Waveform</a> |
-        <a href="cue-events.html">Cue Events</a>
+        Cue Events
       </p>
-      <h2>Demo: Precomputed Waveform Data</h2>
+
+      <h2>Demo: Cue Events</h2>
       <p>
-        This demo shows how to use waveform data precomputed using
-        <a href="https://github.com/bbc/audiowaveform">audiowaveform</a>.
-        The data is requested from the web server in binary or JSON format.
+        This demo shows how to listen for events from the playhead reaching points, or segment edges. <br />
+        Events in this demo are logged in the browser console.
       </p>
     </div>
 
@@ -127,6 +127,7 @@
         <button data-action="log-data">Log segments/points</button>
         <input type="text" id="seek-time" value="0.0">
         <button data-action="seek">Seek</button>
+        <button data-action="reverse-direction">Reverse direction</button>
         <button data-action="destroy">Destroy</button>
       </div>
     </div>
@@ -165,7 +166,7 @@
       </div>
     </div>
 
-    <script src="peaks.js"></script>
+    <script src="peaks.js?20"></script>
     <script>
       (function(Peaks) {
         var renderSegments = function(peaks) {
@@ -261,6 +262,12 @@
           var points = peaks.points.getPoints();
           var html = '';
 
+          window.pointUpdated = function(i, prop, value) {
+            var points = peaksInstance.points.getPoints();
+            var segment = points[i];
+            point.update({[prop]: value});
+          };
+
           for (var i = 0; i < points.length; i++) {
             var point = points[i];
 
@@ -322,7 +329,8 @@
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
-          showPlayheadTime: true
+          showPlayheadTime: true,
+          emitCueEvents: true
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -367,6 +375,17 @@
             }
           });
 
+          document.querySelector('button[data-action="reverse-direction"]').addEventListener('click', function(event) {
+            var el = document.querySelector('audio');
+
+            try {
+              el.playbackRate = -el.playbackRate;
+            }
+            catch (e) {
+              console.info('reverse direction not supported');
+            }
+          });
+
           document.querySelector('button[data-action="destroy"]').addEventListener('click', function(event) {
             peaksInstance.destroy();
           });
@@ -388,44 +407,29 @@
             }
           });
 
-          // Points mouse events
-
-          peaksInstance.on('points.mouseenter', function(point) {
-            console.log('points.mouseenter:', point);
+          peaksInstance.segments.add({
+            startTime: 5.5,
+            endTime: 7.5,
+            editable: true,
+            id: 'testsegment'
           });
 
-          peaksInstance.on('points.mouseleave', function(point) {
-            console.log('points.mouseleave:', point);
+          peaksInstance.points.add({
+            time: 4.3,
+            editable: true,
+            id: 'testpoint'
           });
 
-          peaksInstance.on('points.dblclick', function(point) {
-            console.log('points.dblclick:', point);
+          peaksInstance.on('points.enter', function(point) {
+            console.log('points.enter', point, peaksInstance.player.getCurrentTime())
           });
 
-          peaksInstance.on('points.dragstart', function(point) {
-            console.log('points.dragstart:', point);
+          peaksInstance.on('segments.enter', function(segment) {
+            console.log('segments.enter', segment,peaksInstance.player.getCurrentTime())
           });
 
-          peaksInstance.on('points.dragmove', function(point) {
-            console.log('points.dragmove:', point);
-          });
-
-          peaksInstance.on('points.dragend', function(point) {
-            console.log('points.dragend:', point);
-          });
-
-          // Segments mouse events
-
-          peaksInstance.on('segments.mouseenter', function(segment) {
-            console.log('segments.mouseenter:', segment);
-          });
-
-          peaksInstance.on('segments.mouseleave', function(segment) {
-            console.log('segments.mouseleave:', segment);
-          });
-
-          peaksInstance.on('segments.click', function(segment) {
-            console.log('segments.click:', segment);
+          peaksInstance.on('segments.exit', function(segment) {
+            console.log('segments.exit', segment, peaksInstance.player.getCurrentTime())
           });
         });
       })(peaks);

@@ -124,6 +124,8 @@ declare module 'peaks.js' {
     segments?: Segment[];
     // Array of initial point objects
     points?: Point[];
+    // Emit cue events when playing
+    emitCueEvents?: boolean;
   }
 
   interface InstanceEvents {
@@ -137,6 +139,7 @@ declare module 'peaks.js' {
     'points.mouseleave': (point: Point) => any;
     'points.remove_all': () => any;
     'points.remove': (points: Point[]) => any;
+    'points.enter': (point: Point) => any;
     'segments.add': (segments: Segment[]) => any;
     'segments.dragged': (segment: Segment) => any;
     'segments.remove_all': () => any;
@@ -144,6 +147,8 @@ declare module 'peaks.js' {
     'segments.mouseenter': (segment: Segment) => any;
     'segments.mouseleave': (segment: Segment) => any;
     'segments.click': (segment: Segment) => any;
+    'segments.enter':    (segment: Segment) => any;
+    'segments.exit':    (segment: Segment) => any;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
     error: (err: Error) => any;
     player_seek: (time: number) => any;

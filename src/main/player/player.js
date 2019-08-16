@@ -134,6 +134,13 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
   };
 
   /**
+   * @returns {boolean} <code>true</code> if seeking
+   */
+  Player.prototype.isSeeking = function() {
+    return this._mediaElement.seeking;
+  };
+
+  /**
    * Returns the current playback time position, in seconds.
    *
    * @returns {Number}
