@@ -272,8 +272,8 @@ var options = {
 
   // async logging function
   logger: console.error.bind(console),
-  
-  // if true, emit cue events on the peaks instance (see Cue Events) 
+
+  // if true, emit cue events on the Peaks instance (see Cue Events)
   emitCueEvents: false,
 
   // default height of the waveform canvases in pixels
@@ -803,7 +803,7 @@ view.showPlayeadTime(false); // Remove the time from the playhead marker.
 
 ## Cue events
 
-Emit events when the playhead reaches a point or segment boundary:
+Emit events when the playhead reaches a point or segment boundary.
 
 ```js
 const peaks = Peaks.init({ ..., emitCueEvents: true });
@@ -864,28 +864,19 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.mouseleave`       | `Point point`         |
 | `points.dblclick`         | `Point point`         |
 
-
 ### Cue Events
 
-NB: Instantiate peaks with `{ emitCueEvents: true }` option.
+To enable cue events, call `Peaks.init()` with the `{ emitCueEvents: true }` option. When the playhead reaches a point or segment boundary, a cue event is emitted.
 
-When the playhead reaches a point or segment boundary, a cue event is emitted.
-   
 | Event name               | Arguments                |
 | ------------------------ | ------------------------ |
-| `points.enter`           | `Point point` |
-| `segments.enter`         | `Segment segment` |
-| `segments.exit`          | `Segment segment` |
-
-When the media element's `.playbackRate` is set to negative (playing backwards on supported browsers only), 
-segment events are emitted in reverse 
-(i.e. `segments.enter` on the `segmentEnd` boundary and `segments.exit` on the `segmentStart` boundary).
-
+| `points.enter`           | `Point point`            |
+| `segments.enter`         | `Segment segment`        |
+| `segments.exit`          | `Segment segment`        |
 
 # Building Peaks.js
 
-You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests.
-The project bundles everything you need to do so.
+You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests. The project bundles everything you need to do so.
 
 ## Prerequisites
 
