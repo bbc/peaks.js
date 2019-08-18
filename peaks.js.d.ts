@@ -25,9 +25,9 @@ declare module 'peaks.js' {
 
   interface PointUpdateOptions {
     time?: number;
-    labelText?: string;
-    color?: string;
     editable?: boolean;
+    color?: string;
+    labelText?: string;
   }
 
   interface Point {
@@ -118,15 +118,23 @@ declare module 'peaks.js' {
     // Zoom view adapter to use. Valid adapters are:
     // 'animated' (default) and 'static'
     zoomAdapter?: string;
-    // Array of initial segment objects with startTime and
-    // endTime in seconds and a boolean for editable.
-    // See below.
+    // Array of initial segment objects
     segments?: Segment[];
     // Array of initial point objects
     points?: Point[];
     // Emit cue events when playing
     emitCueEvents?: boolean;
   }
+
+  interface SetSourceRequiredOptions {
+    mediaUrl: string;
+
+    withCredentials?: boolean;
+  }
+
+  type SetSourceOptions = SetSourceRequiredOptions & AudioOptions;
+
+  type SetSourceCallback = (error: Error) => any;
 
   interface InstanceEvents {
     'peaks.ready': () => any;
@@ -147,10 +155,9 @@ declare module 'peaks.js' {
     'segments.mouseenter': (segment: Segment) => any;
     'segments.mouseleave': (segment: Segment) => any;
     'segments.click': (segment: Segment) => any;
-    'segments.enter':    (segment: Segment) => any;
-    'segments.exit':    (segment: Segment) => any;
+    'segments.enter': (segment: Segment) => any;
+    'segments.exit': (segment: Segment) => any;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
-    error: (err: Error) => any;
     player_seek: (time: number) => any;
     user_seek: (time: number) => any;
   }
@@ -159,9 +166,10 @@ declare module 'peaks.js' {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: string) => void;
     showPlayheadTime: (show: boolean) => void;
-  };
+  }
 
   interface PeaksInstance {
+    setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;
     destroy: () => void;
     // Player API
     player: {
@@ -189,8 +197,8 @@ declare module 'peaks.js' {
       add: (segments: Segment | Segment[]) => void;
       getSegments: () => Segment[];
       getSegment: (id: string) => Segment | null;
-      removeByTime: (startTime: number, endTime?: number) => number; // returns number of deleted segments
-      removeById: (segmentId: string) => void;
+      removeByTime: (startTime: number, endTime?: number) => Segment[];
+      removeById: (segmentId: string) => Segment[];
       removeAll: () => void;
     };
     // Points API
@@ -198,8 +206,8 @@ declare module 'peaks.js' {
       add: (points: Point | Point[]) => void;
       getPoints: () => Point[];
       getPoint: (id: string) => Point | null;
-      removeByTime: (time: number) => void;
-      removeById: (id: string) => void;
+      removeByTime: (time: number) => Point[];
+      removeById: (id: string) => Point[];
       removeAll: () => void;
     };
     // Events
