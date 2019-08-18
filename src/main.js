@@ -470,6 +470,83 @@ define('peaks', [
     }
   };
 
+  /**
+   * Options for [Peaks.setSource]{@link Peaks#setSource}.
+   *
+   * @typedef {Object} PeaksSetSourceOptions
+   * @global
+   * @property {String} mediaUrl
+   * @property {RemoteWaveformDataOptions=} dataUri
+   * @property {AudioContext=} audioContext
+   * @property {Boolean=} withCredentials
+   * @property {Array<Number>=} zoomLevels
+   */
+
+  /**
+   * Changes the audio or video media source associated with the {@link Peaks}
+   * instance.
+   *
+   * @param {PeaksSetSourceOptions} options
+   * @param {Function} callback
+   */
+
+  Peaks.prototype.setSource = function(options, callback) {
+    var self = this;
+
+    if (!options.mediaUrl) {
+      callback(new Error('peaks.setSource(): options must contain a mediaUrl'));
+      return;
+    }
+
+    function reset() {
+      self.removeAllListeners('player_canplay');
+      self.removeAllListeners('player_error');
+    }
+
+    function playerErrorHandler(err) {
+      reset();
+
+      // Return the MediaError object from the media element
+      callback(err);
+    }
+
+    function playerCanPlayHandler() {
+      reset();
+
+      if (!options.zoomLevels) {
+        options.zoomLevels = self.options.zoomLevels;
+      }
+
+      var waveformBuilder = new WaveformBuilder(self);
+
+      waveformBuilder.init(options, function(err, waveformData) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        self._waveformData = waveformData;
+
+        ['overview', 'zoomview'].forEach(function(viewName) {
+          var view = self.views.getView(viewName);
+
+          if (view) {
+            view.setWaveformData(waveformData);
+          }
+        });
+
+        self.zoom.setZoomLevels(options.zoomLevels);
+
+        callback();
+      });
+    }
+
+    self.once('player_canplay', playerCanPlayHandler);
+    self.once('player_error', playerErrorHandler);
+
+    self.player.setSource(options.mediaUrl);
+  };
+
   Peaks.prototype.getWaveformData = function() {
     return this._waveformData;
   };

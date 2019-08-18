@@ -30,13 +30,44 @@
    */
 
   function WaveformBuilder(peaks) {
-    this.peaks = peaks;
+    this._peaks = peaks;
   }
+
+  /**
+   * Options for requesting remote waveform data.
+   *
+   * @typedef {Object} RemoteWaveformDataOptions
+   * @global
+   * @property {String=} arraybuffer
+   * @property {String=} json
+   */
+
+  /**
+   * Options for the Web Audio waveform builder.
+   *
+   * @typedef {Object} WaveformBuilderOptions
+   * @global
+   * @property {Number=} scale
+   * @property {Number=} amplitudeScale
+   */
+
+  /**
+   * Options for [WaveformBuilder.init]{@link WaveformBuilder#init}.
+   *
+   * @typedef {Object} WaveformBuilderInitOptions
+   * @global
+   * @property {RemoteWaveformDataOptions=} dataUri
+   * @property {AudioContext=} audioContext
+   * @property {WaveformBuilderOptions=} waveformBuilderOptions
+   * @property {Boolean=} withCredentials
+   * @property {Array<Number>=} zoomLevels
+   */
 
   /**
    * Callback for receiving the waveform data.
    *
    * @callback WaveformBuilderInitCallback
+   * @global
    * @param {Error} error
    * @param {WaveformData} waveformData
    */
@@ -45,7 +76,7 @@
    * Loads or creates the waveform data.
    *
    * @private
-   * @param {Object} options
+   * @param {WaveformBuilderInitOptions} options
    * @param {WaveformBuilderInitCallback} callback
    */
 
@@ -119,7 +150,7 @@
       throw new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser');
     }
 
-    var xhr = self._createXHR(url, requestType, function(response) {
+    var xhr = self._createXHR(url, requestType, options.withCredentials, function(response) {
       if (this.readyState !== 4) {
         return;
       }
@@ -161,30 +192,43 @@
       throw new TypeError('Peaks.init(): The audioContext option must be a valid AudioContext');
     }
 
-    if (options.waveformBuilderOptions.scale !== options.zoomLevels[0]) {
-      options.waveformBuilderOptions.scale = options.zoomLevels[0];
+    var waveformBuilderOptions;
+
+    if (options.waveformBuilderOptions) {
+      waveformBuilderOptions = options.waveformBuilderOptions;
+    }
+    else {
+      waveformBuilderOptions = {
+        scale: options.zoomLevels[0]
+      };
+    }
+
+    if (waveformBuilderOptions.scale !== options.zoomLevels[0]) {
+      waveformBuilderOptions.scale = options.zoomLevels[0];
     }
 
     // If the media element has already selected which source to play, its
     // currentSrc attribute will contain the source media URL. Otherwise,
     // we wait for a canplay event to tell us when the media is ready.
 
-    var mediaSourceUrl = self.peaks.player.getCurrentSource();
+    var mediaSourceUrl = self._peaks.player.getCurrentSource();
 
     if (mediaSourceUrl) {
       self._requestAudioAndBuildWaveformData(
         mediaSourceUrl,
         options.audioContext,
-        options.waveformBuilderOptions,
+        waveformBuilderOptions,
+        options.withCredentials,
         callback
       );
     }
     else {
-      self.peaks.once('player_canplay', function(player) {
+      self._peaks.once('player_canplay', function(player) {
         self._requestAudioAndBuildWaveformData(
           player.getCurrentSource(),
           options.audioContext,
-          options.waveformBuilderOptions,
+          waveformBuilderOptions,
+          options.withCredentials,
           callback
         );
       });
@@ -199,19 +243,20 @@
    * @param {url} The media source URL
    * @param {AudioContext} audioContext
    * @param {Object} waveformBuilderOptions
+   * @param {Boolean} withCredentials
    * @param {WaveformBuilderInitCallback} callback
    */
 
   WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
-    audioContext, waveformBuilderOptions, callback) {
+    audioContext, waveformBuilderOptions, withCredentials, callback) {
     var self = this;
 
     if (!url) {
-      self.peaks.logger('Peaks.init(): The mediaElement src is invalid');
+      self._peaks.logger('Peaks.init(): The mediaElement src is invalid');
       return;
     }
 
-    var xhr = self._createXHR(url, 'arraybuffer', function(response) {
+    var xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(response) {
       if (this.readyState !== 4) {
         return;
       }
@@ -242,13 +287,14 @@
    * @private
    * @param {String} url
    * @param {String} requestType
+   * @param {Boolean} withCredentials
    * @param {Function} onLoad
    * @param {Function} onError
    *
    * @returns {XMLHttpRequest}
    */
 
-  WaveformBuilder.prototype._createXHR = function(url, requestType, onLoad, onError) {
+  WaveformBuilder.prototype._createXHR = function(url, requestType, withCredentials, onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
     // open an XHR request to the data source file
@@ -267,7 +313,7 @@
     xhr.onload = onLoad;
     xhr.onerror = onError;
 
-    if (isXhr2 && this.peaks.options.withCredentials) {
+    if (isXhr2 && withCredentials) {
       xhr.withCredentials = true;
     }
 

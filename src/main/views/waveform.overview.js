@@ -155,6 +155,19 @@ define([
     });
   }
 
+  WaveformOverview.prototype.setWaveformData = function(waveformData) {
+    this._originalWaveformData = waveformData;
+
+    if (this._width !== 0) {
+      this._data = waveformData.resample(this._width);
+    }
+    else {
+      this._data = waveformData;
+    }
+
+    this._updateWaveform();
+  };
+
   /**
    * Returns the pixel index for a given time, for the current zoom level.
    *

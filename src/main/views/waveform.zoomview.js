@@ -189,6 +189,11 @@ define([
     self._peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 1, true));
   }
 
+  WaveformZoomView.prototype.setWaveformData = function(waveformData) {
+    this._originalWaveformData = waveformData;
+    // Don't update the UI here, call setZoom().
+  };
+
   WaveformZoomView.prototype._syncPlayhead = function(time) {
     this._playheadLayer.updatePlayheadTime(time);
 
@@ -222,11 +227,6 @@ define([
    */
 
   WaveformZoomView.prototype.setZoomLevel = function(currentScale, previousScale) {
-    if (currentScale === this._scale) {
-      // Nothing to do.
-      return;
-    }
-
     var currentTime = this._peaks.player.getCurrentTime();
     var apexTime;
     var playheadOffsetPixels = this._playheadLayer.getPlayheadOffset();

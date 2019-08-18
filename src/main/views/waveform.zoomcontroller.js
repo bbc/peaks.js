@@ -25,6 +25,11 @@ define([], function() {
     this._zoomLevelIndex = 0;
   }
 
+  ZoomController.prototype.setZoomLevels = function(zoomLevels) {
+    this._zoomLevels = zoomLevels;
+    this.setZoom(0, true);
+  };
+
   /**
    * Zoom in one level.
    */
@@ -48,7 +53,7 @@ define([], function() {
    * @param {number} zoomLevelIndex An index into the options.zoomLevels array.
    */
 
-  ZoomController.prototype.setZoom = function(zoomLevelIndex) {
+  ZoomController.prototype.setZoom = function(zoomLevelIndex, forceUpdate) {
     if (zoomLevelIndex >= this._zoomLevels.length) {
       zoomLevelIndex = this._zoomLevels.length - 1;
     }
@@ -57,7 +62,7 @@ define([], function() {
       zoomLevelIndex = 0;
     }
 
-    if (zoomLevelIndex === this._zoomLevelIndex) {
+    if (!forceUpdate && (zoomLevelIndex === this._zoomLevelIndex)) {
       // Nothing to do.
       return;
     }
@@ -74,13 +79,23 @@ define([], function() {
   };
 
   /**
-   * Returns the current zoom level.
+   * Returns the current zoom level index.
    *
    * @returns {Number}
    */
 
   ZoomController.prototype.getZoom = function() {
     return this._zoomLevelIndex;
+  };
+
+  /**
+   * Returns the current zoom level, in samples per pixel.
+   *
+   * @returns {Number}
+   */
+
+  ZoomController.prototype.getZoomLevel = function() {
+    return this._zoomLevels[this._zoomLevelIndex];
   };
 
   return ZoomController;

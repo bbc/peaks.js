@@ -22,7 +22,7 @@ describe('Peaks', function() {
         p = Peaks.init({
           container: document.getElementById('container'),
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         });
 
         var segmentsReady = false;
@@ -50,7 +50,7 @@ describe('Peaks', function() {
         Peaks.init({
           container: document.getElementById('container'),
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         },
         function(err, instance) {
           expect(err).to.equal(null);
@@ -88,7 +88,7 @@ describe('Peaks', function() {
               zoomview: zoomviewContainer
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
 
           expect(p).to.be.an.instanceof(Peaks);
@@ -104,7 +104,7 @@ describe('Peaks', function() {
               overview: overviewContainer
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
 
           expect(p).to.be.an.instanceof(Peaks);
@@ -120,7 +120,7 @@ describe('Peaks', function() {
               zoomview: zoomviewContainer
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
 
           expect(p).to.be.an.instanceof(Peaks);
@@ -136,7 +136,7 @@ describe('Peaks', function() {
               containers: {
               },
               mediaElement: document.getElementById('media'),
-              dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+              dataUri: { arraybuffer: '/base/test_data/sample.dat' }
             });
           }).to.throw(/must be valid HTML elements/);
         });
@@ -148,7 +148,7 @@ describe('Peaks', function() {
         expect(function() {
           Peaks.init({
             container: document.getElementById('container'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
         }).to.throw(/Missing mediaElement option/);
       });
@@ -158,7 +158,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.createElement('div'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
         }).to.throw(/HTMLMediaElement/);
       });
@@ -168,7 +168,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' },
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' },
             audioContext: new TestAudioContext()
           });
         }).to.throw(/not both/);
@@ -197,7 +197,7 @@ describe('Peaks', function() {
         expect(function() {
           Peaks.init({
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
         }).to.throw(/container or containers option/);
       });
@@ -207,7 +207,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.createElement('div'),
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
           });
         }).to.throw(/width/);
       });
@@ -217,7 +217,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: 'base/test_data/sample.dat' },
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' },
             template: null
           });
         }).to.throw(/template/);
@@ -228,7 +228,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media'),
-            dataUri: 'base/test_data/sample.json',
+            dataUri: '/base/test_data/sample.json',
             logger: 'foo'
           });
         }).to.throw(/logger/);
@@ -239,7 +239,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media'),
-            dataUri: 'base/test_data/sample.json',
+            dataUri: '/base/test_data/sample.json',
             zoomLevels: null
           });
         }).to.throw(/zoomLevels/);
@@ -250,7 +250,7 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media'),
-            dataUri: 'base/test_data/sample.json',
+            dataUri: '/base/test_data/sample.json',
             zoomLevels: []
           });
         }).to.throw(/zoomLevels/);
@@ -261,10 +261,97 @@ describe('Peaks', function() {
           Peaks.init({
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media'),
-            dataUri: 'base/test_data/sample.json',
+            dataUri: '/base/test_data/sample.json',
             zoomLevels: [1024, 512]
           });
         }).to.throw(/zoomLevels/);
+      });
+    });
+  });
+
+  describe('setSource', function() {
+    var waveformLayerDraw;
+
+    beforeEach(function(done) {
+      var options = {
+        container: document.getElementById('container'),
+        mediaElement: document.getElementById('media'),
+        dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+        zoomLevels: [512, 1024, 2048]
+      };
+
+      p = Peaks.init(options, function() {
+        var zoomview = p.views.getView('zoomview');
+        expect(zoomview).to.be.ok;
+
+        waveformLayerDraw = sinon.spy(zoomview._waveformLayer, 'draw');
+
+        done();
+      });
+    });
+
+    context('with invalid media url', function() {
+      it('should return an error', function(done) {
+        var options = {
+          mediaUrl: '/base/test_data/unknown.mp3',
+          dataUri: {
+            arraybuffer: '/base/test_data/unknown.dat'
+          }
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.an.instanceOf(MediaError);
+          done();
+        });
+      });
+    });
+
+    context('with waveform data url', function() {
+      it('should update the waveform', function(done) {
+        var options = {
+          mediaUrl: '/base/test_data/sample.mp3',
+          dataUri: {
+            arraybuffer: '/base/test_data/sample.dat'
+          }
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.undefined;
+          expect(waveformLayerDraw.callCount).to.equal(1);
+          done();
+        });
+      });
+    });
+
+    context('with audioContext', function() {
+      it('should update the waveform', function(done) {
+        var options = {
+          mediaUrl: '/base/test_data/sample.mp3',
+          audioContext: new TestAudioContext()
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.undefined;
+          expect(waveformLayerDraw.callCount).to.equal(1);
+          done();
+        });
+      });
+    });
+
+    context('with zoom levels', function() {
+      it('should update the instance zoom levels', function(done) {
+          var options = {
+          mediaUrl: '/base/test_data/sample.mp3',
+          audioContext: new TestAudioContext(),
+          zoomLevels: [128, 256]
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.undefined;
+          expect(p.zoom.getZoomLevel()).to.equal(128);
+          expect(waveformLayerDraw.callCount).to.equal(1);
+          done();
+        });
       });
     });
   });
@@ -305,7 +392,7 @@ describe('Peaks', function() {
       var p = Peaks.init({
         container: document.getElementById('container'),
         mediaElement: document.getElementById('media'),
-        dataUri: { arraybuffer: 'base/test_data/sample.dat' }
+        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
       });
 
       p.on('peaks.ready', function() {

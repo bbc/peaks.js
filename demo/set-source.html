@@ -13,13 +13,20 @@
         width: 1000px;
       }
 
-      #overview-container {
+      #zoomview-container, #overview-container {
         box-shadow: 3px 3px 20px #919191;
         margin: 0 0 24px 0;
         -moz-box-shadow: 3px 3px 20px #919191;
         -webkit-box-shadow: 3px 3px 20px #919191;
         line-height: 0;
+      }
+
+      #zoomview-container {
         height: 200px;
+      }
+
+      #overview-container {
+        height: 85px;
       }
 
       #demo-controls {
@@ -47,6 +54,27 @@
       #seek-time {
         width: 4em;
       }
+
+      .log {
+        margin: 0 auto 24px auto;
+        width: 1000px;
+      }
+
+      table {
+        width: 100%;
+      }
+
+      table th {
+        text-align: left;
+      }
+
+      table th, table td {
+        padding: 0.5em;
+      }
+
+      .hide {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -71,18 +99,18 @@
         <a href="index.html">Precomputed Waveform Data</a> |
         <a href="webaudio.html">Web Audio API</a> |
         <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
-        Single Fixed Waveform |
+        <a href="overview-waveform.html">Single Fixed Waveform</a> |
         <a href="cue-events.html">Cue Events</a> |
-        <a href="set-source.html">Changing the Media URL</a>
+        Changing the Media URL
       </p>
-      <h2>Demo: Single Fixed Waveform</h2>
+      <h2>Demo: Changing the Media URL</h2>
       <p>
-        This demo shows how to configure Peaks.js to render a single waveform
-        view, scaled to fit a given container element.
+        This demo shows how to change the media URL and update the waveform.
       </p>
     </div>
 
     <div id="waveform-container">
+      <div id="zoomview-container"></div>
       <div id="overview-container"></div>
     </div>
 
@@ -94,19 +122,39 @@
       </audio>
 
       <div id="controls">
-        <input type="text" id="seek-time" value="0.0">
-        <button data-action="seek">Seek</button>
-        <label for="amplitude-scale">Amplitude scale</label>
-        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+        <button data-action="zoom-in">Zoom in</button>
+        <button data-action="zoom-out">Zoom out</button>
+        <label for="select-audio">Select audio:</label>
+        <select id="select-audio"></select>
       </div>
     </div>
 
     <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
+        var audioContext = new AudioContext();
+
+        var sources = [
+          {
+            title: "Tree of Life",
+            mediaUrl: 'TOL_6min_720p_download.mp3',
+            dataUri: {
+              arraybuffer: 'TOL_6min_720p_download.dat',
+              json: 'TOL_6min_720p_download.json'
+            }
+          },
+          {
+            title: "Desert Island Discs",
+            mediaUrl: 'sample.mp3',
+            audioContext: audioContext,
+            zoomLevels: [128, 256]
+          }
+        ];
+
         var options = {
           containers: {
-            overview: document.getElementById('overview-container')
+            overview: document.getElementById('overview-container'),
+            zoomview: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
@@ -115,40 +163,35 @@
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
-          showPlayheadTime: true
+          showPlayheadTime: true,
+          zoomLevels: [512, 1024, 2048]
         };
 
         Peaks.init(options, function(err, peaksInstance) {
           console.log('Peaks instance ready');
 
-          document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
-            var time = document.getElementById('seek-time').value;
-            var seconds = parseFloat(time);
-
-            if (!Number.isNaN(seconds)) {
-              peaksInstance.player.seek(seconds);
-            }
+          document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
+            peaksInstance.zoom.zoomIn();
           });
 
-          var amplitudeScales = {
-            "0": 0.0,
-            "1": 0.1,
-            "2": 0.25,
-            "3": 0.5,
-            "4": 0.75,
-            "5": 1.0,
-            "6": 1.5,
-            "7": 2.0,
-            "8": 3.0,
-            "9": 4.0,
-            "10": 5.0
-          };
+          document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
+            peaksInstance.zoom.zoomOut();
+          });
 
-          document.getElementById('amplitude-scale').addEventListener('input', function() {
-            var scale = amplitudeScales[this.value];
-            var view = peaksInstance.views.getView();
+          var select = document.getElementById('select-audio');
 
-            view.setAmplitudeScale(scale);
+          for (var i = 0; i < sources.length; i++) {
+            select.options[i] = new Option(sources[i].title, i);
+          }
+
+          select.addEventListener('change', function(event) {
+            var source = sources[event.target.value];
+
+            peaksInstance.setSource(source, function(error) {
+              if (error) {
+                console.error('setSource error', error);
+              }
+            });
           });
         });
       })(peaks);
