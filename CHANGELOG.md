@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 0.11.0 (2019/08/11)
+
+ * (#243, #268) Added emitCueEvents option that causes Peaks.js to emit
+   'points.enter', 'segments.enter', and 'segments.exit' events during playback
+   or on seeking (@gmarinov, @chrisn)
+
+ * (#92) Added setSource() method to change the media element's source URL
+   and update the waveform (@chrisn)
+
 ## 0.10.1 (2019/07/10)
 
  * (#211) Added view.setAmplitudeScale() method, and documented new API methods
