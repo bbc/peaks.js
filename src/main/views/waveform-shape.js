@@ -112,22 +112,24 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       endPixels = limit;
     }
 
-    if (endPixels > waveformData.adapter.length) {
-      endPixels = waveformData.adapter.length;
+    if (endPixels > waveformData.length) {
+      endPixels = waveformData.length;
     }
+
+    var channel = waveformData.channel(0);
 
     var x, val;
 
     context.beginPath();
 
     for (x = startPixels; x < endPixels; x++) {
-      val = waveformData.min_sample(x);
+      val = channel.min_sample(x);
 
       context.lineTo(x - frameOffset + 0.5, scaleY(val, height, this._scale) + 0.5);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
-      val = waveformData.max_sample(x);
+      val = channel.max_sample(x);
 
       context.lineTo(x - frameOffset + 0.5, scaleY(val, height, this._scale) + 0.5);
     }

@@ -265,7 +265,7 @@ define([
     this._scale = scale;
     this._data = this._originalWaveformData.resample({ scale: scale });
 
-    this._pixelLength = this._data.adapter.length;
+    this._pixelLength = this._data.length;
   };
 
   /**
@@ -276,7 +276,7 @@ define([
    */
 
   WaveformZoomView.prototype.timeToPixels = function(time) {
-    return Math.floor(time * this._data.adapter.sample_rate / this._data.adapter.scale);
+    return Math.floor(time * this._data.sample_rate / this._data.scale);
   };
 
   /**
@@ -287,7 +287,7 @@ define([
    */
 
   WaveformZoomView.prototype.pixelsToTime = function(pixels) {
-    return pixels * this._data.adapter.scale / this._data.adapter.sample_rate;
+    return pixels * this._data.scale / this._data.sample_rate;
   };
 
   /* var zoomAdapterMap = {

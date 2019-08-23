@@ -95,6 +95,6 @@
     "colors.css": "~3.0.0",
     "eventemitter2": "~5.0.1",
     "konva": "~4.0.4",
-    "waveform-data": "~2.1.2"
+    "waveform-data": "~3.0.0"
   }
 }

@@ -163,9 +163,16 @@
         return;
       }
 
-      callback(null, WaveformData.create(response.target));
+      var waveformData = WaveformData.create(response.target.response);
+
+      if (waveformData.channels !== 1) {
+        callback(new Error('Peaks.init(): Multi-channel waveforms are not currently supported'));
+        return;
+      }
+
+      callback(null, waveformData);
     },
-    function(error) {
+    function() {
       callback(new Error('XHR Failed'));
     });
 
@@ -269,14 +276,16 @@
         return;
       }
 
-      webaudioBuilder(
-        audioContext,
-        response.target.response,
-        waveformBuilderOptions,
-        callback
-      );
+      var webAudioBuilderOptions = {
+        audio_context: audioContext,
+        array_buffer: response.target.response
+      };
+
+      Utils.extend(webAudioBuilderOptions, waveformBuilderOptions);
+
+      webaudioBuilder(webAudioBuilderOptions, callback);
     },
-    function(error) {
+    function() {
       callback(new Error('XHR Failed'));
     });
 

@@ -176,7 +176,7 @@ define([
    */
 
   WaveformOverview.prototype.timeToPixels = function(time) {
-    return Math.floor(time * this._data.adapter.sample_rate / this._data.adapter.scale);
+    return Math.floor(time * this._data.sample_rate / this._data.scale);
   };
 
   /**
@@ -187,7 +187,7 @@ define([
    */
 
   WaveformOverview.prototype.pixelsToTime = function(pixels) {
-    return pixels * this._data.adapter.scale / this._data.adapter.sample_rate;
+    return pixels * this._data.scale / this._data.sample_rate;
   };
 
   /**
