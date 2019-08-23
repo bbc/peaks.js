@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.11.1 (2019/08/23)
+
+ * Updated waveform-data.js to v3.0.0 (@chrisn)
+
 ## 0.11.0 (2019/08/11)
 
  * (#243, #268) Added emitCueEvents option that causes Peaks.js to emit
