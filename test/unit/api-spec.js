@@ -178,6 +178,38 @@ describe('Peaks', function() {
           });
         });
       });
+
+      context('with audioBuffer', function() {
+        it('should initialise correctly', function(done) {
+          var audioContext = new TestAudioContext();
+
+          fetch('/base/test_data/sample.mp3')
+            .then(function(response) {
+              return response.arrayBuffer();
+            })
+            .then(function(buffer) {
+              return audioContext.decodeAudioData(buffer);
+            })
+            .then(function(audioBuffer) {
+              Peaks.init({
+                container: document.getElementById('container'),
+                mediaElement: document.getElementById('media'),
+                webAudio: {
+                  audioBuffer: audioBuffer,
+                  multiChannel: true
+                },
+                zoomLevels: [128, 256]
+              },
+              function(err, instance) {
+                expect(err).to.equal(null);
+                expect(instance).to.be.an.instanceOf(Peaks);
+                expect(instance.getWaveformData().channels).to.equal(2);
+                instance.destroy();
+                done();
+              });
+            });
+        });
+      });
     });
 
     context('with invalid options', function() {
@@ -374,6 +406,35 @@ describe('Peaks', function() {
           expect(waveformLayerDraw.callCount).to.equal(1);
           done();
         });
+      });
+    });
+
+    context('with audioBuffer', function() {
+      it('should update the waveform', function(done) {
+        var audioContext = new TestAudioContext();
+
+        fetch('/base/test_data/sample.mp3')
+          .then(function(response) {
+            return response.arrayBuffer();
+          })
+          .then(function(buffer) {
+            return audioContext.decodeAudioData(buffer);
+          })
+          .then(function(audioBuffer) {
+            var options = {
+              mediaUrl: '/base/test_data/sample.mp3',
+              webAudio: {
+                audioBuffer: audioBuffer,
+                multiChannel: true
+              }
+            };
+
+            p.setSource(options, function(error) {
+              expect(error).to.be.undefined;
+              expect(waveformLayerDraw.callCount).to.equal(1);
+              done();
+            });
+          });
       });
     });
 

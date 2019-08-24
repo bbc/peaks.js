@@ -8,11 +8,9 @@
 
  define([
   'waveform-data',
-  'waveform-data/webaudio',
   'peaks/waveform/waveform.utils'
   ], function(
     WaveformData,
-    webaudioBuilder,
     Utils) {
   'use strict';
 
@@ -48,6 +46,7 @@
    * @typedef {Object} WaveformBuilderWebAudioOptions
    * @global
    * @property {AudioContext} audioContext
+   * @property {AudioBuffer=} audioBuffer
    * @property {Number=} scale
    * @property {Boolean=} multiChannel
    */
@@ -98,7 +97,12 @@
       return this._getRemoteWaveformData(options, callback);
     }
     else if (options.webAudio) {
-      return this._buildWaveformDataUsingWebAudio(options, callback);
+      if (options.webAudio.audioBuffer) {
+        return this._buildWaveformDataFromAudioBuffer(options, callback);
+      }
+      else {
+        return this._buildWaveformDataUsingWebAudio(options, callback);
+      }
     }
     else {
       // eslint-disable-next-line max-len
@@ -240,6 +244,22 @@
     }
   };
 
+  WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function(options, callback) {
+    var webAudioOptions = options.webAudio;
+
+    if (webAudioOptions.scale !== options.zoomLevels[0]) {
+      webAudioOptions.scale = options.zoomLevels[0];
+    }
+
+    var webAudioBuilderOptions = {
+      audio_buffer: webAudioOptions.audioBuffer,
+      split_channels: webAudioOptions.multiChannel,
+      scale: webAudioOptions.scale
+    };
+
+    WaveformData.createFromAudio(webAudioBuilderOptions, callback);
+  };
+
   /**
    * Fetches the audio content, based on the given options, and creates waveform
    * data using the Web Audio API.
@@ -280,7 +300,7 @@
         scale: webAudio.scale
       };
 
-      webaudioBuilder(webAudioBuilderOptions, callback);
+      WaveformData.createFromAudio(webAudioBuilderOptions, callback);
     },
     function() {
       callback(new Error('XHR Failed'));

@@ -235,11 +235,11 @@ Refer to the man page audiowaveform(1) for full details of the available command
 
 Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you do not have to pre-generate a `dat` or `json` file beforehand. However, note that this requires the browser to download the entire audio file before the waveform can be shown, and this process can be CPU intensive, so is not recommended for long audio files.
 
-To use Web Audio, omit the `dataUri` option and instead pass an `AudioContext` instance using the `audioContext` option. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
+To use Web Audio, omit the `dataUri` option and instead pass a `webAudio` object that contains an `AudioContext` instance. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
 const AudioContext = window.AudioContext || window.webkitAudioContext;
-const myAudioContext = new AudioContext();
+const audioContext = new AudioContext();
 
 const options = {
   containers: {
@@ -247,12 +247,42 @@ const options = {
     zoomview: document.getElementById('zoomview-waveform')
   },
   mediaElement: document.querySelector('audio'),
-  audioContext: myAudioContext
+  webAudio: {
+    audioContext: audioContext
+  }
 };
 
 Peaks.init(options, function(err, peaks) {
   // Do something when the waveform is displayed and ready
 });
+```
+
+Alternatively, if you have an `AudioBuffer` containing decoded audio samples, e.g., from
+[AudioContext.decodeAudioData](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)
+then an `AudioContext` is not needed:
+
+```js
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioContext = new AudioContext();
+
+// arrayBuffer contains the encoded audio (e.g., MP3 format)
+audioContext.decodeAudioData(arrayBuffer)
+  .then(function(audioBuffer) {
+    const options = {
+      containers: {
+        overview: document.getElementById('overview-waveform'),
+        zoomview: document.getElementById('zoomview-waveform')
+      },
+      mediaElement: document.querySelector('audio'),
+      webAudio: {
+        audioBuffer: audioBuffer
+      }
+    };
+
+    Peaks.init(options, function(err, peaks) {
+      // Do something when the waveform is displayed and ready
+    });
+  });
 ```
 
 # Configuration
@@ -289,6 +319,10 @@ var options = {
     // A Web Audio AudioContext instance which can be used
     // to render the waveform if dataUri is not provided
     audioContext: new AudioContext(),
+
+    // Alternatively, provide an AudioBuffer containing the decoded audio
+    // samples. In this case, an AudioContext is not needed
+    audioBuffer: null,
 
     // If true, the waveform will show all available channels.
     // If false, the audio is shown as a single channel waveform.
@@ -446,7 +480,8 @@ The `options` parameter is an object with the following keys. Either `dataUri` o
   * `arraybuffer`: (optional) URL of the binary format waveform data (.dat) to request
   * `json`: (optional) URL of the JSON format waveform data to request
 * `webAudio`: (optional) If using the Web Audio API to generate the waveform, this should be an object containing the following values:
-  * `audioContext`: A Web Audio `AudioContext` instance, used to compute the waveform data from the media
+  * `audioContext`: (optional) A Web Audio `AudioContext` instance, used to compute the waveform data from the media
+  * `audioBuffer`: (optional) A Web Audio `AudioBuffer` instance, containing the decoded audio samples. If present, this audio data is used and the `mediaUrl` is not fetched.
   * `multiChannel`: (optional) If `true`, the waveform will show all available channels. If `false` (the default), the audio is shown as a single channel waveform.
 * `withCredentials`: (optional) If `true`, Peaks.js will send credentials when requesting the waveform data from a server
 * `zoomLevels`: (optional) Array of zoom levels in samples per pixel. If not present, the values passed to [Peaks.init()](#peaksinitoptions-callback) will be used

@@ -475,6 +475,7 @@ define('peaks', [
    * @typedef {Object} WebAudioOptions
    * @global
    * @property {AudioContext} audioContext
+   * @property {AudioBuffer=} audioBuffer
    * @property {Boolean=} multiChannel
    */
 
@@ -486,7 +487,6 @@ define('peaks', [
    * @property {String} mediaUrl
    * @property {RemoteWaveformDataOptions=} dataUri
    * @property {WebAudioOptions=} webAudio
-   * @property {Boolean=} multiChannel
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
    */

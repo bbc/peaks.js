@@ -72,7 +72,10 @@ declare module 'peaks.js' {
     webAudio: {
       // A Web Audio AudioContext instance which can be used
       // to render the waveform if dataUri is not provided
-      audioContext: AudioContext;
+      audioContext?: AudioContext;
+      // Alternatively, provide an AudioBuffer containing the decoded audio
+      // samples. In this case, an AudioContext is not needed
+      audioBuffer?: AudioBuffer;
       scale?: number;
       multiChannel?: boolean;
     }
