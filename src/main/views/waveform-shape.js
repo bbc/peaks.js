@@ -67,6 +67,10 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     this._scale = scale;
   };
 
+  WaveformShape.prototype.setWaveformColor = function(color) {
+    this.fill(color);
+  };
+
   WaveformShape.prototype._sceneFunc = function(context) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
@@ -81,8 +85,6 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       width,
       height
     );
-
-    context.fillShape(this);
   };
 
   /**
@@ -116,8 +118,32 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       endPixels = waveformData.length;
     }
 
-    var channel = waveformData.channel(0);
+    var channels = waveformData.channels;
 
+    var waveformTop = 0;
+    var waveformHeight = Math.floor(height / channels);
+
+    for (var i = 0; i < channels; i++) {
+      if (i === channels - 1) {
+        waveformHeight = height - (channels - 1) * waveformHeight;
+      }
+
+      this._drawChannel(
+        context,
+        waveformData.channel(i),
+        frameOffset,
+        startPixels,
+        endPixels,
+        waveformTop,
+        waveformHeight
+      );
+
+      waveformTop += waveformHeight;
+    }
+  };
+
+  WaveformShape.prototype._drawChannel = function(context, channel,
+    frameOffset, startPixels, endPixels, top, height) {
     var x, val;
 
     context.beginPath();
@@ -125,20 +151,18 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     for (x = startPixels; x < endPixels; x++) {
       val = channel.min_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, scaleY(val, height, this._scale) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, this._scale) + 0.5);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
       val = channel.max_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, scaleY(val, height, this._scale) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, this._scale) + 0.5);
     }
 
     context.closePath();
-  };
 
-  WaveformShape.prototype.setWaveformColor = function(color) {
-    this.fill(color);
+    context.fillShape(this);
   };
 
   return WaveformShape;

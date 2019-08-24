@@ -221,16 +221,15 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    ('AudioBuffer' in window) && it('should build using WebAudio if the API is available an audioContext is provided', function(done) {
+    it('should build using WebAudio if the API is available and audioContext is provided', function(done) {
       var peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          audioContext: new TestAudioContext(),
-          zoomLevels: [512, 1024, 2048, 4096],
-          waveformBuilderOptions: {
-            scale: 512,
-            amplitude_scale: 1.0
-          }
+          webAudio: {
+            audioContext: new TestAudioContext(),
+            scale: 512
+          },
+          zoomLevels: [512, 1024, 2048, 4096]
         },
         player: {
           getCurrentSource: sinon.stub().returns(document.getElementById('media').currentSrc)

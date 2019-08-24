@@ -60,15 +60,22 @@ declare module 'peaks.js' {
 
   type ContainerOptions = SingleContainerOptions | ViewContainerOptions;
 
-  interface WebAudioOptions {
-    // A Web Audio AudioContext instance which can be used
-    // to render the waveform if dataUri is not provided
-    audioContext: AudioContext;
+  interface PreGeneratedWaveformOptions {
+    dataUri: {
+      // URI to waveform data file in binary or JSON
+      arraybuffer?: string;
+      json?: string;
+    }
   }
 
-  interface PreGeneratedWaveformOptions {
-    // URI to waveform data file in binary or JSON
-    dataUri: { arraybuffer: string } | { json: string };
+  interface WebAudioOptions {
+    webAudio: {
+      // A Web Audio AudioContext instance which can be used
+      // to render the waveform if dataUri is not provided
+      audioContext: AudioContext;
+      scale?: number;
+      multiChannel?: boolean;
+    }
   }
 
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
@@ -128,7 +135,6 @@ declare module 'peaks.js' {
 
   interface SetSourceRequiredOptions {
     mediaUrl: string;
-
     withCredentials?: boolean;
   }
 

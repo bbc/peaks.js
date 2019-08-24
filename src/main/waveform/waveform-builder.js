@@ -45,10 +45,11 @@
   /**
    * Options for the Web Audio waveform builder.
    *
-   * @typedef {Object} WaveformBuilderOptions
+   * @typedef {Object} WaveformBuilderWebAudioOptions
    * @global
+   * @property {AudioContext} audioContext
    * @property {Number=} scale
-   * @property {Number=} amplitudeScale
+   * @property {Boolean=} multiChannel
    */
 
   /**
@@ -57,8 +58,7 @@
    * @typedef {Object} WaveformBuilderInitOptions
    * @global
    * @property {RemoteWaveformDataOptions=} dataUri
-   * @property {AudioContext=} audioContext
-   * @property {WaveformBuilderOptions=} waveformBuilderOptions
+   * @property {WaveformBuilderWebAudioOptions=} webAudio
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
    */
@@ -81,14 +81,23 @@
    */
 
   WaveformBuilder.prototype.init = function(options, callback) {
-    if (options.dataUri && options.audioContext) {
+    if (options.dataUri && (options.webAudio || options.audioContext)) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass an audioContext or dataUri to render waveform data, not both');
+      throw new Error('Peaks.init(): You must pass a webAudio or dataUri to render waveform data, not both');
     }
+
+    if (options.audioContext) {
+      this._peaks.options.deprecationLogger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
+
+      options.webAudio = {
+        audioContext: options.audioContext
+      };
+    }
+
     if (options.dataUri) {
       return this._getRemoteWaveformData(options, callback);
     }
-    else if (options.audioContext) {
+    else if (options.webAudio) {
       return this._buildWaveformDataUsingWebAudio(options, callback);
     }
     else {
@@ -150,7 +159,7 @@
       throw new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser');
     }
 
-    var xhr = self._createXHR(url, requestType, options.withCredentials, function(response) {
+    var xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
       if (this.readyState !== 4) {
         return;
       }
@@ -163,10 +172,10 @@
         return;
       }
 
-      var waveformData = WaveformData.create(response.target.response);
+      var waveformData = WaveformData.create(event.target.response);
 
-      if (waveformData.channels !== 1) {
-        callback(new Error('Peaks.init(): Multi-channel waveforms are not currently supported'));
+      if (waveformData.channels !== 1 && waveformData.channels !== 2) {
+        callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
         return;
       }
 
@@ -194,24 +203,15 @@
 
     var audioContext = window.AudioContext || window.webkitAudioContext;
 
-    if (!(options.audioContext instanceof audioContext)) {
+    if (!(options.webAudio.audioContext instanceof audioContext)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The audioContext option must be a valid AudioContext');
+      throw new TypeError('Peaks.init(): The webAudio.audioContext option must be a valid AudioContext');
     }
 
-    var waveformBuilderOptions;
+    var webAudioOptions = options.webAudio;
 
-    if (options.waveformBuilderOptions) {
-      waveformBuilderOptions = options.waveformBuilderOptions;
-    }
-    else {
-      waveformBuilderOptions = {
-        scale: options.zoomLevels[0]
-      };
-    }
-
-    if (waveformBuilderOptions.scale !== options.zoomLevels[0]) {
-      waveformBuilderOptions.scale = options.zoomLevels[0];
+    if (webAudioOptions.scale !== options.zoomLevels[0]) {
+      webAudioOptions.scale = options.zoomLevels[0];
     }
 
     // If the media element has already selected which source to play, its
@@ -223,8 +223,7 @@
     if (mediaSourceUrl) {
       self._requestAudioAndBuildWaveformData(
         mediaSourceUrl,
-        options.audioContext,
-        waveformBuilderOptions,
+        webAudioOptions,
         options.withCredentials,
         callback
       );
@@ -233,8 +232,7 @@
       self._peaks.once('player_canplay', function(player) {
         self._requestAudioAndBuildWaveformData(
           player.getCurrentSource(),
-          options.audioContext,
-          waveformBuilderOptions,
+          webAudioOptions,
           options.withCredentials,
           callback
         );
@@ -248,14 +246,13 @@
    *
    * @private
    * @param {url} The media source URL
-   * @param {AudioContext} audioContext
-   * @param {Object} waveformBuilderOptions
+   * @param {WaveformBuilderWebAudioOptions} webAudio
    * @param {Boolean} withCredentials
    * @param {WaveformBuilderInitCallback} callback
    */
 
   WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
-    audioContext, waveformBuilderOptions, withCredentials, callback) {
+    webAudio, withCredentials, callback) {
     var self = this;
 
     if (!url) {
@@ -263,7 +260,7 @@
       return;
     }
 
-    var xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(response) {
+    var xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(event) {
       if (this.readyState !== 4) {
         return;
       }
@@ -277,11 +274,11 @@
       }
 
       var webAudioBuilderOptions = {
-        audio_context: audioContext,
-        array_buffer: response.target.response
+        audio_context: webAudio.audioContext,
+        array_buffer: event.target.response,
+        split_channels: webAudio.multiChannel,
+        scale: webAudio.scale
       };
-
-      Utils.extend(webAudioBuilderOptions, waveformBuilderOptions);
 
       webaudioBuilder(webAudioBuilderOptions, callback);
     },

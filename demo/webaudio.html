@@ -101,7 +101,8 @@
         <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
         <a href="overview-waveform.html">Single Fixed Waveform</a> |
         <a href="cue-events.html">Cue Events</a> |
-        <a href="set-source.html">Changing the Media URL</a>
+        <a href="set-source.html">Changing the Media URL</a> |
+        <a href="multi-channel.html">Multi-Channel Waveform</a>
       </p>
       <h2>Demo: Web Audio API</h2>
       <p>
@@ -235,14 +236,14 @@
             overview: document.getElementById('overview-container')
           },
           mediaElement: audioElement,
-          audioContext: audioContext,
+          webAudio: {
+            audioContext: audioContext,
+            scale: 128,
+            multiChannel: false
+          },
           keyboard: true,
           pointMarkerColor: '#006eb0',
           showPlayheadTime: true,
-          waveformBuilderOptions: {
-            scale: 128,
-            amplitudeScale: 1.0
-          },
           zoomLevels: [128, 256, 512, 1024, 2048, 4096]
         };
 

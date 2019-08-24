@@ -226,21 +226,11 @@ define('peaks', [
       pointDragEndHandler:  null,
 
       /**
-       * An AudioContext, used when creating waveform data using the Web Audio API
+       * An object containing an AudioContext, used when creating waveform data
+       * using the Web Audio API
        */
-      audioContext: null,
 
-      /**
-       * WaveformData WebAudio Decoder Options
-       *
-       * You mostly want to play with the 'scale' option.
-       *
-       * @see https://github.com/bbc/waveform-data.js/blob/master/lib/builders/webaudio.js
-       */
-      waveformBuilderOptions: {
-        scale: 512,
-        amplitude_scale: 1.0
-      },
+      webAudio: null,
 
       /**
        * Use animation on zoom
@@ -471,13 +461,32 @@ define('peaks', [
   };
 
   /**
+   * Remote waveform data options for [Peaks.setSource]{@link Peaks#setSource}.
+   *
+   * @typedef {Object} RemoteWaveformDataOptions
+   * @global
+   * @property {String=} arraybuffer
+   * @property {String=} json
+   */
+
+  /**
+   * Web Audio options for [Peaks.setSource]{@link Peaks#setSource}.
+   *
+   * @typedef {Object} WebAudioOptions
+   * @global
+   * @property {AudioContext} audioContext
+   * @property {Boolean=} multiChannel
+   */
+
+  /**
    * Options for [Peaks.setSource]{@link Peaks#setSource}.
    *
    * @typedef {Object} PeaksSetSourceOptions
    * @global
    * @property {String} mediaUrl
    * @property {RemoteWaveformDataOptions=} dataUri
-   * @property {AudioContext=} audioContext
+   * @property {WebAudioOptions=} webAudio
+   * @property {Boolean=} multiChannel
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
    */

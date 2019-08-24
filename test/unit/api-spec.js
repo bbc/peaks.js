@@ -141,6 +141,43 @@ describe('Peaks', function() {
           }).to.throw(/must be valid HTML elements/);
         });
       });
+
+      context('with precomputed stereo waveform data', function() {
+        it('should initialise correctly', function(done) {
+          Peaks.init({
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/07023003-2channel.dat' }
+          },
+          function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceOf(Peaks);
+            expect(instance.getWaveformData().channels).to.equal(2);
+            instance.destroy();
+            done();
+          });
+        });
+      });
+
+      context('with audioContext and multiChannel enabled', function() {
+        it('should initialise correctly', function(done) {
+          Peaks.init({
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
+            webAudio: {
+              audioContext: new TestAudioContext(),
+              multiChannel: true
+            }
+          },
+          function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceOf(Peaks);
+            expect(instance.getWaveformData().channels).to.equal(2);
+            instance.destroy();
+            done();
+          });
+        });
+      });
     });
 
     context('with invalid options', function() {
@@ -327,7 +364,9 @@ describe('Peaks', function() {
       it('should update the waveform', function(done) {
         var options = {
           mediaUrl: '/base/test_data/sample.mp3',
-          audioContext: new TestAudioContext()
+          webAudio: {
+            audioContext: new TestAudioContext()
+          }
         };
 
         p.setSource(options, function(error) {
@@ -340,9 +379,30 @@ describe('Peaks', function() {
 
     context('with zoom levels', function() {
       it('should update the instance zoom levels', function(done) {
-          var options = {
+        var options = {
           mediaUrl: '/base/test_data/sample.mp3',
-          audioContext: new TestAudioContext(),
+          webAudio: {
+            audioContext: new TestAudioContext()
+          },
+          zoomLevels: [128, 256]
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.undefined;
+          expect(p.zoom.getZoomLevel()).to.equal(128);
+          expect(waveformLayerDraw.callCount).to.equal(1);
+          done();
+        });
+      });
+    });
+
+    context('with stereo waveform', function() {
+      it('should update the waveform', function(done) {
+        var options = {
+          mediaUrl: '/base/test_data/07023003.mp3',
+          dataUri: {
+            arraybuffer: '/base/test_data/07023003-2channel.dat'
+          },
           zoomLevels: [128, 256]
         };
 
@@ -365,7 +425,9 @@ describe('Peaks', function() {
       p = Peaks.init({
         container: document.getElementById('container'),
         mediaElement: document.getElementById('media'),
-        audioContext: new TestAudioContext()
+        webAudio: {
+          audioContext: new TestAudioContext()
+        }
       });
 
       p.on('peaks.ready', function() {

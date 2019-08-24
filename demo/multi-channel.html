@@ -75,6 +75,10 @@
       .hide {
         display: none;
       }
+
+      p code {
+        margin-left: 4em
+      }
     </style>
   </head>
   <body>
@@ -101,12 +105,28 @@
         <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
         <a href="overview-waveform.html">Single Fixed Waveform</a> |
         <a href="cue-events.html">Cue Events</a> |
-        Changing the Media URL |
-        <a href="multi-channel.html">Multi-Channel Waveform</a>
+        <a href="set-source.html">Changing the Media URL</a> |
+        Multi-Channel Waveform
       </p>
-      <h2>Demo: Changing the Media URL</h2>
+      <h2>Demo: Multi-Channel Waveform</h2>
       <p>
-        This demo shows how to change the media URL and update the waveform.
+        This demo shows how to show a stereo waveform. Use the <b>Select source</b>
+        control to switch between pre-computed waveform data, fetched from the
+        web server, and waveform data generated in the browser using the Web
+        Audio API.
+      </p>
+      <p>
+        The pre-computed waveform data was produced using
+        <a href="https://github.com/bbc/audiowaveform">audiowaveform</a>, with
+        the following options:
+      </p>
+      <p>
+        <code>audiowaveform -i 07023003.mp3 -o 07023003-2channel.dat -b 8 --split-channels</code>
+      </p>
+      <p>
+        Audio content is copyright BBC, from the <a href="http://bbcsfx.acropolis.org.uk/?q=07023003">BBC Sound Effects</a>
+        library, used under the terms of the
+        <a href="https://github.com/bbcarchdev/Remarc/blob/master/doc/2016.09.27_RemArc_Content%20licence_Terms%20of%20Use_final.pdf">RemArc Licence</a>.
       </p>
     </div>
 
@@ -117,16 +137,23 @@
 
     <div id="demo-controls">
       <audio id="audio" controls="controls">
-        <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
-        <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
+        <source src="07023003.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
       </audio>
 
       <div id="controls">
         <button data-action="zoom-in">Zoom in</button>
         <button data-action="zoom-out">Zoom out</button>
-        <label for="select-audio">Select audio:</label>
-        <select id="select-audio"></select>
+        <label for="amplitude-scale">Amplitude scale</label>
+        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+        <label for="select-source">Select source:</label>
+        <select id="select-source"></select>
+        <div>
+          <label for="zoomview-color">Zoomview color</label>
+          <input type="color" id="zoomview-color" value="#00e180">
+          <label for="overview-color">Overview color</label>
+          <input type="color" id="overview-color" value="#cccccc">
+        </div>
       </div>
     </div>
 
@@ -137,18 +164,19 @@
 
         var sources = [
           {
-            title: "Tree of Life",
-            mediaUrl: 'TOL_6min_720p_download.mp3',
+            title: 'Remote',
+            mediaUrl: '07023003.mp3',
             dataUri: {
-              arraybuffer: 'TOL_6min_720p_download.dat',
-              json: 'TOL_6min_720p_download.json'
+              arraybuffer: '07023003-2channel.dat',
             }
           },
           {
-            title: "Desert Island Discs",
-            mediaUrl: 'sample.mp3',
-            audioContext: audioContext,
-            zoomLevels: [128, 256]
+            title: 'Web Audio',
+            mediaUrl: '07023003.mp3',
+            webAudio: {
+              audioContext: audioContext,
+              multiChannel: true
+            }
           }
         ];
 
@@ -159,16 +187,22 @@
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
-            arraybuffer: 'TOL_6min_720p_download.dat',
-            json: 'TOL_6min_720p_download.json'
+            arraybuffer: '07023003-2channel.dat'
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
+          overviewWaveformColor: '#cccccc',
+          zoomWaveformColor: '#00e180',
           showPlayheadTime: true,
-          zoomLevels: [512, 1024, 2048]
+          zoomLevels: [128, 256, 512, 1024, 2048]
         };
 
         Peaks.init(options, function(err, peaksInstance) {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
+
           console.log('Peaks instance ready');
 
           document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
@@ -179,7 +213,7 @@
             peaksInstance.zoom.zoomOut();
           });
 
-          var select = document.getElementById('select-audio');
+          var select = document.getElementById('select-source');
 
           for (var i = 0; i < sources.length; i++) {
             select.options[i] = new Option(sources[i].title, i);
@@ -193,6 +227,38 @@
                 console.error('setSource error', error);
               }
             });
+          });
+
+          var amplitudeScales = {
+            "0": 0.0,
+            "1": 0.1,
+            "2": 0.25,
+            "3": 0.5,
+            "4": 0.75,
+            "5": 1.0,
+            "6": 1.5,
+            "7": 2.0,
+            "8": 3.0,
+            "9": 4.0,
+            "10": 5.0
+          };
+
+          document.getElementById('amplitude-scale').addEventListener('input', function(event) {
+            var scale = amplitudeScales[event.target.value];
+
+            peaksInstance.views.getView('zoomview').setAmplitudeScale(scale);
+          });
+
+          document.getElementById('zoomview-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+
+            view.setWaveformColor(event.target.value);
+          });
+
+          document.getElementById('overview-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView('overview');
+
+            view.setWaveformColor(event.target.value);
           });
         });
       })(peaks);

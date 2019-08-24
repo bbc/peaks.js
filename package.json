@@ -62,7 +62,8 @@
     "pretest": "npm run build",
     "test": "./node_modules/karma/bin/karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
-    "prestart": "npm run build && cp test_data/sample.mp3 demo",
+    "copy-demo-files": "cp test_data/sample.mp3 demo && cp test_data/07023003.mp3 demo && cp test_data/07023003-2channel.dat demo",
+    "prestart": "npm run build && npm run copy-demo-files",
     "prepublish": "npm run build",
     "start": "serve --listen 8080 --no-clipboard demo"
   },
