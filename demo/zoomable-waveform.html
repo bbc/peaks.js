@@ -101,6 +101,8 @@
         <button data-action="seek">Seek</button>
         <label for="amplitude-scale">Amplitude scale</label>
         <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+        <label for="waveform-color">Waveform color</label>
+        <input type="color" id="waveform-color" value="#00e180">
       </div>
     </div>
 
@@ -118,6 +120,7 @@
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
+          zoomWaveformColor: '#00e180',
           showPlayheadTime: true
         };
 
@@ -155,11 +158,17 @@
             "10": 5.0
           };
 
-          document.getElementById('amplitude-scale').addEventListener('input', function() {
-            var scale = amplitudeScales[this.value];
+          document.getElementById('amplitude-scale').addEventListener('input', function(event) {
+            var scale = amplitudeScales[event.target.value];
             var view = peaksInstance.views.getView();
 
             view.setAmplitudeScale(scale);
+          });
+
+          document.getElementById('waveform-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView();
+
+            view.setWaveformColor(event.target.value);
           });
         });
       })(peaks);
