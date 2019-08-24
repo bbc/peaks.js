@@ -25,7 +25,7 @@ Peaks.js uses the HTML canvas element to display the waveform at different zoom 
 * Server-side waveform computation, for efficiency
 * Mono, stereo, or multi-channel waveform views
 * Create point or segment marker annotations
-* Configurable appearance
+* Customisable waveform views
 
 You can read more about the project and see a demo [here](https://waveform.prototyping.bbc.co.uk/).
 
