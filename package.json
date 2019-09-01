@@ -72,10 +72,10 @@
     "chai": "~4.2.0",
     "deamdify": "~0.3.0",
     "derequire": "~2.0.3",
-    "eslint": "~6.1.0",
+    "eslint": "~6.3.0",
     "exorcist": "~1.0.1",
     "jsdoc": "~3.6.3",
-    "karma": "~4.2.0",
+    "karma": "~4.3.0",
     "karma-browserify": "~6.1.0",
     "karma-browserstack-launcher": "~1.5.1",
     "karma-chai-sinon": "~0.1.5",
@@ -95,7 +95,7 @@
   "dependencies": {
     "colors.css": "~3.0.0",
     "eventemitter2": "~5.0.1",
-    "konva": "~4.0.4",
+    "konva": "~4.0.6",
     "waveform-data": "~3.0.0"
   }
 }
