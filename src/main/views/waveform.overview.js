@@ -333,6 +333,11 @@ define([
     this._playheadLayer.showPlayheadTime(show);
   };
 
+  WaveformOverview.prototype.enableAutoScroll = function() {
+    // The overview waveform doesn't support scrolling,
+    // so nothing to do here.
+  };
+
   WaveformOverview.prototype.destroy = function() {
     if (this._resizeTimeoutId) {
       clearTimeout(this._resizeTimeoutId);

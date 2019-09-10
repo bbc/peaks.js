@@ -129,6 +129,8 @@
         <button data-action="log-data">Log segments/points</button>
         <input type="text" id="seek-time" value="0.0">
         <button data-action="seek">Seek</button>
+        <input type="checkbox" id="auto-scroll" checked>
+        <label for="auto-scroll">Auto-scroll</label>
         <button data-action="destroy">Destroy</button>
       </div>
     </div>
@@ -371,6 +373,11 @@
 
           document.querySelector('button[data-action="destroy"]').addEventListener('click', function(event) {
             peaksInstance.destroy();
+          });
+
+          document.getElementById('auto-scroll').addEventListener('change', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+            view.enableAutoScroll(event.target.checked);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {

@@ -7,26 +7,26 @@
  */
 
 define([
-  'peaks/waveform/waveform.axis',
-  'peaks/waveform/waveform.utils',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/waveform-shape',
   'peaks/views/helpers/mousedraghandler',
-  'peaks/views/zooms/animated',
-  'peaks/views/zooms/static',
+  // 'peaks/views/zooms/animated',
+  // 'peaks/views/zooms/static',
+  'peaks/waveform/waveform.axis',
+  'peaks/waveform/waveform.utils',
   'konva'
   ], function(
-    WaveformAxis,
-    Utils,
     PlayheadLayer,
     PointsLayer,
     SegmentsLayer,
     WaveformShape,
     MouseDragHandler,
-    AnimatedZoomAdapter,
-    StaticZoomAdapter,
+    // AnimatedZoomAdapter,
+    // StaticZoomAdapter,
+    WaveformAxis,
+    Utils,
     Konva) {
   'use strict';
 
@@ -47,6 +47,7 @@ define([
     self._originalWaveformData = waveformData;
     self._container = container;
     self._peaks = peaks;
+    self._enableAutoScroll = true;
 
     self._options = peaks.options;
 
@@ -197,24 +198,26 @@ define([
   WaveformZoomView.prototype._syncPlayhead = function(time) {
     this._playheadLayer.updatePlayheadTime(time);
 
-    var pixelIndex = this.timeToPixels(time);
+    if (this._enableAutoScroll) {
+      // Check for the playhead reaching the right-hand side of the window.
 
-    // Check for the playhead reaching the right-hand side of the window.
+      var pixelIndex = this.timeToPixels(time);
 
-    // TODO: move this code to animation function?
-    // TODO: don't scroll if user has positioned view manually (e.g., using
-    // the keyboard)
-    var endThreshold = this._frameOffset + this._width - 100;
+      // TODO: move this code to animation function?
+      // TODO: don't scroll if user has positioned view manually (e.g., using
+      // the keyboard)
+      var endThreshold = this._frameOffset + this._width - 100;
 
-    if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
-      // Put the playhead at 100 pixels from the left edge
-      this._frameOffset = pixelIndex - 100;
+      if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
+        // Put the playhead at 100 pixels from the left edge
+        this._frameOffset = pixelIndex - 100;
 
-      if (this._frameOffset < 0) {
-        this._frameOffset = 0;
+        if (this._frameOffset < 0) {
+          this._frameOffset = 0;
+        }
+
+        this._updateWaveform(this._frameOffset);
       }
-
-      this._updateWaveform(this._frameOffset);
     }
   };
 
@@ -414,6 +417,10 @@ define([
 
   WaveformZoomView.prototype.showPlayheadTime = function(show) {
     this._playheadLayer.showPlayheadTime(show);
+  };
+
+  WaveformZoomView.prototype.enableAutoScroll = function(enable) {
+    this._enableAutoScroll = enable;
   };
 
   /* WaveformZoomView.prototype.beginZoom = function() {

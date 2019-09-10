@@ -84,6 +84,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
+    - [view.enableAutoScroll()](#viewenableautoscrollenable)
   - [Destruction](#destruction)
     - [instance.destroy()](#instancedestroy)
   - [Events](#events)
@@ -913,6 +914,15 @@ The initial setting is `false`, for the overview waveform view, or controlled by
 ```js
 const view = instance.views.getView('zoomview');
 view.showPlayeadTime(false); // Remove the time from the playhead marker.
+```
+
+### `view.enableAutoScroll(enable)`
+
+Enables or disables auto-scroll behaviour (enabled by default). This only applies to the zoomable waveform view.
+
+```js
+const view = instance.views.getView('zoomview');
+view.enableAutoScroll(false);
 ```
 
 ## Cue events
