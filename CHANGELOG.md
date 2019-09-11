@@ -1,12 +1,10 @@
 # Peaks.js
 
-## 0.12.0 (2019/08/24)
+## 0.13.0 (2019/09/11)
 
- * (#194) Added multi-channel waveform support (@chrisn).
-
- * The API for creating waveforms using the Web Audio API has changed. Instead
-   of passing an 'audioContext' option to Peaks.init() or
-   peaksInstance.setSource(), you shoud now pass a 'webAudio' object,
+ * (#228) The API for creating waveforms using the Web Audio API has changed.
+   Instead of passing an `audioContext` option to `Peaks.init()` or
+   `peaksInstance.setSource()`, you shoud now pass a `webAudio` object,
    for example:
 
     ```javascript
@@ -21,10 +19,16 @@
     Peaks.init(options, function(err, peaksInstance) { ... });
     ```
 
- * The (undocumented) 'waveformBuilderOptions' option has also been removed.
-   If you were using 'amplitude_scale', please use view.setAmplitudeScale()
-   instead. The 'scale' option is now determined by the lowest 'zoomLevels'
+ * The (undocumented) `waveformBuilderOptions` option has also been removed.
+   If you were using `amplitude_scale`, please use `view.setAmplitudeScale()`
+   instead. The `scale` option is now determined by the lowest `zoomLevels`
    setting.
+
+ * Added `view.enableAutoScroll()` method.
+
+## 0.12.0 (2019/08/24)
+
+ * (#194) Added multi-channel waveform support (@chrisn).
 
 ## 0.11.1 (2019/08/23)
 
