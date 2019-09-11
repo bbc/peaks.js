@@ -2,7 +2,10 @@
 
 ## 0.13.0 (2019/09/11)
 
- * (#228) The API for creating waveforms using the Web Audio API has changed.
+ * (#228, #240) Added ability to intialise a Peaks instance given an
+   AudioBuffer.
+
+ * The API for creating waveforms using the Web Audio API has changed.
    Instead of passing an `audioContext` option to `Peaks.init()` or
    `peaksInstance.setSource()`, you shoud now pass a `webAudio` object,
    for example:
