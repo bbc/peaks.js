@@ -108,6 +108,7 @@ The [demo](demo) folder contains some working examples of Peaks.js in use. To vi
 ```bash
 git clone git@github.com:bbc/peaks.js.git
 cd peaks.js
+npm install
 npm start
 ```
 
