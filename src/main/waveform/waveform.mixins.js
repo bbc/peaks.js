@@ -104,7 +104,7 @@ define(['konva'], function(Konva) {
 
     if (options.draggable && options.onDrag) {
       group.on('dragmove', function(event) {
-        options.onDrag(options.segmentGroup, options.segment);
+        options.onDrag(options.segmentGroup, options.segment, options.inMarker);
       });
       group.on('dragstart', function(event) {
         if (options.inMarker) {
