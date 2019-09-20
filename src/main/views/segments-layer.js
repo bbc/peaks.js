@@ -229,7 +229,7 @@ define([
    * @param {Segment} segment
    */
 
-  SegmentsLayer.prototype._onSegmentHandleDrag = function(segmentGroup, segment) {
+  SegmentsLayer.prototype._onSegmentHandleDrag = function(segmentGroup, segment, inMarker) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
@@ -250,7 +250,7 @@ define([
       segment.endTime = this._view.pixelsToTime(outOffset);
     }
 
-    this._peaks.emit('segments.dragged', segment);
+    this._peaks.emit('segments.dragged', segment, inMarker);
   };
 
   /**
