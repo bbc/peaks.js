@@ -110,10 +110,12 @@ define(['konva'], function(Konva) {
         if (options.inMarker) {
           text.setX(xPosition - text.getWidth());
         }
+        options.onDragStart(options.segment, options.inMarker);
         text.show();
         options.layer.draw();
       });
       group.on('dragend', function(event) {
+        options.onDragEnd(options.segment, options.inMarker);
         text.hide();
         options.layer.draw();
       });

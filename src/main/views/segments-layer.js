@@ -180,7 +180,9 @@ define([
         segmentGroup: segmentGroup,
         segment:      segment,
         layer:        self._layer,
-        onDrag:       editable ? self._onSegmentHandleDrag.bind(self) : null
+        onDrag:       editable ? self._onSegmentHandleDrag.bind(self) : null,
+        onDragStart:  editable ? self._onSegmentHandleDragStart.bind(self) : null,
+        onDragEnd:    editable ? self._onSegmentHandleDragEnd.bind(self) : null
       });
 
       segmentGroup.add(segmentGroup.inMarker);
@@ -193,7 +195,9 @@ define([
         segmentGroup: segmentGroup,
         segment:      segment,
         layer:        self._layer,
-        onDrag:       editable ? self._onSegmentHandleDrag.bind(self) : null
+        onDrag:       editable ? self._onSegmentHandleDrag.bind(self) : null,
+        onDragStart:  editable ? self._onSegmentHandleDragStart.bind(self) : null,
+        onDragEnd:    editable ? self._onSegmentHandleDragEnd.bind(self) : null
       });
 
       segmentGroup.add(segmentGroup.outMarker);
@@ -247,6 +251,24 @@ define([
     }
 
     this._peaks.emit('segments.dragged', segment);
+  };
+
+  /**
+   * @param {Boolean} inMarker
+   * @param {Segment} segment
+   */
+
+  SegmentsLayer.prototype._onSegmentHandleDragStart = function(segment, inMarker) {
+      this._peaks.emit('segments.dragstart', segment, inMarker);
+  };
+
+  /**
+   * @param {Boolean} inMarker
+   * @param {Segment} segment
+   */
+
+  SegmentsLayer.prototype._onSegmentHandleDragEnd = function(segment, inMarker) {
+      this._peaks.emit('segments.dragend', segment, inMarker);
   };
 
   /**
