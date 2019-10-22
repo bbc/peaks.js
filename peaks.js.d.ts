@@ -5,6 +5,15 @@
 
 declare module 'peaks.js' {
 
+  interface SegmentAddOptions {
+    startTime: number;
+    endTime: number;
+    editable?: boolean;
+    color?: string;
+    labelText?: string;
+    id?: string;
+  }
+
   interface SegmentUpdateOptions {
     startTime?: number;
     endTime?: number;
@@ -13,14 +22,16 @@ declare module 'peaks.js' {
     labelText?: string;
   }
 
-  interface Segment {
-    startTime: number;
-    endTime: number;
+  interface Segment extends SegmentAddOptions {
+    update: (options: SegmentUpdateOptions) => void;
+  }
+
+  interface PointAddOptions {
+    time: number;
     editable?: boolean;
     color?: string;
     labelText?: string;
     id?: string;
-    update: (options: SegmentUpdateOptions) => void;
   }
 
   interface PointUpdateOptions {
@@ -30,12 +41,7 @@ declare module 'peaks.js' {
     labelText?: string;
   }
 
-  interface Point {
-    time: number;
-    editable?: boolean;
-    color?: string;
-    labelText?: string;
-    id?: string;
+  interface Point extends PointAddOptions {
     update: (options: PointUpdateOptions) => void;
   }
 
@@ -204,7 +210,7 @@ declare module 'peaks.js' {
     };
     // Segments API
     segments: {
-      add: (segments: Segment | Segment[]) => void;
+      add: (segments: SegmentAddOptions | SegmentAddOptions[]) => void;
       getSegments: () => Segment[];
       getSegment: (id: string) => Segment | null;
       removeByTime: (startTime: number, endTime?: number) => Segment[];
@@ -213,7 +219,7 @@ declare module 'peaks.js' {
     };
     // Points API
     points: {
-      add: (points: Point | Point[]) => void;
+      add: (points: PointAddOptions | PointAddOptions[]) => void;
       getPoints: () => Point[];
       getPoint: (id: string) => Point | null;
       removeByTime: (time: number) => Point[];
