@@ -137,7 +137,7 @@
 
         var sources = [
           {
-            title: "Tree of Life",
+            title: 'Tree of Life',
             mediaUrl: 'TOL_6min_720p_download.mp3',
             dataUri: {
               arraybuffer: 'TOL_6min_720p_download.dat',
@@ -145,9 +145,11 @@
             }
           },
           {
-            title: "Desert Island Discs",
+            title: 'Desert Island Discs',
             mediaUrl: 'sample.mp3',
-            audioContext: audioContext,
+            webAudio: {
+              audioContext: audioContext
+            },
             zoomLevels: [128, 256]
           }
         ];
