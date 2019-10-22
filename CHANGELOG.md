@@ -1,9 +1,15 @@
 # Peaks.js
 
+## 0.13.1 (2019/10/22)
+
+ * (#281) Fixed TypeScript definitions (@tscz)
+
+ * Updated demo pages to use updated `Peaks.init()` API options (@chrisn)
+
 ## 0.13.0 (2019/09/11)
 
  * (#228, #240) Added ability to intialise a Peaks instance given an
-   AudioBuffer.
+   AudioBuffer
 
  * The API for creating waveforms using the Web Audio API has changed.
    Instead of passing an `audioContext` option to `Peaks.init()` or
@@ -25,13 +31,13 @@
  * The (undocumented) `waveformBuilderOptions` option has also been removed.
    If you were using `amplitude_scale`, please use `view.setAmplitudeScale()`
    instead. The `scale` option is now determined by the lowest `zoomLevels`
-   setting.
+   setting
 
- * Added `view.enableAutoScroll()` method.
+ * Added `view.enableAutoScroll()` method
 
 ## 0.12.0 (2019/08/24)
 
- * (#194) Added multi-channel waveform support (@chrisn).
+ * (#194) Added multi-channel waveform support (@chrisn)
 
 ## 0.11.1 (2019/08/23)
 
