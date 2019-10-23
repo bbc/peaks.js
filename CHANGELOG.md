@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 0.14.0 (2019/10/23)
+
+ * (#287) Added `segment.dragstart` and `segment.dragend` events.
+   The `segment.dragged` event now receives a boolean parameter that indicates
+   whether the start or end marker is being dragged (@Spidy88)
+
 ## 0.13.1 (2019/10/22)
 
  * (#281) Fixed TypeScript definitions (@tscz)
