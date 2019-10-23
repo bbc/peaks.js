@@ -965,15 +965,17 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 
 ### Segments
 
-| Event name                | Arguments                 |
-| ------------------------- | ------------------------- |
-| `segments.add`            | `Array<Segment> segments` |
-| `segments.remove`         | `Array<Segment> segments` |
-| `segments.remove_all`     | (none)                    |
-| `segments.dragged`        | `Segment segment`         |
-| `segments.mouseenter`     | `Segment segment`         |
-| `segments.mouseleave`     | `Segment segment`         |
-| `segments.click`          | `Segment segment`         |
+| Event name                | Arguments                             |
+| ------------------------- | ------------------------------------- |
+| `segments.add`            | `Array<Segment> segments`             |
+| `segments.remove`         | `Array<Segment> segments`             |
+| `segments.remove_all`     | (none)                                |
+| `segments.dragstart`      | `Segment segment`, `Boolean inMarker` |
+| `segments.dragged`        | `Segment segment`, `Boolean inMarker` |
+| `segments.dragend`        | `Segment segment`, `Boolean inMarker` |
+| `segments.mouseenter`     | `Segment segment`                     |
+| `segments.mouseleave`     | `Segment segment`                     |
+| `segments.click`          | `Segment segment`                     |
 
 ### Points
 
