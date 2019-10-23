@@ -103,33 +103,37 @@ define(['konva'], function(Konva) {
     // Events
 
     if (options.draggable && options.onDrag) {
-      group.on('dragmove', function(event) {
+      group.on('dragmove', function() {
         options.onDrag(options.segmentGroup, options.segment, options.inMarker);
       });
-      group.on('dragstart', function(event) {
+
+      group.on('dragstart', function() {
         if (options.inMarker) {
           text.setX(xPosition - text.getWidth());
         }
+
         options.onDragStart(options.segment, options.inMarker);
         text.show();
         options.layer.draw();
       });
-      group.on('dragend', function(event) {
+
+      group.on('dragend', function() {
         options.onDragEnd(options.segment, options.inMarker);
         text.hide();
         options.layer.draw();
       });
     }
 
-    handle.on('mouseover touchstart', function(event) {
+    handle.on('mouseover touchstart', function() {
       if (options.inMarker) {
         text.setX(xPosition - text.getWidth());
       }
+
       text.show();
       options.layer.draw();
     });
 
-    handle.on('mouseout touchend', function(event) {
+    handle.on('mouseout touchend', function() {
       text.hide();
       options.layer.draw();
     });
@@ -205,37 +209,37 @@ define(['konva'], function(Konva) {
     });
 
     if (options.onDragStart) {
-      group.on('dragstart', function(event) {
+      group.on('dragstart', function() {
         options.onDragStart(options.point);
       });
     }
 
     if (options.onDragMove) {
-      group.on('dragmove', function(event) {
+      group.on('dragmove', function() {
         options.onDragMove(options.point);
       });
     }
 
     if (options.onDragEnd) {
-      group.on('dragend', function(event) {
+      group.on('dragend', function() {
         options.onDragEnd(options.point);
       });
     }
 
     if (options.onDblClick) {
-      group.on('dblclick', function(event) {
+      group.on('dblclick', function() {
         options.onDblClick(options.point);
       });
     }
 
     if (options.onMouseEnter) {
-      group.on('mouseenter', function(event) {
+      group.on('mouseenter', function() {
         options.onMouseEnter(options.point);
       });
     }
 
     if (options.onMouseLeave) {
-      group.on('mouseleave', function(event) {
+      group.on('mouseleave', function() {
         options.onMouseLeave(options.point);
       });
     }
@@ -297,25 +301,25 @@ define(['konva'], function(Konva) {
       time.hide();
       group.time = time;
 
-      handle.on('mouseover touchstart', function(event) {
+      handle.on('mouseover touchstart', function() {
         // Position text to the left of the marker
         time.setX(-24 - time.getWidth());
         time.show();
         options.layer.draw();
       });
 
-      handle.on('mouseout touchend', function(event) {
+      handle.on('mouseout touchend', function() {
         time.hide();
         options.layer.draw();
       });
 
-      group.on('dragstart', function(event) {
+      group.on('dragstart', function() {
         time.setX(-24 - time.getWidth());
         time.show();
         options.layer.draw();
       });
 
-      group.on('dragend', function(event) {
+      group.on('dragend', function() {
         time.hide();
         options.layer.draw();
       });
