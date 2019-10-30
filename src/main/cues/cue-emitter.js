@@ -317,7 +317,6 @@ define([
     this._detachEventHandlers();
 
     this._previousTime = -1;
-    this._marks.length = 0;
   };
 
   return CueEmitter;
