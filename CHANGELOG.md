@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 0.14.1 (2019/10/31)
+
+ * (#284) Fixed `peaks.destroy()` (@chrisn)
+
+ * Updated waveform-data.js to v3.1.0 (@chrisn)
+
 ## 0.14.0 (2019/10/23)
 
  * (#287) Added `segment.dragstart` and `segment.dragend` events.
