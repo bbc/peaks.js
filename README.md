@@ -433,9 +433,9 @@ and [Konva Text Example](https://konvajs.github.io/docs/shapes/Text.html)):
 
 ```javascript
 {
-  segmentInMarker: mixins.defaultInMarker(p.options),
-  segmentOutMarker: mixins.defaultOutMarker(p.options),
-  segmentLabelDraw: mixins.defaultSegmentLabelDraw(p.options)
+  createSegmentMarker: mixins.createSegmentMarker(p.options),
+  createSegmentLabel: mixins.createSegmentLabel(p.options),
+  createPointMarker: mixins.createPointMarker(p.options)
 }
 ```
 
