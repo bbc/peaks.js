@@ -66,8 +66,6 @@ define([
 
     self._waveformLayer = new Konva.FastLayer();
 
-    self._axis = new WaveformAxis(self, self._waveformLayer, peaks.options);
-
     self._createWaveform();
 
     self._segmentsLayer = new SegmentsLayer(peaks, self, false);
@@ -77,6 +75,7 @@ define([
     self._pointsLayer.addToStage(self._stage);
 
     self._createHighlightLayer();
+    self._createAxisLabels();
 
     self._playheadLayer = new PlayheadLayer(
       peaks,
@@ -254,6 +253,12 @@ define([
     this._stage.add(this._waveformLayer);
   };
 
+  WaveformOverview.prototype._createAxisLabels = function() {
+    this._axisLayer = new Konva.FastLayer();
+    this._axis = new WaveformAxis(this, this._axisLayer, this._options);
+    this._stage.add(this._axisLayer);
+  };
+
   WaveformOverview.prototype._createHighlightLayer = function() {
     this._highlightLayer = new Konva.FastLayer();
     this._stage.add(this._highlightLayer);
@@ -305,6 +310,7 @@ define([
 
   WaveformOverview.prototype._updateWaveform = function() {
     this._waveformLayer.draw();
+    this._axisLayer.draw();
 
     var playheadTime = this._peaks.player.getCurrentTime();
 

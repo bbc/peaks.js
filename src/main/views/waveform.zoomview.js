@@ -72,8 +72,6 @@ define([
 
     self._waveformLayer = new Konva.FastLayer();
 
-    self._axis = new WaveformAxis(self, self._waveformLayer, peaks.options);
-
     self._createWaveform();
 
     self._segmentsLayer = new SegmentsLayer(peaks, self, true);
@@ -81,6 +79,8 @@ define([
 
     self._pointsLayer = new PointsLayer(peaks, self, true, true);
     self._pointsLayer.addToStage(self._stage);
+
+    self._createAxisLabels();
 
     self._playheadLayer = new PlayheadLayer(
       peaks,
@@ -347,8 +347,6 @@ define([
 
     this._waveformShape.setAmplitudeScale(scale);
     this._waveformLayer.draw();
-
-    this._segmentsLayer.setAmplitudeScale(scale);
   };
 
   /**
@@ -369,6 +367,12 @@ define([
     this._stage.add(this._waveformLayer);
 
     this._peaks.emit('zoomview.displaying', 0, this.pixelsToTime(this._width));
+  };
+
+  WaveformZoomView.prototype._createAxisLabels = function() {
+    this._axisLayer = new Konva.FastLayer();
+    this._axis = new WaveformAxis(this, this._axisLayer, this._options);
+    this._stage.add(this._axisLayer);
   };
 
   /**
@@ -400,6 +404,7 @@ define([
     this._playheadLayer.updatePlayheadTime(this.pixelsToTime(playheadPixel));
 
     this._waveformLayer.draw();
+    this._axisLayer.draw();
 
     var frameStartTime = this.pixelsToTime(this._frameOffset);
     var frameEndTime   = this.pixelsToTime(this._frameOffset + this._width);
