@@ -98,6 +98,8 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
       clearTimeout(this._interval);
       this._interval = null;
     }
+
+    this._mediaElement = null;
   };
 
   Player.prototype.setSource = function(source) {
