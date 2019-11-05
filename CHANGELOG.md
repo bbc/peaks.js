@@ -1,5 +1,13 @@
 # Peaks.js
 
+## 0.14.2 (2019/11/05)
+
+ * (#285) The axis labels are now correctly rendered on top of the waveform
+   (@chrisn)
+
+ * (#286) Fixed point/segment marker creation function options, and updated
+   documentation (@chrisn)
+
 ## 0.14.1 (2019/10/31)
 
  * (#284) Fixed `peaks.destroy()` (@chrisn)
@@ -107,35 +115,35 @@
 
 ## 0.9.11 (2018/07/27)
 
-* Refactored waveform rendering code, added WaveformShape class (@chrisn)
+ * Refactored waveform rendering code, added WaveformShape class (@chrisn)
 
-* Removed background layer, to reduce the number of Konva layers used (@chrisn)
+ * Removed background layer, to reduce the number of Konva layers used (@chrisn)
 
-* Avoid building waveform data multiple times when using the Web Audio API
-  (@cky917)
+ * Avoid building waveform data multiple times when using the Web Audio API
+   (@cky917)
 
 ## 0.9.10 (2018/06/23)
 
-* Fixed use of Web Audio API in Safari (@ibobobo)
+ * Fixed use of Web Audio API in Safari (@ibobobo)
 
-* Fixed point drag event handling (@anthonytex, @chrisn)
+ * Fixed point drag event handling (@anthonytex, @chrisn)
 
 ## 0.9.9 (2018/05/21)
 
-* Allow Peaks objects to be created using the new operator (@chrisn)
+ * Allow Peaks objects to be created using the new operator (@chrisn)
 
-* The points.add() and segments.add() methods now operate atomically. This
-  change ensures that the input point/segment objects are validated before
-  storing, so that if an exception is thrown, we leave the state of the
-  points/segments array as it was before the function was called (@chrisn)
+ * The points.add() and segments.add() methods now operate atomically. This
+   change ensures that the input point/segment objects are validated before
+   storing, so that if an exception is thrown, we leave the state of the
+   points/segments array as it was before the function was called (@chrisn)
 
-* Added 'points.mouseenter' and 'points.mouseleave' events. Also added
-  'points.dblclick', which replaces the (previously undocumented)
-  pointDblClickHandler config option (@markjongkind, @chrisn)
+ * Added 'points.mouseenter' and 'points.mouseleave' events. Also added
+   'points.dblclick', which replaces the (previously undocumented)
+   pointDblClickHandler config option (@markjongkind, @chrisn)
 
-* Added 'points.dragstart' and 'points.dragend' events, and renamed
-  'points.dragged' to 'points.dragmove'. The (also undocumented)
-  pointDragEndHandler config option is deprecated (@chrisn)
+ * Added 'points.dragstart' and 'points.dragend' events, and renamed
+   'points.dragged' to 'points.dragmove'. The (also undocumented)
+   pointDragEndHandler config option is deprecated (@chrisn)
 
 ## 0.9.8 (2018/02/10)
 
