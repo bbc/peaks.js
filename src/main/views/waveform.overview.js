@@ -273,12 +273,12 @@ define([
 
     this._highlightRect = new Konva.Rect({
       startOffset: 0,
-      y: this._options.overviewHighlightRectangleOffset,
+      y: this._options.overviewHighlightOffset,
       width: endOffset - startOffset,
-      stroke: this._options.overviewHighlightRectangleColor,
+      stroke: this._options.overviewHighlightColor,
       strokeWidth: 1,
-      height: this._height - (this._options.overviewHighlightRectangleOffset * 2),
-      fill: this._options.overviewHighlightRectangleColor,
+      height: this._height - (this._options.overviewHighlightOffset * 2),
+      fill: this._options.overviewHighlightColor,
       opacity: 0.3,
       cornerRadius: 2
     });

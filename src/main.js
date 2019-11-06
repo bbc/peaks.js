@@ -157,13 +157,13 @@ define('peaks', [
        * Colour for the overview waveform highlight rectangle, which shows
        * you what you see in the zoom view.
        */
-      overviewHighlightRectangleColor: 'grey',
+      overviewHighlightColor: 'grey',
 
       /**
        * The default number of pixels from the top and bottom of the canvas
        * that the overviewHighlight takes up
        */
-      overviewHighlightRectangleOffset: 11,
+      overviewHighlightOffset: 11,
 
       /**
        * Random colour per segment (overrides segmentColor)
@@ -396,6 +396,12 @@ define('peaks', [
       opts.mediaElement = opts.audioElement;
         // eslint-disable-next-line max-len
       opts.deprecationLogger('Peaks.init(): The audioElement option is deprecated, please use mediaElement instead');
+    }
+
+    if (opts.overviewHighlightRectangleColor) {
+      opts.overviewHighlightColor = opts.overviewHighlightRectangleColor;
+      // eslint-disable-next-line max-len
+      opts.deprecationLogger('overviewHighlightRectangleColor has been renamed overviewHighlightColor');
     }
 
     if (!opts.mediaElement) {
