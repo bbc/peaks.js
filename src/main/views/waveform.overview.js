@@ -270,14 +270,19 @@ define([
 
     var startOffset = this.timeToPixels(startTime);
     var endOffset   = this.timeToPixels(endTime);
+    var offset = Utils.clamp(
+      this._options.overviewHighlightOffset,
+      0,
+      Math.floor(this._height / 2)
+    );
 
     this._highlightRect = new Konva.Rect({
       startOffset: 0,
-      y: this._options.overviewHighlightOffset,
+      y: offset,
       width: endOffset - startOffset,
       stroke: this._options.overviewHighlightColor,
       strokeWidth: 1,
-      height: this._height - (this._options.overviewHighlightOffset * 2),
+      height: this._height - (offset * 2),
       fill: this._options.overviewHighlightColor,
       opacity: 0.3,
       cornerRadius: 2
