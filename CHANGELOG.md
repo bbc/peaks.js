@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 0.14.4 (2019/11/06)
+
+ * (#289) Fixed overlapHighlightOffset behaviour when value too large
+   (@jodonnell)
+
 ## 0.14.3 (2019/11/06)
 
  * (#288) Added overviewHighlightOffset option, and renamed the
