@@ -160,6 +160,12 @@ define('peaks', [
       overviewHighlightRectangleColor: 'grey',
 
       /**
+       * The default number of pixels from the top and bottom of the canvas
+       * that the overviewHighlight takes up
+       */
+      overviewHighlightRectangleOffset: 11,
+
+      /**
        * Random colour per segment (overrides segmentColor)
        */
       randomizeSegmentColor: true,
