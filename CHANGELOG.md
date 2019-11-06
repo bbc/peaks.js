@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 0.14.3 (2019/11/06)
+
+ * (#288) Added overviewHighlightOffset option, and renamed the
+   overviewHighlightRectangleColor option to overviewHighlightColor
+   (@jodonnell)
+
 ## 0.14.2 (2019/11/05)
 
  * (#285) The axis labels are now correctly rendered on top of the waveform
