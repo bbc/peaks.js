@@ -363,7 +363,11 @@ var options = {
 
   // Colour for the overview waveform rectangle
   // that shows what the zoom view shows
-  overviewHighlightRectangleColor: 'grey',
+  overviewHighlightColor: 'grey',
+
+  // The default number of pixels from the top and bottom of the canvas
+  // that the overviewHighlight takes up
+  overviewHighlightOffset: 11,
 
   // Colour for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
