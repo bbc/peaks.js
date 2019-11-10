@@ -132,6 +132,8 @@
         <button data-action="log-data">Log segments/points</button>
         <input type="text" id="seek-time" value="0.0">
         <button data-action="seek">Seek</button>
+        <label for="amplitude-scale">Amplitude scale</label>
+        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
         <input type="checkbox" id="auto-scroll" checked>
         <label for="auto-scroll">Auto-scroll</label>
         <button data-action="destroy">Destroy</button>
@@ -401,6 +403,27 @@
             else if (action === 'remove-segment') {
               peaksInstance.segments.removeById(id);
             }
+          });
+
+          var amplitudeScales = {
+            "0": 0.0,
+            "1": 0.1,
+            "2": 0.25,
+            "3": 0.5,
+            "4": 0.75,
+            "5": 1.0,
+            "6": 1.5,
+            "7": 2.0,
+            "8": 3.0,
+            "9": 4.0,
+            "10": 5.0
+          };
+
+          document.getElementById('amplitude-scale').addEventListener('input', function(event) {
+            var scale = amplitudeScales[event.target.value];
+
+            peaksInstance.views.getView('zoomview').setAmplitudeScale(scale);
+            peaksInstance.views.getView('overview').setAmplitudeScale(scale);
           });
 
           // Points mouse events

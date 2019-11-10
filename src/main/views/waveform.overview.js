@@ -43,6 +43,7 @@ define([
     self._originalWaveformData = waveformData;
     self._container = container;
     self._peaks = peaks;
+    self._amplitudeScale = 1.0;
 
     self._options = peaks.options;
 
@@ -230,8 +231,14 @@ define([
        throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
     }
 
-    this._waveformShape.setAmplitudeScale(scale);
+    this._amplitudeScale = scale;
+
     this._waveformLayer.draw();
+    this._segmentsLayer.draw();
+  };
+
+  WaveformOverview.prototype.getAmplitudeScale = function() {
+    return this._amplitudeScale;
   };
 
   /**

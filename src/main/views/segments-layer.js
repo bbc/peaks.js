@@ -400,27 +400,8 @@ define([
     this._layer.setVisible(visible);
   };
 
-  /**
-   * Adjusts the amplitude scale of any waveform segments shown in the view.
-   *
-   * @param {Number} scale The new amplitude scale factor
-   */
-
-  SegmentsLayer.prototype.setAmplitudeScale = function(scale) {
-    var updated = false;
-
-    for (var segmentId in this._segmentGroups) {
-      if (Object.prototype.hasOwnProperty.call(this._segmentGroups, segmentId)) {
-        var segmentGroup = this._segmentGroups[segmentId];
-
-        segmentGroup.waveformShape.setAmplitudeScale(scale);
-        updated = true;
-      }
-    }
-
-    if (updated) {
-      this._layer.draw();
-    }
+  SegmentsLayer.prototype.draw = function() {
+    this._layer.draw();
   };
 
   return SegmentsLayer;

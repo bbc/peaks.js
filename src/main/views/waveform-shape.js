@@ -56,16 +56,11 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
 
     this._view = options.view;
     this._segment = options.segment;
-    this._scale = 1.0;
 
     this.sceneFunc(this._sceneFunc);
   }
 
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
-
-  WaveformShape.prototype.setAmplitudeScale = function(scale) {
-    this._scale = scale;
-  };
 
   WaveformShape.prototype.setWaveformColor = function(color) {
     this.fill(color);
@@ -146,18 +141,20 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     frameOffset, startPixels, endPixels, top, height) {
     var x, val;
 
+    var amplitudeScale = this._view.getAmplitudeScale();
+
     context.beginPath();
 
     for (x = startPixels; x < endPixels; x++) {
       val = channel.min_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, this._scale) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, amplitudeScale) + 0.5);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
       val = channel.max_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, this._scale) + 0.5);
+      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, amplitudeScale) + 0.5);
     }
 
     context.closePath();
