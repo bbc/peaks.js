@@ -1,5 +1,13 @@
 # Peaks.js
 
+## 0.14.5 (2019/11/10)
+
+ * (#290) Fixed setAmplitudeScale() to update all waveform segments (@chrisn)
+
+ * Disabled warnings from Konva.js
+
+ * Fixed demo pages for Webkit
+
 ## 0.14.4 (2019/11/06)
 
  * (#289) Fixed overlapHighlightOffset behaviour when value too large
