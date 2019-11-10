@@ -160,6 +160,7 @@
     <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
         var audioContext = new AudioContext();
 
         var sources = [
