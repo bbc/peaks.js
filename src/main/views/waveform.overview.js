@@ -56,6 +56,10 @@ define([
       self._data = waveformData;
     }
 
+    // Disable warning: The stage has 6 layers.
+    // Recommended maximum number of layers is 3-5.
+    Konva.showWarnings = false;
+
     self._resizeTimeoutId = null;
 
     self._stage = new Konva.Stage({
