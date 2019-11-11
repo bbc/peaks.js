@@ -164,7 +164,9 @@ declare module 'peaks.js' {
     'points.remove': (points: Point[]) => any;
     'points.enter': (point: Point) => any;
     'segments.add': (segments: Segment[]) => any;
-    'segments.dragged': (segment: Segment) => any;
+    'segments.dragstart': (segment: Segment, inMarker: boolean) => any;
+    'segments.dragged': (segment: Segment, inMarker: boolean) => any;
+    'segments.dragend': (segment: Segment, inMarker: boolean) => any;
     'segments.remove_all': () => any;
     'segments.remove': (segments: Segment[]) => any;
     'segments.mouseenter': (segment: Segment) => any;
