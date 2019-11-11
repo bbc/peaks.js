@@ -149,34 +149,34 @@ declare module 'peaks.js' {
 
   type SetSourceOptions = SetSourceRequiredOptions & AudioOptions;
 
-  type SetSourceCallback = (error: Error) => any;
+  type SetSourceCallback = (error: Error) => void;
 
   interface InstanceEvents {
-    'peaks.ready': () => any;
-    'points.add': (points: Point[]) => any;
-    'points.dblclick': (point: Point) => any;
-    'points.dragend': (point: Point) => any;
-    'points.dragmove': (point: Point) => any;
-    'points.dragstart': (point: Point) => any;
-    'points.mouseenter': (point: Point) => any;
-    'points.mouseleave': (point: Point) => any;
-    'points.remove_all': () => any;
-    'points.remove': (points: Point[]) => any;
-    'points.enter': (point: Point) => any;
-    'segments.add': (segments: Segment[]) => any;
-    'segments.dragstart': (segment: Segment, inMarker: boolean) => any;
-    'segments.dragged': (segment: Segment, inMarker: boolean) => any;
-    'segments.dragend': (segment: Segment, inMarker: boolean) => any;
-    'segments.remove_all': () => any;
-    'segments.remove': (segments: Segment[]) => any;
-    'segments.mouseenter': (segment: Segment) => any;
-    'segments.mouseleave': (segment: Segment) => any;
-    'segments.click': (segment: Segment) => any;
-    'segments.enter': (segment: Segment) => any;
-    'segments.exit': (segment: Segment) => any;
-    'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => any;
-    player_seek: (time: number) => any;
-    user_seek: (time: number) => any;
+    'peaks.ready': () => void;
+    'points.add': (points: Point[]) => void;
+    'points.dblclick': (point: Point) => void;
+    'points.dragend': (point: Point) => void;
+    'points.dragmove': (point: Point) => void;
+    'points.dragstart': (point: Point) => void;
+    'points.mouseenter': (point: Point) => void;
+    'points.mouseleave': (point: Point) => void;
+    'points.remove_all': () => void;
+    'points.remove': (points: Point[]) => void;
+    'points.enter': (point: Point) => void;
+    'segments.add': (segments: Segment[]) => void;
+    'segments.dragstart': (segment: Segment, inMarker: boolean) => void;
+    'segments.dragged': (segment: Segment, inMarker: boolean) => void;
+    'segments.dragend': (segment: Segment, inMarker: boolean) => void;
+    'segments.remove_all': () => void;
+    'segments.remove': (segments: Segment[]) => void;
+    'segments.mouseenter': (segment: Segment) => void;
+    'segments.mouseleave': (segment: Segment) => void;
+    'segments.click': (segment: Segment) => void;
+    'segments.enter': (segment: Segment) => void;
+    'segments.exit': (segment: Segment) => void;
+    'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
+    player_seek: (time: number) => void;
+    user_seek: (time: number) => void;
   }
 
   interface WaveformView {
@@ -232,7 +232,7 @@ declare module 'peaks.js' {
     on: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
   }
 
-  type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => any;
+  type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
   interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
 
