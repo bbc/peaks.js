@@ -194,6 +194,7 @@ declare module 'peaks.js' {
       play: () => void;
       pause: () => void;
       getCurrentTime: () => number;
+      getDuration: () => number;
       seek: (time: number) => void;
       playSegment: (segment: Segment) => void;
     };
