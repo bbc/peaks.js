@@ -133,6 +133,16 @@ define([
       }
     });
 
+    this._stage.on('dblclick', function(event) {
+      var mousePosX = event.evt.layerX;
+
+      var pixelIndex = self._frameOffset + mousePosX;
+
+      var time = self.pixelsToTime(pixelIndex);
+
+      self._peaks.emit('zoomview.dblclick', time);
+    });
+
     // Events
 
     self._peaks.on('player_time_update', function(time) {

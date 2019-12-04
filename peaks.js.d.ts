@@ -174,6 +174,8 @@ declare module 'peaks.js' {
     'segments.click': (segment: Segment) => void;
     'segments.enter': (segment: Segment) => void;
     'segments.exit': (segment: Segment) => void;
+    'overview.dblclick': (time: number) => void;
+    'zoomview.dblclick': (time: number) => void;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
     player_seek: (time: number) => void;
     user_seek: (time: number) => void;

@@ -477,6 +477,14 @@
           peaksInstance.on('segments.click', function(segment) {
             console.log('segments.click:', segment);
           });
+
+          peaksInstance.on('zoomview.dblclick', function(time) {
+            console.log('zoomview.dblclick:', time);
+          });
+
+          peaksInstance.on('overview.dblclick', function(time) {
+            console.log('overview.dblclick:', time);
+          });
         });
       })(peaks);
     </script>

@@ -115,6 +115,14 @@ define([
       }
     });
 
+    this._stage.on('dblclick', function(event) {
+      var pixelIndex = event.evt.layerX;
+
+      var time = self.pixelsToTime(pixelIndex);
+
+      self._peaks.emit('overview.dblclick', time);
+    });
+
     // Events
 
     peaks.on('player_play', function(time) {

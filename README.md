@@ -57,6 +57,11 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [instance.views.getView()](#instanceviewsgetviewname)
     - [instance.views.createZoomview()](#instanceviewscreatezoomviewcontainer)
     - [instance.views.createOverview()](#instanceviewscreateoverviewcontainer)
+  - [View API](#view-api)
+    - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
+    - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
+    - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
+    - [view.enableAutoScroll()](#viewenableautoscrollenable)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -80,14 +85,11 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [instance.points.removeAll()](#instancepointsremoveall)
   - [Point API](#point-api)
     - [point.update()](#pointupdatetime-labeltext-color-editable)
-  - [View Settings API](#view-settings-api)
-    - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
-    - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
-    - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
-    - [view.enableAutoScroll()](#viewenableautoscrollenable)
+  - [Events](#events)
+    - [instance.on()](#instanceonevent-callback)
+    - [instance.off()](#instanceoffevent-callback)
   - [Destruction](#destruction)
     - [instance.destroy()](#instancedestroy)
-  - [Events](#events)
 - [Building Peaks.js](#building-peaksjs)
 - [Testing](#testing)
 - [Contributing](#contributing)
@@ -621,6 +623,50 @@ const container = document.getElementById('overview-container');
 const view = instance.views.createOverview(container);
 ```
 
+## View API
+
+Some view properties can be updated programmatically.
+
+### `view.setAmplitudeScale(scale)`
+
+Changes the amplitude (vertical) waveform scale. The default scale is 1.0. If greater than 1.0, the waveform is increased in height. If between 0.0 and 1.0, the waveform is reduced in height.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setAmplitudeScale(1.0);
+```
+
+### `view.setWaveformColor(color)`
+
+Sets the waveform color, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+
+The initial color is controlled by the `zoomWaveformColor` and `overviewWaveformColor` configuration options.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setWaveformColor('#800080'); // Purple
+```
+
+### `view.showPlayheadTime(show)`
+
+Shows or hides the current playback time, shown next to the playhead.
+
+The initial setting is `false`, for the overview waveform view, or controlled by the `showPlayheadTime` configuration option for the zoomable waveform view.
+
+```js
+const view = instance.views.getView('zoomview');
+view.showPlayeadTime(false); // Remove the time from the playhead marker.
+```
+
+### `view.enableAutoScroll(enable)`
+
+Enables or disables auto-scroll behaviour (enabled by default). This only applies to the zoomable waveform view.
+
+```js
+const view = instance.views.getView('zoomview');
+view.enableAutoScroll(false);
+```
+
 ## Zoom API
 
 ### `instance.zoom.zoomOut()`
@@ -887,50 +933,6 @@ point.update({ time: 7, labelText: "new label text" });
 // etc.
 ```
 
-## View Settings API
-
-Some view properties can be updated programmatically.
-
-### `view.setAmplitudeScale(scale)`
-
-Changes the amplitude (vertical) waveform scale. The default scale is 1.0. If greater than 1.0, the waveform is increased in height. If between 0.0 and 1.0, the waveform is reduced in height.
-
-```js
-const view = instance.views.getView('zoomview');
-view.setAmplitudeScale(1.0);
-```
-
-### `view.setWaveformColor(color)`
-
-Sets the waveform color, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
-
-The initial color is controlled by the `zoomWaveformColor` and `overviewWaveformColor` configuration options.
-
-```js
-const view = instance.views.getView('zoomview');
-view.setWaveformColor('#800080'); // Purple
-```
-
-### `view.showPlayheadTime(show)`
-
-Shows or hides the current playback time, shown next to the playhead.
-
-The initial setting is `false`, for the overview waveform view, or controlled by the `showPlayheadTime` configuration option for the zoomable waveform view.
-
-```js
-const view = instance.views.getView('zoomview');
-view.showPlayeadTime(false); // Remove the time from the playhead marker.
-```
-
-### `view.enableAutoScroll(enable)`
-
-Enables or disables auto-scroll behaviour (enabled by default). This only applies to the zoomable waveform view.
-
-```js
-const view = instance.views.getView('zoomview');
-view.enableAutoScroll(false);
-```
-
 ## Cue events
 
 Emit events when the playhead reaches a point or segment boundary.
@@ -942,33 +944,44 @@ peaks.on('segments.enter', function(segment) { ... });
 peaks.on('segments.exit', function(segment) { ... });
 ```
 
-## Destruction
-
-### `instance.destroy()`
-
-Releases resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
-
-```js
-instance.destroy();
-```
-
 ## Events
 
 Peaks instances emit events to enable you to extend its behaviour according to your needs.
 
-### Media / User interactions
+### `instance.on(event, callback)`
+
+Registers callback function to handle events emitted by a Peaks instance.
+
+```js
+function dblClickHandler(time) {
+  console.log('dblclick', time);
+}
+
+instance.on('zoomview.dblclick', dblClickHandler);
+```
+
+The following sections describe the availabe events.
+
+#### Media / User interactions
 
 | Event name    | Arguments |
 | ------------- | --------- |
 | `peaks.ready` | (none)    |
 
-### Waveforms
+#### Views
+
+| Event name          | Arguments     |
+| ------------------- | ------------- |
+| `overview.dblclick` | `Number time` |
+| `zoomview.dblclick` | `Number time` |
+
+#### Waveforms
 
 | Event name                | Arguments                                             |
 | ------------------------- | ----------------------------------------------------- |
 | `zoom.update`             | `Number currentZoomLevel`, `Number previousZoomLevel` |
 
-### Segments
+#### Segments
 
 | Event name                | Arguments                             |
 | ------------------------- | ------------------------------------- |
@@ -982,7 +995,7 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `segments.mouseleave`     | `Segment segment`                     |
 | `segments.click`          | `Segment segment`                     |
 
-### Points
+#### Points
 
 | Event name                | Arguments             |
 | ------------------------- | --------------------- |
@@ -996,7 +1009,7 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 | `points.mouseleave`       | `Point point`         |
 | `points.dblclick`         | `Point point`         |
 
-### Cue Events
+#### Cue Events
 
 To enable cue events, call `Peaks.init()` with the `{ emitCueEvents: true }` option. When the playhead reaches a point or segment boundary, a cue event is emitted.
 
@@ -1005,6 +1018,24 @@ To enable cue events, call `Peaks.init()` with the `{ emitCueEvents: true }` opt
 | `points.enter`           | `Point point`            |
 | `segments.enter`         | `Segment segment`        |
 | `segments.exit`          | `Segment segment`        |
+
+### `instance.off(event, callback)`
+
+Removes the given event handler callback function.
+
+```js
+instance.off('zoomview.dblclick', dblClickHandler);
+```
+
+## Destruction
+
+### `instance.destroy()`
+
+Releases resources used by an instance. This can be useful when reinitialising Peaks.js within a single page application.
+
+```js
+instance.destroy();
+```
 
 # Building Peaks.js
 
