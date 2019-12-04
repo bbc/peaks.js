@@ -165,12 +165,16 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
   };
 
   WaveformShape.prototype._hitFunc = function(context) {
+    if (!this._segment) {
+      return;
+    }
+
     var frameOffset = this._view.getFrameOffset();
     var viewWidth = this._view.getWidth();
     var viewHeight = this._view.getHeight();
 
-    var startPixels = this._segment ? this._view.timeToPixels(this._segment.startTime) : frameOffset;
-    var endPixels   = this._segment ? this._view.timeToPixels(this._segment.endTime)   : frameOffset + viewWidth;
+    var startPixels = this._view.timeToPixels(this._segment.startTime);
+    var endPixels   = this._view.timeToPixels(this._segment.endTime);
 
     var offsetY = 10;
     var hitRectHeight = viewHeight - 2 * offsetY;
