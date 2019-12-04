@@ -31,10 +31,6 @@ define(['peaks/waveform/waveform.utils'], function(Utils) {
     self._duration = self.getDuration();
     self._isPlaying = false;
 
-    if (self._mediaElement.readyState === 4) {
-      self._peaks.emit('player_load', self);
-    }
-
     self._addMediaListener('timeupdate', function() {
       self._peaks.emit('player_time_update', self.getCurrentTime());
     });
