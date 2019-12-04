@@ -58,6 +58,8 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     this._segment = options.segment;
 
     this.sceneFunc(this._sceneFunc);
+
+    this.hitFunc(this._hitFunc);
   }
 
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
@@ -160,6 +162,37 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     context.closePath();
 
     context.fillShape(this);
+  };
+
+  WaveformShape.prototype._hitFunc = function(context) {
+    var frameOffset = this._view.getFrameOffset();
+    var viewWidth = this._view.getWidth();
+    var viewHeight = this._view.getHeight();
+
+    var startPixels = this._segment ? this._view.timeToPixels(this._segment.startTime) : frameOffset;
+    var endPixels   = this._segment ? this._view.timeToPixels(this._segment.endTime)   : frameOffset + viewWidth;
+
+    var offsetY = 10;
+    var hitRectHeight = viewHeight - 2 * offsetY;
+
+    if (hitRectHeight < 0) {
+      hitRectHeight = 0;
+    }
+
+    var hitRectLeft = startPixels - frameOffset;
+    var hitRectWidth = endPixels - startPixels;
+
+    if (hitRectLeft < 0) {
+      hitRectWidth -= -hitRectLeft;
+      hitRectLeft = 0;
+    }
+
+    if (hitRectLeft + hitRectWidth > viewWidth) {
+      hitRectWidth -= hitRectLeft + hitRectWidth - viewWidth;
+    }
+
+    context.rect(hitRectLeft, offsetY, hitRectWidth, hitRectHeight);
+    context.fillStrokeShape(this);
   };
 
   return WaveformShape;
