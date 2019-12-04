@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 0.15.0 (2019/12/04)
+
+ * (#293) Added overview.dblclick and zoomview.dblclick events (@chrisn)
+
+ * Fixed Typescript definitions (@tscz, @chrisn)
+
 ## 0.14.5 (2019/11/10)
 
  * (#290) Fixed setAmplitudeScale() to update all waveform segments (@chrisn)
