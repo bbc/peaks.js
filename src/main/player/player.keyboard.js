@@ -29,9 +29,11 @@ define([], function() {
   function KeyboardHandler(eventEmitter) {
     this.eventEmitter = eventEmitter;
 
-    document.addEventListener('keydown', this.handleKeyEvent.bind(this));
-    document.addEventListener('keypress', this.handleKeyEvent.bind(this));
-    document.addEventListener('keyup', this.handleKeyEvent.bind(this));
+    this._handleKeyEvent = this._handleKeyEvent.bind(this);
+
+    document.addEventListener('keydown', this._handleKeyEvent);
+    document.addEventListener('keypress', this._handleKeyEvent);
+    document.addEventListener('keyup', this._handleKeyEvent);
   }
 
   /**
@@ -43,7 +45,7 @@ define([], function() {
    * @private
    */
 
-  KeyboardHandler.prototype.handleKeyEvent = function handleKeyEvent(event) {
+  KeyboardHandler.prototype._handleKeyEvent = function handleKeyEvent(event) {
     if (nodes.indexOf(event.target.nodeName) === -1) {
       if (keys.indexOf(event.type) > -1) {
         event.preventDefault();
@@ -82,6 +84,12 @@ define([], function() {
         }
       }
     }
+  };
+
+  KeyboardHandler.prototype.destroy = function() {
+    document.removeEventListener('keydown', this._handleKeyEvent);
+    document.removeEventListener('keypress', this._handleKeyEvent);
+    document.removeEventListener('keyup', this._handleKeyEvent);
   };
 
   return KeyboardHandler;

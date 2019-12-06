@@ -329,7 +329,7 @@ define('peaks', [
     }
 
     if (instance.options.keyboard) {
-      instance.keyboardHandler = new KeyboardHandler(instance);
+      instance._keyboardHandler = new KeyboardHandler(instance);
     }
 
     instance.player = new Player(instance, instance.options.mediaElement);
@@ -595,6 +595,10 @@ define('peaks', [
 
   Peaks.prototype.destroy = function() {
     this._removeWindowResizeHandler();
+
+    if (this._keyboardHandler) {
+      this._keyboardHandler.destroy();
+    }
 
     if (this.views) {
       this.views.destroy();
