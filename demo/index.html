@@ -348,11 +348,13 @@
             peaksInstance.zoom.zoomOut();
           });
 
+          var segmentCounter = 1;
+
           document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: "Test segment",
+              labelText: "Test segment " + segmentCounter++,
               editable: true
             });
           });

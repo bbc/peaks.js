@@ -59,7 +59,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
 
     this.sceneFunc(this._sceneFunc);
 
-    this.hitFunc(this._hitFunc);
+    this.hitFunc(this._waveformShapeHitFunc);
   }
 
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
@@ -164,7 +164,7 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     context.fillShape(this);
   };
 
-  WaveformShape.prototype._hitFunc = function(context) {
+  WaveformShape.prototype._waveformShapeHitFunc = function(context) {
     if (!this._segment) {
       return;
     }
@@ -195,7 +195,9 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
       hitRectWidth -= hitRectLeft + hitRectWidth - viewWidth;
     }
 
+    context.beginPath();
     context.rect(hitRectLeft, offsetY, hitRectWidth, hitRectHeight);
+    context.closePath();
     context.fillStrokeShape(this);
   };
 
