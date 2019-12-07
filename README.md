@@ -57,6 +57,8 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [instance.views.getView()](#instanceviewsgetviewname)
     - [instance.views.createZoomview()](#instanceviewscreatezoomviewcontainer)
     - [instance.views.createOverview()](#instanceviewscreateoverviewcontainer)
+    - [instance.views.destroyZoomview()](#instanceviewsdestroyzoomview)
+    - [instance.views.destroyOverview()](#instanceviewsdestroyoverview)
   - [View API](#view-api)
     - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
@@ -621,6 +623,28 @@ Creates a non-zoomable ("overview") waveform view in the given container element
 ```js
 const container = document.getElementById('overview-container');
 const view = instance.views.createOverview(container);
+```
+
+### `instance.views.destroyZoomview()`
+
+Destroys the zoomable waveform view.
+
+```js
+instance.views.destroyZoomview();
+
+const container = document.getElementById('zoomview-container');
+container.style.display = 'none';
+```
+
+### `instance.views.destroyOverview()`
+
+Destroys the non-zoomable ("overview") waveform view.
+
+```js
+instance.views.destroyOverview();
+
+const container = document.getElementById('overview-container');
+container.style.display = 'none';
 ```
 
 ## View API

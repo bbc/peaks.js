@@ -44,6 +44,13 @@ define([
       this._peaks
     );
 
+    if (this._zoomview) {
+      this._overview.showHighlight(
+        this._zoomview.getStartTime(),
+        this._zoomview.getEndTime()
+      );
+    }
+
     return this._overview;
   };
 
@@ -61,6 +68,34 @@ define([
     );
 
     return this._zoomview;
+  };
+
+  ViewController.prototype.destroyOverview = function() {
+    if (!this._overview) {
+      return;
+    }
+
+    if (!this._zoomview) {
+      return;
+    }
+
+    this._overview.destroy();
+    this._overview = null;
+  };
+
+  ViewController.prototype.destroyZoomview = function() {
+    if (!this._zoomview) {
+      return;
+    }
+
+    if (!this._overview) {
+      return;
+    }
+
+    this._zoomview.destroy();
+    this._zoomview = null;
+
+    this._overview.removeHighlightRect();
   };
 
   ViewController.prototype.destroy = function() {

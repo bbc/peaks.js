@@ -43,6 +43,21 @@ define([
     self._originalWaveformData = waveformData;
     self._container = container;
     self._peaks = peaks;
+
+    // Bind event handlers
+    self._onTimeUpdate = self._onTimeUpdate.bind(this);
+    self._onPlay = self._onPlay.bind(this);
+    self._onPause = self._onPause.bind(this);
+    self._onZoomviewDisplaying = self._onZoomviewDisplaying.bind(this);
+    self._onWindowResize = self._onWindowResize.bind(this);
+
+    // Register event handlers
+    peaks.on('player_time_update', self._onTimeUpdate);
+    peaks.on('player_play', self._onPlay);
+    peaks.on('player_pause', self._onPause);
+    peaks.on('zoomview.displaying', self._onZoomviewDisplaying);
+    peaks.on('window_resize', self._onWindowResize);
+
     self._amplitudeScale = 1.0;
 
     self._options = peaks.options;
@@ -122,50 +137,54 @@ define([
 
       self._peaks.emit('overview.dblclick', time);
     });
+  }
 
-    // Events
+  WaveformOverview.prototype._onTimeUpdate = function(time) {
+    this._playheadLayer.updatePlayheadTime(time);
+  };
 
-    peaks.on('player_play', function(time) {
-      self._playheadLayer.updatePlayheadTime(time);
-    });
+  WaveformOverview.prototype._onPlay = function(time) {
+    this._playheadLayer.updatePlayheadTime(time);
+  };
 
-    peaks.on('player_pause', function(time) {
-      self._playheadLayer.stop(time);
-    });
+  WaveformOverview.prototype._onPause = function(time) {
+    this._playheadLayer.stop(time);
+  };
 
-    peaks.on('player_time_update', function(time) {
-      self._playheadLayer.updatePlayheadTime(time);
-    });
+  WaveformOverview.prototype._onZoomviewDisplaying = function(startTime, endTime) {
+    this.showHighlight(startTime, endTime);
+  };
 
-    peaks.on('zoomview.displaying', function(startTime, endTime) {
-      if (!self._highlightRect) {
-        self._createHighlightRect(startTime, endTime);
-      }
+  WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
+    if (!this._highlightRect) {
+      this._createHighlightRect(startTime, endTime);
+    }
 
-      self._updateHighlightRect(startTime, endTime);
-    });
+    this._updateHighlightRect(startTime, endTime);
+  };
 
-    peaks.on('window_resize', function() {
-      if (self._resizeTimeoutId) {
-        clearTimeout(self._resizeTimeoutId);
-        self._resizeTimeoutId = null;
-      }
+  WaveformOverview.prototype._onWindowResize = function() {
+    var self = this;
 
-      // Avoid resampling waveform data to zero width
-      if (self._container.clientWidth !== 0) {
+    if (self._resizeTimeoutId) {
+      clearTimeout(self._resizeTimeoutId);
+      self._resizeTimeoutId = null;
+    }
+
+    // Avoid resampling waveform data to zero width
+    if (self._container.clientWidth !== 0) {
+      self._width = self._container.clientWidth;
+      self._stage.setWidth(self._width);
+
+      self._resizeTimeoutId = setTimeout(function() {
         self._width = self._container.clientWidth;
+        self._data = self._originalWaveformData.resample(self._width);
         self._stage.setWidth(self._width);
 
-        self._resizeTimeoutId = setTimeout(function() {
-          self._width = self._container.clientWidth;
-          self._data = self._originalWaveformData.resample(self._width);
-          self._stage.setWidth(self._width);
-
-          self._updateWaveform();
-        }, 500);
-      }
-    });
-  }
+        self._updateWaveform();
+      }, 500);
+    }
+  };
 
   WaveformOverview.prototype.setWaveformData = function(waveformData) {
     this._originalWaveformData = waveformData;
@@ -332,6 +351,14 @@ define([
     this._highlightLayer.draw();
   };
 
+  WaveformOverview.prototype.removeHighlightRect = function() {
+    if (this._highlightRect) {
+      this._highlightRect.destroy();
+      this._highlightRect = null;
+      this._highlightLayer.draw();
+    }
+  };
+
   WaveformOverview.prototype._updateWaveform = function() {
     this._waveformLayer.draw();
     this._axisLayer.draw();
@@ -373,6 +400,15 @@ define([
       clearTimeout(this._resizeTimeoutId);
       this._resizeTimeoutId = null;
     }
+
+    this._peaks.off('player_play', this._onPlay);
+    this._peaks.off('player_pause', this._onPause);
+    this._peaks.off('player_time_update', this._onTimeUpdate);
+    this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
+    this._peaks.off('window_resize', this._onWindowResize);
+
+    this._segmentsLayer.destroy();
+    this._pointsLayer.destroy();
 
     if (this._stage) {
       this._stage.destroy();

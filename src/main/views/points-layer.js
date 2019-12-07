@@ -33,7 +33,28 @@ define([
     this._pointGroups  = {};
     this._layer        = new Konva.Layer();
 
-    this._registerEventHandlers();
+    this._onPointsDrag = this._onPointsDrag.bind(this);
+
+    this._onPointHandleDblClick = this._onPointHandleDblClick.bind(this);
+    this._onPointHandleDragStart = this._onPointHandleDragStart.bind(this);
+    this._onPointHandleDragMove = this._onPointHandleDragMove.bind(this);
+    this._onPointHandleDragEnd = this._onPointHandleDragEnd.bind(this);
+    this._onPointHandleMouseEnter = this._onPointHandleMouseEnter.bind(this);
+    this._onPointHandleMouseLeave = this._onPointHandleMouseLeave.bind(this);
+
+    this._onPointsUpdate    = this._onPointsUpdate.bind(this);
+    this._onPointsAdd       = this._onPointsAdd.bind(this);
+    this._onPointsRemove    = this._onPointsRemove.bind(this);
+    this._onPointsRemoveAll = this._onPointsRemoveAll.bind(this);
+
+    this._peaks.on('points.update', this._onPointsUpdate);
+    this._peaks.on('points.add', this._onPointsAdd);
+    this._peaks.on('points.remove', this._onPointsRemove);
+    this._peaks.on('points.remove_all', this._onPointsRemoveAll);
+
+    this._peaks.on('points.dragstart', this._onPointsDrag);
+    this._peaks.on('points.dragmove', this._onPointsDrag);
+    this._peaks.on('points.dragend', this._onPointsDrag);
   }
 
   /**
@@ -46,62 +67,57 @@ define([
     stage.add(this._layer);
   };
 
-  PointsLayer.prototype._registerEventHandlers = function() {
+  PointsLayer.prototype._onPointsUpdate = function(point) {
+    var frameOffset = this._view.getFrameOffset();
+    var width = this._view.getWidth();
+    var frameStartTime = this._view.pixelsToTime(frameOffset);
+    var frameEndTime   = this._view.pixelsToTime(frameOffset + width);
+
+    this._removePoint(point);
+
+    if (point.isVisible(frameStartTime, frameEndTime)) {
+      this._addPointGroup(point);
+    }
+
+    this.updatePoints(frameStartTime, frameEndTime);
+  };
+
+  PointsLayer.prototype._onPointsAdd = function(points) {
     var self = this;
 
-    this._peaks.on('points.update', function(point) {
-      var frameOffset = self._view.getFrameOffset();
-      var width = self._view.getWidth();
-      var frameStartTime = self._view.pixelsToTime(frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+    var frameOffset = self._view.getFrameOffset();
+    var width = self._view.getWidth();
 
-      self._removePoint(point);
+    var frameStartTime = self._view.pixelsToTime(frameOffset);
+    var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+
+    points.forEach(function(point) {
       if (point.isVisible(frameStartTime, frameEndTime)) {
         self._addPointGroup(point);
       }
-
-      self.updatePoints(frameStartTime, frameEndTime);
     });
 
-    this._peaks.on('points.add', function(points) {
-      var frameOffset = self._view.getFrameOffset();
-      var width = self._view.getWidth();
-
-      var frameStartTime = self._view.pixelsToTime(frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
-
-      points.forEach(function(point) {
-        if (point.isVisible(frameStartTime, frameEndTime)) {
-          self._addPointGroup(point);
-        }
-      });
-
-      self.updatePoints(frameStartTime, frameEndTime);
-    });
-
-    this._peaks.on('points.remove', function(points) {
-      points.forEach(function(point) {
-        self._removePoint(point);
-      });
-
-      self._layer.draw();
-    });
-
-    this._peaks.on('points.remove_all', function() {
-      self._layer.removeChildren();
-      self._pointGroups = {};
-
-      self._layer.draw();
-    });
-
-    var pointDragHandler = this._pointDragHandler.bind(this);
-
-    this._peaks.on('points.dragstart', pointDragHandler);
-    this._peaks.on('points.dragmove', pointDragHandler);
-    this._peaks.on('points.dragend', pointDragHandler);
+    self.updatePoints(frameStartTime, frameEndTime);
   };
 
-  PointsLayer.prototype._pointDragHandler = function(point) {
+  PointsLayer.prototype._onPointsRemove = function(points) {
+    var self = this;
+
+    points.forEach(function(point) {
+      self._removePoint(point);
+    });
+
+    self._layer.draw();
+  };
+
+  PointsLayer.prototype._onPointsRemoveAll = function() {
+    this._layer.removeChildren();
+    this._pointGroups = {};
+
+    this._layer.draw();
+  };
+
+  PointsLayer.prototype._onPointsDrag = function(point) {
     this._updatePoint(point);
     this._layer.draw();
   };
@@ -129,12 +145,12 @@ define([
       pointGroup:   pointGroup,
       point:        point,
       layer:        this._layer,
-      onDblClick:   this._onPointHandleDblClick.bind(this),
-      onDragStart:  this._onPointHandleDragStart.bind(this),
-      onDragMove:   this._onPointHandleDragMove.bind(this),
-      onDragEnd:    this._onPointHandleDragEnd.bind(this),
-      onMouseEnter: this._onPointHandleMouseEnter.bind(this),
-      onMouseLeave: this._onPointHandleMouseLeave.bind(this)
+      onDblClick:   this._onPointHandleDblClick,
+      onDragStart:  this._onPointHandleDragStart,
+      onDragMove:   this._onPointHandleDragMove,
+      onDragEnd:    this._onPointHandleDragEnd,
+      onMouseEnter: this._onPointHandleMouseEnter,
+      onMouseLeave: this._onPointHandleMouseLeave
     });
 
     pointGroup.add(pointGroup.marker);
@@ -334,6 +350,16 @@ define([
 
   PointsLayer.prototype.setVisible = function(visible) {
     this._layer.setVisible(visible);
+  };
+
+  PointsLayer.prototype.destroy = function() {
+    this._peaks.off('points.update', this._onPointsUpdate);
+    this._peaks.off('points.add', this._onPointsAdd);
+    this._peaks.off('points.remove', this._onPointsRemove);
+    this._peaks.off('points.remove_all', this._onPointsRemoveAll);
+    this._peaks.off('points.dragstart', this._onPointsDrag);
+    this._peaks.off('points.dragmove', this._onPointsDrag);
+    this._peaks.off('points.dragend', this._onPointsDrag);
   };
 
   return PointsLayer;

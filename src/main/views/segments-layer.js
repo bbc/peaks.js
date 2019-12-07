@@ -32,7 +32,21 @@ define([
     this._segmentGroups = {};
     this._layer         = new Konva.Layer();
 
-    this._registerEventHandlers();
+    this._onSegmentHandleDrag = this._onSegmentHandleDrag.bind(this);
+    this._onSegmentHandleDragStart = this._onSegmentHandleDragStart.bind(this);
+    this._onSegmentHandleDragEnd = this._onSegmentHandleDragEnd.bind(this);
+
+    this._onSegmentsUpdate    = this._onSegmentsUpdate.bind(this);
+    this._onSegmentsAdd       = this._onSegmentsAdd.bind(this);
+    this._onSegmentsRemove    = this._onSegmentsRemove.bind(this);
+    this._onSegmentsRemoveAll = this._onSegmentsRemoveAll.bind(this);
+    this._onSegmentsDragged   = this._onSegmentsDragged.bind(this);
+
+    this._peaks.on('segments.update', this._onSegmentsUpdate);
+    this._peaks.on('segments.add', this._onSegmentsAdd);
+    this._peaks.on('segments.remove', this._onSegmentsRemove);
+    this._peaks.on('segments.remove_all', this._onSegmentsRemoveAll);
+    this._peaks.on('segments.dragged', this._onSegmentsDragged);
   }
 
   /**
@@ -45,67 +59,67 @@ define([
     stage.add(this._layer);
   };
 
-  SegmentsLayer.prototype._registerEventHandlers = function() {
+  SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
+    var redraw = false;
+    var segmentGroup = this._segmentGroups[segment.id];
+    var frameOffset = this._view.getFrameOffset();
+    var width = this._view.getWidth();
+    var frameStartTime = this._view.pixelsToTime(frameOffset);
+    var frameEndTime   = this._view.pixelsToTime(frameOffset + width);
+
+    if (segmentGroup) {
+      this._removeSegment(segment);
+      redraw = true;
+    }
+
+    if (segment.isVisible(frameStartTime, frameEndTime)) {
+      this._addSegmentGroup(segment);
+      redraw = true;
+    }
+
+    if (redraw) {
+      this.updateSegments(frameStartTime, frameEndTime);
+    }
+  };
+
+  SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
     var self = this;
 
-    this._peaks.on('segments.update', function(segment) {
-      var redraw = false;
-      var segmentGroup = self._segmentGroups[segment.id];
-      var frameOffset = self._view.getFrameOffset();
-      var width = self._view.getWidth();
-      var frameStartTime = self._view.pixelsToTime(frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+    var frameOffset = self._view.getFrameOffset();
+    var width = self._view.getWidth();
 
-      if (segmentGroup) {
-        self._removeSegment(segment);
-        redraw = true;
-      }
+    var frameStartTime = self._view.pixelsToTime(frameOffset);
+    var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
 
+    segments.forEach(function(segment) {
       if (segment.isVisible(frameStartTime, frameEndTime)) {
         self._addSegmentGroup(segment);
-        redraw = true;
-      }
-
-      if (redraw) {
-        self.updateSegments(frameStartTime, frameEndTime);
       }
     });
 
-    this._peaks.on('segments.add', function(segments) {
-      var frameOffset = self._view.getFrameOffset();
-      var width = self._view.getWidth();
+    self.updateSegments(frameStartTime, frameEndTime);
+  };
 
-      var frameStartTime = self._view.pixelsToTime(frameOffset);
-      var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+  SegmentsLayer.prototype._onSegmentsRemove = function(segments) {
+    var self = this;
 
-      segments.forEach(function(segment) {
-        if (segment.isVisible(frameStartTime, frameEndTime)) {
-          self._addSegmentGroup(segment);
-        }
-      });
-
-      self.updateSegments(frameStartTime, frameEndTime);
+    segments.forEach(function(segment) {
+      self._removeSegment(segment);
     });
 
-    this._peaks.on('segments.remove', function(segments) {
-      segments.forEach(function(segment) {
-        self._removeSegment(segment);
-      });
+    self._layer.draw();
+  };
 
-      self._layer.draw();
-    });
+  SegmentsLayer.prototype._onSegmentsRemoveAll = function() {
+    this._layer.removeChildren();
+    this._segmentGroups = {};
 
-    this._peaks.on('segments.remove_all', function() {
-      self._layer.removeChildren();
-      self._segmentGroups = {};
+    this._layer.draw();
+  };
 
-      self._layer.draw();
-    });
-
-    this._peaks.on('segments.dragged', function(segment) {
-      self._updateSegment(segment);
-      self._layer.draw();
-    });
+  SegmentsLayer.prototype._onSegmentsDragged = function(segment) {
+    this._updateSegment(segment);
+    this._layer.draw();
   };
 
   /**
@@ -180,9 +194,9 @@ define([
         segmentGroup: segmentGroup,
         segment:      segment,
         layer:        self._layer,
-        onDrag:       editable ? self._onSegmentHandleDrag.bind(self) : null,
-        onDragStart:  editable ? self._onSegmentHandleDragStart.bind(self) : null,
-        onDragEnd:    editable ? self._onSegmentHandleDragEnd.bind(self) : null
+        onDrag:       editable ? self._onSegmentHandleDrag : null,
+        onDragStart:  editable ? self._onSegmentHandleDragStart : null,
+        onDragEnd:    editable ? self._onSegmentHandleDragEnd : null
       });
 
       segmentGroup.add(segmentGroup.inMarker);
@@ -195,9 +209,9 @@ define([
         segmentGroup: segmentGroup,
         segment:      segment,
         layer:        self._layer,
-        onDrag:       editable ? self._onSegmentHandleDrag.bind(self) : null,
-        onDragStart:  editable ? self._onSegmentHandleDragStart.bind(self) : null,
-        onDragEnd:    editable ? self._onSegmentHandleDragEnd.bind(self) : null
+        onDrag:       editable ? self._onSegmentHandleDrag : null,
+        onDragStart:  editable ? self._onSegmentHandleDragStart : null,
+        onDragEnd:    editable ? self._onSegmentHandleDragEnd : null
       });
 
       segmentGroup.add(segmentGroup.outMarker);
@@ -402,6 +416,14 @@ define([
 
   SegmentsLayer.prototype.draw = function() {
     this._layer.draw();
+  };
+
+  SegmentsLayer.prototype.destroy = function() {
+    this._peaks.off('segments.update', this._onSegmentsUpdate);
+    this._peaks.off('segments.add', this._onSegmentsAdd);
+    this._peaks.off('segments.remove', this._onSegmentsRemove);
+    this._peaks.off('segments.remove_all', this._onSegmentsRemoveAll);
+    this._peaks.off('segments.dragged', this._onSegmentsDragged);
   };
 
   return SegmentsLayer;

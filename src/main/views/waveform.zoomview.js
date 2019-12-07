@@ -47,6 +47,31 @@ define([
     self._originalWaveformData = waveformData;
     self._container = container;
     self._peaks = peaks;
+
+    // Bind event handlers
+    self._onTimeUpdate = self._onTimeUpdate.bind(self);
+    self._onSeek = self._onSeek.bind(self);
+    self._onPlay = self._onPlay.bind(self);
+    self._onPause = self._onPause.bind(self);
+    self._onWindowResize = self._onWindowResize.bind(self);
+    self._onZoomUpdate = self._onZoomUpdate.bind(self);
+    self._onKeyboardLeft = self._onKeyboardLeft.bind(self);
+    self._onKeyboardRight = self._onKeyboardRight.bind(self);
+    self._onKeyboardShiftLeft  = self._onKeyboardShiftLeft.bind(self);
+    self._onKeyboardShiftRight = self._onKeyboardShiftRight.bind(self);
+
+    // Register event handlers
+    self._peaks.on('player_time_update', self._onTimeUpdate);
+    self._peaks.on('user_seek', self._onSeek);
+    self._peaks.on('player_play', self._onPlay);
+    self._peaks.on('player_pause', self._onPause);
+    self._peaks.on('zoom.update', self._onZoomUpdate);
+    self._peaks.on('window_resize', self._onWindowResize);
+    self._peaks.on('keyboard.left', self._onKeyboardLeft);
+    self._peaks.on('keyboard.right', self._onKeyboardRight);
+    self._peaks.on('keyboard.shift_left', self._onKeyboardShiftLeft);
+    self._peaks.on('keyboard.shift_right', self._onKeyboardShiftRight);
+
     self._enableAutoScroll = true;
     self._amplitudeScale = 1.0;
 
@@ -112,7 +137,7 @@ define([
         );
 
         if (newFrameOffset !== this.initialFrameOffset) {
-          self._peaks.emit('user_scroll.zoomview', newFrameOffset);
+          self._updateWaveform(newFrameOffset);
         }
       },
 
@@ -142,64 +167,69 @@ define([
 
       self._peaks.emit('zoomview.dblclick', time);
     });
+  }
 
-    // Events
-
-    self._peaks.on('player_time_update', function(time) {
-      if (self._mouseDragHandler.isDragging()) {
-        return;
-      }
-
-      self._syncPlayhead(time);
-    });
-
-    self._peaks.on('user_seek', function(time) {
-      var frameIndex = self.timeToPixels(time);
-
-      self._updateWaveform(frameIndex - Math.floor(self._width / 2));
-      self._playheadLayer.updatePlayheadTime(time);
-    });
-
-    self._peaks.on('user_scroll.zoomview', function(pixelOffset) {
-      self._updateWaveform(pixelOffset);
-    });
-
-    self._peaks.on('player_play', function(time) {
-      self._playheadLayer.updatePlayheadTime(time);
-    });
-
-    self._peaks.on('player_pause', function(time) {
-      self._playheadLayer.stop(time);
-    });
-
-    self._peaks.on('zoom.update', function(currentScale, previousScale) {
-      self.setZoomLevel(currentScale, previousScale);
-    });
-
-    self._peaks.on('window_resize', function() {
-      self._width = self._container.clientWidth;
-      self._stage.setWidth(self._width);
-      self._updateWaveform(self._frameOffset);
-    });
-
-    function nudgeFrame(direction, large) {
-      var increment;
-
-      if (large) {
-        increment = direction * self._width;
-      }
-      else {
-        increment = direction * self.timeToPixels(self._options.nudgeIncrement);
-      }
-
-      self._updateWaveform(self._frameOffset + increment);
+  WaveformZoomView.prototype._onTimeUpdate = function(time) {
+    if (this._mouseDragHandler.isDragging()) {
+      return;
     }
 
-    self._peaks.on('keyboard.left', nudgeFrame.bind(self, -1, false));
-    self._peaks.on('keyboard.right', nudgeFrame.bind(self, 1, false));
-    self._peaks.on('keyboard.shift_left', nudgeFrame.bind(self, -1, true));
-    self._peaks.on('keyboard.shift_right', nudgeFrame.bind(self, 1, true));
-  }
+    this._syncPlayhead(time);
+  };
+
+  WaveformZoomView.prototype._onSeek = function(time) {
+    var frameIndex = this.timeToPixels(time);
+
+    this._updateWaveform(frameIndex - Math.floor(this._width / 2));
+    this._playheadLayer.updatePlayheadTime(time);
+  };
+
+  WaveformZoomView.prototype._onPlay = function(time) {
+    this._playheadLayer.updatePlayheadTime(time);
+  };
+
+  WaveformZoomView.prototype._onPause = function(time) {
+    this._playheadLayer.stop(time);
+  };
+
+  WaveformZoomView.prototype._onZoomUpdate = function(currentScale, previousScale) {
+    this.setZoomLevel(currentScale, previousScale);
+  };
+
+  WaveformZoomView.prototype._onWindowResize = function() {
+    this._width = this._container.clientWidth;
+    this._stage.setWidth(this._width);
+    this._updateWaveform(this._frameOffset);
+  };
+
+  WaveformZoomView.prototype._onKeyboardLeft = function() {
+    this._keyboardScroll(-1, false);
+  };
+
+  WaveformZoomView.prototype._onKeyboardRight = function() {
+    this._keyboardScroll(1, false);
+  };
+
+  WaveformZoomView.prototype._onKeyboardShiftLeft = function() {
+    this._keyboardScroll(-1, true);
+  };
+
+  WaveformZoomView.prototype._onKeyboardShiftRight = function() {
+    this._keyboardScroll(1, true);
+  };
+
+  WaveformZoomView.prototype._keyboardScroll = function(direction, large) {
+    var increment;
+
+    if (large) {
+      increment = direction * this._width;
+    }
+    else {
+      increment = direction * this.timeToPixels(this._options.nudgeIncrement);
+    }
+
+    this._updateWaveform(this._frameOffset + increment);
+  };
 
   WaveformZoomView.prototype.setWaveformData = function(waveformData) {
     this._originalWaveformData = waveformData;
@@ -473,6 +503,21 @@ define([
   }; */
 
   WaveformZoomView.prototype.destroy = function() {
+    // Unregister event handlers
+    this._peaks.off('player_time_update', this._onTimeUpdate);
+    this._peaks.off('user_seek', this._onSeek);
+    this._peaks.off('player_play', this._onPlay);
+    this._peaks.off('player_pause', this._onPause);
+    this._peaks.off('zoom.update', this._onZoomUpdate);
+    this._peaks.off('window_resize', this._onWindowResize);
+    this._peaks.off('keyboard.left', this._onKeyboardLeft);
+    this._peaks.off('keyboard.right', this._onKeyboardRight);
+    this._peaks.off('keyboard.shift_left', this._onKeyboardShiftLeft);
+    this._peaks.off('keyboard.shift_right', this._onKeyboardShiftRight);
+
+    this._segmentsLayer.destroy();
+    this._pointsLayer.destroy();
+
     if (this._stage) {
       this._stage.destroy();
       this._stage = null;
