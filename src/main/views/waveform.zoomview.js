@@ -312,6 +312,14 @@ define([
     this._pixelLength = this._data.length;
   };
 
+  WaveformZoomView.prototype.getStartTime = function() {
+    return this.pixelsToTime(this._frameOffset);
+  };
+
+  WaveformZoomView.prototype.getEndTime = function() {
+    return this.pixelsToTime(this._frameOffset + this._width);
+  };
+
   /**
    * Returns the pixel index for a given time, for the current zoom level.
    *
