@@ -887,7 +887,7 @@ instance.points.add([
   },
   {
     time: 5.6,
-    labelTect: 'Another test point',
+    labelText: 'Another test point',
     color: '#666'
   }
 ]);
