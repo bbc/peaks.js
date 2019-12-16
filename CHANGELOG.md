@@ -1,5 +1,13 @@
 # Peaks.js
 
+## 0.16.0 (2019/12/16)
+
+ * (#262) Increased hit region for segment mouseenter and mouseleave events,
+   no longer requires placing the mouse directly over the waveform image
+   (@chrisn)
+
+ * (#263, #283) Added destroyZoomview() and destroyOverview() methods (@chrisn)
+
 ## 0.15.0 (2019/12/04)
 
  * (#293) Added overview.dblclick and zoomview.dblclick events (@chrisn)
