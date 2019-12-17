@@ -6,11 +6,8 @@
     <style>
       body {
         font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
-      }
-
-      #titles, #waveform-container {
-        margin: 24px auto;
-        width: 1000px;
+        display: grid;
+        grid-template-columns: 200px auto 200px;
       }
 
       #zoomview-container {
@@ -22,9 +19,12 @@
         height: 200px;
       }
 
+      #zoomview-container .konvajs-content {
+        width: 100% !important;
+      }
+
       #demo-controls {
         margin: 0 auto 24px auto;
-        width: 1000px;
         display: flex;
         align-items: center;
       }
@@ -50,7 +50,9 @@
     </style>
   </head>
   <body>
-    <div id="titles">
+    <div id="margin-left">
+    </div>
+    <div id="main">
       <h1>Peaks.js</h1>
       <p>
         Peaks.js is a JavaScript library that allows you to display and
@@ -82,43 +84,49 @@
         This demo shows how configure Peaks.js to render a single zoomable
         waveform view.
       </p>
-    </div>
 
-    <div id="waveform-container">
-      <div id="zoomview-container"></div>
-    </div>
+      <div id="waveform-container">
+        <div id="zoomview-container"></div>
+      </div>
 
-    <div id="demo-controls">
-      <audio id="audio" controls="controls">
-        <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
-        <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
-        Your browser does not support the audio element.
-      </audio>
+      <div id="demo-controls">
+        <audio id="audio" controls="controls">
+          <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
+          <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
 
-      <div id="controls">
-        <button data-action="zoom-in">Zoom in</button>
-        <button data-action="zoom-out">Zoom out</button>
-        <input type="text" id="seek-time" value="0.0">
-        <button data-action="seek">Seek</button>
-        <label for="amplitude-scale">Amplitude scale</label>
-        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
-        <label for="waveform-color">Waveform color</label>
-        <input type="color" id="waveform-color" value="#00e180">
+        <div id="controls">
+          <label for="zoom">Zoom:</label>
+          <select id="zoom"></select>
+          <input type="text" id="seek-time" value="0.0">
+          <button data-action="seek">Seek</button>
+          <label for="amplitude-scale">Amplitude scale</label>
+          <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+          <label for="waveform-color">Waveform color</label>
+          <input type="color" id="waveform-color" value="#00e180">
+        </div>
       </div>
     </div>
-
+    <div id="margin-right">
+    </div>
     <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        var audioContext = new AudioContext();
+
         var options = {
           containers: {
             zoomview: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('audio'),
-          dataUri: {
-            arraybuffer: 'TOL_6min_720p_download.dat',
-            json: 'TOL_6min_720p_download.json'
+          webAudio: {
+            audioContext: audioContext,
+            scale: 128,
+            multiChannel: false
           },
+          zoomLevels: [128],
           keyboard: true,
           pointMarkerColor: '#006eb0',
           zoomWaveformColor: '#00e180',
@@ -128,12 +136,23 @@
         Peaks.init(options, function(err, peaksInstance) {
           console.log('Peaks instance ready');
 
-          document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
-            peaksInstance.zoom.zoomIn();
-          });
+          var zoomview = peaksInstance.views.getView('zoomview');
 
-          document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
-            peaksInstance.zoom.zoomOut();
+          var zoomLevels = [5, 10, 20, 30, 60, 120, 180, 'auto'];
+
+          zoomview.setZoomLevel({ seconds: zoomLevels[0] });
+
+          var zoom = document.getElementById('zoom');
+
+          for (var i = 0; i < zoomLevels.length; i++) {
+            var text = zoomLevels[i] === 'auto' ? 'Fit width' : (zoomLevels[i] + " seconds");
+            zoom.options[i] = new Option(text, i);
+          }
+
+          zoom.addEventListener('change', function(event) {
+            var zoomLevel = zoomLevels[event.target.value];
+
+            zoomview.setZoomLevel({ seconds: zoomLevel });
           });
 
           document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
