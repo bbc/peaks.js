@@ -82,6 +82,8 @@ define([
 
     var initialZoomLevel = self._options.zoomLevels[peaks.zoom.getZoom()];
 
+    self._fixedZoom = true;
+    self._resizeTimeoutId = null;
     self._resampleData(initialZoomLevel);
 
     self._width = container.clientWidth;
@@ -196,13 +198,39 @@ define([
   };
 
   WaveformZoomView.prototype._onZoomUpdate = function(currentScale, previousScale) {
-    this.setZoomLevel(currentScale, previousScale);
+    this.setZoomLevel({ scale: currentScale });
   };
 
   WaveformZoomView.prototype._onWindowResize = function() {
-    this._width = this._container.clientWidth;
-    this._stage.setWidth(this._width);
-    this._updateWaveform(this._frameOffset);
+    var self = this;
+
+    var width = self._container.clientWidth;
+
+    if (self._fixedZoom) {
+      self._width = width;
+      self._stage.width(width);
+      self._updateWaveform(self._frameOffset);
+    }
+    else {
+      if (self._resizeTimeoutId) {
+        clearTimeout(self._resizeTimeoutId);
+        self._resizeTimeoutId = null;
+      }
+
+      // Avoid resampling waveform data to zero width
+      if (width !== 0) {
+        self._width = width;
+        self._stage.width(width);
+
+        self._resizeTimeoutId = setTimeout(function() {
+          self._width = width;
+          self._data = self._originalWaveformData.resample(width);
+          self._stage.width(width);
+
+          self._updateWaveform(self._frameOffset);
+        }, 500);
+      }
+    }
   };
 
   WaveformZoomView.prototype._onKeyboardLeft = function() {
@@ -236,7 +264,7 @@ define([
 
   WaveformZoomView.prototype.setWaveformData = function(waveformData) {
     this._originalWaveformData = waveformData;
-    // Don't update the UI here, call setZoom().
+    // Don't update the UI here, call setZoomLevel().
   };
 
   WaveformZoomView.prototype._syncPlayhead = function(time) {
@@ -268,12 +296,51 @@ define([
   /**
    * Changes the zoom level.
    *
-   * @param {Number} currentScale The new zoom level, in samples per pixel.
-   * @param {Number} previousScale The previous zoom level, in samples per
-   *   pixel.
+   * @param {Number} scale The new zoom level, in samples per pixel.
    */
 
-  WaveformZoomView.prototype.setZoomLevel = function(currentScale, previousScale) {
+  WaveformZoomView.prototype._getScale = function(duration) {
+    return duration * this._data.sample_rate / this._width;
+  };
+
+  function isAutoScale(options) {
+    return ((Utils.objectHasProperty(options, 'scale') && options.scale === 'auto') ||
+            (Utils.objectHasProperty(options, 'seconds') && options.seconds === 'auto'));
+  }
+
+  WaveformZoomView.prototype.setZoomLevel = function(options) {
+    var scale;
+
+    if (isAutoScale(options)) {
+      var seconds = this._peaks.player.getDuration();
+
+      if (!Utils.isValidTime(seconds)) {
+        return false;
+      }
+
+      this._fixedZoom = false;
+      scale = this._getScale(seconds);
+    }
+    else {
+      if (Utils.objectHasProperty(options, 'scale')) {
+        scale = options.scale;
+      }
+      else if (Utils.objectHasProperty(options, 'seconds')) {
+        if (!Utils.isValidTime(options.seconds)) {
+            return false;
+        }
+
+        scale = this._getScale(options.seconds);
+      }
+
+      this._fixedZoom = true;
+    }
+
+    if (scale < this._originalWaveformData.scale) {
+      this._peaks.logger('peaks.zoomview.setZoomLevel(): zoom level must be at least ' + this._originalWaveformData.scale);
+      scale = this._originalWaveformData.scale;
+    }
+
     var currentTime = this._peaks.player.getCurrentTime();
     var apexTime;
     var playheadOffsetPixels = this._playheadLayer.getPlayheadOffset();
@@ -290,7 +357,7 @@ define([
       apexTime = this.pixelsToTime(this._frameOffset + playheadOffsetPixels);
     }
 
-    this._resampleData(currentScale);
+    this._resampleData(scale);
 
     var apexPixel = this.timeToPixels(apexTime);
 
@@ -306,6 +373,8 @@ define([
     // var adapter = this.createZoomAdapter(currentScale, previousScale);
 
     // adapter.start(relativePosition);
+
+    return true;
   };
 
   WaveformZoomView.prototype._resampleData = function(scale) {
@@ -321,6 +390,16 @@ define([
 
   WaveformZoomView.prototype.getEndTime = function() {
     return this.pixelsToTime(this._frameOffset + this._width);
+  };
+
+  WaveformZoomView.prototype.setStartTime = function(time) {
+    if (time < 0) {
+      time = 0;
+    }
+
+    var frameOffset = Math.floor(time * this._data.sample_rate / this._scale);
+
+    this._updateWaveform(frameOffset);
   };
 
   /**
@@ -539,6 +618,11 @@ define([
   }; */
 
   WaveformZoomView.prototype.destroy = function() {
+    if (this._resizeTimeoutId) {
+      clearTimeout(this._resizeTimeoutId);
+      this._resizeTimeoutId = null;
+    }
+
     // Unregister event handlers
     this._peaks.off('player_time_update', this._onTimeUpdate);
     this._peaks.off('user_seek', this._onSeek);

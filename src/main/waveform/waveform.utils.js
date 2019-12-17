@@ -219,6 +219,10 @@ define(function() {
 
     isHTMLElement: function(value) {
       return value instanceof HTMLElement;
+    },
+
+    objectHasProperty: function(object, field) {
+      return Object.prototype.hasOwnProperty.call(object, field);
     }
   };
 });
