@@ -67,6 +67,10 @@ define([
     stage.add(this._layer);
   };
 
+  PointsLayer.prototype.enableEditing = function(enable) {
+    this._allowEditing = enable;
+  };
+
   PointsLayer.prototype._onPointsUpdate = function(point) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();

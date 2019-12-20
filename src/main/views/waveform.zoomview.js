@@ -483,6 +483,11 @@ define([
     this._enableAutoScroll = enable;
   };
 
+  WaveformZoomView.prototype.enableMarkerEditing = function(enable) {
+    this._segmentsLayer.enableEditing(enable);
+    this._pointsLayer.enableEditing(enable);
+  };
+
   /* WaveformZoomView.prototype.beginZoom = function() {
     // Fade out the time axis and the segments
     // this._axis.axisShape.setAttr('opacity', 0);

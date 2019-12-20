@@ -59,6 +59,10 @@ define([
     stage.add(this._layer);
   };
 
+  SegmentsLayer.prototype.enableEditing = function(enable) {
+    this._allowEditing = enable;
+  };
+
   SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
     var redraw = false;
     var segmentGroup = this._segmentGroups[segment.id];

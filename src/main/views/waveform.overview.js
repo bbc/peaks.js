@@ -395,6 +395,11 @@ define([
     // so nothing to do here.
   };
 
+  WaveformOverview.prototype.enableMarkerEditing = function(enable) {
+    this._segmentsLayer.enableEditing(enable);
+    this._pointsLayer.enableEditing(enable);
+  };
+
   WaveformOverview.prototype.destroy = function() {
     if (this._resizeTimeoutId) {
       clearTimeout(this._resizeTimeoutId);

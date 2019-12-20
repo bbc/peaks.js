@@ -64,6 +64,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
+    - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -691,6 +692,23 @@ const view = instance.views.getView('zoomview');
 view.enableAutoScroll(false);
 ```
 
+### `view.enableMarkerEditing(enable)`
+
+Enables or disables point and segment marker editing. By default, the zoomable waveform view allows marker editing and the overview waveform view does not.
+
+Note that this method should be called before adding any point or segment markers. It will not change any existing non-editable markers to be editable.
+
+```javascript
+const view = instance.views.getView('overview');
+view.enableMarkerEditing(true);
+
+instance.segments.add({
+  startTime: 5.0,
+  endTime: 10.0,
+  label: 'Test segment',
+  editable: true
+});
+```
 ## Zoom API
 
 ### `instance.zoom.zoomOut()`
