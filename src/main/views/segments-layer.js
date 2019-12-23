@@ -53,8 +53,14 @@ define([
     this._group.add(this._label);
 
     this._createMarkers();
-    this._inMarker.addToGroup(this._group);
-    this._outMarker.addToGroup(this._group);
+
+    if (this._inMarker) {
+      this._inMarker.addToGroup(this._group);
+    }
+
+    if (this._outMarker) {
+      this._outMarker.addToGroup(this._group);
+    }
   }
 
   SegmentShape.prototype.getSegment = function() {
@@ -74,35 +80,33 @@ define([
   };
 
   SegmentShape.prototype._createMarkers = function() {
-    var editable = true; // TODO
+    var editable = this._layer.isEditingEnabled() && this._segment.editable;
 
-    this._inMarker = this._peaks.options.createSegmentMarker({
-      segment:      this._segment,
-      segmentShape: this,
-      draggable:    true, // editable,
-      color:        this._peaks.options.inMarkerColor,
-      inMarker:     true,
-      layer:        this._layer,
-      onDrag:       editable ? this._onSegmentHandleDrag : null,
-      onDragStart:  editable ? this._onSegmentHandleDragStart : null,
-      onDragEnd:    editable ? this._onSegmentHandleDragEnd : null,
-      onMouseEnter: this._onSegmentHandleMouseEnter,
-      onMouseLeave: this._onSegmentHandleMouseLeave
-    });
+    if (editable) {
+      this._inMarker = this._peaks.options.createSegmentMarker({
+        segment:      this._segment,
+        segmentShape: this,
+        draggable:    editable,
+        color:        this._peaks.options.inMarkerColor,
+        inMarker:     true,
+        layer:        this._layer,
+        onDrag:       this._onSegmentHandleDrag,
+        onDragStart:  this._onSegmentHandleDragStart,
+        onDragEnd:    this._onSegmentHandleDragEnd
+      });
 
-    this._outMarker = this._peaks.options.createSegmentMarker({
-      segment:      this._segment,
-      segmentShape: this,
-      draggable:    true, // editable,
-      color:        this._peaks.options.outMarkerColor,
-      inMarker:     false,
-      layer:        this._layer,
-      onDrag:       editable ? this._onSegmentHandleDrag : null,
-      onDragStart:  editable ? this._onSegmentHandleDragStart : null,
-      onDragEnd:    editable ? this._onSegmentHandleDragEnd : null,
-      onMouseEnter: this._onSegmentHandleMouseEnter,
-      onMouseLeave: this._onSegmentHandleMouseLeave
-    });
+      this._outMarker = this._peaks.options.createSegmentMarker({
+        segment:      this._segment,
+        segmentShape: this,
+        draggable:    editable,
+        color:        this._peaks.options.outMarkerColor,
+        inMarker:     false,
+        layer:        this._layer,
+        onDrag:       this._onSegmentHandleDrag,
+        onDragStart:  this._onSegmentHandleDragStart,
+        onDragEnd:    this._onSegmentHandleDragEnd
+      });
+    }
   };
 
   SegmentShape.prototype._onMouseEnter = function() {
@@ -237,6 +241,10 @@ define([
 
   SegmentsLayer.prototype.enableEditing = function(enable) {
     this._allowEditing = enable;
+  };
+
+  SegmentsLayer.prototype.isEditingEnabled = function() {
+    return this._allowEditing;
   };
 
   SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
