@@ -195,6 +195,8 @@ define([
     if (this._outMarker) {
       this._outMarker.destroy();
     }
+
+    this._group.destroy();
   };
 
   /**

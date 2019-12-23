@@ -210,6 +210,7 @@ define([
     this._handle.destroy();
     this._line.destroy();
     this._label.destroy();
+    this._group.destroy();
   };
 
   return SegmentMarker;

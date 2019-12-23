@@ -44,7 +44,7 @@ define([
 
   return {
     createSegmentMarker: createSegmentMarker,
-    createPointMarker: createPointMarker,
-    createSegmentLabel: createSegmentLabel
+    createSegmentLabel: createSegmentLabel,
+    createPointMarker: createPointMarker
   };
 });
