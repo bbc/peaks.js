@@ -122,13 +122,13 @@ define([
           self._label.setX(xPosition - self._label.getWidth());
         }
 
-        self._onDragStart(self._segment, self._isInMarker);
+        self._onDragStart(self);
         self._label.show();
         self._layer.draw();
       });
 
       self._group.on('dragend', function() {
-        self._onDragEnd(self._segment, self._isInMarker);
+        self._onDragEnd(self);
         self._label.hide();
         self._layer.draw();
       });

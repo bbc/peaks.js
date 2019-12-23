@@ -172,8 +172,10 @@ define([
    * @param {Segment} segment
    */
 
-  SegmentShape.prototype._onSegmentHandleDragStart = function(segment, inMarker) {
-    this._peaks.emit('segments.dragstart', segment, inMarker);
+  SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker) {
+    var inMarker = segmentMarker.isInMarker();
+
+    this._peaks.emit('segments.dragstart', this._segment, inMarker);
   };
 
   /**
@@ -181,8 +183,10 @@ define([
    * @param {Segment} segment
    */
 
-  SegmentShape.prototype._onSegmentHandleDragEnd = function(segment, inMarker) {
-    this._peaks.emit('segments.dragend', segment, inMarker);
+  SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker) {
+    var inMarker = segmentMarker.isInMarker();
+
+    this._peaks.emit('segments.dragend', this._segment, inMarker);
   };
 
   SegmentShape.prototype.fitToView = function() {
