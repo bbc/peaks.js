@@ -65,6 +65,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
+    - [view.fitToContainer()](#viewfittocontainer)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -698,7 +699,7 @@ Enables or disables point and segment marker editing. By default, the zoomable w
 
 Note that this method should be called before adding any point or segment markers. It will not change any existing non-editable markers to be editable.
 
-```javascript
+```js
 const view = instance.views.getView('overview');
 view.enableMarkerEditing(true);
 
@@ -709,6 +710,20 @@ instance.segments.add({
   editable: true
 });
 ```
+
+### `view.fitToContainer()`
+
+Resizes the waveform view to fit the container. You should call this function
+after changing the height of the container HTML element.
+
+```js
+const container = document.getElementById('zoomview-container');
+const view = instance.views.getView('zoomview');
+
+container.setAttribute('style', 'height:300px');
+view.fitToContainer();
+```
+
 ## Zoom API
 
 ### `instance.zoom.zoomOut()`
