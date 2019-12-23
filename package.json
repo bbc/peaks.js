@@ -26,6 +26,8 @@
     "peaks/waveform/waveform-builder": "./src/main/waveform/waveform-builder.js",
     "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
     "peaks/waveform/waveform.utils": "./src/main/waveform/waveform.utils.js",
+    "peaks/views/point-marker": "./src/main/views/point-marker.js",
+    "peaks/views/segment-marker": "./src/main/views/segment-marker.js",
     "peaks/views/playhead-layer": "./src/main/views/playhead-layer.js",
     "peaks/views/points-layer": "./src/main/views/points-layer.js",
     "peaks/views/segments-layer": "./src/main/views/segments-layer.js",
