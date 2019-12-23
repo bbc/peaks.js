@@ -7,9 +7,8 @@
  */
 
 define([
-  'peaks/waveform/waveform.utils',
   'konva'
-  ], function(Utils, Konva) {
+  ], function(Konva) {
   'use strict';
 
   /**
@@ -30,7 +29,7 @@ define([
     this._view         = view;
     this._allowEditing = allowEditing;
     this._showLabels   = showLabels;
-    this._pointGroups  = {};
+    this._pointMarkers = {};
     this._layer        = new Konva.Layer();
 
     this._onPointsDrag = this._onPointsDrag.bind(this);
@@ -74,13 +73,14 @@ define([
   PointsLayer.prototype._onPointsUpdate = function(point) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
+
     var frameStartTime = this._view.pixelsToTime(frameOffset);
     var frameEndTime   = this._view.pixelsToTime(frameOffset + width);
 
     this._removePoint(point);
 
     if (point.isVisible(frameStartTime, frameEndTime)) {
-      this._addPointGroup(point);
+      this._addPointMarker(point);
     }
 
     this.updatePoints(frameStartTime, frameEndTime);
@@ -97,7 +97,7 @@ define([
 
     points.forEach(function(point) {
       if (point.isVisible(frameStartTime, frameEndTime)) {
-        self._addPointGroup(point);
+        self._addPointMarker(point);
       }
     });
 
@@ -116,7 +116,7 @@ define([
 
   PointsLayer.prototype._onPointsRemoveAll = function() {
     this._layer.removeChildren();
-    this._pointGroups = {};
+    this._pointMarkers = {};
 
     this._layer.draw();
   };
@@ -131,24 +131,18 @@ define([
    *
    * @private
    * @param {Point} point
-   * @returns {Konva.Group}
+   * @returns {PointMarker}
    */
 
-  PointsLayer.prototype._createPointGroup = function(point) {
-    var pointGroup = new Konva.Group();
-
-    pointGroup.point = point;
-
+  PointsLayer.prototype._createPointMarker = function(point) {
     var editable = this._allowEditing && point.editable;
 
-    pointGroup.marker = this._peaks.options.createPointMarker({
+    var pointMarker = this._peaks.options.createPointMarker({
+      point:        point,
       draggable:    editable,
       showLabel:    this._showLabels,
-      handleColor:  point.color ? point.color : this._peaks.options.pointMarkerColor,
-      height:       this._view.getHeight(),
-      pointGroup:   pointGroup,
-      point:        point,
-      layer:        this._layer,
+      color:        point.color ? point.color : this._peaks.options.pointMarkerColor,
+      layer:        this,
       onDblClick:   this._onPointHandleDblClick,
       onDragStart:  this._onPointHandleDragStart,
       onDragMove:   this._onPointHandleDragMove,
@@ -157,9 +151,11 @@ define([
       onMouseLeave: this._onPointHandleMouseLeave
     });
 
-    pointGroup.add(pointGroup.marker);
+    return pointMarker;
+  };
 
-    return pointGroup;
+  PointsLayer.prototype.getHeight = function() {
+    return this._view.getHeight();
   };
 
   /**
@@ -167,17 +163,17 @@ define([
    *
    * @private
    * @param {Point} point
-   * @returns {Konva.Group}
+   * @returns {PointMarker}
    */
 
-  PointsLayer.prototype._addPointGroup = function(point) {
-    var pointGroup = this._createPointGroup(point);
+  PointsLayer.prototype._addPointMarker = function(point) {
+    var pointMarker = this._createPointMarker(point);
 
-    this._pointGroups[point.id] = pointGroup;
+    this._pointMarkers[point.id] = pointMarker;
 
-    this._layer.add(pointGroup);
+    pointMarker.addToLayer(this._layer);
 
-    return pointGroup;
+    return pointMarker;
   };
 
   /**
@@ -185,14 +181,14 @@ define([
    */
 
   PointsLayer.prototype._onPointHandleDragMove = function(point) {
-    var pointGroup = this._pointGroups[point.id];
+    var pointMarker = this._pointMarkers[point.id];
 
-    var markerX = pointGroup.marker.getX();
+    var markerX = pointMarker.getX();
 
-    if (markerX > 0 && markerX < this._view.getWidth()) {
+    if (markerX >= 0 && markerX < this._view.getWidth()) {
       var offset = this._view.getFrameOffset() +
                    markerX +
-                   pointGroup.marker.getWidth();
+                   pointMarker.getWidth();
 
       point.time = this._view.pixelsToTime(offset);
     }
@@ -257,7 +253,7 @@ define([
 
     points.forEach(this._updatePoint.bind(this));
 
-    // TODO: in the overview all segments are visible, so no need to check
+    // TODO: in the overview all points are visible, so no need to check
     count += this._removeInvisiblePoints(startTime, endTime);
 
     if (count > 0) {
@@ -271,35 +267,29 @@ define([
    */
 
   PointsLayer.prototype._updatePoint = function(point) {
-    var pointGroup = this._findOrAddPointGroup(point);
+    var pointMarker = this._findOrAddPointMarker(point);
 
-    // Point is visible
     var timestampOffset = this._view.timeToPixels(point.time);
 
     var startPixel = timestampOffset - this._view.getFrameOffset();
 
-    if (pointGroup.marker) {
-      pointGroup.marker.setX(startPixel);
-
-      if (pointGroup.marker.time) {
-        pointGroup.marker.time.setText(Utils.formatTime(point.time, false));
-      }
-    }
+    pointMarker.update(startPixel);
   };
 
   /**
    * @private
    * @param {Point} point
+   * @return {PointMarker}
    */
 
-  PointsLayer.prototype._findOrAddPointGroup = function(point) {
-    var pointGroup = this._pointGroups[point.id];
+  PointsLayer.prototype._findOrAddPointMarker = function(point) {
+    var pointMarker = this._pointMarkers[point.id];
 
-    if (!pointGroup) {
-      pointGroup = this._addPointGroup(point);
+    if (!pointMarker) {
+      pointMarker = this._addPointMarker(point);
     }
 
-    return pointGroup;
+    return pointMarker;
   };
 
   /**
@@ -315,9 +305,9 @@ define([
   PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
     var count = 0;
 
-    for (var pointId in this._pointGroups) {
-      if (Object.prototype.hasOwnProperty.call(this._pointGroups, pointId)) {
-        var point = this._pointGroups[pointId].point;
+    for (var pointId in this._pointMarkers) {
+      if (Object.prototype.hasOwnProperty.call(this._pointMarkers, pointId)) {
+        var point = this._pointMarkers[pointId].getPoint();
 
         if (!point.isVisible(startTime, endTime)) {
           this._removePoint(point);
@@ -337,12 +327,11 @@ define([
    */
 
   PointsLayer.prototype._removePoint = function(point) {
-    var pointGroup = this._pointGroups[point.id];
+    var pointMarker = this._pointMarkers[point.id];
 
-    if (pointGroup) {
-      pointGroup.destroyChildren();
-      pointGroup.destroy();
-      delete this._pointGroups[point.id];
+    if (pointMarker) {
+      pointMarker.destroy();
+      delete this._pointMarkers[point.id];
     }
   };
 
@@ -364,6 +353,20 @@ define([
     this._peaks.off('points.dragstart', this._onPointsDrag);
     this._peaks.off('points.dragmove', this._onPointsDrag);
     this._peaks.off('points.dragend', this._onPointsDrag);
+  };
+
+  PointsLayer.prototype.fitToView = function() {
+    for (var pointId in this._pointMarkers) {
+      if (Object.hasOwnProperty.call(this._pointMarkers, pointId)) {
+        var pointMarker = this._pointMarkers[pointId];
+
+        pointMarker.fitToView();
+      }
+    }
+  };
+
+  PointsLayer.prototype.draw = function() {
+    this._layer.draw();
   };
 
   return PointsLayer;

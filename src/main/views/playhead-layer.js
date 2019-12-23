@@ -27,7 +27,7 @@ define([
 
   function PlayheadLayer(peaks, view, showTime, time) {
     this._peaks = peaks;
-    this._view  = view;
+    this._view = view;
     this._playheadPixel = 0;
     this._playheadLineAnimation = null;
     this._playheadVisible = false;
@@ -86,6 +86,15 @@ define([
         this.stop(time);
       }
     }
+  };
+
+  /**
+   * Resizes the playhead UI objects to fit the available space in the
+   * view.
+   */
+
+  PlayheadLayer.prototype.fitToView = function() {
+    this._playheadLine.points([0.5, 0, 0.5, this._view.getHeight()]);
   };
 
   /**

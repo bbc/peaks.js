@@ -488,6 +488,20 @@ define([
     this._pointsLayer.enableEditing(enable);
   };
 
+  WaveformZoomView.prototype.fitToContainer = function() {
+    this._width = this._container.clientWidth;
+    this._height = this._container.clientHeight;
+
+    this._stage.width(this._width);
+    this._stage.height(this._height);
+
+    this._playheadLayer.fitToView();
+    this._segmentsLayer.fitToView();
+    this._pointsLayer.fitToView();
+
+    this._stage.draw();
+  };
+
   /* WaveformZoomView.prototype.beginZoom = function() {
     // Fade out the time axis and the segments
     // this._axis.axisShape.setAttr('opacity', 0);

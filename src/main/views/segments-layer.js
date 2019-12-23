@@ -13,6 +13,186 @@ define([
   ], function(WaveformShape, Utils, Konva) {
   'use strict';
 
+  function SegmentShape(segment, peaks, layer, view) {
+    this._segment = segment;
+    this._peaks = peaks;
+    this._layer = layer;
+    this._view = view;
+    this._waveformShape = null;
+    this._label = null;
+    this._inMarker = null;
+    this._outMarker = null;
+
+    this._group = new Konva.Group();
+
+    this._waveformShape = new WaveformShape({
+      color: segment.color,
+      view: view,
+      segment: segment
+    });
+
+    this._onMouseEnter = this._onMouseEnter.bind(this);
+    this._onMouseLeave = this._onMouseLeave.bind(this);
+    this._onClick = this._onClick.bind(this);
+
+    // Set up event handlers to show/hide the segment label text when the user
+    // hovers the mouse over the segment.
+    this._waveformShape.on('mouseenter', this._onMouseEnter);
+    this._waveformShape.on('mouseleave', this._onMouseLeave);
+    this._waveformShape.on('click', this._onClick);
+
+    // Event handlers for markers
+    this._onSegmentHandleDrag = this._onSegmentHandleDrag.bind(this);
+    this._onSegmentHandleDragStart = this._onSegmentHandleDragStart.bind(this);
+    this._onSegmentHandleDragEnd = this._onSegmentHandleDragEnd.bind(this);
+
+    this._label = this._peaks.options.createSegmentLabel(segment);
+    this._label.hide();
+
+    this._group.add(this._waveformShape);
+    this._group.add(this._label);
+
+    this._createMarkers();
+    this._inMarker.addToGroup(this._group);
+    this._outMarker.addToGroup(this._group);
+  }
+
+  SegmentShape.prototype.getSegment = function() {
+    return this._segment;
+  };
+
+  SegmentShape.prototype.getInMarker = function() {
+    return this._inMarker;
+  };
+
+  SegmentShape.prototype.getOutMarker = function() {
+    return this._outMarker;
+  };
+
+  SegmentShape.prototype.addToLayer = function(layer) {
+    layer.add(this._group);
+  };
+
+  SegmentShape.prototype._createMarkers = function() {
+    var editable = true; // TODO
+
+    this._inMarker = this._peaks.options.createSegmentMarker({
+      segment:      this._segment,
+      segmentShape: this,
+      draggable:    true, // editable,
+      color:        this._peaks.options.inMarkerColor,
+      inMarker:     true,
+      layer:        this._layer,
+      onDrag:       editable ? this._onSegmentHandleDrag : null,
+      onDragStart:  editable ? this._onSegmentHandleDragStart : null,
+      onDragEnd:    editable ? this._onSegmentHandleDragEnd : null,
+      onMouseEnter: this._onSegmentHandleMouseEnter,
+      onMouseLeave: this._onSegmentHandleMouseLeave
+    });
+
+    this._outMarker = this._peaks.options.createSegmentMarker({
+      segment:      this._segment,
+      segmentShape: this,
+      draggable:    true, // editable,
+      color:        this._peaks.options.outMarkerColor,
+      inMarker:     false,
+      layer:        this._layer,
+      onDrag:       editable ? this._onSegmentHandleDrag : null,
+      onDragStart:  editable ? this._onSegmentHandleDragStart : null,
+      onDragEnd:    editable ? this._onSegmentHandleDragEnd : null,
+      onMouseEnter: this._onSegmentHandleMouseEnter,
+      onMouseLeave: this._onSegmentHandleMouseLeave
+    });
+  };
+
+  SegmentShape.prototype._onMouseEnter = function() {
+    this._label.show();
+    this._layer.draw();
+    this._peaks.emit('segments.mouseenter', this._segment);
+  };
+
+  SegmentShape.prototype._onMouseLeave = function() {
+    this._label.hide();
+    this._layer.draw();
+    this._peaks.emit('segments.mouseleave', this._segment);
+  };
+
+  SegmentShape.prototype._onClick = function() {
+    this._peaks.emit('segments.click', this._segment);
+  };
+
+  /**
+   * @param {Konva.Group} segmentGroup
+   * @param {Segment} segment
+   */
+
+  SegmentShape.prototype._onSegmentHandleDrag = function(segmentMarker) {
+    var frameOffset = this._view.getFrameOffset();
+    var width = this._view.getWidth();
+
+    var inMarkerX  = this._inMarker.getX();
+    var outMarkerX = this._outMarker.getX();
+
+    if (inMarkerX >= 0) {
+      var inOffset = frameOffset +
+                     inMarkerX +
+                     this._inMarker.getWidth();
+
+      this._segment.startTime = this._view.pixelsToTime(inOffset);
+    }
+
+    if (outMarkerX < width) {
+      var outOffset = frameOffset + outMarkerX;
+
+      this._segment.endTime = this._view.pixelsToTime(outOffset);
+    }
+
+    var inMarker = segmentMarker.isInMarker();
+
+    this._peaks.emit('segments.dragged', this._segment, inMarker);
+  };
+
+  /**
+   * @param {Boolean} inMarker
+   * @param {Segment} segment
+   */
+
+  SegmentShape.prototype._onSegmentHandleDragStart = function(segment, inMarker) {
+    this._peaks.emit('segments.dragstart', segment, inMarker);
+  };
+
+  /**
+   * @param {Boolean} inMarker
+   * @param {Segment} segment
+   */
+
+  SegmentShape.prototype._onSegmentHandleDragEnd = function(segment, inMarker) {
+    this._peaks.emit('segments.dragend', segment, inMarker);
+  };
+
+  SegmentShape.prototype.fitToView = function() {
+    if (this._inMarker) {
+      this._inMarker.fitToView();
+    }
+
+    if (this._outMarker) {
+      this._outMarker.fitToView();
+    }
+  };
+
+  SegmentShape.prototype.destroy = function() {
+    this._waveformShape.destroy();
+    this._label.destroy();
+
+    if (this._inMarker) {
+      this._inMarker.destroy();
+    }
+
+    if (this._outMarker) {
+      this._outMarker.destroy();
+    }
+  };
+
   /**
    * Creates a Konva.Layer that displays segment markers against the audio
    * waveform.
@@ -31,10 +211,6 @@ define([
     this._allowEditing  = allowEditing;
     this._segmentGroups = {};
     this._layer         = new Konva.Layer();
-
-    this._onSegmentHandleDrag = this._onSegmentHandleDrag.bind(this);
-    this._onSegmentHandleDragStart = this._onSegmentHandleDragStart.bind(this);
-    this._onSegmentHandleDragEnd = this._onSegmentHandleDragEnd.bind(this);
 
     this._onSegmentsUpdate    = this._onSegmentsUpdate.bind(this);
     this._onSegmentsAdd       = this._onSegmentsAdd.bind(this);
@@ -131,97 +307,11 @@ define([
    *
    * @private
    * @param {Segment} segment
-   * @returns {Konva.Group}
+   * @returns {SegmentShape}
    */
 
-  SegmentsLayer.prototype._createSegmentGroup = function(segment) {
-    var self = this;
-
-    var segmentGroup = new Konva.Group();
-
-    segmentGroup.segment = segment;
-
-    segmentGroup.waveformShape = new WaveformShape({
-      color: segment.color,
-      view: self._view,
-      segment: segment
-    });
-
-    // Set up event handlers to show/hide the segment label text when the user
-    // hovers the mouse over the segment.
-
-    segmentGroup.waveformShape.on('mouseenter', function(event) {
-      if (!event.target.parent) {
-        self._peaks.logger('No parent for object:', event.target);
-        return;
-      }
-
-      event.target.parent.label.show();
-      self._layer.draw();
-      self._peaks.emit('segments.mouseenter', event.target._segment);
-    });
-
-    segmentGroup.waveformShape.on('mouseleave', function(event) {
-      if (!event.target.parent) {
-        self._peaks.logger('No parent for object:', event.target);
-        return;
-      }
-
-      event.target.parent.label.hide();
-      self._layer.draw();
-      self._peaks.emit('segments.mouseleave', event.target._segment);
-    });
-
-    segmentGroup.waveformShape.on('click', function(event) {
-      if (!event.target.parent) {
-        self._peaks.logger('No parent for object:', event.target);
-        return;
-      }
-
-      self._peaks.emit('segments.click', event.target._segment);
-    });
-
-    segmentGroup.add(segmentGroup.waveformShape);
-
-    segmentGroup.label = self._peaks.options.createSegmentLabel(segmentGroup, segment);
-    segmentGroup.label.hide();
-    segmentGroup.add(segmentGroup.label);
-
-    var editable = self._allowEditing && segment.editable;
-
-    if (editable) {
-      segmentGroup.inMarker = this._peaks.options.createSegmentMarker({
-        draggable:    editable,
-        height:       this._view.getHeight(),
-        color:        this._peaks.options.inMarkerColor,
-        inMarker:     true,
-        segmentGroup: segmentGroup,
-        segment:      segment,
-        layer:        self._layer,
-        onDrag:       editable ? self._onSegmentHandleDrag : null,
-        onDragStart:  editable ? self._onSegmentHandleDragStart : null,
-        onDragEnd:    editable ? self._onSegmentHandleDragEnd : null
-      });
-
-      segmentGroup.add(segmentGroup.inMarker);
-
-      segmentGroup.outMarker = this._peaks.options.createSegmentMarker({
-        draggable:    editable,
-        height:       this._view.getHeight(),
-        color:        this._peaks.options.outMarkerColor,
-        inMarker:     false,
-        segmentGroup: segmentGroup,
-        segment:      segment,
-        layer:        self._layer,
-        onDrag:       editable ? self._onSegmentHandleDrag : null,
-        onDragStart:  editable ? self._onSegmentHandleDragStart : null,
-        onDragEnd:    editable ? self._onSegmentHandleDragEnd : null
-      });
-
-      segmentGroup.add(segmentGroup.outMarker);
-    }
-
-    return segmentGroup;
+  SegmentsLayer.prototype._createSegmentShape = function(segment) {
+    return new SegmentShape(segment, this._peaks, this, this._view);
   };
 
   /**
@@ -229,64 +319,17 @@ define([
    *
    * @private
    * @param {Segment} segment
-   * @returns {Konva.Group}
+   * @returns {SegmentShape}
    */
 
   SegmentsLayer.prototype._addSegmentGroup = function(segment) {
-    var segmentGroup = this._createSegmentGroup(segment);
+    var segmentShape = this._createSegmentShape(segment);
 
-    this._layer.add(segmentGroup);
+    segmentShape.addToLayer(this._layer);
 
-    this._segmentGroups[segment.id] = segmentGroup;
+    this._segmentGroups[segment.id] = segmentShape;
 
-    return segmentGroup;
-  };
-
-  /**
-   * @param {Konva.Group} segmentGroup
-   * @param {Segment} segment
-   */
-
-  SegmentsLayer.prototype._onSegmentHandleDrag = function(segmentGroup, segment, inMarker) {
-    var frameOffset = this._view.getFrameOffset();
-    var width = this._view.getWidth();
-
-    var inMarkerX  = segmentGroup.inMarker.getX();
-    var outMarkerX = segmentGroup.outMarker.getX();
-
-    if (inMarkerX > 0) {
-      var inOffset = frameOffset +
-                     inMarkerX +
-                     segmentGroup.inMarker.getWidth();
-
-      segment.startTime = this._view.pixelsToTime(inOffset);
-    }
-
-    if (outMarkerX < width) {
-      var outOffset = frameOffset + outMarkerX;
-
-      segment.endTime = this._view.pixelsToTime(outOffset);
-    }
-
-    this._peaks.emit('segments.dragged', segment, inMarker);
-  };
-
-  /**
-   * @param {Boolean} inMarker
-   * @param {Segment} segment
-   */
-
-  SegmentsLayer.prototype._onSegmentHandleDragStart = function(segment, inMarker) {
-      this._peaks.emit('segments.dragstart', segment, inMarker);
-  };
-
-  /**
-   * @param {Boolean} inMarker
-   * @param {Segment} segment
-   */
-
-  SegmentsLayer.prototype._onSegmentHandleDragEnd = function(segment, inMarker) {
-      this._peaks.emit('segments.dragend', segment, inMarker);
+    return segmentShape;
   };
 
   /**
@@ -326,26 +369,25 @@ define([
     var segmentEndOffset   = this._view.timeToPixels(segment.endTime);
 
     var frameStartOffset = this._view.getFrameOffset();
-    // var frameEndOffset   = frameStartOffset + this._view.getWidth();
 
     var startPixel = segmentStartOffset - frameStartOffset;
     var endPixel   = segmentEndOffset   - frameStartOffset;
 
     if (this._allowEditing && segment.editable) {
-      var marker = segmentGroup.inMarker;
+      var marker = segmentGroup.getInMarker();
 
       if (marker) {
         marker.setX(startPixel - marker.getWidth());
 
-        marker.label.setText(Utils.formatTime(segment.startTime, false));
+        marker.setLabelText(Utils.formatTime(segment.startTime, false));
       }
 
-      marker = segmentGroup.outMarker;
+      marker = segmentGroup.getOutMarker();
 
       if (marker) {
         marker.setX(endPixel);
 
-        marker.label.setText(Utils.formatTime(segment.endTime, false));
+        marker.setLabelText(Utils.formatTime(segment.endTime, false));
       }
     }
   };
@@ -380,7 +422,7 @@ define([
 
     for (var segmentId in this._segmentGroups) {
       if (Object.prototype.hasOwnProperty.call(this._segmentGroups, segmentId)) {
-        var segment = this._segmentGroups[segmentId].segment;
+        var segment = this._segmentGroups[segmentId].getSegment();
 
         if (!segment.isVisible(startTime, endTime)) {
           this._removeSegment(segment);
@@ -402,7 +444,6 @@ define([
     var segmentGroup = this._segmentGroups[segment.id];
 
     if (segmentGroup) {
-      segmentGroup.destroyChildren();
       segmentGroup.destroy();
       delete this._segmentGroups[segment.id];
     }
@@ -428,6 +469,24 @@ define([
     this._peaks.off('segments.remove', this._onSegmentsRemove);
     this._peaks.off('segments.remove_all', this._onSegmentsRemoveAll);
     this._peaks.off('segments.dragged', this._onSegmentsDragged);
+  };
+
+  SegmentsLayer.prototype.fitToView = function() {
+    for (var segmentId in this._segmentGroups) {
+      if (Object.hasOwnProperty.call(this._segmentGroups, segmentId)) {
+        var segmentGroup = this._segmentGroups[segmentId];
+
+        segmentGroup.fitToView();
+      }
+    }
+  };
+
+  SegmentsLayer.prototype.draw = function() {
+    this._layer.draw();
+  };
+
+  SegmentsLayer.prototype.getHeight = function() {
+    return this._layer.getHeight();
   };
 
   return SegmentsLayer;

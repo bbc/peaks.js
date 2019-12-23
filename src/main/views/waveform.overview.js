@@ -400,6 +400,33 @@ define([
     this._pointsLayer.enableEditing(enable);
   };
 
+  WaveformOverview.prototype.fitToContainer = function() {
+    this._width = this._container.clientWidth;
+    this._height = this._container.clientHeight;
+
+    this._stage.width(this._width);
+    this._stage.height(this._height);
+
+    this._playheadLayer.fitToView();
+    this._segmentsLayer.fitToView();
+    this._pointsLayer.fitToView();
+
+    if (this._highlightRect) {
+      var offset = Utils.clamp(
+        this._options.overviewHighlightOffset,
+        0,
+        Math.floor(this._height / 2)
+      );
+
+      this._highlightRect.setAttrs({
+        y: offset,
+        height: this._height - (offset * 2)
+      });
+    }
+
+    this._stage.draw();
+  };
+
   WaveformOverview.prototype.destroy = function() {
     if (this._resizeTimeoutId) {
       clearTimeout(this._resizeTimeoutId);
