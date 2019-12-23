@@ -13,6 +13,13 @@ define([
   ], function(PointMarker, SegmentMarker, Konva) {
   'use strict';
 
+  /**
+   * Creates a Left or Right side segment handle marker.
+   *
+   * @param {SegmentMarkerOptions} options
+   * @returns {SegmentMarker}
+   */
+
   function createSegmentMarker(options) {
     return new SegmentMarker(options);
   }
@@ -35,6 +42,13 @@ define([
       fill:       '#000'
     });
   }
+
+  /**
+   * Creates a point marker handle.
+   *
+   * @param {PointMarkerOptions} options
+   * @returns {PointMarker}
+   */
 
   function createPointMarker(options) {
     return new PointMarker(options);

@@ -13,28 +13,31 @@ define([
   'use strict';
 
   /**
-   * Parameters for the {@link createPointMarker} function.
+   * Parameters for the {@link PointMarker} constructor and
+   * {@link createPointMarker} function.
    *
-   * @typedef {Object} CreatePointMarkerOptions
+   * @typedef {Object} PointMarkerOptions
    * @global
-   * @property {Object} point Point object with timestamp.
+   * @property {Point} point Point object with timestamp.
+   * @property {PointsLayer} layer
    * @property {Boolean} draggable If true, marker is draggable.
-   * @property {Boolean} showLabel If true, show the label text next to the marker.
    * @property {String} color Color for the marker's handle and line.
-   * @property {Konva.Layer} layer Layer that contains the pointGroup.
+   * @property {Boolean} showLabel If true, show the label text next to the marker.
    * @property {Function} onDblClick
    * @property {Function} onDragStart
    * @property {Function} onDragMove Callback during mouse drag operations.
    * @property {Function} onDragEnd
-   * @property {Function} onMouseOver
+   * @property {Function} onMouseEnter
    * @property {Function} onMouseLeave
    */
 
   /**
-   * Creates a point handle group in Konva based on the given options.
+   * Creates a point marker handle.
    *
-   * @param {CreatePointMarkerOptions} options
-   * @returns {Konva.Group} Konva group object of handle marker elements
+   * @class
+   * @alias PointMarker
+   *
+   * @param {PointMarkerOptions} options
    */
 
   function PointMarker(options) {

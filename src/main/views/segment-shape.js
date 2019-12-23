@@ -12,6 +12,18 @@ define([
   ], function(WaveformShape, Konva) {
   'use strict';
 
+  /**
+   * Creates a waveform segment shape with optional start and end markers.
+   *
+   * @class
+   * @alias SegmentShape
+   *
+   * @param {Segment} segment
+   * @param {Peaks} peaks
+   * @param {SegmentsLayer} layer
+   * @param {WaveformOverview|WaveformZoomView} view
+   */
+
   function SegmentShape(segment, peaks, layer, view) {
     this._segment = segment;
     this._peaks = peaks;

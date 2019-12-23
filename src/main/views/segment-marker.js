@@ -12,26 +12,29 @@ define([
   'use strict';
 
   /**
-   * Parameters for the {@link createSegmentMarker} function.
+   * Parameters for the {@link SegmentMarker} constructor and
+   * {@link createSegmentMarker} function.
    *
-   * @typedef {Object} CreateSegmentMarkerOptions
+   * @typedef {Object} SegmentMarkerOptions
    * @global
+   * @property {Segment} segment
+   * @property {SegmentShape} segmentShape
    * @property {Boolean} draggable If true, marker is draggable.
-   * @property {Number} height Height of handle group container (canvas).
    * @property {String} color Colour hex value for handle and line marker.
+   * @property {SegmentsLayer} layer
    * @property {Boolean} inMarker Is this marker the inMarker (LHS) or outMarker (RHS).
-   * @property {Konva.Group} segmentGroup
-   * @property {Object} segment
-   * @property {Konva.Layer} layer
-   * @property {Function} onDrag Callback after drag completed.
+   * @property {Function} onDrag
+   * @property {Function} onDragStart
+   * @property {Function} onDragEnd
    */
 
   /**
-   * Creates a Left or Right side segment handle group in Konva based on the
-   * given options.
+   * Creates a Left or Right side segment handle marker.
    *
-   * @param {CreateSegmentMarkerOptions} options
-   * @returns {Konva.Group} Konva group object of handle marker element.
+   * @class
+   * @alias SegmentMarker
+   *
+   * @param {SegmentMarkerOptions} options
    */
 
   function SegmentMarker(options) {
