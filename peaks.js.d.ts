@@ -186,6 +186,7 @@ declare module 'peaks.js' {
     setWaveformColor: (color: string) => void;
     showPlayheadTime: (show: boolean) => void;
     enableAutoScroll: (enable: boolean) => void;
+    enableMarkerEditing: (enable: boolean) => void;
   }
 
   interface PeaksInstance {
