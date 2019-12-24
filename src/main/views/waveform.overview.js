@@ -66,7 +66,7 @@ define([
     self._height = container.clientHeight || self._options.height;
 
     if (self._width !== 0) {
-      self._data = waveformData.resample(self._width);
+      self._data = waveformData.resample({ width: self._width });
     }
     else {
       self._data = waveformData;
@@ -178,7 +178,7 @@ define([
 
       self._resizeTimeoutId = setTimeout(function() {
         self._width = self._container.clientWidth;
-        self._data = self._originalWaveformData.resample(self._width);
+        self._data = self._originalWaveformData.resample({ width: self._width });
         self._stage.setWidth(self._width);
 
         self._updateWaveform();
@@ -190,7 +190,7 @@ define([
     this._originalWaveformData = waveformData;
 
     if (this._width !== 0) {
-      this._data = waveformData.resample(this._width);
+      this._data = waveformData.resample({ width: this._width });
     }
     else {
       this._data = waveformData;
@@ -401,11 +401,25 @@ define([
   };
 
   WaveformOverview.prototype.fitToContainer = function() {
-    this._width = this._container.clientWidth;
-    this._height = this._container.clientHeight;
+    var updateWaveform = false;
 
-    this._stage.width(this._width);
-    this._stage.height(this._height);
+    if (this._container.clientWidth !== this._width) {
+      this._width = this._container.clientWidth;
+
+      try {
+        this._data = this._originalWaveformData.resample({ width: this._width });
+      }
+      catch (error) {
+        // Ignore, and leave this._data as it was
+      }
+
+      this._stage.setWidth(this._width);
+
+      updateWaveform = true;
+    }
+
+    this._height = this._container.clientHeight;
+    this._stage.setHeight(this._height);
 
     this._playheadLayer.fitToView();
     this._segmentsLayer.fitToView();
@@ -422,6 +436,10 @@ define([
         y: offset,
         height: this._height - (offset * 2)
       });
+    }
+
+    if (updateWaveform) {
+      this._updateWaveform();
     }
 
     this._stage.draw();
