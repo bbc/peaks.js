@@ -137,8 +137,7 @@ define([
   };
 
   /**
-   * @param {Konva.Group} segmentGroup
-   * @param {Segment} segment
+   * @param {SegmentMarker} segmentMarker
    */
 
   SegmentShape.prototype._onSegmentHandleDrag = function(segmentMarker) {
@@ -168,8 +167,7 @@ define([
   };
 
   /**
-   * @param {Boolean} inMarker
-   * @param {Segment} segment
+   * @param {SegmentMarker} segmentMarker
    */
 
   SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker) {
@@ -179,8 +177,7 @@ define([
   };
 
   /**
-   * @param {Boolean} inMarker
-   * @param {Segment} segment
+   * @param {SegmentMarker} segmentMarker
    */
 
   SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker) {
