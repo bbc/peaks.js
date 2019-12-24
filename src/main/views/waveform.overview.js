@@ -7,6 +7,7 @@
  */
 
 define([
+  'peaks/views/highlight-layer',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
@@ -16,6 +17,7 @@ define([
   'peaks/waveform/waveform.utils',
   'konva'
 ], function(
+  HighlightLayer,
   PlayheadLayer,
   PointsLayer,
   SegmentsLayer,
@@ -94,7 +96,13 @@ define([
     self._pointsLayer = new PointsLayer(peaks, self, false, false);
     self._pointsLayer.addToStage(self._stage);
 
-    self._createHighlightLayer();
+    self._highlightLayer = new HighlightLayer(
+      self,
+      self._options.overviewHighlightOffset,
+      self._options.overviewHighlightColor
+    );
+    self._highlightLayer.addToStage(self._stage);
+
     self._createAxisLabels();
 
     self._playheadLayer = new PlayheadLayer(
@@ -156,11 +164,7 @@ define([
   };
 
   WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
-    if (!this._highlightRect) {
-      this._createHighlightRect(startTime, endTime);
-    }
-
-    this._updateHighlightRect(startTime, endTime);
+    this._highlightLayer.showHighlight(startTime, endTime);
   };
 
   WaveformOverview.prototype._onWindowResize = function() {
@@ -297,66 +301,8 @@ define([
     this._stage.add(this._axisLayer);
   };
 
-  WaveformOverview.prototype._createHighlightLayer = function() {
-    this._highlightLayer = new Konva.FastLayer();
-    this._stage.add(this._highlightLayer);
-  };
-
-  WaveformOverview.prototype._createHighlightRect = function(startTime, endTime) {
-    this._highlightRectStartTime = startTime;
-    this._highlightRectEndTime = endTime;
-
-    var startOffset = this.timeToPixels(startTime);
-    var endOffset   = this.timeToPixels(endTime);
-    var offset = Utils.clamp(
-      this._options.overviewHighlightOffset,
-      0,
-      Math.floor(this._height / 2)
-    );
-
-    this._highlightRect = new Konva.Rect({
-      startOffset: 0,
-      y: offset,
-      width: endOffset - startOffset,
-      stroke: this._options.overviewHighlightColor,
-      strokeWidth: 1,
-      height: this._height - (offset * 2),
-      fill: this._options.overviewHighlightColor,
-      opacity: 0.3,
-      cornerRadius: 2
-    });
-
-    this._highlightLayer.add(this._highlightRect);
-  };
-
-  /**
-   * Updates the position of the highlight region.
-   *
-   * @param {Number} startTime The start of the highlight region, in seconds.
-   * @param {Number} endTime The end of the highlight region, in seconds.
-   */
-
-  WaveformOverview.prototype._updateHighlightRect = function(startTime, endTime) {
-    this._highlightRectStartTime = startTime;
-    this._highlightRectEndTime = endTime;
-
-    var startOffset = this.timeToPixels(startTime);
-    var endOffset   = this.timeToPixels(endTime);
-
-    this._highlightRect.setAttrs({
-      x:     startOffset,
-      width: endOffset - startOffset
-    });
-
-    this._highlightLayer.draw();
-  };
-
   WaveformOverview.prototype.removeHighlightRect = function() {
-    if (this._highlightRect) {
-      this._highlightRect.destroy();
-      this._highlightRect = null;
-      this._highlightLayer.draw();
-    }
+    this._highlightLayer.removeHighlight();
   };
 
   WaveformOverview.prototype._updateWaveform = function() {
@@ -367,12 +313,7 @@ define([
 
     this._playheadLayer.updatePlayheadTime(playheadTime);
 
-    if (this._highlightRect) {
-      this._updateHighlightRect(
-        this._highlightRectStartTime,
-        this._highlightRectEndTime
-      );
-    }
+    this._highlightLayer.updateHighlight();
 
     var frameStartTime = 0;
     var frameEndTime   = this.pixelsToTime(this._width);
@@ -424,19 +365,7 @@ define([
     this._playheadLayer.fitToView();
     this._segmentsLayer.fitToView();
     this._pointsLayer.fitToView();
-
-    if (this._highlightRect) {
-      var offset = Utils.clamp(
-        this._options.overviewHighlightOffset,
-        0,
-        Math.floor(this._height / 2)
-      );
-
-      this._highlightRect.setAttrs({
-        y: offset,
-        height: this._height - (offset * 2)
-      });
-    }
+    this._highlightLayer.fitToView();
 
     if (updateWaveform) {
       this._updateWaveform();
