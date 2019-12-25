@@ -42,6 +42,8 @@ define([
       this._createPlayheadText(this._playheadTextColor);
     }
 
+    this.fitToView();
+
     this.zoomLevelChanged();
     this._syncPlayhead(time);
   }
@@ -94,7 +96,13 @@ define([
    */
 
   PlayheadLayer.prototype.fitToView = function() {
-    this._playheadLine.points([0.5, 0, 0.5, this._view.getHeight()]);
+    var height = this._view.getHeight();
+
+    this._playheadLine.points([0.5, 0, 0.5, height]);
+
+    if (this._playheadText) {
+      this._playheadText.y(12);
+    }
   };
 
   /**
@@ -105,9 +113,9 @@ define([
    */
 
   PlayheadLayer.prototype._createPlayhead = function(color) {
+    // Create with default points, the real values are set in fitToView().
     this._playheadLine = new Konva.Line({
-      points: [0.5, 0, 0.5, this._view.getHeight()],
-      stroke: color,
+      stroke:      color,
       strokeWidth: 1
     });
 
@@ -121,9 +129,10 @@ define([
   };
 
   PlayheadLayer.prototype._createPlayheadText = function(color) {
+    // Create with default y, the real value is set in fitToView().
     this._playheadText = new Konva.Text({
       x: 2,
-      y: 12,
+      y: 0,
       text: '00:00:00',
       fontSize: 11,
       fontFamily: 'sans-serif',

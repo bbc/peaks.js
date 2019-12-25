@@ -56,23 +56,21 @@ define([
   }
 
   SegmentMarker.prototype._createUiObjects = function() {
-    var height = this._layer.getHeight();
-
+    var handleWidth  = 10;
     var handleHeight = 20;
-    var handleWidth  = handleHeight / 2;
-    var handleY      = (height / 2) - 10.5;
-    var handleX      = -(handleWidth / 2) + 0.5;
+    var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
     this._group = new Konva.Group({
-      draggable: this._draggable,
+      draggable:     this._draggable,
       dragBoundFunc: this._dragBoundFunc
     });
 
     var xPosition = this._inMarker ? -24 : 24;
 
+    // Label - create with default y, the real value is set in fitToView().
     this._label = new Konva.Text({
       x:          xPosition,
-      y:          (height / 2) - 5,
+      y:          0,
       text:       '',
       fontSize:   10,
       fontFamily: 'sans-serif',
@@ -82,9 +80,10 @@ define([
 
     this._label.hide();
 
+    // Handle - create with default y, the real value is set in fitToView().
     this._handle = new Konva.Rect({
       x:           handleX,
-      y:           handleY,
+      y:           0,
       width:       handleWidth,
       height:      handleHeight,
       fill:        this._color,
@@ -92,12 +91,11 @@ define([
       strokeWidth: 1
     });
 
-    // Vertical Line
-
+    // Vertical Line - create with default y and points, the real values
+    // are set in fitToView().
     this._line = new Konva.Line({
       x:           0,
       y:           0,
-      points:      [0.5, 0, 0.5, height],
       stroke:      this._color,
       strokeWidth: 1
     });
@@ -105,6 +103,8 @@ define([
     this._group.add(this._label);
     this._group.add(this._line);
     this._group.add(this._handle);
+
+    this.fitToView();
   };
 
   SegmentMarker.prototype._bindEventHandlers = function() {

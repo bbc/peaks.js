@@ -61,15 +61,12 @@ define([
   }
 
   PointMarker.prototype._createUiObjects = function() {
-    var height = this._layer.getHeight();
-
-    var handleTop = (height / 2) - 10.5;
-    var handleWidth = 10;
+    var handleWidth  = 10;
     var handleHeight = 20;
-    var handleX = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
+    var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
     this._group = new Konva.Group({
-      draggable: this._draggable,
+      draggable:     this._draggable,
       dragBoundFunc: this._dragBoundFunc
     });
 
@@ -77,9 +74,10 @@ define([
     this._label = null;
 
     if (this._showLabel) {
+      // Label - create with default y, the real value is set in fitToView().
       this._label = new Konva.Text({
         x:          2,
-        y:          12,
+        y:          0,
         text:       this._point.labelText,
         textAlign:  'left',
         fontSize:   10,
@@ -88,24 +86,24 @@ define([
       });
     }
 
-    // Handle
+    // Handle - create with default y, the real value is set in fitToView().
     this._handle = null;
 
     if (this._draggable) {
       this._handle = new Konva.Rect({
         x:      handleX,
-        y:      handleTop,
+        y:      0,
         width:  handleWidth,
         height: handleHeight,
         fill:   this._color
       });
     }
 
-    // Line
+    // Line - create with default y and points, the real values
+    // are set in fitToView().
     this._line = new Konva.Line({
       x:           0,
       y:           0,
-      points:      [0, 0, 0, height],
       stroke:      this._color,
       strokeWidth: 1
     });
@@ -114,10 +112,10 @@ define([
     this._time = null;
 
     if (this._handle) {
-      // Time
+      // Time - create with default y, the real value is set in fitToView().
       this._time = new Konva.Text({
         x:          -24,
-        y:          (height / 2) - 5,
+        y:          0,
         text:       '',
         fontSize:   10,
         fontFamily: 'sans-serif',
@@ -134,13 +132,15 @@ define([
 
     this._group.add(this._line);
 
-    if (this._text) {
-      this._group.add(this._text);
+    if (this._label) {
+      this._group.add(this._label);
     }
 
     if (this._time) {
       this._group.add(this._time);
     }
+
+    this.fitToView();
   };
 
   PointMarker.prototype._bindEventHandlers = function() {
@@ -237,6 +237,10 @@ define([
     var height = this._layer.getHeight();
 
     this._line.points([0.5, 0, 0.5, height]);
+
+    if (this._label) {
+      this._label.y(12);
+    }
 
     if (this._handle) {
       this._handle.y(height / 2 - 10.5);
