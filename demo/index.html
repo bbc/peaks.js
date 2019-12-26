@@ -102,7 +102,8 @@
         <a href="overview-waveform.html">Single Fixed Waveform</a> |
         <a href="cue-events.html">Cue Events</a> |
         <a href="set-source.html">Changing the Media URL</a> |
-        <a href="multi-channel.html">Multi-Channel Waveform</a>
+        <a href="multi-channel.html">Multi-Channel Waveform</a> |
+        <a href="custom-markers.html">Custom Point and Segment Markers</a>
       </p>
       <h2>Demo: Precomputed Waveform Data</h2>
       <p>
@@ -355,7 +356,7 @@
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: "Test segment " + segmentCounter++,
+              labelText: 'Test segment ' + segmentCounter++,
               editable: true
             });
           });
@@ -363,7 +364,7 @@
           document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
             peaksInstance.points.add({
               time: peaksInstance.player.getCurrentTime(),
-              labelText: "Test point",
+              labelText: 'Test point',
               editable: true
             });
           });
@@ -433,11 +434,11 @@
             var zoomviewContainer = document.getElementById('zoomview-container');
             var overviewContainer = document.getElementById('overview-container');
 
-            var zoomviewStyle = zoomviewContainer.offsetHeight === 200 ? "height:300px" : "height:200px";
-            var overviewStyle = overviewContainer.offsetHeight === 85  ? "height:200px"  : "height:85px";
+            var zoomviewStyle = zoomviewContainer.offsetHeight === 200 ? 'height:300px' : 'height:200px';
+            var overviewStyle = overviewContainer.offsetHeight === 85  ? 'height:200px' : 'height:85px';
 
-            zoomviewContainer.setAttribute("style", zoomviewStyle);
-            overviewContainer.setAttribute("style", overviewStyle);
+            zoomviewContainer.setAttribute('style', zoomviewStyle);
+            overviewContainer.setAttribute('style', overviewStyle);
 
             var zoomview = peaksInstance.views.getView('zoomview');
             if (zoomview) {
