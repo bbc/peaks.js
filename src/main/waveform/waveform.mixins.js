@@ -7,10 +7,10 @@
  */
 
 define([
-  'peaks/views/point-marker',
+  'peaks/views/default-point-marker',
   'peaks/views/segment-marker',
   'konva'
-  ], function(PointMarker, SegmentMarker, Konva) {
+  ], function(DefaultPointMarker, SegmentMarker, Konva) {
   'use strict';
 
   /**
@@ -51,7 +51,7 @@ define([
    */
 
   function createPointMarker(options) {
-    return new PointMarker(options);
+    return new DefaultPointMarker(options);
   }
 
   // Public API

@@ -12,6 +12,7 @@ define('peaks', [
   'peaks/markers/waveform.points',
   'peaks/markers/waveform.segments',
   'peaks/player/player',
+  'peaks/views/point-marker',
   'peaks/views/view-controller',
   'peaks/views/waveform.timecontroller',
   'peaks/views/waveform.zoomcontroller',
@@ -26,6 +27,7 @@ define('peaks', [
     WaveformPoints,
     WaveformSegments,
     Player,
+    PointMarker,
     ViewController,
     TimeController,
     ZoomController,
@@ -612,6 +614,8 @@ define('peaks', [
       this._cueEmitter.destroy();
     }
   };
+
+  Peaks.PointMarker = PointMarker;
 
   return Peaks;
 });

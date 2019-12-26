@@ -7,9 +7,8 @@
  */
 
 define([
-  'peaks/waveform/waveform.utils',
   'konva'
-  ], function(Utils, Konva) {
+  ], function(Konva) {
   'use strict';
 
   /**
@@ -56,94 +55,20 @@ define([
 
     this._dragBoundFunc = this._dragBoundFunc.bind(this);
 
-    this._createUiObjects();
-    this._bindEventHandlers();
-  }
-
-  PointMarker.prototype._createUiObjects = function() {
-    var handleWidth  = 10;
-    var handleHeight = 20;
-    var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
-
     this._group = new Konva.Group({
       draggable:     this._draggable,
       dragBoundFunc: this._dragBoundFunc
     });
 
-    // Label
-    this._label = null;
+    this._createMarker(this._group, options);
+    this._bindDefaultEventHandlers();
 
-    if (this._showLabel) {
-      // Label - create with default y, the real value is set in fitToView().
-      this._label = new Konva.Text({
-        x:          2,
-        y:          0,
-        text:       this._point.labelText,
-        textAlign:  'left',
-        fontSize:   10,
-        fontFamily: 'sans-serif',
-        fill:       '#000'
-      });
+    if (this._bindEventHandlers) {
+      this._bindEventHandlers();
     }
+  }
 
-    // Handle - create with default y, the real value is set in fitToView().
-    this._handle = null;
-
-    if (this._draggable) {
-      this._handle = new Konva.Rect({
-        x:      handleX,
-        y:      0,
-        width:  handleWidth,
-        height: handleHeight,
-        fill:   this._color
-      });
-    }
-
-    // Line - create with default y and points, the real values
-    // are set in fitToView().
-    this._line = new Konva.Line({
-      x:           0,
-      y:           0,
-      stroke:      this._color,
-      strokeWidth: 1
-    });
-
-    // Time label
-    this._time = null;
-
-    if (this._handle) {
-      // Time - create with default y, the real value is set in fitToView().
-      this._time = new Konva.Text({
-        x:          -24,
-        y:          0,
-        text:       '',
-        fontSize:   10,
-        fontFamily: 'sans-serif',
-        fill:       '#000',
-        textAlign:  'center'
-      });
-
-      this._time.hide();
-    }
-
-    if (this._handle) {
-      this._group.add(this._handle);
-    }
-
-    this._group.add(this._line);
-
-    if (this._label) {
-      this._group.add(this._label);
-    }
-
-    if (this._time) {
-      this._group.add(this._time);
-    }
-
-    this.fitToView();
-  };
-
-  PointMarker.prototype._bindEventHandlers = function() {
+  PointMarker.prototype._bindDefaultEventHandlers = function() {
     var self = this;
 
     self._group.on('dragstart', function() {
@@ -169,37 +94,13 @@ define([
     self._group.on('mouseleave', function() {
       self._onMouseLeave(self._point);
     });
-
-    if (self._handle) {
-      self._handle.on('mouseover touchstart', function() {
-        // Position text to the left of the marker
-        self._time.setX(-24 - self._time.getWidth());
-        self._time.show();
-        self._layer.draw();
-      });
-
-      self._handle.on('mouseout touchend', function() {
-        self._time.hide();
-        self._layer.draw();
-      });
-    }
-
-    self._group.on('dragstart', function() {
-      self._time.setX(-24 - self._time.getWidth());
-      self._time.show();
-      self._layer.draw();
-    });
-
-    self._group.on('dragend', function() {
-      self._time.hide();
-      self._layer.draw();
-    });
   };
 
   PointMarker.prototype._dragBoundFunc = function(pos) {
+    // Allow the marker to be moved horizontally but not vertically.
     return {
-      x: pos.x, // No constraint horizontally
-      y: this._group.getAbsolutePosition().y // Constrained vertical line
+      x: pos.x,
+      y: this._group.getAbsolutePosition().y
     };
   };
 
@@ -223,31 +124,11 @@ define([
     return this._group.getWidth();
   };
 
-  PointMarker.prototype.update = function(x) {
+  PointMarker.prototype.updatePosition = function(x) {
     this._group.setX(x);
 
-    if (this._time) {
-      var time = Utils.formatTime(this._point.time, false);
-
-      this._time.setText(time);
-    }
-  };
-
-  PointMarker.prototype.fitToView = function() {
-    var height = this._layer.getHeight();
-
-    this._line.points([0.5, 0, 0.5, height]);
-
-    if (this._label) {
-      this._label.y(12);
-    }
-
-    if (this._handle) {
-      this._handle.y(height / 2 - 10.5);
-    }
-
-    if (this._time) {
-      this._time.y(height / 2 - 5);
+    if (this._positionUpdated) {
+      this._positionUpdated(x);
     }
   };
 

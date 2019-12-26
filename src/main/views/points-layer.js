@@ -137,7 +137,7 @@ define([
   PointsLayer.prototype._createPointMarker = function(point) {
     var editable = this._allowEditing && point.editable;
 
-    var pointMarker = this._peaks.options.createPointMarker({
+    return this._peaks.options.createPointMarker({
       point:        point,
       draggable:    editable,
       showLabel:    this._showLabels,
@@ -151,8 +151,6 @@ define([
       onMouseEnter: this._onPointHandleMouseEnter,
       onMouseLeave: this._onPointHandleMouseLeave
     });
-
-    return pointMarker;
   };
 
   PointsLayer.prototype.getHeight = function() {
@@ -270,11 +268,11 @@ define([
   PointsLayer.prototype._updatePoint = function(point) {
     var pointMarker = this._findOrAddPointMarker(point);
 
-    var timestampOffset = this._view.timeToPixels(point.time);
+    var pointMarkerOffset = this._view.timeToPixels(point.time);
 
-    var startPixel = timestampOffset - this._view.getFrameOffset();
+    var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
-    pointMarker.update(startPixel);
+    pointMarker.updatePosition(pointMarkerX);
   };
 
   /**
