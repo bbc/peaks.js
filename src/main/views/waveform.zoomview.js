@@ -7,22 +7,22 @@
  */
 
 define([
+  'peaks/views/mouse-drag-handler',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/waveform-shape',
-  'peaks/views/helpers/mousedraghandler',
   // 'peaks/views/zooms/animated',
   // 'peaks/views/zooms/static',
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.utils',
   'konva'
   ], function(
+    MouseDragHandler,
     PlayheadLayer,
     PointsLayer,
     SegmentsLayer,
     WaveformShape,
-    MouseDragHandler,
     // AnimatedZoomAdapter,
     // StaticZoomAdapter,
     WaveformAxis,

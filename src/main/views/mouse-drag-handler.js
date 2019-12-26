@@ -3,7 +3,7 @@
  *
  * Defines the {@link MouseDragHandler} class.
  *
- * @module peaks/views/helpers/mousedraghandler
+ * @module peaks/views/mouse-drag-handler
  */
 
 define([

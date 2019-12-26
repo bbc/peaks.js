@@ -8,21 +8,21 @@
 
 define([
   'peaks/views/highlight-layer',
+  'peaks/views/mouse-drag-handler',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/waveform-shape',
-  'peaks/views/helpers/mousedraghandler',
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.utils',
   'konva'
 ], function(
   HighlightLayer,
+  MouseDragHandler,
   PlayheadLayer,
   PointsLayer,
   SegmentsLayer,
   WaveformShape,
-  MouseDragHandler,
   WaveformAxis,
   Utils,
   Konva) {
