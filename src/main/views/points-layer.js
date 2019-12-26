@@ -34,10 +34,10 @@ define([
 
     this._onPointsDrag = this._onPointsDrag.bind(this);
 
-    this._onPointHandleDblClick = this._onPointHandleDblClick.bind(this);
-    this._onPointHandleDragStart = this._onPointHandleDragStart.bind(this);
-    this._onPointHandleDragMove = this._onPointHandleDragMove.bind(this);
-    this._onPointHandleDragEnd = this._onPointHandleDragEnd.bind(this);
+    this._onPointHandleDblClick   = this._onPointHandleDblClick.bind(this);
+    this._onPointHandleDragStart  = this._onPointHandleDragStart.bind(this);
+    this._onPointHandleDragMove   = this._onPointHandleDragMove.bind(this);
+    this._onPointHandleDragEnd    = this._onPointHandleDragEnd.bind(this);
     this._onPointHandleMouseEnter = this._onPointHandleMouseEnter.bind(this);
     this._onPointHandleMouseLeave = this._onPointHandleMouseLeave.bind(this);
 
@@ -143,6 +143,7 @@ define([
       showLabel:    this._showLabels,
       color:        point.color ? point.color : this._peaks.options.pointMarkerColor,
       layer:        this,
+      view:         this._view.getName(),
       onDblClick:   this._onPointHandleDblClick,
       onDragStart:  this._onPointHandleDragStart,
       onDragMove:   this._onPointHandleDragMove,

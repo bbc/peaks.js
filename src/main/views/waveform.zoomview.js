@@ -169,6 +169,10 @@ define([
     });
   }
 
+  WaveformZoomView.prototype.getName = function() {
+    return 'zoomview';
+  };
+
   WaveformZoomView.prototype._onTimeUpdate = function(time) {
     if (this._mouseDragHandler.isDragging()) {
       return;

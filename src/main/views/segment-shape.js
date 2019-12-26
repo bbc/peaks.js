@@ -25,26 +25,25 @@ define([
    */
 
   function SegmentShape(segment, peaks, layer, view) {
-    this._segment = segment;
-    this._peaks = peaks;
-    this._layer = layer;
-    this._view = view;
+    this._segment       = segment;
+    this._peaks         = peaks;
+    this._layer         = layer;
+    this._view          = view;
     this._waveformShape = null;
-    this._label = null;
-    this._inMarker = null;
-    this._outMarker = null;
-
-    this._group = new Konva.Group();
+    this._label         = null;
+    this._inMarker      = null;
+    this._outMarker     = null;
+    this._group         = new Konva.Group();
 
     this._waveformShape = new WaveformShape({
-      color: segment.color,
-      view: view,
+      color:   segment.color,
+      view:    view,
       segment: segment
     });
 
     this._onMouseEnter = this._onMouseEnter.bind(this);
     this._onMouseLeave = this._onMouseLeave.bind(this);
-    this._onClick = this._onClick.bind(this);
+    this._onClick      = this._onClick.bind(this);
 
     // Set up event handlers to show/hide the segment label text when the user
     // hovers the mouse over the segment.
@@ -53,15 +52,21 @@ define([
     this._waveformShape.on('click', this._onClick);
 
     // Event handlers for markers
-    this._onSegmentHandleDrag = this._onSegmentHandleDrag.bind(this);
+    this._onSegmentHandleDrag      = this._onSegmentHandleDrag.bind(this);
     this._onSegmentHandleDragStart = this._onSegmentHandleDragStart.bind(this);
-    this._onSegmentHandleDragEnd = this._onSegmentHandleDragEnd.bind(this);
+    this._onSegmentHandleDragEnd   = this._onSegmentHandleDragEnd.bind(this);
 
     this._label = this._peaks.options.createSegmentLabel(segment);
-    this._label.hide();
+
+    if (this._label) {
+      this._label.hide();
+    }
 
     this._group.add(this._waveformShape);
-    this._group.add(this._label);
+
+    if (this._label) {
+      this._group.add(this._label);
+    }
 
     this._createMarkers();
 
@@ -101,6 +106,7 @@ define([
         color:        this._peaks.options.inMarkerColor,
         inMarker:     true,
         layer:        this._layer,
+        view:         this._view.getName(),
         onDrag:       this._onSegmentHandleDrag,
         onDragStart:  this._onSegmentHandleDragStart,
         onDragEnd:    this._onSegmentHandleDragEnd
@@ -113,6 +119,7 @@ define([
         color:        this._peaks.options.outMarkerColor,
         inMarker:     false,
         layer:        this._layer,
+        view:         this._view.getName(),
         onDrag:       this._onSegmentHandleDrag,
         onDragStart:  this._onSegmentHandleDragStart,
         onDragEnd:    this._onSegmentHandleDragEnd
@@ -121,14 +128,20 @@ define([
   };
 
   SegmentShape.prototype._onMouseEnter = function() {
-    this._label.show();
-    this._layer.draw();
+    if (this._label) {
+      this._label.show();
+      this._layer.draw();
+    }
+
     this._peaks.emit('segments.mouseenter', this._segment);
   };
 
   SegmentShape.prototype._onMouseLeave = function() {
-    this._label.hide();
-    this._layer.draw();
+    if (this._label) {
+      this._label.hide();
+      this._layer.draw();
+    }
+
     this._peaks.emit('segments.mouseleave', this._segment);
   };
 
@@ -198,7 +211,10 @@ define([
 
   SegmentShape.prototype.destroy = function() {
     this._waveformShape.destroy();
-    this._label.destroy();
+
+    if (this._label) {
+      this._label.destroy();
+    }
 
     if (this._inMarker) {
       this._inMarker.destroy();

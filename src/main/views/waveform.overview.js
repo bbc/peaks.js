@@ -147,6 +147,10 @@ define([
     });
   }
 
+  WaveformOverview.prototype.getName = function() {
+    return 'overview';
+  };
+
   WaveformOverview.prototype._onTimeUpdate = function(time) {
     this._playheadLayer.updatePlayheadTime(time);
   };
