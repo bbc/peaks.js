@@ -27,6 +27,7 @@
     "peaks/waveform/waveform.mixins": "./src/main/waveform/waveform.mixins.js",
     "peaks/waveform/waveform.utils": "./src/main/waveform/waveform.utils.js",
     "peaks/views/default-point-marker": "./src/main/views/default-point-marker.js",
+    "peaks/views/default-segment-marker": "./src/main/views/default-segment-marker.js",
     "peaks/views/highlight-layer": "./src/main/views/highlight-layer.js",
     "peaks/views/mouse-drag-handler": "./src/main/views/mouse-drag-handler.js",
     "peaks/views/playhead-layer": "./src/main/views/playhead-layer.js",

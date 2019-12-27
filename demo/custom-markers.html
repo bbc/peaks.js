@@ -105,11 +105,10 @@
         <a href="multi-channel.html">Multi-Channel Waveform</a> |
         Custom Point and Segment Markers
       </p>
-      <h2>Demo: Precomputed Waveform Data</h2>
+      <h2>Demo: Custom Point and Segment Markers</h2>
       <p>
-        This demo shows how to use waveform data precomputed using
-        <a href="https://github.com/bbc/audiowaveform">audiowaveform</a>.
-        The data is requested from the web server in binary or JSON format.
+        This demo shows how to customize the appearance and behavior of point
+        and segment markers.
       </p>
     </div>
 
@@ -179,6 +178,84 @@
     <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
+
+        /*
+         * CustomSegmentMarker
+         */
+
+        function CustomSegmentMarker(options) {
+          Peaks.SegmentMarker.call(this, options);
+        }
+
+        CustomSegmentMarker.prototype = Object.create(Peaks.SegmentMarker.prototype);
+
+        CustomSegmentMarker.prototype._createMarker = function(group, options) {
+          var tagWidth = 20;
+          var tagHeight = 25;
+
+          this._handle = new Konva.Rect({
+            fill:             options.color,
+            stroke:           options.color,
+            strokeWidth:      1,
+            x:                0.5 + (this.isInMarker() ? -tagWidth : 0),
+            y:                0.5,
+            width:            tagWidth,
+            height:           tagHeight
+          });
+
+          // Vertical Line - create with default y and points, the real values
+          // are set in fitToView().
+          this._line = new Konva.Line({
+            x:           0,
+            y:           0,
+            stroke:      options.color,
+            strokeWidth: 1
+          });
+
+          group.add(this._line);
+          group.add(this._handle);
+
+          this.fitToView();
+        };
+
+        CustomSegmentMarker.prototype._bindEventHandlers = function() {
+          var container = document.getElementById('zoomview-container');
+
+          this._group.on('mouseenter', function() {
+            container.style.cursor = 'move';
+          });
+
+          this._group.on('mouseleave', function() {
+            container.style.cursor = 'default';
+          });
+        };
+
+        CustomSegmentMarker.prototype.fitToView = function() {
+          var height = this._layer.getHeight();
+
+          var offsetTop = 14;
+          var offsetBottom = 26;
+
+          this._group.y(offsetTop + 0.5);
+
+          this._line.points([0.5, 0, 0.5, height  - offsetTop - offsetBottom]);
+        };
+
+        function createSegmentMarker(options) {
+          return new CustomSegmentMarker(options);
+        }
+
+        function createSegmentLabel(segment) {
+          return new Konva.Text({
+            x:          12,
+            y:          12,
+            text:       segment.labelText,
+            textAlign:  'center',
+            fontSize:   14,
+            fontFamily: 'Calibri',
+            fill:       '#000'
+          });
+        }
 
         /*
          * CustomPointMarker
@@ -459,8 +536,8 @@
           },
           keyboard: true,
           showPlayheadTime: false,
-          // createSegmentMarker: createSegmentMarker,
-          // createSegmentLabel: createSegmentLabel,
+          createSegmentMarker: createSegmentMarker,
+          createSegmentLabel: createSegmentLabel,
           createPointMarker: createPointMarker
         };
 

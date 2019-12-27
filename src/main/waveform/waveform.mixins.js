@@ -8,9 +8,9 @@
 
 define([
   'peaks/views/default-point-marker',
-  'peaks/views/segment-marker',
+  'peaks/views/default-segment-marker',
   'konva'
-  ], function(DefaultPointMarker, SegmentMarker, Konva) {
+  ], function(DefaultPointMarker, DefaultSegmentMarker, Konva) {
   'use strict';
 
   /**
@@ -21,7 +21,7 @@ define([
    */
 
   function createSegmentMarker(options) {
-    return new SegmentMarker(options);
+    return new DefaultSegmentMarker(options);
   }
 
   /**

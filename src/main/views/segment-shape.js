@@ -7,9 +7,8 @@
  */
 
 define([
-  'peaks/views/waveform-shape',
-  'konva'
-  ], function(WaveformShape, Konva) {
+  'peaks/views/waveform-shape'
+  ], function(WaveformShape) {
   'use strict';
 
   /**
@@ -33,7 +32,6 @@ define([
     this._label         = null;
     this._inMarker      = null;
     this._outMarker     = null;
-    this._group         = new Konva.Group();
 
     this._waveformShape = new WaveformShape({
       color:   segment.color,
@@ -62,21 +60,7 @@ define([
       this._label.hide();
     }
 
-    this._group.add(this._waveformShape);
-
-    if (this._label) {
-      this._group.add(this._label);
-    }
-
     this._createMarkers();
-
-    if (this._inMarker) {
-      this._inMarker.addToGroup(this._group);
-    }
-
-    if (this._outMarker) {
-      this._outMarker.addToGroup(this._group);
-    }
   }
 
   SegmentShape.prototype.getSegment = function() {
@@ -92,7 +76,19 @@ define([
   };
 
   SegmentShape.prototype.addToLayer = function(layer) {
-    layer.add(this._group);
+    layer.add(this._waveformShape);
+
+    if (this._label) {
+      layer.add(this._label);
+    }
+
+    if (this._inMarker) {
+      this._inMarker.addToLayer(layer);
+    }
+
+    if (this._outMarker) {
+      this._outMarker.addToLayer(layer);
+    }
   };
 
   SegmentShape.prototype._createMarkers = function() {
@@ -223,8 +219,6 @@ define([
     if (this._outMarker) {
       this._outMarker.destroy();
     }
-
-    this._group.destroy();
   };
 
   return SegmentShape;

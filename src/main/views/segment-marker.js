@@ -41,7 +41,6 @@ define([
     this._segment = options.segment;
     this._segmentShape = options.segmentShape;
     this._draggable = options.draggable;
-    this._color = options.color;
     this._layer = options.layer;
     this._isInMarker = options.inMarker;
 
@@ -51,120 +50,52 @@ define([
 
     this._dragBoundFunc = this._dragBoundFunc.bind(this);
 
-    this._createUiObjects();
-    this._bindEventHandlers();
-  }
-
-  SegmentMarker.prototype._createUiObjects = function() {
-    var handleWidth  = 10;
-    var handleHeight = 20;
-    var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
-
     this._group = new Konva.Group({
       draggable:     this._draggable,
       dragBoundFunc: this._dragBoundFunc
     });
 
-    var xPosition = this._inMarker ? -24 : 24;
+    this._createMarker(this._group, options);
+    this._bindDefaultEventHandlers();
 
-    // Label - create with default y, the real value is set in fitToView().
-    this._label = new Konva.Text({
-      x:          xPosition,
-      y:          0,
-      text:       '',
-      fontSize:   10,
-      fontFamily: 'sans-serif',
-      fill:       '#000',
-      textAlign:  'center'
-    });
+    if (this._bindEventHandlers) {
+      this._bindEventHandlers();
+    }
+  }
 
-    this._label.hide();
-
-    // Handle - create with default y, the real value is set in fitToView().
-    this._handle = new Konva.Rect({
-      x:           handleX,
-      y:           0,
-      width:       handleWidth,
-      height:      handleHeight,
-      fill:        this._color,
-      stroke:      this._color,
-      strokeWidth: 1
-    });
-
-    // Vertical Line - create with default y and points, the real values
-    // are set in fitToView().
-    this._line = new Konva.Line({
-      x:           0,
-      y:           0,
-      stroke:      this._color,
-      strokeWidth: 1
-    });
-
-    this._group.add(this._label);
-    this._group.add(this._line);
-    this._group.add(this._handle);
-
-    this.fitToView();
-  };
-
-  SegmentMarker.prototype._bindEventHandlers = function() {
+  SegmentMarker.prototype._bindDefaultEventHandlers = function() {
     var self = this;
 
-    var xPosition = self._isInMarker ? -24 : 24;
-
-    if (self._draggable && self._onDrag) {
+    if (self._draggable) {
       self._group.on('dragmove', function() {
         self._onDrag(self);
       });
 
       self._group.on('dragstart', function() {
-        if (self._isInMarker) {
-          self._label.setX(xPosition - self._label.getWidth());
-        }
-
         self._onDragStart(self);
-        self._label.show();
-        self._layer.draw();
       });
 
       self._group.on('dragend', function() {
         self._onDragEnd(self);
-        self._label.hide();
-        self._layer.draw();
       });
     }
-
-    self._handle.on('mouseover touchstart', function() {
-      if (self._isInMarker) {
-        self._label.setX(xPosition - self._label.getWidth());
-      }
-
-      self._label.show();
-      self._layer.draw();
-    });
-
-    self._handle.on('mouseout touchend', function() {
-      self._label.hide();
-      self._layer.draw();
-    });
   };
 
   SegmentMarker.prototype._dragBoundFunc = function(pos) {
     var limit;
+    var marker;
 
     if (this._isInMarker) {
-      var outMarker = this._segmentShape.getOutMarker();
-
-      limit = outMarker.getX() - outMarker.getWidth();
+      marker = this._segmentShape.getOutMarker();
+      limit  = marker.getX() - marker.getWidth();
 
       if (pos.x > limit) {
         pos.x = limit;
       }
     }
     else {
-      var inMarker = this._segmentShape.getInMarker();
-
-      limit = inMarker.getX() + inMarker.getWidth();
+      marker = this._segmentShape.getInMarker();
+      limit  = marker.getX() + marker.getWidth();
 
       if (pos.x < limit) {
         pos.x = limit;
@@ -177,16 +108,24 @@ define([
     };
   };
 
-  SegmentMarker.prototype.addToGroup = function(group) {
-    group.add(this._group);
+  SegmentMarker.prototype.addToLayer = function(layer) {
+    layer.add(this._group);
+  };
+
+  SegmentMarker.prototype.getSegment = function() {
+    return this._segment;
   };
 
   SegmentMarker.prototype.isInMarker = function() {
     return this._isInMarker;
   };
 
-  SegmentMarker.prototype.setX = function(x) {
+  SegmentMarker.prototype.updatePosition = function(x) {
     this._group.setX(x);
+
+    if (this._positionUpdated) {
+      this._positionUpdated(x);
+    }
   };
 
   SegmentMarker.prototype.getX = function() {
@@ -195,10 +134,6 @@ define([
 
   SegmentMarker.prototype.getWidth = function() {
     return this._group.getWidth();
-  };
-
-  SegmentMarker.prototype.setLabelText = function(text) {
-    this._label.setText(text);
   };
 
   SegmentMarker.prototype.fitToView = function() {
@@ -210,9 +145,7 @@ define([
   };
 
   SegmentMarker.prototype.destroy = function() {
-    this._handle.destroy();
-    this._line.destroy();
-    this._label.destroy();
+    this._group.destroyChildren();
     this._group.destroy();
   };
 

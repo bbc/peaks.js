@@ -8,9 +8,8 @@
 
 define([
   'peaks/views/segment-shape',
-  'peaks/waveform/waveform.utils',
   'konva'
-  ], function(SegmentShape, Utils, Konva) {
+  ], function(SegmentShape, Konva) {
   'use strict';
 
   /**
@@ -201,17 +200,13 @@ define([
       var marker = segmentGroup.getInMarker();
 
       if (marker) {
-        marker.setX(startPixel - marker.getWidth());
-
-        marker.setLabelText(Utils.formatTime(segment.startTime, false));
+        marker.updatePosition(startPixel - marker.getWidth());
       }
 
       marker = segmentGroup.getOutMarker();
 
       if (marker) {
-        marker.setX(endPixel);
-
-        marker.setLabelText(Utils.formatTime(segment.endTime, false));
+        marker.updatePosition(endPixel);
       }
     }
   };
