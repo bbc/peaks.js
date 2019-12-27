@@ -13,6 +13,15 @@ define([
   ], function(PointMarker, Utils, Konva) {
   'use strict';
 
+  /**
+   * Creates a point marker handle.
+   *
+   * @class
+   * @alias DefaultPointMarker
+   *
+   * @param {PointMarkerOptions} options
+   */
+
   function DefaultPointMarker(options) {
     PointMarker.call(this, options);
   }

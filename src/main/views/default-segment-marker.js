@@ -14,20 +14,12 @@ define([
   'use strict';
 
   /**
-   * Parameters for the {@link SegmentMarker} constructor and
-   * {@link createSegmentMarker} function.
+   * Creates a segment marker handle.
    *
-   * @typedef {Object} SegmentMarkerOptions
-   * @global
-   * @property {Segment} segment
-   * @property {SegmentShape} segmentShape
-   * @property {Boolean} draggable If true, marker is draggable.
-   * @property {String} color Colour hex value for handle and line marker.
-   * @property {SegmentsLayer} layer
-   * @property {Boolean} inMarker Is this marker the inMarker (LHS) or outMarker (RHS).
-   * @property {Function} onDrag
-   * @property {Function} onDragStart
-   * @property {Function} onDragEnd
+   * @class
+   * @alias DefaultSegmentMarker
+   *
+   * @param {SegmentMarkerOptions} options
    */
 
   function DefaultSegmentMarker(options) {
