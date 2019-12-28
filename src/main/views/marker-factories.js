@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * Common functions used in multiple modules are collected here for DRY purposes.
+ * Factory functions for creating point and segment marker handles.
  *
  * @module peaks/waveform/waveform.mixins
  */
@@ -10,11 +10,14 @@ define([
   'peaks/views/default-point-marker',
   'peaks/views/default-segment-marker',
   'konva'
-  ], function(DefaultPointMarker, DefaultSegmentMarker, Konva) {
+  ], function(
+    DefaultPointMarker,
+    DefaultSegmentMarker,
+    Konva) {
   'use strict';
 
   /**
-   * Creates a Left or Right side segment handle marker.
+   * Creates a left or right side segment marker handle.
    *
    * @param {SegmentMarkerOptions} options
    * @returns {SegmentMarker}
@@ -53,8 +56,6 @@ define([
   function createPointMarker(options) {
     return new DefaultPointMarker(options);
   }
-
-  // Public API
 
   return {
     createSegmentMarker: createSegmentMarker,

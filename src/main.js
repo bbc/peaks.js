@@ -12,13 +12,13 @@ define('peaks', [
   'peaks/markers/waveform.points',
   'peaks/markers/waveform.segments',
   'peaks/player/player',
+  'peaks/views/marker-factories',
   'peaks/views/point-marker',
   'peaks/views/segment-marker',
   'peaks/views/view-controller',
   'peaks/views/waveform.timecontroller',
   'peaks/views/waveform.zoomcontroller',
   'peaks/waveform/waveform-builder',
-  'peaks/waveform/waveform.mixins',
   'peaks/waveform/waveform.utils',
   'peaks/player/player.keyboard',
   'peaks/cues/cue-emitter'
@@ -28,13 +28,13 @@ define('peaks', [
     WaveformPoints,
     WaveformSegments,
     Player,
+    MarkerFactories,
     PointMarker,
     SegmentMarker,
     ViewController,
     TimeController,
     ZoomController,
     WaveformBuilder,
-    mixins,
     Utils,
     KeyboardHandler,
     CueEmitter) {
@@ -257,9 +257,9 @@ define('peaks', [
        *
        * @todo This part of the API is not stable.
        */
-      createSegmentMarker: mixins.createSegmentMarker,
-      createSegmentLabel:  mixins.createSegmentLabel,
-      createPointMarker:   mixins.createPointMarker
+      createSegmentMarker: MarkerFactories.createSegmentMarker,
+      createSegmentLabel:  MarkerFactories.createSegmentLabel,
+      createPointMarker:   MarkerFactories.createPointMarker
     };
 
     /**

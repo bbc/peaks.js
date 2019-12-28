@@ -10,7 +10,10 @@ define([
   'peaks/views/segment-marker',
   'peaks/waveform/waveform.utils',
   'konva'
-  ], function(SegmentMarker, Utils, Konva) {
+  ], function(
+    SegmentMarker,
+    Utils,
+    Konva) {
   'use strict';
 
   /**
