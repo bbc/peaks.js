@@ -189,7 +189,7 @@
 
         CustomSegmentMarker.prototype = Object.create(Peaks.SegmentMarker.prototype);
 
-        CustomSegmentMarker.prototype._createMarker = function(group, options) {
+        CustomSegmentMarker.prototype.createMarker = function(group, options) {
           var tagWidth = 20;
           var tagHeight = 25;
 
@@ -218,7 +218,7 @@
           this.fitToView();
         };
 
-        CustomSegmentMarker.prototype._bindEventHandlers = function() {
+        CustomSegmentMarker.prototype.bindEventHandlers = function() {
           var container = document.getElementById('zoomview-container');
 
           this._group.on('mouseenter', function() {
@@ -267,7 +267,7 @@
 
         CustomPointMarker.prototype = Object.create(Peaks.PointMarker.prototype);
 
-        CustomPointMarker.prototype._createMarker = function(group, options) {
+        CustomPointMarker.prototype.createMarker = function(group, options) {
           this._label = new Konva.Label({
             x: 0.5,
             y: 0.5
@@ -315,7 +315,7 @@
           this.fitToView();
         };
 
-        CustomPointMarker.prototype._bindEventHandlers = function() {
+        CustomPointMarker.prototype.bindEventHandlers = function() {
           var container = document.getElementById('zoomview-container');
 
           this._group.on('mouseenter', function() {
@@ -349,7 +349,7 @@
 
         SimplePointMarker.prototype = Object.create(Peaks.PointMarker.prototype);
 
-        SimplePointMarker.prototype._createMarker = function(group, options) {
+        SimplePointMarker.prototype.createMarker = function(group, options) {
           // Vertical Line - create with default y and points, the real values
           // are set in fitToView().
           this._line = new Konva.Line({

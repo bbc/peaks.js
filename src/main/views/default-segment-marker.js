@@ -31,7 +31,7 @@ define([
 
   DefaultSegmentMarker.prototype = Object.create(SegmentMarker.prototype);
 
-  DefaultSegmentMarker.prototype._createMarker = function(group, options) {
+  DefaultSegmentMarker.prototype.createMarker = function(group, options) {
     var handleWidth  = 10;
     var handleHeight = 20;
     var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
@@ -78,7 +78,7 @@ define([
     this.fitToView();
   };
 
-  DefaultSegmentMarker.prototype._bindEventHandlers = function() {
+  DefaultSegmentMarker.prototype.bindEventHandlers = function() {
     var self = this;
 
     var xPosition = self._isInMarker ? -24 : 24;
@@ -122,7 +122,7 @@ define([
     this._line.points([0.5, 0, 0.5, height]);
   };
 
-  DefaultSegmentMarker.prototype._positionUpdated = function(x) {
+  DefaultSegmentMarker.prototype.positionUpdated = function(x) {
     var segment = this.getSegment();
     var time = this.isInMarker() ? segment.startTime : segment.endTime;
 

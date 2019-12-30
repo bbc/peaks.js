@@ -31,7 +31,7 @@ define([
 
   DefaultPointMarker.prototype = Object.create(PointMarker.prototype);
 
-  DefaultPointMarker.prototype._createMarker = function(group, options) {
+  DefaultPointMarker.prototype.createMarker = function(group, options) {
     var handleWidth  = 10;
     var handleHeight = 20;
     var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
@@ -109,7 +109,7 @@ define([
     this.fitToView();
   };
 
-  DefaultPointMarker.prototype._bindEventHandlers = function() {
+  DefaultPointMarker.prototype.bindEventHandlers = function() {
     var self = this;
 
     if (self._handle) {
@@ -156,7 +156,7 @@ define([
     }
   };
 
-  DefaultPointMarker.prototype._positionUpdated = function(x) {
+  DefaultPointMarker.prototype.positionUpdated = function(x) {
     if (this._time) {
       var point = this.getPoint();
       var time = Utils.formatTime(point.time, false);

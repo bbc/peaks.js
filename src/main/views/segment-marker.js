@@ -55,11 +55,11 @@ define([
       dragBoundFunc: this._dragBoundFunc
     });
 
-    this._createMarker(this._group, options);
+    this.createMarker(this._group, options);
     this._bindDefaultEventHandlers();
 
-    if (this._bindEventHandlers) {
-      this._bindEventHandlers();
+    if (this.bindEventHandlers) {
+      this.bindEventHandlers();
     }
   }
 
@@ -123,8 +123,8 @@ define([
   SegmentMarker.prototype.updatePosition = function(x) {
     this._group.setX(x);
 
-    if (this._positionUpdated) {
-      this._positionUpdated(x);
+    if (this.positionUpdated) {
+      this.positionUpdated(x);
     }
   };
 
