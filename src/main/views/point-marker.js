@@ -133,6 +133,10 @@ define([
   };
 
   PointMarker.prototype.destroy = function() {
+    if (this.destroyMarker) {
+      this.destroyMarker();
+    }
+
     this._group.destroyChildren();
     this._group.destroy();
   };

@@ -136,15 +136,11 @@ define([
     return this._group.getWidth();
   };
 
-  SegmentMarker.prototype.fitToView = function() {
-    var height = this._layer.getHeight();
-
-    this._label.y(height / 2 - 5);
-    this._handle.y(height / 2 - 10.5);
-    this._line.points([0.5, 0, 0.5, height]);
-  };
-
   SegmentMarker.prototype.destroy = function() {
+    if (this.destroyMarker) {
+      this.destroyMarker();
+    }
+
     this._group.destroyChildren();
     this._group.destroy();
   };
