@@ -116,6 +116,10 @@ define([
     return this._segment;
   };
 
+  SegmentMarker.prototype.getLayer = function() {
+    return this._layer;
+  };
+
   SegmentMarker.prototype.isInMarker = function() {
     return this._isInMarker;
   };
