@@ -27,6 +27,11 @@ define([
 
   function DefaultPointMarker(options) {
     PointMarker.call(this, options);
+
+    this._label = null;
+    this._handle = null;
+    this._line = null;
+    this._time = null;
   }
 
   DefaultPointMarker.prototype = Object.create(PointMarker.prototype);
@@ -37,9 +42,8 @@ define([
     var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
     // Label
-    this._label = null;
 
-    if (options.showLabel) {
+    if (options.view === 'zoomview') {
       // Label - create with default y, the real value is set in fitToView().
       this._label = new Konva.Text({
         x:          2,
@@ -53,7 +57,6 @@ define([
     }
 
     // Handle - create with default y, the real value is set in fitToView().
-    this._handle = null;
 
     if (this._draggable) {
       this._handle = new Konva.Rect({
@@ -75,7 +78,6 @@ define([
     });
 
     // Time label
-    this._time = null;
 
     if (this._handle) {
       // Time - create with default y, the real value is set in fitToView().

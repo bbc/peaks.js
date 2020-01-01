@@ -21,7 +21,6 @@ define([
    * @property {PointsLayer} layer
    * @property {Boolean} draggable If true, marker is draggable.
    * @property {String} color Color for the marker's handle and line.
-   * @property {Boolean} showLabel If true, show the label text next to the marker.
    * @property {Function} onDblClick
    * @property {Function} onDragStart
    * @property {Function} onDragMove Callback during mouse drag operations.
@@ -44,7 +43,6 @@ define([
     this._layer     = options.layer;
     this._draggable = options.draggable;
     this._color     = options.color;
-    this._showLabel = options.showLabel;
 
     this._onDblClick   = options.onDblClick;
     this._onDragStart  = options.onDragStart;

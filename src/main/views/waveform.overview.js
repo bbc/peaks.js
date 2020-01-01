@@ -93,7 +93,7 @@ define([
     self._segmentsLayer = new SegmentsLayer(peaks, self, false);
     self._segmentsLayer.addToStage(self._stage);
 
-    self._pointsLayer = new PointsLayer(peaks, self, false, false);
+    self._pointsLayer = new PointsLayer(peaks, self, false);
     self._pointsLayer.addToStage(self._stage);
 
     self._highlightLayer = new HighlightLayer(

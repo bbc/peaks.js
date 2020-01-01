@@ -103,7 +103,7 @@ define([
     self._segmentsLayer = new SegmentsLayer(peaks, self, true);
     self._segmentsLayer.addToStage(self._stage);
 
-    self._pointsLayer = new PointsLayer(peaks, self, true, true);
+    self._pointsLayer = new PointsLayer(peaks, self, true);
     self._pointsLayer.addToStage(self._stage);
 
     self._createAxisLabels();

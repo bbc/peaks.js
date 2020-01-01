@@ -21,14 +21,12 @@ define([
    * @param {Peaks} peaks
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} allowEditing
-   * @param {Boolean} showLabels
    */
 
-  function PointsLayer(peaks, view, allowEditing, showLabels) {
+  function PointsLayer(peaks, view, allowEditing) {
     this._peaks        = peaks;
     this._view         = view;
     this._allowEditing = allowEditing;
-    this._showLabels   = showLabels;
     this._pointMarkers = {};
     this._layer        = new Konva.Layer();
 
@@ -140,7 +138,6 @@ define([
     return this._peaks.options.createPointMarker({
       point:        point,
       draggable:    editable,
-      showLabel:    this._showLabels,
       color:        point.color ? point.color : this._peaks.options.pointMarkerColor,
       layer:        this,
       view:         this._view.getName(),
