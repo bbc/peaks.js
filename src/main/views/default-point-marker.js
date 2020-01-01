@@ -27,11 +27,6 @@ define([
 
   function DefaultPointMarker(options) {
     PointMarker.call(this, options);
-
-    this._label = null;
-    this._handle = null;
-    this._line = null;
-    this._time = null;
   }
 
   DefaultPointMarker.prototype = Object.create(PointMarker.prototype);
@@ -126,18 +121,18 @@ define([
         self._time.hide();
         self._layer.draw();
       });
+
+      self._group.on('dragstart', function() {
+        self._time.setX(-24 - self._time.getWidth());
+        self._time.show();
+        self._layer.draw();
+      });
+
+      self._group.on('dragend', function() {
+        self._time.hide();
+        self._layer.draw();
+      });
     }
-
-    self._group.on('dragstart', function() {
-      self._time.setX(-24 - self._time.getWidth());
-      self._time.show();
-      self._layer.draw();
-    });
-
-    self._group.on('dragend', function() {
-      self._time.hide();
-      self._layer.draw();
-    });
   };
 
   DefaultPointMarker.prototype.fitToView = function() {
