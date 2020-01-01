@@ -196,13 +196,13 @@ define([
     var startPixel = segmentStartOffset - frameStartOffset;
     var endPixel   = segmentEndOffset   - frameStartOffset;
 
-    var marker = segmentShape.getInMarker();
+    var marker = segmentShape.getStartMarker();
 
     if (marker) {
       marker.updatePosition(startPixel - marker.getWidth());
     }
 
-    marker = segmentShape.getOutMarker();
+    marker = segmentShape.getEndMarker();
 
     if (marker) {
       marker.updatePosition(endPixel);

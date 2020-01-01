@@ -479,16 +479,16 @@
 
           // Segments mouse events
 
-          peaksInstance.on('segments.dragstart', function(segment, inMarker) {
-            console.log('segments.dragstart:', segment, inMarker);
+          peaksInstance.on('segments.dragstart', function(segment, startMarker) {
+            console.log('segments.dragstart:', segment, startMarker);
           });
 
-          peaksInstance.on('segments.dragend', function(segment, inMarker) {
-            console.log('segments.dragend:', segment, inMarker);
+          peaksInstance.on('segments.dragend', function(segment, startMarker) {
+            console.log('segments.dragend:', segment, startMarker);
           });
 
-          peaksInstance.on('segments.dragged', function(segment, inMarker) {
-            console.log('segments.dragged:', segment, inMarker);
+          peaksInstance.on('segments.dragged', function(segment, startMarker) {
+            console.log('segments.dragged:', segment, startMarker);
           });
 
           peaksInstance.on('segments.mouseenter', function(segment) {

@@ -63,9 +63,9 @@ The function should return an instance of an object that inherits
 [`Peaks.PointMarker`](src/main/views/point-marker.js). `Peaks.PointMarker` is a
 base class that implements the marker drag and drop functionality.
 
-Point markers are created in both the zoomview and overview waveform views.
 You can use the `view` option to give the marker a different appearance or
-behaviour for each view.
+behaviour in the zoomview and overview waveform views. You can also return
+`null` from this function if you do not want to display a point marker handle.
 
 ```javascript
 class CustomPointMarker extends Peaks.PointMarker {
@@ -112,12 +112,16 @@ following options:
 | `view`         | `string`        | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                            |
 | `layer`        | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                |
 | `draggable`    | `boolean`       | This value is always `true` for segment marker handles.                                                                      |
-| `color`        | `string`        | Color for the marker handle (set by the `inMarkerColor` or `outMarkerColor` option in `Peaks.init()`.                        |
-| `inMarker`     | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment. |
+| `color`        | `string`        | Color for the marker handle (set by the `segmentStartMarkerColor` or `segmentEndMarkerColor` option in `Peaks.init()`.       |
+| `startMarker`  | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment. |
 
 The function should return an instance of an object that inherits
 [`Peaks.SegmentMarker`](src/main/views/segment-marker.js). `Peaks.SegmentMarker`
 is a base class that implements the marker drag and drop functionality.
+
+You can use the `view` option to give the marker a different appearance or
+behaviour in the zoomview and overview waveform views. You can also return
+`null` from this function if you do not want to display a segment marker handle.
 
 ```javascript
 class CustomSegmentMarker extends Peaks.SegmentMarker {
@@ -171,28 +175,26 @@ Note that the `x` and `y` coordinates (0, 0) represent the centre of the marker
 and the top of the waveform view.
 
 ```javascript
-class CustomPointMarker extends Peaks.PointMarker {
-  createMarker(group, options) {
-    const layer = this.getLayer();
-    const height = layer.getHeight();
+createMarker(group, options) {
+  const layer = this.getLayer();
+  const height = layer.getHeight();
 
-    this._handle = new Konva.Rect({
-      x:      -20,
-      y:      0,
-      width:  40,
-      height: 20,
-      fill:   options.color
-    });
+  this._handle = new Konva.Rect({
+    x:      -20,
+    y:      0,
+    width:  40,
+    height: 20,
+    fill:   options.color
+  });
 
-    this._line = new Konva.Line({
-      points:      [0.5, 0, 0.5, height], // x1, y1, x2, y2
-      stroke:      options.color,
-      strokeWidth: 1
-    });
+  this._line = new Konva.Line({
+    points:      [0.5, 0, 0.5, height], // x1, y1, x2, y2
+    stroke:      options.color,
+    strokeWidth: 1
+  });
 
-    group.add(this._handle);
-    group.add(this._line);
-  }
+  group.add(this._handle);
+  group.add(this._line);
 }
 ```
 
@@ -205,24 +207,22 @@ Building on the `createMarker` example above, this code changes the color of
 the marker handle when the user hovers the mouse over the handle.
 
 ```javascript
-class CustomPointMarker extends Peaks.PointMarker {
-  bindEventHandlers() {
-    var layer = this.getLayer();
+bindEventHandlers() {
+  var layer = this.getLayer();
 
-    this._handle.on('mouseenter', () => {
-      const highlightColor = '#ff0000';
-      this._handle.fill(highlightColor);
-      this._line.stroke(highlightColor);
-      layer.draw();
-    });
+  this._handle.on('mouseenter', () => {
+    const highlightColor = '#ff0000';
+    this._handle.fill(highlightColor);
+    this._line.stroke(highlightColor);
+    layer.draw();
+  });
 
-    this._handle.on('mouseleave', () => {
-      const defaultColor = this.getColor(); // returns options.color
-      this._handle.fill(defaultColor);
-      this._line.stroke(defaultColor);
-      layer.draw();
-    });
-  }
+  this._handle.on('mouseleave', () => {
+    const defaultColor = this.getColor(); // returns options.color
+    this._handle.fill(defaultColor);
+    this._line.stroke(defaultColor);
+    layer.draw();
+  });
 }
 ```
 
@@ -233,13 +233,11 @@ This method should resize the marker using the available space.
 This is typically done when the height of the view changes.
 
 ```javascript
-class CustomPointMarker extends Peaks.PointMarker {
-  fitToView() {
-    const layer = this.getLayer();
-    const height = layer.getHeight();
+fitToView() {
+  const layer = this.getLayer();
+  const height = layer.getHeight();
 
-    this._line.points([0.5, 0, 0.5, height]);
-  }
+  this._line.points([0.5, 0, 0.5, height]);
 }
 ```
 
@@ -253,11 +251,9 @@ This could be due a change to the marker's, or if the view has scrolled.
 | `x`   | `number` | Horizontal marker position, in pixels |
 
 ```javascript
-class CustomPointMarker extends Peaks.PointMarker {
-  positionUpdated(x) {
-    var point = this.getPoint();
-    console.log(point.time);
-  }
+positionUpdated(x) {
+  var point = this.getPoint();
+  console.log(point.time);
 }
 ```
 
@@ -269,10 +265,8 @@ so you only need to add a `destroyMarker` method if additional clean-up is
 needed.
 
 ```javascript
-class CustomPointMarker extends Peaks.PointMarker {
-  destroyMarker() {
-    console.log('Marker destroyed');
-  }
+destroyMarker() {
+  console.log('Marker destroyed');
 }
 ```
 

@@ -30,8 +30,8 @@ define([
     this._view          = view;
     this._waveformShape = null;
     this._label         = null;
-    this._inMarker      = null;
-    this._outMarker     = null;
+    this._startMarker   = null;
+    this._endMarker     = null;
 
     this._waveformShape = new WaveformShape({
       color:   segment.color,
@@ -71,12 +71,12 @@ define([
     return this._segment;
   };
 
-  SegmentShape.prototype.getInMarker = function() {
-    return this._inMarker;
+  SegmentShape.prototype.getStartMarker = function() {
+    return this._startMarker;
   };
 
-  SegmentShape.prototype.getOutMarker = function() {
-    return this._outMarker;
+  SegmentShape.prototype.getEndMarker = function() {
+    return this._endMarker;
   };
 
   SegmentShape.prototype.addToLayer = function(layer) {
@@ -86,24 +86,24 @@ define([
       layer.add(this._label);
     }
 
-    if (this._inMarker) {
-      this._inMarker.addToLayer(layer);
+    if (this._startMarker) {
+      this._startMarker.addToLayer(layer);
     }
 
-    if (this._outMarker) {
-      this._outMarker.addToLayer(layer);
+    if (this._endMarker) {
+      this._endMarker.addToLayer(layer);
     }
   };
 
   SegmentShape.prototype._createMarkers = function() {
     var editable = this._layer.isEditingEnabled() && this._segment.editable;
 
-    this._inMarker = this._peaks.options.createSegmentMarker({
+    this._startMarker = this._peaks.options.createSegmentMarker({
       segment:      this._segment,
       segmentShape: this,
       draggable:    editable,
-      color:        this._peaks.options.inMarkerColor,
-      inMarker:     true,
+      color:        this._peaks.options.segmentStartMarkerColor,
+      startMarker:  true,
       layer:        this._layer,
       view:         this._view.getName(),
       onDrag:       this._onSegmentHandleDrag,
@@ -111,12 +111,12 @@ define([
       onDragEnd:    this._onSegmentHandleDragEnd
     });
 
-    this._outMarker = this._peaks.options.createSegmentMarker({
+    this._endMarker = this._peaks.options.createSegmentMarker({
       segment:      this._segment,
       segmentShape: this,
       draggable:    editable,
-      color:        this._peaks.options.outMarkerColor,
-      inMarker:     false,
+      color:        this._peaks.options.segmentEndMarkerColor,
+      startMarker:  false,
       layer:        this._layer,
       view:         this._view.getName(),
       onDrag:       this._onSegmentHandleDrag,
@@ -155,26 +155,26 @@ define([
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
-    var inMarkerX  = this._inMarker.getX();
-    var outMarkerX = this._outMarker.getX();
+    var startMarkerX = this._startMarker.getX();
+    var endMarkerX = this._endMarker.getX();
 
-    if (inMarkerX >= 0) {
-      var inOffset = frameOffset +
-                     inMarkerX +
-                     this._inMarker.getWidth();
+    if (startMarkerX >= 0) {
+      var startMarkerOffset = frameOffset +
+                              startMarkerX +
+                              this._startMarker.getWidth();
 
-      this._segment.startTime = this._view.pixelsToTime(inOffset);
+      this._segment.startTime = this._view.pixelsToTime(startMarkerOffset);
     }
 
-    if (outMarkerX < width) {
-      var outOffset = frameOffset + outMarkerX;
+    if (endMarkerX < width) {
+      var endMarkerOffset = frameOffset + endMarkerX;
 
-      this._segment.endTime = this._view.pixelsToTime(outOffset);
+      this._segment.endTime = this._view.pixelsToTime(endMarkerOffset);
     }
 
-    var inMarker = segmentMarker.isInMarker();
+    var startMarker = segmentMarker.isStartMarker();
 
-    this._peaks.emit('segments.dragged', this._segment, inMarker);
+    this._peaks.emit('segments.dragged', this._segment, startMarker);
   };
 
   /**
@@ -182,9 +182,9 @@ define([
    */
 
   SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker) {
-    var inMarker = segmentMarker.isInMarker();
+    var startMarker = segmentMarker.isStartMarker();
 
-    this._peaks.emit('segments.dragstart', this._segment, inMarker);
+    this._peaks.emit('segments.dragstart', this._segment, startMarker);
   };
 
   /**
@@ -192,18 +192,18 @@ define([
    */
 
   SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker) {
-    var inMarker = segmentMarker.isInMarker();
+    var startMarker = segmentMarker.isStartMarker();
 
-    this._peaks.emit('segments.dragend', this._segment, inMarker);
+    this._peaks.emit('segments.dragend', this._segment, startMarker);
   };
 
   SegmentShape.prototype.fitToView = function() {
-    if (this._inMarker) {
-      this._inMarker.fitToView();
+    if (this._startMarker) {
+      this._startMarker.fitToView();
     }
 
-    if (this._outMarker) {
-      this._outMarker.fitToView();
+    if (this._endMarker) {
+      this._endMarker.fitToView();
     }
   };
 
@@ -214,12 +214,12 @@ define([
       this._label.destroy();
     }
 
-    if (this._inMarker) {
-      this._inMarker.destroy();
+    if (this._startMarker) {
+      this._startMarker.destroy();
     }
 
-    if (this._outMarker) {
-      this._outMarker.destroy();
+    if (this._endMarker) {
+      this._endMarker.destroy();
     }
   };
 

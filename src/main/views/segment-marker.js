@@ -22,7 +22,9 @@ define([
    * @property {Boolean} draggable If true, marker is draggable.
    * @property {String} color Colour hex value for handle and line marker.
    * @property {SegmentsLayer} layer
-   * @property {Boolean} inMarker Is this marker the inMarker (LHS) or outMarker (RHS).
+   * @property {Boolean} startMarker If <code>true</code>, the marker indicates
+   *   the start time of the segment. If <code>false</code>, the marker
+   *   indicates the end time of the segment.
    * @property {Function} onDrag
    * @property {Function} onDragStart
    * @property {Function} onDragEnd
@@ -38,15 +40,15 @@ define([
    */
 
   function SegmentMarker(options) {
-    this._segment = options.segment;
-    this._segmentShape = options.segmentShape;
-    this._draggable = options.draggable;
-    this._layer = options.layer;
-    this._isInMarker = options.inMarker;
+    this._segment       = options.segment;
+    this._segmentShape  = options.segmentShape;
+    this._draggable     = options.draggable;
+    this._layer         = options.layer;
+    this._isStartMarker = options.startMarker;
 
-    this._onDrag = options.onDrag;
+    this._onDrag      = options.onDrag;
     this._onDragStart = options.onDragStart;
-    this._onDragEnd = options.onDragEnd;
+    this._onDragEnd   = options.onDragEnd;
 
     this._dragBoundFunc = this._dragBoundFunc.bind(this);
 
@@ -85,8 +87,8 @@ define([
     var limit;
     var marker;
 
-    if (this._isInMarker) {
-      marker = this._segmentShape.getOutMarker();
+    if (this._isStartMarker) {
+      marker = this._segmentShape.getEndMarker();
       limit  = marker.getX() - marker.getWidth();
 
       if (pos.x > limit) {
@@ -94,7 +96,7 @@ define([
       }
     }
     else {
-      marker = this._segmentShape.getInMarker();
+      marker = this._segmentShape.getStartMarker();
       limit  = marker.getX() + marker.getWidth();
 
       if (pos.x < limit) {
@@ -128,8 +130,8 @@ define([
     return this._color;
   };
 
-  SegmentMarker.prototype.isInMarker = function() {
-    return this._isInMarker;
+  SegmentMarker.prototype.isStartMarker = function() {
+    return this._isStartMarker;
   };
 
   SegmentMarker.prototype.updatePosition = function(x) {

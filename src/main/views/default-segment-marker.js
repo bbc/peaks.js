@@ -36,7 +36,7 @@ define([
     var handleHeight = 20;
     var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
-    var xPosition = options.inMarker ? -24 : 24;
+    var xPosition = options.startMarker ? -24 : 24;
 
     // Label - create with default y, the real value is set in fitToView().
     this._label = new Konva.Text({
@@ -81,11 +81,11 @@ define([
   DefaultSegmentMarker.prototype.bindEventHandlers = function() {
     var self = this;
 
-    var xPosition = self._isInMarker ? -24 : 24;
+    var xPosition = self._isStartMarker ? -24 : 24;
 
     if (self._draggable) {
       self._group.on('dragstart', function() {
-        if (self._isInMarker) {
+        if (self._isStartMarker) {
           self._label.setX(xPosition - self._label.getWidth());
         }
 
@@ -100,7 +100,7 @@ define([
     }
 
     self._handle.on('mouseover touchstart', function() {
-      if (self._isInMarker) {
+      if (self._isStartMarker) {
         self._label.setX(xPosition - self._label.getWidth());
       }
 
@@ -124,7 +124,7 @@ define([
 
   DefaultSegmentMarker.prototype.positionUpdated = function(x) {
     var segment = this.getSegment();
-    var time = this.isInMarker() ? segment.startTime : segment.endTime;
+    var time = this.isStartMarker() ? segment.startTime : segment.endTime;
 
     this._label.setText(Utils.formatTime(time, false));
   };

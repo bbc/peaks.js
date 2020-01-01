@@ -215,7 +215,7 @@
           this._label.add(this._tag);
 
           var labelText = options.segment.labelText +
-                          (options.inMarker ? ' start' : ' end');
+                          (options.startMarker ? ' start' : ' end');
 
           this._text = new Konva.Text({
             text:       labelText,
@@ -732,16 +732,16 @@
 
           // Segments mouse events
 
-          peaksInstance.on('segments.dragstart', function(segment, inMarker) {
-            console.log('segments.dragstart:', segment, inMarker);
+          peaksInstance.on('segments.dragstart', function(segment, startMarker) {
+            console.log('segments.dragstart:', segment, startMarker);
           });
 
-          peaksInstance.on('segments.dragend', function(segment, inMarker) {
-            console.log('segments.dragend:', segment, inMarker);
+          peaksInstance.on('segments.dragend', function(segment, startMarker) {
+            console.log('segments.dragend:', segment, startMarker);
           });
 
-          peaksInstance.on('segments.dragged', function(segment, inMarker) {
-            console.log('segments.dragged:', segment, inMarker);
+          peaksInstance.on('segments.dragged', function(segment, startMarker) {
+            console.log('segments.dragged:', segment, startMarker);
           });
 
           peaksInstance.on('segments.mouseenter', function(segment) {
