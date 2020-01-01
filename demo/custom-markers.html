@@ -190,32 +190,54 @@
         CustomSegmentMarker.prototype = Object.create(Peaks.SegmentMarker.prototype);
 
         CustomSegmentMarker.prototype.createMarker = function(group, options) {
-          var tagWidth = 20;
-          var tagHeight = 25;
-
-          var segment = this.getSegment();
-
-          this._handle = new Konva.Rect({
-            fill:             segment.color,
-            stroke:           segment.color,
-            strokeWidth:      1,
-            x:                0.5 + (this.isInMarker() ? -tagWidth : 0),
-            y:                0.5,
-            width:            tagWidth,
-            height:           tagHeight
+          this._label = new Konva.Label({
+            x: 0.5,
+            y: 0.5
           });
+
+          var color = options.segment.color;
+
+          this._tag = new Konva.Tag({
+            fill:             color,
+            stroke:           color,
+            strokeWidth:      1,
+            pointerDirection: 'down',
+            pointerWidth:     10,
+            pointerHeight:    10,
+            lineJoin:         'round',
+            shadowColor:      'black',
+            shadowBlur:       10,
+            shadowOffsetX:    3,
+            shadowOffsetY:    3,
+            shadowOpacity:    0.3
+          });
+
+          this._label.add(this._tag);
+
+          var labelText = options.segment.labelText +
+                          (options.inMarker ? ' start' : ' end');
+
+          this._text = new Konva.Text({
+            text:       labelText,
+            fontFamily: 'Calibri',
+            fontSize:   14,
+            padding:    5,
+            fill:       'white'
+          });
+
+          this._label.add(this._text);
 
           // Vertical Line - create with default y and points, the real values
           // are set in fitToView().
           this._line = new Konva.Line({
             x:           0,
             y:           0,
-            stroke:      segment.color,
+            stroke:      color,
             strokeWidth: 1
           });
 
+          group.add(this._label);
           group.add(this._line);
-          group.add(this._handle);
 
           this.fitToView();
         };
@@ -235,16 +257,21 @@
         CustomSegmentMarker.prototype.fitToView = function() {
           var height = this._layer.getHeight();
 
+          var labelHeight = this._text.height() + 2 * this._text.padding();
           var offsetTop = 14;
           var offsetBottom = 26;
 
-          this._group.y(offsetTop + 0.5);
+          this._group.y(offsetTop + labelHeight + 0.5);
 
-          this._line.points([0.5, 0, 0.5, height  - offsetTop - offsetBottom]);
+          this._line.points([0.5, 0, 0.5, height - labelHeight - offsetTop - offsetBottom]);
         };
 
         function createSegmentMarker(options) {
-          return new CustomSegmentMarker(options);
+          if (options.view === 'zoomview') {
+            return new CustomSegmentMarker(options);
+          }
+
+          return null;
         }
 
         function createSegmentLabel(options) {
@@ -579,7 +606,7 @@
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: 'Test segment ' + segmentCounter++,
+              labelText: 'Segment ' + segmentCounter++,
               editable: true
             });
           });
@@ -589,7 +616,7 @@
           document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
             peaksInstance.points.add({
               time: peaksInstance.player.getCurrentTime(),
-              labelText: 'Test point ' + pointCounter++,
+              labelText: 'Point ' + pointCounter++,
               color: '#006eb0',
               editable: true
             });
