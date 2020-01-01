@@ -107,7 +107,7 @@
       </p>
       <h2>Demo: Custom Point and Segment Markers</h2>
       <p>
-        This demo shows how to customize the appearance and behavior of point
+        This demo shows how to customise the appearance and behavior of point
         and segment markers.
       </p>
     </div>
@@ -193,9 +193,11 @@
           var tagWidth = 20;
           var tagHeight = 25;
 
+          var segment = this.getSegment();
+
           this._handle = new Konva.Rect({
-            fill:             options.color,
-            stroke:           options.color,
+            fill:             segment.color,
+            stroke:           segment.color,
             strokeWidth:      1,
             x:                0.5 + (this.isInMarker() ? -tagWidth : 0),
             y:                0.5,
@@ -208,7 +210,7 @@
           this._line = new Konva.Line({
             x:           0,
             y:           0,
-            stroke:      options.color,
+            stroke:      segment.color,
             strokeWidth: 1
           });
 
@@ -245,16 +247,35 @@
           return new CustomSegmentMarker(options);
         }
 
-        function createSegmentLabel(segment) {
-          return new Konva.Text({
-            x:          12,
-            y:          12,
-            text:       segment.labelText,
-            textAlign:  'center',
+        function createSegmentLabel(options) {
+          if (options.view === 'overview') {
+            return null;
+          }
+
+          var label = new Konva.Label({
+            x: 12,
+            y: 16
+          });
+
+          label.add(new Konva.Tag({
+            fill:             'black',
+            pointerDirection: 'none',
+            shadowColor:      'black',
+            shadowBlur:       10,
+            shadowOffsetX:    3,
+            shadowOffsetY:    3,
+            shadowOpacity:    0.3
+          }));
+
+          label.add(new Konva.Text({
+            text:       options.segment.labelText,
             fontSize:   14,
             fontFamily: 'Calibri',
-            fill:       '#000'
-          });
+            fill:       'white',
+            padding:    8
+          }));
+
+          return label;
         }
 
         /*
