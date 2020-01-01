@@ -41,7 +41,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Generate waveform data](#generate-waveform-data)
   - [Web Audio based waveforms](#web-audio-based-waveforms)
 - [Configuration](#configuration)
-  - [Advanced configuration](#advanced-configuration)
+  - [Marker customization](#marker-customization)
 - [API](#api)
   - [Initalisation](#initialisation)
     - [Peaks.init()](#peaksinitoptions-callback)
@@ -362,14 +362,14 @@ var options = {
   // Colour for the out marker of segments
   outMarkerColor: '#a0a0a0',
 
-  // Colour for the zoomed in waveform
+  // Colour for the zoomable waveform
   zoomWaveformColor: 'rgba(0, 225, 128, 1)',
 
   // Colour for the overview waveform
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
 
   // Colour for the overview waveform rectangle
-  // that shows what the zoom view shows
+  // that shows what the zoomable view shows
   overviewHighlightColor: 'grey',
 
   // The default number of pixels from the top and bottom of the canvas
@@ -435,22 +435,12 @@ var options = {
 }
 ```
 
-## Advanced configuration
+## Marker customisation
 
-The marker and label Konva.js objects may be overridden to give the segment
-markers or label your own custom appearance (see main.js / waveform.mixins.js,
-[Konva Polygon Example](https://konvajs.github.io/docs/shapes/Line_-_Polygon.html)
-and [Konva Text Example](https://konvajs.github.io/docs/shapes/Text.html)):
-
-```javascript
-{
-  createSegmentMarker: mixins.createSegmentMarker(p.options),
-  createSegmentLabel: mixins.createSegmentLabel(p.options),
-  createPointMarker: mixins.createPointMarker(p.options)
-}
-```
-
-**Note:** This part of the API is not yet stable, and so may change at any time.
+Peaks.js allows you to customise the appearance of the point and segment
+markers, by specifying the following configuration options: `createPointMarker`,
+`createSegmentMarker`, and `createSegmentLabel`. Please read
+[Customising Peaks.js](customizing.md) for more details.
 
 # API
 
