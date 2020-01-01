@@ -54,7 +54,11 @@ define([
     this._onSegmentHandleDragStart = this._onSegmentHandleDragStart.bind(this);
     this._onSegmentHandleDragEnd   = this._onSegmentHandleDragEnd.bind(this);
 
-    this._label = this._peaks.options.createSegmentLabel(segment);
+    this._label = this._peaks.options.createSegmentLabel({
+      segment: segment,
+      view:    this._view.getName(),
+      layer:   this._layer
+    });
 
     if (this._label) {
       this._label.hide();
@@ -97,6 +101,7 @@ define([
     if (editable) {
       this._inMarker = this._peaks.options.createSegmentMarker({
         segment:      this._segment,
+        segmentShape: this,
         draggable:    editable,
         color:        this._peaks.options.inMarkerColor,
         inMarker:     true,
@@ -109,6 +114,7 @@ define([
 
       this._outMarker = this._peaks.options.createSegmentMarker({
         segment:      this._segment,
+        segmentShape: this,
         draggable:    editable,
         color:        this._peaks.options.outMarkerColor,
         inMarker:     false,

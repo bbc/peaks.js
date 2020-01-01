@@ -28,17 +28,30 @@ define([
   }
 
   /**
-   * Creates a Konva.Text object that renders a segment's label text.
+   * Parameters for the {@link createSegmentLabel} function.
    *
-   * @param {Segment} segment
+   * @typedef {Object} SegmentLabelOptions
+   * @global
+   * @property {Segment} segment The {@link Segment} object associated with this
+   *   label.
+   * @property {String} view The name of the view that the label is being
+   *   created in, either <code>zoomview</code> or <code>overview</code>.
+   * @property {SegmentsLayer} layer
+   */
+
+  /**
+   * Creates a Konva object that renders information about a segment, such as
+   * its label text.
+   *
+   * @param {SegmentLabelOptions} options
    * @returns {Konva.Text}
    */
 
-  function createSegmentLabel(segment) {
+  function createSegmentLabel(options) {
     return new Konva.Text({
       x:          12,
       y:          12,
-      text:       segment.labelText,
+      text:       options.segment.labelText,
       textAlign:  'center',
       fontSize:   12,
       fontFamily: 'Arial, sans-serif',
