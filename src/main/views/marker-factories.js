@@ -24,7 +24,11 @@ define([
    */
 
   function createSegmentMarker(options) {
-    return new DefaultSegmentMarker(options);
+    if (options.view === 'zoomview') {
+      return new DefaultSegmentMarker(options);
+    }
+
+    return null;
   }
 
   /**

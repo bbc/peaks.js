@@ -98,33 +98,31 @@ define([
   SegmentShape.prototype._createMarkers = function() {
     var editable = this._layer.isEditingEnabled() && this._segment.editable;
 
-    if (editable) {
-      this._inMarker = this._peaks.options.createSegmentMarker({
-        segment:      this._segment,
-        segmentShape: this,
-        draggable:    editable,
-        color:        this._peaks.options.inMarkerColor,
-        inMarker:     true,
-        layer:        this._layer,
-        view:         this._view.getName(),
-        onDrag:       this._onSegmentHandleDrag,
-        onDragStart:  this._onSegmentHandleDragStart,
-        onDragEnd:    this._onSegmentHandleDragEnd
-      });
+    this._inMarker = this._peaks.options.createSegmentMarker({
+      segment:      this._segment,
+      segmentShape: this,
+      draggable:    editable,
+      color:        this._peaks.options.inMarkerColor,
+      inMarker:     true,
+      layer:        this._layer,
+      view:         this._view.getName(),
+      onDrag:       this._onSegmentHandleDrag,
+      onDragStart:  this._onSegmentHandleDragStart,
+      onDragEnd:    this._onSegmentHandleDragEnd
+    });
 
-      this._outMarker = this._peaks.options.createSegmentMarker({
-        segment:      this._segment,
-        segmentShape: this,
-        draggable:    editable,
-        color:        this._peaks.options.outMarkerColor,
-        inMarker:     false,
-        layer:        this._layer,
-        view:         this._view.getName(),
-        onDrag:       this._onSegmentHandleDrag,
-        onDragStart:  this._onSegmentHandleDragStart,
-        onDragEnd:    this._onSegmentHandleDragEnd
-      });
-    }
+    this._outMarker = this._peaks.options.createSegmentMarker({
+      segment:      this._segment,
+      segmentShape: this,
+      draggable:    editable,
+      color:        this._peaks.options.outMarkerColor,
+      inMarker:     false,
+      layer:        this._layer,
+      view:         this._view.getName(),
+      onDrag:       this._onSegmentHandleDrag,
+      onDragStart:  this._onSegmentHandleDragStart,
+      onDragEnd:    this._onSegmentHandleDragEnd
+    });
   };
 
   SegmentShape.prototype._onMouseEnter = function() {

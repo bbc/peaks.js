@@ -28,7 +28,7 @@ define([
     this._peaks         = peaks;
     this._view          = view;
     this._allowEditing  = allowEditing;
-    this._segmentGroups = {};
+    this._segmentShapes = {};
     this._layer         = new Konva.Layer();
 
     this._onSegmentsUpdate    = this._onSegmentsUpdate.bind(this);
@@ -64,19 +64,19 @@ define([
 
   SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
     var redraw = false;
-    var segmentGroup = this._segmentGroups[segment.id];
+    var segmentShape = this._segmentShapes[segment.id];
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
     var frameStartTime = this._view.pixelsToTime(frameOffset);
     var frameEndTime   = this._view.pixelsToTime(frameOffset + width);
 
-    if (segmentGroup) {
+    if (segmentShape) {
       this._removeSegment(segment);
       redraw = true;
     }
 
     if (segment.isVisible(frameStartTime, frameEndTime)) {
-      this._addSegmentGroup(segment);
+      this._addSegmentShape(segment);
       redraw = true;
     }
 
@@ -96,7 +96,7 @@ define([
 
     segments.forEach(function(segment) {
       if (segment.isVisible(frameStartTime, frameEndTime)) {
-        self._addSegmentGroup(segment);
+        self._addSegmentShape(segment);
       }
     });
 
@@ -115,7 +115,7 @@ define([
 
   SegmentsLayer.prototype._onSegmentsRemoveAll = function() {
     this._layer.removeChildren();
-    this._segmentGroups = {};
+    this._segmentShapes = {};
 
     this._layer.draw();
   };
@@ -145,12 +145,12 @@ define([
    * @returns {SegmentShape}
    */
 
-  SegmentsLayer.prototype._addSegmentGroup = function(segment) {
+  SegmentsLayer.prototype._addSegmentShape = function(segment) {
     var segmentShape = this._createSegmentShape(segment);
 
     segmentShape.addToLayer(this._layer);
 
-    this._segmentGroups[segment.id] = segmentShape;
+    this._segmentShapes[segment.id] = segmentShape;
 
     return segmentShape;
   };
@@ -186,7 +186,7 @@ define([
    */
 
   SegmentsLayer.prototype._updateSegment = function(segment) {
-    var segmentGroup = this._findOrAddSegmentGroup(segment);
+    var segmentShape = this._findOrAddSegmentShape(segment);
 
     var segmentStartOffset = this._view.timeToPixels(segment.startTime);
     var segmentEndOffset   = this._view.timeToPixels(segment.endTime);
@@ -196,18 +196,16 @@ define([
     var startPixel = segmentStartOffset - frameStartOffset;
     var endPixel   = segmentEndOffset   - frameStartOffset;
 
-    if (this._allowEditing && segment.editable) {
-      var marker = segmentGroup.getInMarker();
+    var marker = segmentShape.getInMarker();
 
-      if (marker) {
-        marker.updatePosition(startPixel - marker.getWidth());
-      }
+    if (marker) {
+      marker.updatePosition(startPixel - marker.getWidth());
+    }
 
-      marker = segmentGroup.getOutMarker();
+    marker = segmentShape.getOutMarker();
 
-      if (marker) {
-        marker.updatePosition(endPixel);
-      }
+    if (marker) {
+      marker.updatePosition(endPixel);
     }
   };
 
@@ -216,14 +214,14 @@ define([
    * @param {Segment} segment
    */
 
-  SegmentsLayer.prototype._findOrAddSegmentGroup = function(segment) {
-    var segmentGroup = this._segmentGroups[segment.id];
+  SegmentsLayer.prototype._findOrAddSegmentShape = function(segment) {
+    var segmentShape = this._segmentShapes[segment.id];
 
-    if (!segmentGroup) {
-      segmentGroup = this._addSegmentGroup(segment);
+    if (!segmentShape) {
+      segmentShape = this._addSegmentShape(segment);
     }
 
-    return segmentGroup;
+    return segmentShape;
   };
 
   /**
@@ -239,9 +237,9 @@ define([
   SegmentsLayer.prototype._removeInvisibleSegments = function(startTime, endTime) {
     var count = 0;
 
-    for (var segmentId in this._segmentGroups) {
-      if (Object.prototype.hasOwnProperty.call(this._segmentGroups, segmentId)) {
-        var segment = this._segmentGroups[segmentId].getSegment();
+    for (var segmentId in this._segmentShapes) {
+      if (Object.prototype.hasOwnProperty.call(this._segmentShapes, segmentId)) {
+        var segment = this._segmentShapes[segmentId].getSegment();
 
         if (!segment.isVisible(startTime, endTime)) {
           this._removeSegment(segment);
@@ -260,11 +258,11 @@ define([
    */
 
   SegmentsLayer.prototype._removeSegment = function(segment) {
-    var segmentGroup = this._segmentGroups[segment.id];
+    var segmentShape = this._segmentShapes[segment.id];
 
-    if (segmentGroup) {
-      segmentGroup.destroy();
-      delete this._segmentGroups[segment.id];
+    if (segmentShape) {
+      segmentShape.destroy();
+      delete this._segmentShapes[segment.id];
     }
   };
 
@@ -291,11 +289,11 @@ define([
   };
 
   SegmentsLayer.prototype.fitToView = function() {
-    for (var segmentId in this._segmentGroups) {
-      if (Object.hasOwnProperty.call(this._segmentGroups, segmentId)) {
-        var segmentGroup = this._segmentGroups[segmentId];
+    for (var segmentId in this._segmentShapes) {
+      if (Object.hasOwnProperty.call(this._segmentShapes, segmentId)) {
+        var segmentShape = this._segmentShapes[segmentId];
 
-        segmentGroup.fitToView();
+        segmentShape.fitToView();
       }
     }
   };
