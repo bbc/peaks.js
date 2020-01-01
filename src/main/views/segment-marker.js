@@ -116,8 +116,16 @@ define([
     return this._segment;
   };
 
+  SegmentMarker.prototype.getGroup = function() {
+    return this._group;
+  };
+
   SegmentMarker.prototype.getLayer = function() {
     return this._layer;
+  };
+
+  SegmentMarker.prototype.getColor = function() {
+    return this._color;
   };
 
   SegmentMarker.prototype.isInMarker = function() {

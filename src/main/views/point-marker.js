@@ -114,8 +114,16 @@ define([
     return this._point;
   };
 
+  PointMarker.prototype.getGroup = function() {
+    return this._group;
+  };
+
   PointMarker.prototype.getLayer = function() {
     return this._layer;
+  };
+
+  PointMarker.prototype.getColor = function() {
+    return this._color;
   };
 
   PointMarker.prototype.getX = function() {
