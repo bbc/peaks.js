@@ -113,7 +113,10 @@ declare module 'peaks.js' {
     overviewWaveformColor?: string;
     // Colour for the overview waveform rectangle
     // that shows what the zoom view shows
-    overviewHighlightRectangleColor?: string;
+    overviewHighlightColor?: string;
+    // The default number of pixels from the top and bottom of the canvas
+    // that the overviewHighlight takes up
+    overviewHighlightOffset?: number;
     // Colour for segments on the waveform
     segmentColor?: string;
     // Colour of the play head
