@@ -103,10 +103,10 @@ declare module 'peaks.js' {
     keyboard?: boolean;
     // Keyboard nudge increment in seconds (left arrow/right arrow)
     nudgeIncrement?: number;
-    // Colour for the in marker of segments
-    inMarkerColor?: string;
-    // Colour for the out marker of segments
-    outMarkerColor?: string;
+    // Colour for segment start marker handles
+    segmentStartMarkerColor?: string;
+    // Colour for segment end marker handles
+    segmentEndMarkerColor?: string;
     // Colour for the zoomed in waveform
     zoomWaveformColor?: string;
     // Colour for the overview waveform
@@ -167,9 +167,9 @@ declare module 'peaks.js' {
     'points.remove': (points: Point[]) => void;
     'points.enter': (point: Point) => void;
     'segments.add': (segments: Segment[]) => void;
-    'segments.dragstart': (segment: Segment, inMarker: boolean) => void;
-    'segments.dragged': (segment: Segment, inMarker: boolean) => void;
-    'segments.dragend': (segment: Segment, inMarker: boolean) => void;
+    'segments.dragstart': (segment: Segment, startMarker: boolean) => void;
+    'segments.dragged': (segment: Segment, startMarker: boolean) => void;
+    'segments.dragend': (segment: Segment, startMarker: boolean) => void;
     'segments.remove_all': () => void;
     'segments.remove': (segments: Segment[]) => void;
     'segments.mouseenter': (segment: Segment) => void;
@@ -190,6 +190,7 @@ declare module 'peaks.js' {
     showPlayheadTime: (show: boolean) => void;
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
+    fitToContainer: () => void;
   }
 
   interface PeaksInstance {
