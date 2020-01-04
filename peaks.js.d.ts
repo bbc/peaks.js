@@ -4,6 +4,7 @@
  */
 
 declare module 'peaks.js' {
+  import Konva from "konva";
 
   interface SegmentAddOptions {
     startTime: number;
@@ -89,6 +90,58 @@ declare module 'peaks.js' {
 
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
 
+  abstract class PointMarker {
+    constructor(options: CreatePointMarkerOptions);
+    abstract createMarker(group: Konva.Group, options: CreatePointMarkerOptions): void;
+    abstract fitToView(): void;
+    addToLayer(layer: Konva.Layer): void;
+    updatePosition(x: number): void;
+    getX(): number;
+    getWidth(): number;
+    getLayer(): Layer;
+    getGroup(): Konva.Group;
+  }
+
+  abstract class SegmentMarker {
+    constructor(options: CreateSegmentMarkerOptions);
+    abstract createMarker(group: Konva.Group, options: CreatePointMarkerOptions): void;
+    abstract fitToView(): void;
+    addToLayer(layer: Konva.Layer): void;
+    updatePosition(x: number): void;
+    getX(): number;
+    getWidth(): number;
+    getLayer(): Layer;
+    getGroup(): Konva.Group;
+  }
+
+  interface Layer {
+    getHeight: () => number;
+    draw: () => void;
+  }
+
+  interface CreatePointMarkerOptions {
+    point: Point;
+    view: string;
+    draggable: boolean;
+    color: string;
+    layer: Layer;
+  }
+
+  interface CreateSegmentMarkerOptions {
+    segment: Segment;
+    view: string;
+    draggable: boolean;
+    color: string;
+    layer: Layer;
+    startMarker: boolean;
+  }
+
+  interface CreateSegmentLabelOptions {
+    segment: Segment;
+    view: string;
+    layer: Layer;
+  }
+
   interface OptionalOptions {
     // If true, peaks will send credentials with all network requests
     // i.e. when fetching waveform data.
@@ -143,6 +196,12 @@ declare module 'peaks.js' {
     points?: Point[];
     // Emit cue events when playing
     emitCueEvents?: boolean;
+    // Custom segment marker factory function
+    createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
+    // Custom segment label factory function
+    createSegmentLabel?: (options: CreateSegmentLabelOptions) => Konva.Node;
+    // Custom point marker factory function
+    createPointMarker?: (option: CreatePointMarkerOptions) => PointMarker;
   }
 
   interface SetSourceRequiredOptions {
