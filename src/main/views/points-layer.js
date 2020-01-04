@@ -165,9 +165,11 @@ define([
   PointsLayer.prototype._addPointMarker = function(point) {
     var pointMarker = this._createPointMarker(point);
 
-    this._pointMarkers[point.id] = pointMarker;
+    if (pointMarker) {
+      this._pointMarkers[point.id] = pointMarker;
 
-    pointMarker.addToLayer(this._layer);
+      pointMarker.addToLayer(this._layer);
+    }
 
     return pointMarker;
   };
@@ -265,11 +267,13 @@ define([
   PointsLayer.prototype._updatePoint = function(point) {
     var pointMarker = this._findOrAddPointMarker(point);
 
-    var pointMarkerOffset = this._view.timeToPixels(point.time);
+    if (pointMarker) {
+      var pointMarkerOffset = this._view.timeToPixels(point.time);
 
-    var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
+      var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
-    pointMarker.updatePosition(pointMarkerX);
+      pointMarker.updatePosition(pointMarkerX);
+    }
   };
 
   /**
