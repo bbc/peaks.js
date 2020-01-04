@@ -356,11 +356,11 @@ var options = {
   // Keyboard nudge increment in seconds (left arrow/right arrow)
   nudgeIncrement: 0.01,
 
-  // Colour for the in marker of segments
-  inMarkerColor: '#a0a0a0',
+  // Colour for segment start marker handles
+  segmentStartMarkerColor: '#a0a0a0',
 
-  // Colour for the out marker of segments
-  outMarkerColor: '#a0a0a0',
+  // Colour for segment end marker handles
+  segmentEndMarkerColor: '#a0a0a0',
 
   // Colour for the zoomable waveform
   zoomWaveformColor: 'rgba(0, 225, 128, 1)',
