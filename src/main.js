@@ -629,8 +629,5 @@ define('peaks', [
     }
   };
 
-  Peaks.PointMarker   = PointMarker;
-  Peaks.SegmentMarker = SegmentMarker;
-
   return Peaks;
 });

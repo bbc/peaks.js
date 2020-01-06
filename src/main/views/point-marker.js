@@ -12,15 +12,13 @@ define([
   'use strict';
 
   /**
-   * Parameters for the {@link PointMarker} constructor and
-   * {@link createPointMarker} function.
+   * Parameters for the {@link PointMarker} constructor.
    *
    * @typedef {Object} PointMarkerOptions
    * @global
    * @property {Point} point Point object with timestamp.
-   * @property {PointsLayer} layer
    * @property {Boolean} draggable If true, marker is draggable.
-   * @property {String} color Color for the marker's handle and line.
+   * @property {Marker} marker
    * @property {Function} onDblClick
    * @property {Function} onDragStart
    * @property {Function} onDragMove Callback during mouse drag operations.
@@ -40,9 +38,8 @@ define([
 
   function PointMarker(options) {
     this._point     = options.point;
-    this._layer     = options.layer;
+    this._marker    = options.marker;
     this._draggable = options.draggable;
-    this._color     = options.color;
 
     this._onDblClick   = options.onDblClick;
     this._onDragStart  = options.onDragStart;
@@ -58,12 +55,9 @@ define([
       dragBoundFunc: this._dragBoundFunc
     });
 
-    this.createMarker(this._group, options);
     this._bindDefaultEventHandlers();
 
-    if (this.bindEventHandlers) {
-      this.bindEventHandlers();
-    }
+    this._marker.init(this._group);
   }
 
   PointMarker.prototype._bindDefaultEventHandlers = function() {
@@ -114,18 +108,6 @@ define([
     return this._point;
   };
 
-  PointMarker.prototype.getGroup = function() {
-    return this._group;
-  };
-
-  PointMarker.prototype.getLayer = function() {
-    return this._layer;
-  };
-
-  PointMarker.prototype.getColor = function() {
-    return this._color;
-  };
-
   PointMarker.prototype.getX = function() {
     return this._group.getX();
   };
@@ -137,14 +119,14 @@ define([
   PointMarker.prototype.updatePosition = function(x) {
     this._group.setX(x);
 
-    if (this.positionUpdated) {
-      this.positionUpdated(x);
+    if (this._marker.positionUpdated) {
+      this._marker.positionUpdated(x);
     }
   };
 
   PointMarker.prototype.destroy = function() {
-    if (this.destroyMarker) {
-      this.destroyMarker();
+    if (this._marker.destroy) {
+      this._marker.destroy();
     }
 
     this._group.destroyChildren();

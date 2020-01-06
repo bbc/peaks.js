@@ -7,8 +7,11 @@
  */
 
 define([
+  'peaks/views/point-marker',
   'konva'
-  ], function(Konva) {
+  ], function(
+    PointMarker,
+    Konva) {
   'use strict';
 
   /**
@@ -135,19 +138,29 @@ define([
   PointsLayer.prototype._createPointMarker = function(point) {
     var editable = this._allowEditing && point.editable;
 
-    return this._peaks.options.createPointMarker({
-      point:        point,
-      draggable:    editable,
-      color:        point.color ? point.color : this._peaks.options.pointMarkerColor,
-      layer:        this,
-      view:         this._view.getName(),
-      onDblClick:   this._onPointHandleDblClick,
-      onDragStart:  this._onPointHandleDragStart,
-      onDragMove:   this._onPointHandleDragMove,
-      onDragEnd:    this._onPointHandleDragEnd,
-      onMouseEnter: this._onPointHandleMouseEnter,
-      onMouseLeave: this._onPointHandleMouseLeave
+    var marker = this._peaks.options.createPointMarker({
+      point:     point,
+      draggable: editable,
+      color:     point.color ? point.color : this._peaks.options.pointMarkerColor,
+      layer:     this,
+      view:      this._view.getName()
     });
+
+    if (marker) {
+      return new PointMarker({
+        point:        point,
+        draggable:    editable,
+        marker:       marker,
+        onDblClick:   this._onPointHandleDblClick,
+        onDragStart:  this._onPointHandleDragStart,
+        onDragMove:   this._onPointHandleDragMove,
+        onDragEnd:    this._onPointHandleDragEnd,
+        onMouseEnter: this._onPointHandleMouseEnter,
+        onMouseLeave: this._onPointHandleMouseLeave
+      });
+    }
+
+    return null;
   };
 
   PointsLayer.prototype.getHeight = function() {

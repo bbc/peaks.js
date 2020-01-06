@@ -184,18 +184,18 @@
          */
 
         function CustomSegmentMarker(options) {
-          Peaks.SegmentMarker.call(this, options);
+          this._options = options;
         }
 
-        CustomSegmentMarker.prototype = Object.create(Peaks.SegmentMarker.prototype);
+        CustomSegmentMarker.prototype.init = function(group) {
+          this._group = group;
 
-        CustomSegmentMarker.prototype.createMarker = function(group, options) {
           this._label = new Konva.Label({
             x: 0.5,
             y: 0.5
           });
 
-          var color = options.segment.color;
+          var color = this._options.segment.color;
 
           this._tag = new Konva.Tag({
             fill:             color,
@@ -214,8 +214,8 @@
 
           this._label.add(this._tag);
 
-          var labelText = options.segment.labelText +
-                          (options.startMarker ? ' start' : ' end');
+          var labelText = this._options.segment.labelText +
+                          (this._options.startMarker ? ' start' : ' end');
 
           this._text = new Konva.Text({
             text:       labelText,
@@ -240,6 +240,8 @@
           group.add(this._line);
 
           this.fitToView();
+
+          this.bindEventHandlers();
         };
 
         CustomSegmentMarker.prototype.bindEventHandlers = function() {
@@ -255,7 +257,7 @@
         };
 
         CustomSegmentMarker.prototype.fitToView = function() {
-          var height = this._layer.getHeight();
+          var height = this._options.layer.getHeight();
 
           var labelHeight = this._text.height() + 2 * this._text.padding();
           var offsetTop = 14;
@@ -310,20 +312,20 @@
          */
 
         function CustomPointMarker(options) {
-          Peaks.PointMarker.call(this, options);
+          this._options = options;
         }
 
-        CustomPointMarker.prototype = Object.create(Peaks.PointMarker.prototype);
+        CustomPointMarker.prototype.init = function(group) {
+          this._group = group;
 
-        CustomPointMarker.prototype.createMarker = function(group, options) {
           this._label = new Konva.Label({
             x: 0.5,
             y: 0.5
           });
 
           this._tag = new Konva.Tag({
-            fill:             options.color,
-            stroke:           options.color,
+            fill:             this._options.color,
+            stroke:           this._options.color,
             strokeWidth:      1,
             pointerDirection: 'down',
             pointerWidth:     10,
@@ -339,7 +341,7 @@
           this._label.add(this._tag);
 
           this._text = new Konva.Text({
-            text:       options.point.labelText,
+            text:       this._options.point.labelText,
             fontFamily: 'Calibri',
             fontSize:   14,
             padding:    5,
@@ -353,7 +355,7 @@
           this._line = new Konva.Line({
             x:           0,
             y:           0,
-            stroke:      options.color,
+            stroke:      this._options.color,
             strokeWidth: 1
           });
 
@@ -361,6 +363,8 @@
           group.add(this._line);
 
           this.fitToView();
+
+          this.bindEventHandlers();
         };
 
         CustomPointMarker.prototype.bindEventHandlers = function() {
@@ -376,7 +380,7 @@
         };
 
         CustomPointMarker.prototype.fitToView = function() {
-          var height = this._layer.getHeight();
+          var height = this._options.layer.getHeight();
 
           var labelHeight = this._text.height() + 2 * this._text.padding();
           var offsetTop = 14;
@@ -392,18 +396,18 @@
          */
 
         function SimplePointMarker(options) {
-          Peaks.PointMarker.call(this, options);
+          this._options = options;
         }
 
-        SimplePointMarker.prototype = Object.create(Peaks.PointMarker.prototype);
+        SimplePointMarker.prototype.init = function(group) {
+          this._group = group;
 
-        SimplePointMarker.prototype.createMarker = function(group, options) {
           // Vertical Line - create with default y and points, the real values
           // are set in fitToView().
           this._line = new Konva.Line({
             x:           0,
             y:           0,
-            stroke:      options.color,
+            stroke:      this._options.color,
             strokeWidth: 1
           });
 
@@ -413,7 +417,7 @@
         };
 
         SimplePointMarker.prototype.fitToView = function() {
-          var height = this._layer.getHeight();
+          var height = this._options.layer.getHeight();
 
           this._line.points([0.5, 0, 0.5, height]);
         };

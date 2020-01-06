@@ -7,8 +7,11 @@
  */
 
 define([
+  'peaks/views/segment-marker',
   'peaks/views/waveform-shape'
-  ], function(WaveformShape) {
+  ], function(
+    SegmentMarker,
+    WaveformShape) {
   'use strict';
 
   /**
@@ -98,31 +101,49 @@ define([
   SegmentShape.prototype._createMarkers = function() {
     var editable = this._layer.isEditingEnabled() && this._segment.editable;
 
-    this._startMarker = this._peaks.options.createSegmentMarker({
+    var startMarker = this._peaks.options.createSegmentMarker({
       segment:      this._segment,
-      segmentShape: this,
       draggable:    editable,
-      color:        this._peaks.options.segmentStartMarkerColor,
       startMarker:  true,
+      color:        this._peaks.options.segmentStartMarkerColor,
       layer:        this._layer,
-      view:         this._view.getName(),
-      onDrag:       this._onSegmentHandleDrag,
-      onDragStart:  this._onSegmentHandleDragStart,
-      onDragEnd:    this._onSegmentHandleDragEnd
+      view:         this._view.getName()
     });
 
-    this._endMarker = this._peaks.options.createSegmentMarker({
+    if (startMarker) {
+      this._startMarker = new SegmentMarker({
+        segment:      this._segment,
+        segmentShape: this,
+        draggable:    editable,
+        startMarker:  true,
+        marker:       startMarker,
+        onDrag:       this._onSegmentHandleDrag,
+        onDragStart:  this._onSegmentHandleDragStart,
+        onDragEnd:    this._onSegmentHandleDragEnd
+      });
+    }
+
+    var endMarker = this._peaks.options.createSegmentMarker({
       segment:      this._segment,
-      segmentShape: this,
       draggable:    editable,
-      color:        this._peaks.options.segmentEndMarkerColor,
       startMarker:  false,
+      color:        this._peaks.options.segmentEndMarkerColor,
       layer:        this._layer,
-      view:         this._view.getName(),
-      onDrag:       this._onSegmentHandleDrag,
-      onDragStart:  this._onSegmentHandleDragStart,
-      onDragEnd:    this._onSegmentHandleDragEnd
+      view:         this._view.getName()
     });
+
+    if (endMarker) {
+      this._endMarker = new SegmentMarker({
+        segment:      this._segment,
+        segmentShape: this,
+        draggable:    editable,
+        startMarker:  false,
+        marker:       endMarker,
+        onDrag:       this._onSegmentHandleDrag,
+        onDragStart:  this._onSegmentHandleDragStart,
+        onDragEnd:    this._onSegmentHandleDragEnd
+      });
+    }
   };
 
   SegmentShape.prototype._onMouseEnter = function() {

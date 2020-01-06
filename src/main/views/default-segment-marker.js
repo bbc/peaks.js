@@ -7,11 +7,9 @@
  */
 
 define([
-  'peaks/views/segment-marker',
   'peaks/waveform/waveform.utils',
   'konva'
   ], function(
-    SegmentMarker,
     Utils,
     Konva) {
   'use strict';
@@ -26,17 +24,15 @@ define([
    */
 
   function DefaultSegmentMarker(options) {
-    SegmentMarker.call(this, options);
+    this._options = options;
   }
 
-  DefaultSegmentMarker.prototype = Object.create(SegmentMarker.prototype);
-
-  DefaultSegmentMarker.prototype.createMarker = function(group, options) {
+  DefaultSegmentMarker.prototype.init = function(group) {
     var handleWidth  = 10;
     var handleHeight = 20;
     var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
-    var xPosition = options.startMarker ? -24 : 24;
+    var xPosition = this._options.startMarker ? -24 : 24;
 
     // Label - create with default y, the real value is set in fitToView().
     this._label = new Konva.Text({
@@ -57,8 +53,8 @@ define([
       y:           0,
       width:       handleWidth,
       height:      handleHeight,
-      fill:        options.color,
-      stroke:      options.color,
+      fill:        this._options.color,
+      stroke:      this._options.color,
       strokeWidth: 1
     });
 
@@ -67,7 +63,7 @@ define([
     this._line = new Konva.Line({
       x:           0,
       y:           0,
-      stroke:      options.color,
+      stroke:      this._options.color,
       strokeWidth: 1
     });
 
@@ -76,46 +72,48 @@ define([
     group.add(this._handle);
 
     this.fitToView();
+
+    this.bindEventHandlers(group);
   };
 
-  DefaultSegmentMarker.prototype.bindEventHandlers = function() {
+  DefaultSegmentMarker.prototype.bindEventHandlers = function(group) {
     var self = this;
 
-    var xPosition = self._isStartMarker ? -24 : 24;
+    var xPosition = self._options.startMarker ? -24 : 24;
 
-    if (self._draggable) {
-      self._group.on('dragstart', function() {
-        if (self._isStartMarker) {
+    if (self._options.draggable) {
+      group.on('dragstart', function() {
+        if (self._options.startMarker) {
           self._label.setX(xPosition - self._label.getWidth());
         }
 
         self._label.show();
-        self._layer.draw();
+        self._options.layer.draw();
       });
 
-      self._group.on('dragend', function() {
+      group.on('dragend', function() {
         self._label.hide();
-        self._layer.draw();
+        self._options.layer.draw();
       });
     }
 
     self._handle.on('mouseover touchstart', function() {
-      if (self._isStartMarker) {
+      if (self._options.startMarker) {
         self._label.setX(xPosition - self._label.getWidth());
       }
 
       self._label.show();
-      self._layer.draw();
+      self._options.layer.draw();
     });
 
     self._handle.on('mouseout touchend', function() {
       self._label.hide();
-      self._layer.draw();
+      self._options.layer.draw();
     });
   };
 
   DefaultSegmentMarker.prototype.fitToView = function() {
-    var height = this._layer.getHeight();
+    var height = this._options.layer.getHeight();
 
     this._label.y(height / 2 - 5);
     this._handle.y(height / 2 - 10.5);
@@ -123,8 +121,8 @@ define([
   };
 
   DefaultSegmentMarker.prototype.positionUpdated = function(x) {
-    var segment = this.getSegment();
-    var time = this.isStartMarker() ? segment.startTime : segment.endTime;
+    var segment = this._options.segment;
+    var time = this._options.startMarker ? segment.startTime : segment.endTime;
 
     this._label.setText(Utils.formatTime(time, false));
   };

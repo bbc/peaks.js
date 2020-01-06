@@ -59,22 +59,21 @@ options:
 | `draggable` | `boolean`     | If `true`, the marker is draggable.                                                               |
 | `color`     | `string`      | Color for the marker handle (set by the `pointMarkerColor` option in `Peaks.init()`.              |
 
-The function should return an instance of an object that inherits
-[`Peaks.PointMarker`](src/main/views/point-marker.js). `Peaks.PointMarker` is a
-base class that implements the marker drag and drop functionality.
+The function should return an instance of an object as illustrated by the
+`CustomPointMarker` class below.
 
 You can use the `view` option to give the marker a different appearance or
 behaviour in the zoomview and overview waveform views. You can also return
 `null` from this function if you do not want to display a point marker handle.
 
 ```javascript
-class CustomPointMarker extends Peaks.PointMarker {
-  createMarker(group, options) {
+class CustomPointMarker {
+  constructor(options) {
     // (required, see below)
   }
 
-  bindEventHandlers() {
-    // (optional, see below)
+  init(group) {
+    // (required, see below)
   }
 
   fitToView() {
@@ -85,7 +84,7 @@ class CustomPointMarker extends Peaks.PointMarker {
     // (optional, see below)
   }
 
-  destroyMarker() {
+  destroy() {
     // (optional, see below)
   }
 };
@@ -95,10 +94,10 @@ function createPointMarker(options) {
 }
 ```
 
-Your custom point marker handle class must implement the `createMarker` and
-`fitToView` methods. It may also optionally implement `bindEventHandlers`,
-`positionUpdated`, and `destroyMarker`. Refer to the
-[Marker methods](#marker-methods) section for details.
+Your custom point marker handle object must implement the `init` and
+`fitToView` methods. It may also optionally implement `positionUpdated` and
+`destroy`. Refer to the [Marker methods](#marker-methods) section for
+details.
 
 ### `createSegmentMarker(options)`
 
@@ -115,22 +114,21 @@ following options:
 | `color`        | `string`        | Color for the marker handle (set by the `segmentStartMarkerColor` or `segmentEndMarkerColor` option in `Peaks.init()`.       |
 | `startMarker`  | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment. |
 
-The function should return an instance of an object that inherits
-[`Peaks.SegmentMarker`](src/main/views/segment-marker.js). `Peaks.SegmentMarker`
-is a base class that implements the marker drag and drop functionality.
+The function should return an instance of an object as illustrated by the
+`CustomSegmentMarker` class below.
 
 You can use the `view` option to give the marker a different appearance or
 behaviour in the zoomview and overview waveform views. You can also return
 `null` from this function if you do not want to display a segment marker handle.
 
 ```javascript
-class CustomSegmentMarker extends Peaks.SegmentMarker {
-  createMarker(group, options) {
+class CustomSegmentMarker {
+  constructor(options) {
     // (required, see below)
   }
 
-  bindEventHandlers() {
-    // (optional, see below)
+  init(group) {
+    // (required, see below)
   }
 
   fitToView() {
@@ -141,7 +139,7 @@ class CustomSegmentMarker extends Peaks.SegmentMarker {
     // (optional, see below)
   }
 
-  destroyMarker() {
+  destroy() {
     // (optional, see below)
   }
 };
@@ -151,16 +149,29 @@ function createSegmentMarker(options) {
 }
 ```
 
-Your custom segment marker handle class must implement the `createMarker` and
-`fitToView` methods. It may also optionally implement `bindEventHandlers`,
-`positionUpdated`, and `destroyMarker`. Refer to the
-[Marker methods](#marker-methods) section for details.
+Your custom segment marker handle object must implement the `init` and
+`fitToView` methods. It may also optionally implement `positionUpdated` and
+`destroy`. Refer to the [Marker methods](#marker-methods) section for details.
 
 ### Marker methods
 
-#### `createMarker(group, options)`
+Marker objects are constructed in two stages, firstly your code uses `new` to
+create the marker object, passing the supplied `options` to the constructor.
+Then, Peaks.js will call your `init()` method to complete the initialization.
 
-The `createMarker` method should create the Konva objects needed to render the
+#### `constructor(options)`
+
+The constructor typically just stores the `options` for later use.
+
+```javascript
+constructor(options) {
+  this._options = options;
+}
+```
+
+#### `init(group)`
+
+The `init` method should create the Konva objects needed to render the
 marker handle and add them to the supplied `group` object.
 
 | Name      | Type                                                      | Description                                                                                                                          |
@@ -175,55 +186,58 @@ Note that the `x` and `y` coordinates (0, 0) represent the centre of the marker
 and the top of the waveform view.
 
 ```javascript
-createMarker(group, options) {
-  const layer = this.getLayer();
-  const height = layer.getHeight();
+class CustomPointMarker
+  constructor(options) {
+    this._options = options;
+  }
 
-  this._handle = new Konva.Rect({
-    x:      -20,
-    y:      0,
-    width:  40,
-    height: 20,
-    fill:   options.color
-  });
+  init(group) {
+    const layer = this.getLayer();
+    const height = layer.getHeight();
 
-  this._line = new Konva.Line({
-    points:      [0.5, 0, 0.5, height], // x1, y1, x2, y2
-    stroke:      options.color,
-    strokeWidth: 1
-  });
+    this._handle = new Konva.Rect({
+      x:      -20,
+      y:      0,
+      width:  40,
+      height: 20,
+      fill:   this._options.color
+    });
 
-  group.add(this._handle);
-  group.add(this._line);
+    this._line = new Konva.Line({
+      points:      [0.5, 0, 0.5, height], // x1, y1, x2, y2
+      stroke:      options.color,
+      strokeWidth: 1
+    });
+
+    group.add(this._handle);
+    group.add(this._line);
+  }
 }
 ```
 
-#### `bindEventHandlers()`
+The `init` method can also add your own custom event handlers
+(e.g., `mouseenter` and `mouseleave`), if needed.
 
-The `bindEventHandlers` method can be used to add your own custom event
-handlers (e.g., `mouseenter` and `mouseleave`)
-
-Building on the `createMarker` example above, this code changes the color of
-the marker handle when the user hovers the mouse over the handle.
+We can add the following code to the end of the `init()` method from above. This
+code changes the color of the marker handle when the user hovers the mouse over
+the handle.
 
 ```javascript
-bindEventHandlers() {
-  var layer = this.getLayer();
+const layer = this._options.layer;
 
-  this._handle.on('mouseenter', () => {
-    const highlightColor = '#ff0000';
-    this._handle.fill(highlightColor);
-    this._line.stroke(highlightColor);
-    layer.draw();
-  });
+this._handle.on('mouseenter', () => {
+  const highlightColor = '#ff0000';
+  this._handle.fill(highlightColor);
+  this._line.stroke(highlightColor);
+  layer.draw();
+});
 
-  this._handle.on('mouseleave', () => {
-    const defaultColor = this.getColor(); // returns options.color
-    this._handle.fill(defaultColor);
-    this._line.stroke(defaultColor);
-    layer.draw();
-  });
-}
+this._handle.on('mouseleave', () => {
+  const defaultColor = this._options.color;
+  this._handle.fill(defaultColor);
+  this._line.stroke(defaultColor);
+  layer.draw();
+});
 ```
 
 #### `fitToView()`
@@ -234,7 +248,7 @@ This is typically done when the height of the view changes.
 
 ```javascript
 fitToView() {
-  const layer = this.getLayer();
+  const layer = this._options.layer;
   const height = layer.getHeight();
 
   this._line.points([0.5, 0, 0.5, height]);
@@ -244,7 +258,8 @@ fitToView() {
 #### `positionUpdated(x)`
 
 The `positionUpdated` method is called when the marker's position has changed.
-This could be due a change to the marker's, or if the view has scrolled.
+This could be due a change to the marker's `time` attribute (for point markers),
+or `startTime` or `endTime` (for segment markers), or if the view has scrolled.
 
 | Name  | Type     | Description                           |
 | ----- | -------- | ------------------------------------- |
@@ -252,20 +267,20 @@ This could be due a change to the marker's, or if the view has scrolled.
 
 ```javascript
 positionUpdated(x) {
-  var point = this.getPoint();
+  const point = this._options.point;
   console.log(point.time);
 }
 ```
 
-#### `destroyMarker()`
+#### `destroy()`
 
-The `destroyMarker` method is called when the marker is removed from the view.
-Any Konva objects added to the `group` in `createMarker()` will be destroyed,
-so you only need to add a `destroyMarker` method if additional clean-up is
-needed.
+The `destroy` method is called when the marker is removed from the view.
+Any Konva objects added to the `group` in `init()` will be destroyed
+automatically, so you only need to add a `destroy` method if additional
+clean-up is needed.
 
 ```javascript
-destroyMarker() {
+destroy() {
   console.log('Marker destroyed');
 }
 ```

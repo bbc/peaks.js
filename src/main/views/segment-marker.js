@@ -12,16 +12,13 @@ define([
   'use strict';
 
   /**
-   * Parameters for the {@link SegmentMarker} constructor and
-   * {@link createSegmentMarker} function.
+   * Parameters for the {@link SegmentMarker} constructor.
    *
    * @typedef {Object} SegmentMarkerOptions
    * @global
    * @property {Segment} segment
    * @property {SegmentShape} segmentShape
    * @property {Boolean} draggable If true, marker is draggable.
-   * @property {String} color Colour hex value for handle and line marker.
-   * @property {SegmentsLayer} layer
    * @property {Boolean} startMarker If <code>true</code>, the marker indicates
    *   the start time of the segment. If <code>false</code>, the marker
    *   indicates the end time of the segment.
@@ -41,10 +38,11 @@ define([
 
   function SegmentMarker(options) {
     this._segment       = options.segment;
+    this._marker        = options.marker;
     this._segmentShape  = options.segmentShape;
     this._draggable     = options.draggable;
     this._layer         = options.layer;
-    this._isStartMarker = options.startMarker;
+    this._startMarker   = options.startMarker;
 
     this._onDrag      = options.onDrag;
     this._onDragStart = options.onDragStart;
@@ -57,12 +55,9 @@ define([
       dragBoundFunc: this._dragBoundFunc
     });
 
-    this.createMarker(this._group, options);
     this._bindDefaultEventHandlers();
 
-    if (this.bindEventHandlers) {
-      this.bindEventHandlers();
-    }
+    this._marker.init(this._group);
   }
 
   SegmentMarker.prototype._bindDefaultEventHandlers = function() {
@@ -84,10 +79,10 @@ define([
   };
 
   SegmentMarker.prototype._dragBoundFunc = function(pos) {
-    var limit;
     var marker;
+    var limit;
 
-    if (this._isStartMarker) {
+    if (this._startMarker) {
       marker = this._segmentShape.getEndMarker();
       limit  = marker.getX() - marker.getWidth();
 
@@ -118,30 +113,6 @@ define([
     return this._segment;
   };
 
-  SegmentMarker.prototype.getGroup = function() {
-    return this._group;
-  };
-
-  SegmentMarker.prototype.getLayer = function() {
-    return this._layer;
-  };
-
-  SegmentMarker.prototype.getColor = function() {
-    return this._color;
-  };
-
-  SegmentMarker.prototype.isStartMarker = function() {
-    return this._isStartMarker;
-  };
-
-  SegmentMarker.prototype.updatePosition = function(x) {
-    this._group.setX(x);
-
-    if (this.positionUpdated) {
-      this.positionUpdated(x);
-    }
-  };
-
   SegmentMarker.prototype.getX = function() {
     return this._group.getX();
   };
@@ -150,9 +121,21 @@ define([
     return this._group.getWidth();
   };
 
+  SegmentMarker.prototype.isStartMarker = function() {
+    return this._startMarker;
+  };
+
+  SegmentMarker.prototype.updatePosition = function(x) {
+    this._group.setX(x);
+
+    if (this._marker.positionUpdated) {
+      this._marker.positionUpdated(x);
+    }
+  };
+
   SegmentMarker.prototype.destroy = function() {
-    if (this.destroyMarker) {
-      this.destroyMarker();
+    if (this._marker.destroy) {
+      this._marker.destroy();
     }
 
     this._group.destroyChildren();

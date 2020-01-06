@@ -17,10 +17,23 @@ define([
   'use strict';
 
   /**
+   * Parameters for the {@link createSegmentMarker} function.
+   *
+   * @typedef {Object} CreateSegmentMarkerOptions
+   * @global
+   * @property {Segment} segment
+   * @property {Boolean} draggable If true, marker is draggable.
+   * @property {Boolean} startMarker
+   * @property {String} color
+   * @property {Layer} layer
+   * @property {String} view
+   */
+
+  /**
    * Creates a left or right side segment marker handle.
    *
-   * @param {SegmentMarkerOptions} options
-   * @returns {SegmentMarker}
+   * @param {CreateSegmentMarkerOptions} options
+   * @returns {Marker}
    */
 
   function createSegmentMarker(options) {
@@ -64,10 +77,22 @@ define([
   }
 
   /**
+   * Parameters for the {@link createPointMarker} function.
+   *
+   * @typedef {Object} CreatePointMarkerOptions
+   * @global
+   * @property {Point} point
+   * @property {Boolean} draggable If true, marker is draggable.
+   * @property {String} color
+   * @property {Layer} layer
+   * @property {String} view
+   */
+
+  /**
    * Creates a point marker handle.
    *
-   * @param {PointMarkerOptions} options
-   * @returns {PointMarker}
+   * @param {CreatePointMarkerOptions} options
+   * @returns {Marker}
    */
 
   function createPointMarker(options) {

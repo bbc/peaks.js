@@ -7,11 +7,9 @@
  */
 
 define([
-  'peaks/views/point-marker',
   'peaks/waveform/waveform.utils',
   'konva'
   ], function(
-    PointMarker,
     Utils,
     Konva) {
   'use strict';
@@ -26,24 +24,22 @@ define([
    */
 
   function DefaultPointMarker(options) {
-    PointMarker.call(this, options);
+    this._options = options;
   }
 
-  DefaultPointMarker.prototype = Object.create(PointMarker.prototype);
-
-  DefaultPointMarker.prototype.createMarker = function(group, options) {
+  DefaultPointMarker.prototype.init = function(group) {
     var handleWidth  = 10;
     var handleHeight = 20;
     var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
     // Label
 
-    if (options.view === 'zoomview') {
+    if (this._options.view === 'zoomview') {
       // Label - create with default y, the real value is set in fitToView().
       this._label = new Konva.Text({
         x:          2,
         y:          0,
-        text:       options.point.labelText,
+        text:       this._options.point.labelText,
         textAlign:  'left',
         fontSize:   10,
         fontFamily: 'sans-serif',
@@ -59,7 +55,7 @@ define([
         y:      0,
         width:  handleWidth,
         height: handleHeight,
-        fill:   options.color
+        fill:   this._options.color
       });
     }
 
@@ -68,7 +64,7 @@ define([
     this._line = new Konva.Line({
       x:           0,
       y:           0,
-      stroke:      options.color,
+      stroke:      this._options.color,
       strokeWidth: 1
     });
 
@@ -104,9 +100,11 @@ define([
     }
 
     this.fitToView();
+
+    this.bindEventHandlers(group);
   };
 
-  DefaultPointMarker.prototype.bindEventHandlers = function() {
+  DefaultPointMarker.prototype.bindEventHandlers = function(group) {
     var self = this;
 
     if (self._handle) {
@@ -122,13 +120,13 @@ define([
         self._layer.draw();
       });
 
-      self._group.on('dragstart', function() {
+      group.on('dragstart', function() {
         self._time.setX(-24 - self._time.getWidth());
         self._time.show();
         self._layer.draw();
       });
 
-      self._group.on('dragend', function() {
+      group.on('dragend', function() {
         self._time.hide();
         self._layer.draw();
       });
@@ -136,7 +134,7 @@ define([
   };
 
   DefaultPointMarker.prototype.fitToView = function() {
-    var height = this._layer.getHeight();
+    var height = this._options.layer.getHeight();
 
     this._line.points([0.5, 0, 0.5, height]);
 
@@ -155,8 +153,7 @@ define([
 
   DefaultPointMarker.prototype.positionUpdated = function(x) {
     if (this._time) {
-      var point = this.getPoint();
-      var time = Utils.formatTime(point.time, false);
+      var time = Utils.formatTime(this._options.point.time, false);
 
       this._time.setText(time);
     }
