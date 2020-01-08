@@ -20,7 +20,7 @@ define([
    * @class
    * @alias DefaultSegmentMarker
    *
-   * @param {SegmentMarkerOptions} options
+   * @param {CreateSegmentMarkerOptions} options
    */
 
   function DefaultSegmentMarker(options) {

@@ -20,7 +20,7 @@ define([
    * @class
    * @alias DefaultPointMarker
    *
-   * @param {PointMarkerOptions} options
+   * @param {CreatePointMarkerOptions} options
    */
 
   function DefaultPointMarker(options) {

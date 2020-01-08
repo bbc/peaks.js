@@ -3,7 +3,7 @@
  *
  * Defines the {@link TimeController} class.
  *
- * @module peaks/views/waveform.timecontroller.js
+ * @module peaks/views/waveform.timecontroller
  */
 
 define([], function() {
