@@ -109,6 +109,10 @@ define([
     layer.add(this._group);
   };
 
+  SegmentMarker.prototype.fitToView = function() {
+    this._marker.fitToView();
+  };
+
   SegmentMarker.prototype.getSegment = function() {
     return this._segment;
   };

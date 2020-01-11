@@ -104,6 +104,10 @@ define([
     layer.add(this._group);
   };
 
+  PointMarker.prototype.fitToView = function() {
+    this._marker.fitToView();
+  };
+
   PointMarker.prototype.getPoint = function() {
     return this._point;
   };
