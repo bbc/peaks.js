@@ -22,10 +22,9 @@ define([
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} showTime If <code>true</code> The playback time position
    *   is shown next to the playhead.
-   * @param {Number} time Initial position of the playhead, in seconds.
    */
 
-  function PlayheadLayer(peaks, view, showTime, time) {
+  function PlayheadLayer(peaks, view, showTime) {
     this._peaks = peaks;
     this._view = view;
     this._playheadPixel = 0;
@@ -45,7 +44,6 @@ define([
     this.fitToView();
 
     this.zoomLevelChanged();
-    this._syncPlayhead(time);
   }
 
   /**

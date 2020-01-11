@@ -111,8 +111,7 @@ define([
     self._playheadLayer = new PlayheadLayer(
       peaks,
       self,
-      self._options.showPlayheadTime,
-      self._options.mediaElement.currentTime
+      self._options.showPlayheadTime
     );
 
     self._playheadLayer.addToStage(self._stage);

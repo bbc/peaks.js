@@ -108,11 +108,14 @@ define([
     self._playheadLayer = new PlayheadLayer(
       peaks,
       self,
-      false, // showPlayheadTime
-      self._options.mediaElement.currentTime
+      false // showPlayheadTime
     );
 
     self._playheadLayer.addToStage(self._stage);
+
+    var time = self._peaks.player.getCurrentTime();
+
+    this._playheadLayer.updatePlayheadTime(time);
 
     self._mouseDragHandler = new MouseDragHandler(self._stage, {
       onMouseDown: function(mousePosX) {
