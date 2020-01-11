@@ -125,11 +125,13 @@ define([
     return this._startMarker;
   };
 
-  SegmentMarker.prototype.updatePosition = function(x) {
+  SegmentMarker.prototype.setX = function(x) {
     this._group.setX(x);
+  };
 
-    if (this._marker.positionUpdated) {
-      this._marker.positionUpdated(x);
+  SegmentMarker.prototype.timeUpdated = function(time) {
+    if (this._marker.timeUpdated) {
+      this._marker.timeUpdated(time);
     }
   };
 

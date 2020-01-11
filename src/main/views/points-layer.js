@@ -202,6 +202,8 @@ define([
                    pointMarker.getWidth();
 
       point.time = this._view.pixelsToTime(offset);
+
+      pointMarker.timeUpdated(point.time);
     }
 
     this._peaks.emit('points.dragmove', point);
@@ -285,7 +287,7 @@ define([
 
       var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
-      pointMarker.updatePosition(pointMarkerX);
+      pointMarker.setX(pointMarkerX);
     }
   };
 

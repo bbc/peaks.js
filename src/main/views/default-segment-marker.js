@@ -34,11 +34,14 @@ define([
 
     var xPosition = this._options.startMarker ? -24 : 24;
 
+    var time = this._options.startMarker ? this._options.segment.startTime :
+                                           this._options.segment.endTime;
+
     // Label - create with default y, the real value is set in fitToView().
     this._label = new Konva.Text({
       x:          xPosition,
       y:          0,
-      text:       '',
+      text:       Utils.formatTime(time, false),
       fontSize:   10,
       fontFamily: 'sans-serif',
       fill:       '#000',
@@ -120,10 +123,7 @@ define([
     this._line.points([0.5, 0, 0.5, height]);
   };
 
-  DefaultSegmentMarker.prototype.positionUpdated = function(x) {
-    var segment = this._options.segment;
-    var time = this._options.startMarker ? segment.startTime : segment.endTime;
-
+  DefaultSegmentMarker.prototype.timeUpdated = function(time) {
     this._label.setText(Utils.formatTime(time, false));
   };
 

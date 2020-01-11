@@ -176,24 +176,28 @@ define([
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
+    var startMarker = segmentMarker.isStartMarker();
+
     var startMarkerX = this._startMarker.getX();
     var endMarkerX = this._endMarker.getX();
 
-    if (startMarkerX >= 0) {
+    if (startMarker && startMarkerX >= 0) {
       var startMarkerOffset = frameOffset +
                               startMarkerX +
                               this._startMarker.getWidth();
 
       this._segment.startTime = this._view.pixelsToTime(startMarkerOffset);
+
+      segmentMarker.timeUpdated(this._segment.startTime);
     }
 
-    if (endMarkerX < width) {
+    if (!startMarker && endMarkerX < width) {
       var endMarkerOffset = frameOffset + endMarkerX;
 
       this._segment.endTime = this._view.pixelsToTime(endMarkerOffset);
-    }
 
-    var startMarker = segmentMarker.isStartMarker();
+      segmentMarker.timeUpdated(this._segment.endTime);
+    }
 
     this._peaks.emit('segments.dragged', this._segment, startMarker);
   };

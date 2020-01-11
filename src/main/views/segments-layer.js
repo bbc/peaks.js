@@ -199,13 +199,13 @@ define([
     var marker = segmentShape.getStartMarker();
 
     if (marker) {
-      marker.updatePosition(startPixel - marker.getWidth());
+      marker.setX(startPixel - marker.getWidth());
     }
 
     marker = segmentShape.getEndMarker();
 
     if (marker) {
-      marker.updatePosition(endPixel);
+      marker.setX(endPixel);
     }
   };
 

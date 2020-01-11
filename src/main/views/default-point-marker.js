@@ -49,7 +49,7 @@ define([
 
     // Handle - create with default y, the real value is set in fitToView().
 
-    if (this._draggable) {
+    if (this._options.draggable) {
       this._handle = new Konva.Rect({
         x:      handleX,
         y:      0,
@@ -75,7 +75,7 @@ define([
       this._time = new Konva.Text({
         x:          -24,
         y:          0,
-        text:       '',
+        text:       Utils.formatTime(this._options.point.time, false),
         fontSize:   10,
         fontFamily: 'sans-serif',
         fill:       '#000',
@@ -112,23 +112,23 @@ define([
         // Position text to the left of the marker
         self._time.setX(-24 - self._time.getWidth());
         self._time.show();
-        self._layer.draw();
+        self._options.layer.draw();
       });
 
       self._handle.on('mouseout touchend', function() {
         self._time.hide();
-        self._layer.draw();
+        self._options.layer.draw();
       });
 
       group.on('dragstart', function() {
         self._time.setX(-24 - self._time.getWidth());
         self._time.show();
-        self._layer.draw();
+        self._options.layer.draw();
       });
 
       group.on('dragend', function() {
         self._time.hide();
-        self._layer.draw();
+        self._options.layer.draw();
       });
     }
   };
@@ -151,11 +151,9 @@ define([
     }
   };
 
-  DefaultPointMarker.prototype.positionUpdated = function(x) {
+  DefaultPointMarker.prototype.timeUpdated = function(time) {
     if (this._time) {
-      var time = Utils.formatTime(this._options.point.time, false);
-
-      this._time.setText(time);
+      this._time.setText(Utils.formatTime(time, false));
     }
   };
 

@@ -80,7 +80,7 @@ class CustomPointMarker {
     // (required, see below)
   }
 
-  positionUpdated() {
+  timeUpdated() {
     // (optional, see below)
   }
 
@@ -135,7 +135,7 @@ class CustomSegmentMarker {
     // (required, see below)
   }
 
-  positionUpdated() {
+  timeUpdated() {
     // (optional, see below)
   }
 
@@ -255,20 +255,19 @@ fitToView() {
 }
 ```
 
-#### `positionUpdated(x)`
+#### `timeUpdated(time)`
 
-The `positionUpdated` method is called when the marker's position has changed.
-This could be due a change to the marker's `time` attribute (for point markers),
-or `startTime` or `endTime` (for segment markers), or if the view has scrolled.
+The `timeUpdated` method is called when the marker's time position has changed.
+This is the marker's `time` attribute (for point markers), or `startTime` or
+`endTime` (for segment markers).
 
-| Name  | Type     | Description                           |
-| ----- | -------- | ------------------------------------- |
-| `x`   | `number` | Horizontal marker position, in pixels |
+| Name   | Type     | Description                      |
+| ------ | -------- | -------------------------------- |
+| `time` | `number` | Marker time position, in seconds |
 
 ```javascript
-positionUpdated(x) {
-  const point = this._options.point;
-  console.log(point.time);
+timeUpdated(time) {
+  console.log('Marker time', time);
 }
 ```
 

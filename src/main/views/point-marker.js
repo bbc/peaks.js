@@ -116,11 +116,13 @@ define([
     return this._group.getWidth();
   };
 
-  PointMarker.prototype.updatePosition = function(x) {
+  PointMarker.prototype.setX = function(x) {
     this._group.setX(x);
+  };
 
-    if (this._marker.positionUpdated) {
-      this._marker.positionUpdated(x);
+  PointMarker.prototype.timeUpdated = function(time) {
+    if (this._marker.timeUpdated) {
+      this._marker.timeUpdated(time);
     }
   };
 
