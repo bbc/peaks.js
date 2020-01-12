@@ -429,7 +429,13 @@ define([
 
   WaveformZoomView.prototype._createAxisLabels = function() {
     this._axisLayer = new Konva.FastLayer();
-    this._axis = new WaveformAxis(this, this._axisLayer, this._options);
+
+    this._axis = new WaveformAxis(this, {
+      axisGridlineColor: this._options.axisGridlineColor,
+      axisLabelColor:    this._options.axisLabelColor
+    });
+
+    this._axis.addToLayer(this._axisLayer);
     this._stage.add(this._axisLayer);
   };
 

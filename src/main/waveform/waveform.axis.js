@@ -16,28 +16,27 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
    * @alias WaveformAxis
    *
    * @param {WaveformOverview|WaveformZoomView} view
-   * @param {Konva.Layer} layer
    * @param {Object} options
    * @param {String} options.axisGridlineColor
    * @param {String} options.axisLabelColor
    */
 
-  function WaveformAxis(view, layer, options) {
+  function WaveformAxis(view, options) {
     var self = this;
 
-    self._options = options;
+    self._axisGridlineColor = options.axisGridlineColor;
+    self._axisLabelColor    = options.axisLabelColor;
 
-    var axisShape = new Konva.Shape({
-      fill: 'rgba(38, 255, 161, 1)',
-      strokeWidth: 0,
-      opacity: 1,
+    self._axisShape = new Konva.Shape({
       sceneFunc: function(context) {
         self.drawAxis(context, view);
       }
     });
-
-    layer.add(axisShape);
   }
+
+  WaveformAxis.prototype.addToLayer = function(layer) {
+    layer.add(this._axisShape);
+  };
 
   /**
    * Returns number of seconds for each x-axis marker, appropriate for the
@@ -101,19 +100,19 @@ define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
     // Distance between waveform start time and first axis marker (pixels)
     var axisLabelOffsetPixels = view.timeToPixels(axisLabelOffsetSecs);
 
-    context.setAttr('strokeStyle', this._options.axisGridlineColor);
+    context.setAttr('strokeStyle', this._axisGridlineColor);
     context.setAttr('lineWidth', 1);
 
     // Set text style
     context.setAttr('font', '11px sans-serif');
-    context.setAttr('fillStyle', this._options.axisLabelColor);
+    context.setAttr('fillStyle', this._axisLabelColor);
     context.setAttr('textAlign', 'left');
     context.setAttr('textBaseline', 'bottom');
 
     var secs = firstAxisLabelSecs;
     var x;
 
-    var width = view.getWidth();
+    var width  = view.getWidth();
     var height = view.getHeight();
 
     for (;;) {
