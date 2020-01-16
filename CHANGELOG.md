@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 0.17.0 (2020/01/16)
+
+ * (#302) Fixed segment handle dragging so that dragging the start marker does
+   not change the segment end time, and vice versa (@chrisn)
+
+ * Added view.enableMarkerEditing() method (@chrisn)
+
+ * Updated Typescript definitions (@is343, @chrisn)
+
 ## 0.16.0 (2019/12/16)
 
  * (#262) Increased hit region for segment mouseenter and mouseleave events,
