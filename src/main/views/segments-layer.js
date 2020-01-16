@@ -251,21 +251,25 @@ define([
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
-    var inMarkerX  = segmentGroup.inMarker.getX();
-    var outMarkerX = segmentGroup.outMarker.getX();
+    if (inMarker) {
+      var inMarkerX = segmentGroup.inMarker.getX();
 
-    if (inMarkerX > 0) {
-      var inOffset = frameOffset +
-                     inMarkerX +
-                     segmentGroup.inMarker.getWidth();
+      if (inMarkerX > 0) {
+        var inOffset = frameOffset +
+                       inMarkerX +
+                       segmentGroup.inMarker.getWidth();
 
-      segment.startTime = this._view.pixelsToTime(inOffset);
+        segment.startTime = this._view.pixelsToTime(inOffset);
+      }
     }
+    else {
+      var outMarkerX = segmentGroup.outMarker.getX();
 
-    if (outMarkerX < width) {
-      var outOffset = frameOffset + outMarkerX;
+      if (outMarkerX < width) {
+        var outOffset = frameOffset + outMarkerX;
 
-      segment.endTime = this._view.pixelsToTime(outOffset);
+        segment.endTime = this._view.pixelsToTime(outOffset);
+      }
     }
 
     this._peaks.emit('segments.dragged', segment, inMarker);
