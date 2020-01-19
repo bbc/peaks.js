@@ -4,7 +4,7 @@
  */
 
 declare module 'peaks.js' {
-  import Konva from "konva";
+  import Konva from 'konva';
 
   interface SegmentAddOptions {
     startTime: number;
@@ -90,28 +90,18 @@ declare module 'peaks.js' {
 
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
 
-  abstract class PointMarker {
-    constructor(options: CreatePointMarkerOptions);
-    abstract createMarker(group: Konva.Group, options: CreatePointMarkerOptions): void;
-    abstract fitToView(): void;
-    addToLayer(layer: Konva.Layer): void;
-    updatePosition(x: number): void;
-    getX(): number;
-    getWidth(): number;
-    getLayer(): Layer;
-    getGroup(): Konva.Group;
+  interface PointMarker {
+    init: (group: Konva.Group) => void;
+    fitToView: () => void;
+    timeUpdated?: (time: number) => void;
+    destroy?: () => void;
   }
 
-  abstract class SegmentMarker {
-    constructor(options: CreateSegmentMarkerOptions);
-    abstract createMarker(group: Konva.Group, options: CreatePointMarkerOptions): void;
-    abstract fitToView(): void;
-    addToLayer(layer: Konva.Layer): void;
-    updatePosition(x: number): void;
-    getX(): number;
-    getWidth(): number;
-    getLayer(): Layer;
-    getGroup(): Konva.Group;
+  interface SegmentMarker {
+    init: (group: Konva.Group) => void;
+    fitToView: () => void;
+    timeUpdated?: (time: number) => void;
+    destroy?: () => void;
   }
 
   interface Layer {
@@ -201,7 +191,7 @@ declare module 'peaks.js' {
     // Custom segment label factory function
     createSegmentLabel?: (options: CreateSegmentLabelOptions) => Konva.Node;
     // Custom point marker factory function
-    createPointMarker?: (option: CreatePointMarkerOptions) => PointMarker;
+    createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
   }
 
   interface SetSourceRequiredOptions {
