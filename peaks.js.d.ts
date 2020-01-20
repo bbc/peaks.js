@@ -4,8 +4,6 @@
  */
 
 declare module 'peaks.js' {
-  import Konva from 'konva';
-
   interface SegmentAddOptions {
     startTime: number;
     endTime: number;
@@ -59,9 +57,9 @@ declare module 'peaks.js' {
   interface ViewContainerOptions {
     containers: {
       // Container element for the overview (non-zoomable) waveform view
-      overview?: HTMLElement;
+      overview?: HTMLElement | null;
       // Container element for the zoomable waveform view
-      zoomview?: HTMLElement;
+      zoomview?: HTMLElement | null;
     }
   }
 
@@ -91,14 +89,14 @@ declare module 'peaks.js' {
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
 
   interface PointMarker {
-    init: (group: Konva.Group) => void;
+    init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
     timeUpdated?: (time: number) => void;
     destroy?: () => void;
   }
 
   interface SegmentMarker {
-    init: (group: Konva.Group) => void;
+    init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
     timeUpdated?: (time: number) => void;
     destroy?: () => void;
@@ -189,7 +187,7 @@ declare module 'peaks.js' {
     // Custom segment marker factory function
     createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
     // Custom segment label factory function
-    createSegmentLabel?: (options: CreateSegmentLabelOptions) => Konva.Node;
+    createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
     // Custom point marker factory function
     createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
   }
