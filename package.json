@@ -4,6 +4,10 @@
   "description": "JavaScript UI component for displaying audio waveforms",
   "main": "./peaks.js",
   "types": "./peaks.js.d.ts",
+  "files": [
+    "peaks.js",
+    "peaks.js.d.ts"
+  ],
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
     "Thomas Parisot (https://github.com/oncletom)",
@@ -64,8 +68,8 @@
     "test-watch": "npm test -- --auto-watch --no-single-run",
     "copy-demo-files": "cp test_data/sample.mp3 demo && cp test_data/07023003.mp3 demo && cp test_data/07023003-2channel.dat demo",
     "prestart": "npm run build && npm run copy-demo-files",
-    "prepublish": "npm run build",
-    "start": "serve --listen 8080 --no-clipboard demo"
+    "start": "serve --listen 8080 --no-clipboard demo",
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "browserify": "~16.5.0",
