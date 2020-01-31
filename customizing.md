@@ -1,11 +1,9 @@
-# Customising Peaks.js
+# Customizing Peaks.js
 
-This document describes how to customise how point and segment markers
-are rendered in Peaks.js.
+This document describes how to customize various aspects of the waveform rendering in Peaks.js.
 
 Peaks.js makes use of the [Konva.js](https://konvajs.org/) graphics library,
-and so we recommend becoming familiar with Konva.js. You may find the following
-Konva tutorials helpful:
+and so we recommend becoming familiar with Konva. You may find the following tutorials helpful:
 
 * [Konva Polygon Tutorial](https://konvajs.github.io/docs/shapes/Line_-_Polygon.html)
 * [Konva Text Tutorial](https://konvajs.github.io/docs/shapes/Text.html)
@@ -16,7 +14,7 @@ change at any time.
 
 ## Point and Segment Markers
 
-Peaks.js allows you to customise the appearance of the point and segment
+Peaks.js allows you to customize the appearance of the point and segment
 markers. This is achieved by providing `createPointMarker` and/or
 `createSegmentMarker` functions in the options passed when calling
 `Peaks.init()`, for example:
