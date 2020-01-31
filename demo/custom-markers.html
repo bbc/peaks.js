@@ -13,7 +13,7 @@
         width: 1000px;
       }
 
-      .zoom-container, .overview-container {
+      #zoomview-container, #overview-container {
         box-shadow: 3px 3px 20px #919191;
         margin: 0 0 24px 0;
         -moz-box-shadow: 3px 3px 20px #919191;
@@ -21,11 +21,11 @@
         line-height: 0;
       }
 
-      .zoom-container {
+      #zoomview-container {
         height: 200px;
       }
 
-      .overview-container {
+      #overview-container {
         height: 85px;
       }
 
@@ -100,20 +100,22 @@
         <a href="webaudio.html">Web Audio API</a> |
         <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
         <a href="overview-waveform.html">Single Fixed Waveform</a> |
-        Cue Events |
+        <a href="cue-events.html">Cue Events</a> |
         <a href="set-source.html">Changing the Media URL</a> |
         <a href="multi-channel.html">Multi-Channel Waveform</a> |
-        <a href="custom-markers.html">Custom Point and Segment Markers</a>
+        Custom Point and Segment Markers
       </p>
-
-      <h2>Demo: Cue Events</h2>
+      <h2>Demo: Custom Point and Segment Markers</h2>
       <p>
-        This demo shows how to listen for events from the playhead reaching points, or segment edges. <br />
-        Events in this demo are logged in the browser console.
+        This demo shows how to customise the appearance and behavior of point
+        and segment markers.
       </p>
     </div>
 
-    <div id="waveform-container"></div>
+    <div id="waveform-container">
+      <div id="zoomview-container"></div>
+      <div id="overview-container"></div>
+    </div>
 
     <div id="demo-controls">
       <audio id="audio" controls="controls">
@@ -130,7 +132,11 @@
         <button data-action="log-data">Log segments/points</button>
         <input type="text" id="seek-time" value="0.0">
         <button data-action="seek">Seek</button>
-        <button data-action="reverse-direction">Reverse direction</button>
+        <label for="amplitude-scale">Amplitude scale</label>
+        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+        <input type="checkbox" id="auto-scroll" checked>
+        <label for="auto-scroll">Auto-scroll</label>
+        <button data-action="resize">Resize</button>
         <button data-action="destroy">Destroy</button>
       </div>
     </div>
@@ -169,9 +175,262 @@
       </div>
     </div>
 
-    <script src="peaks.js?20"></script>
+    <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
+
+        /*
+         * CustomSegmentMarker
+         */
+
+        function CustomSegmentMarker(options) {
+          this._options = options;
+        }
+
+        CustomSegmentMarker.prototype.init = function(group) {
+          this._group = group;
+
+          this._label = new Konva.Label({
+            x: 0.5,
+            y: 0.5
+          });
+
+          var color = this._options.segment.color;
+
+          this._tag = new Konva.Tag({
+            fill:             color,
+            stroke:           color,
+            strokeWidth:      1,
+            pointerDirection: 'down',
+            pointerWidth:     10,
+            pointerHeight:    10,
+            lineJoin:         'round',
+            shadowColor:      'black',
+            shadowBlur:       10,
+            shadowOffsetX:    3,
+            shadowOffsetY:    3,
+            shadowOpacity:    0.3
+          });
+
+          this._label.add(this._tag);
+
+          var labelText = this._options.segment.labelText +
+                          (this._options.startMarker ? ' start' : ' end');
+
+          this._text = new Konva.Text({
+            text:       labelText,
+            fontFamily: 'Calibri',
+            fontSize:   14,
+            padding:    5,
+            fill:       'white'
+          });
+
+          this._label.add(this._text);
+
+          // Vertical Line - create with default y and points, the real values
+          // are set in fitToView().
+          this._line = new Konva.Line({
+            x:           0,
+            y:           0,
+            stroke:      color,
+            strokeWidth: 1
+          });
+
+          group.add(this._label);
+          group.add(this._line);
+
+          this.fitToView();
+
+          this.bindEventHandlers();
+        };
+
+        CustomSegmentMarker.prototype.bindEventHandlers = function() {
+          var container = document.getElementById('zoomview-container');
+
+          this._group.on('mouseenter', function() {
+            container.style.cursor = 'move';
+          });
+
+          this._group.on('mouseleave', function() {
+            container.style.cursor = 'default';
+          });
+        };
+
+        CustomSegmentMarker.prototype.fitToView = function() {
+          var height = this._options.layer.getHeight();
+
+          var labelHeight = this._text.height() + 2 * this._text.padding();
+          var offsetTop = 14;
+          var offsetBottom = 26;
+
+          this._group.y(offsetTop + labelHeight + 0.5);
+
+          this._line.points([0.5, 0, 0.5, height - labelHeight - offsetTop - offsetBottom]);
+        };
+
+        function createSegmentMarker(options) {
+          if (options.view === 'zoomview') {
+            return new CustomSegmentMarker(options);
+          }
+
+          return null;
+        }
+
+        function createSegmentLabel(options) {
+          if (options.view === 'overview') {
+            return null;
+          }
+
+          var label = new Konva.Label({
+            x: 12,
+            y: 16
+          });
+
+          label.add(new Konva.Tag({
+            fill:             'black',
+            pointerDirection: 'none',
+            shadowColor:      'black',
+            shadowBlur:       10,
+            shadowOffsetX:    3,
+            shadowOffsetY:    3,
+            shadowOpacity:    0.3
+          }));
+
+          label.add(new Konva.Text({
+            text:       options.segment.labelText,
+            fontSize:   14,
+            fontFamily: 'Calibri',
+            fill:       'white',
+            padding:    8
+          }));
+
+          return label;
+        }
+
+        /*
+         * CustomPointMarker
+         */
+
+        function CustomPointMarker(options) {
+          this._options = options;
+        }
+
+        CustomPointMarker.prototype.init = function(group) {
+          this._group = group;
+
+          this._label = new Konva.Label({
+            x: 0.5,
+            y: 0.5
+          });
+
+          this._tag = new Konva.Tag({
+            fill:             this._options.color,
+            stroke:           this._options.color,
+            strokeWidth:      1,
+            pointerDirection: 'down',
+            pointerWidth:     10,
+            pointerHeight:    10,
+            lineJoin:         'round',
+            shadowColor:      'black',
+            shadowBlur:       10,
+            shadowOffsetX:    3,
+            shadowOffsetY:    3,
+            shadowOpacity:    0.3
+          });
+
+          this._label.add(this._tag);
+
+          this._text = new Konva.Text({
+            text:       this._options.point.labelText,
+            fontFamily: 'Calibri',
+            fontSize:   14,
+            padding:    5,
+            fill:       'white'
+          });
+
+          this._label.add(this._text);
+
+          // Vertical Line - create with default y and points, the real values
+          // are set in fitToView().
+          this._line = new Konva.Line({
+            x:           0,
+            y:           0,
+            stroke:      this._options.color,
+            strokeWidth: 1
+          });
+
+          group.add(this._label);
+          group.add(this._line);
+
+          this.fitToView();
+
+          this.bindEventHandlers();
+        };
+
+        CustomPointMarker.prototype.bindEventHandlers = function() {
+          var container = document.getElementById('zoomview-container');
+
+          this._group.on('mouseenter', function() {
+            container.style.cursor = 'move';
+          });
+
+          this._group.on('mouseleave', function() {
+            container.style.cursor = 'default';
+          });
+        };
+
+        CustomPointMarker.prototype.fitToView = function() {
+          var height = this._options.layer.getHeight();
+
+          var labelHeight = this._text.height() + 2 * this._text.padding();
+          var offsetTop = 14;
+          var offsetBottom = 26;
+
+          this._group.y(offsetTop + labelHeight + 0.5);
+
+          this._line.points([0.5, 0, 0.5, height - labelHeight - offsetTop - offsetBottom]);
+        };
+
+        /*
+         * SimplePointMarker
+         */
+
+        function SimplePointMarker(options) {
+          this._options = options;
+        }
+
+        SimplePointMarker.prototype.init = function(group) {
+          this._group = group;
+
+          // Vertical Line - create with default y and points, the real values
+          // are set in fitToView().
+          this._line = new Konva.Line({
+            x:           0,
+            y:           0,
+            stroke:      this._options.color,
+            strokeWidth: 1
+          });
+
+          group.add(this._line);
+
+          this.fitToView();
+        };
+
+        SimplePointMarker.prototype.fitToView = function() {
+          var height = this._options.layer.getHeight();
+
+          this._line.points([0.5, 0, 0.5, height]);
+        };
+
+        function createPointMarker(options) {
+          if (options.view === 'zoomview') {
+            return new CustomPointMarker(options);
+          }
+          else {
+            return new SimplePointMarker(options);
+          }
+        }
+
         var renderSegments = function(peaks) {
           var segmentsContainer = document.getElementById('segments');
           var segments = peaks.segments.getSegments();
@@ -265,12 +524,6 @@
           var points = peaks.points.getPoints();
           var html = '';
 
-          window.pointUpdated = function(i, prop, value) {
-            var points = peaksInstance.points.getPoints();
-            var segment = points[i];
-            point.update({[prop]: value});
-          };
-
           for (var i = 0; i < points.length; i++) {
             var point = points[i];
 
@@ -324,16 +577,20 @@
         };
 
         var options = {
-          container: document.getElementById('waveform-container'),
+          containers: {
+            zoomview: document.getElementById('zoomview-container'),
+            overview: document.getElementById('overview-container')
+          },
           mediaElement: document.getElementById('audio'),
           dataUri: {
             arraybuffer: 'TOL_6min_720p_download.dat',
             json: 'TOL_6min_720p_download.json'
           },
           keyboard: true,
-          pointMarkerColor: '#006eb0',
-          showPlayheadTime: true,
-          emitCueEvents: true
+          showPlayheadTime: false,
+          createSegmentMarker: createSegmentMarker,
+          createSegmentLabel: createSegmentLabel,
+          createPointMarker: createPointMarker
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -347,19 +604,24 @@
             peaksInstance.zoom.zoomOut();
           });
 
+          var segmentCounter = 1;
+
           document.querySelector('button[data-action="add-segment"]').addEventListener('click', function() {
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: "Test segment",
+              labelText: 'Segment ' + segmentCounter++,
               editable: true
             });
           });
 
+          var pointCounter = 1;
+
           document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
             peaksInstance.points.add({
               time: peaksInstance.player.getCurrentTime(),
-              labelText: "Test point",
+              labelText: 'Point ' + pointCounter++,
+              color: '#006eb0',
               editable: true
             });
           });
@@ -378,19 +640,13 @@
             }
           });
 
-          document.querySelector('button[data-action="reverse-direction"]').addEventListener('click', function(event) {
-            var el = document.querySelector('audio');
-
-            try {
-              el.playbackRate = -el.playbackRate;
-            }
-            catch (e) {
-              console.info('reverse direction not supported');
-            }
-          });
-
           document.querySelector('button[data-action="destroy"]').addEventListener('click', function(event) {
             peaksInstance.destroy();
+          });
+
+          document.getElementById('auto-scroll').addEventListener('change', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+            view.enableAutoScroll(event.target.checked);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {
@@ -410,29 +666,106 @@
             }
           });
 
-          peaksInstance.segments.add({
-            startTime: 5.5,
-            endTime: 7.5,
-            editable: true,
-            id: 'testsegment'
+          var amplitudeScales = {
+            "0": 0.0,
+            "1": 0.1,
+            "2": 0.25,
+            "3": 0.5,
+            "4": 0.75,
+            "5": 1.0,
+            "6": 1.5,
+            "7": 2.0,
+            "8": 3.0,
+            "9": 4.0,
+            "10": 5.0
+          };
+
+          document.getElementById('amplitude-scale').addEventListener('input', function(event) {
+            var scale = amplitudeScales[event.target.value];
+
+            peaksInstance.views.getView('zoomview').setAmplitudeScale(scale);
+            peaksInstance.views.getView('overview').setAmplitudeScale(scale);
           });
 
-          peaksInstance.points.add({
-            time: 4.3,
-            editable: true,
-            id: 'testpoint'
+          document.querySelector('button[data-action="resize"]').addEventListener('click', function(event) {
+            var zoomviewContainer = document.getElementById('zoomview-container');
+            var overviewContainer = document.getElementById('overview-container');
+
+            var zoomviewStyle = zoomviewContainer.offsetHeight === 200 ? 'height:300px' : 'height:200px';
+            var overviewStyle = overviewContainer.offsetHeight === 85  ? 'height:200px' : 'height:85px';
+
+            zoomviewContainer.setAttribute('style', zoomviewStyle);
+            overviewContainer.setAttribute('style', overviewStyle);
+
+            var zoomview = peaksInstance.views.getView('zoomview');
+            if (zoomview) {
+              zoomview.fitToContainer();
+            }
+
+            var overview = peaksInstance.views.getView('overview');
+            if (overview) {
+              overview.fitToContainer();
+            }
           });
 
-          peaksInstance.on('points.enter', function(point) {
-            console.log('points.enter', point, peaksInstance.player.getCurrentTime())
+          // Points mouse events
+
+          peaksInstance.on('points.mouseenter', function(point) {
+            console.log('points.mouseenter:', point);
           });
 
-          peaksInstance.on('segments.enter', function(segment) {
-            console.log('segments.enter', segment,peaksInstance.player.getCurrentTime())
+          peaksInstance.on('points.mouseleave', function(point) {
+            console.log('points.mouseleave:', point);
           });
 
-          peaksInstance.on('segments.exit', function(segment) {
-            console.log('segments.exit', segment, peaksInstance.player.getCurrentTime())
+          peaksInstance.on('points.dblclick', function(point) {
+            console.log('points.dblclick:', point);
+          });
+
+          peaksInstance.on('points.dragstart', function(point) {
+            console.log('points.dragstart:', point);
+          });
+
+          peaksInstance.on('points.dragmove', function(point) {
+            console.log('points.dragmove:', point);
+          });
+
+          peaksInstance.on('points.dragend', function(point) {
+            console.log('points.dragend:', point);
+          });
+
+          // Segments mouse events
+
+          peaksInstance.on('segments.dragstart', function(segment, startMarker) {
+            console.log('segments.dragstart:', segment, startMarker);
+          });
+
+          peaksInstance.on('segments.dragend', function(segment, startMarker) {
+            console.log('segments.dragend:', segment, startMarker);
+          });
+
+          peaksInstance.on('segments.dragged', function(segment, startMarker) {
+            console.log('segments.dragged:', segment, startMarker);
+          });
+
+          peaksInstance.on('segments.mouseenter', function(segment) {
+            console.log('segments.mouseenter:', segment);
+          });
+
+          peaksInstance.on('segments.mouseleave', function(segment) {
+            console.log('segments.mouseleave:', segment);
+          });
+
+          peaksInstance.on('segments.click', function(segment) {
+            console.log('segments.click:', segment);
+          });
+
+          peaksInstance.on('zoomview.dblclick', function(time) {
+            console.log('zoomview.dblclick:', time);
+          });
+
+          peaksInstance.on('overview.dblclick', function(time) {
+            console.log('overview.dblclick:', time);
           });
         });
       })(peaks);

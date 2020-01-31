@@ -3,11 +3,25 @@
  *
  * Defines the {@link MouseDragHandler} class.
  *
- * @module peaks/views/helpers/mousedraghandler
+ * @module peaks/views/mouse-drag-handler
  */
 
-define(function() {
+define([
+  'konva'
+  ], function(Konva) {
   'use strict';
+
+  function getMarkerObject(obj) {
+    while (obj.parent !== null) {
+      if (obj.parent instanceof Konva.Layer) {
+        return obj;
+      }
+
+      obj = obj.parent;
+    }
+
+    return null;
+  }
 
   /**
    * An object to receive callbacks on mouse drag events. Each function is
@@ -36,9 +50,9 @@ define(function() {
     this._stage     = stage;
     this._handlers  = handlers;
     this._dragging  = false;
-    this._mouseDown = this.mouseDown.bind(this);
-    this._mouseUp   = this.mouseUp.bind(this);
-    this._mouseMove = this.mouseMove.bind(this);
+    this._mouseDown = this._mouseDown.bind(this);
+    this._mouseUp   = this._mouseUp.bind(this);
+    this._mouseMove = this._mouseMove.bind(this);
 
     this._stage.on('mousedown', this._mouseDown);
     this._stage.on('touchstart', this._mouseDown);
@@ -52,16 +66,11 @@ define(function() {
    * @param {MouseEvent} event
    */
 
-  MouseDragHandler.prototype.mouseDown = function(event) {
-    if (!event.target) {
-      return;
-    }
+  MouseDragHandler.prototype._mouseDown = function(event) {
+    var marker = getMarkerObject(event.target);
 
-    if (event.target.attrs.draggable) {
-      return;
-    }
-
-    if (event.target.parent && event.target.parent.attrs.draggable) {
+    // Avoid interfering with drag/drop of point and segment markers.
+    if (marker && marker.attrs.draggable) {
       return;
     }
 
@@ -94,7 +103,7 @@ define(function() {
    * @param {MouseEvent} event
    */
 
-  MouseDragHandler.prototype.mouseMove = function(event) {
+  MouseDragHandler.prototype._mouseMove = function(event) {
     var clientX = null;
 
     if (event.type === 'touchmove') {
@@ -124,7 +133,7 @@ define(function() {
    * @param {MouseEvent} event
    */
 
-  MouseDragHandler.prototype.mouseUp = function(event) {
+  MouseDragHandler.prototype._mouseUp = function(event) {
     var clientX = null;
 
     if (event.type === 'touchend') {

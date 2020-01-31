@@ -4,7 +4,6 @@
  */
 
 declare module 'peaks.js' {
-
   interface SegmentAddOptions {
     startTime: number;
     endTime: number;
@@ -58,9 +57,9 @@ declare module 'peaks.js' {
   interface ViewContainerOptions {
     containers: {
       // Container element for the overview (non-zoomable) waveform view
-      overview?: HTMLElement;
+      overview?: HTMLElement | null;
       // Container element for the zoomable waveform view
-      zoomview?: HTMLElement;
+      zoomview?: HTMLElement | null;
     }
   }
 
@@ -89,6 +88,48 @@ declare module 'peaks.js' {
 
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
 
+  interface PointMarker {
+    init: (group: object) => void; // TODO: group: Konva.Group
+    fitToView: () => void;
+    timeUpdated?: (time: number) => void;
+    destroy?: () => void;
+  }
+
+  interface SegmentMarker {
+    init: (group: object) => void; // TODO: group: Konva.Group
+    fitToView: () => void;
+    timeUpdated?: (time: number) => void;
+    destroy?: () => void;
+  }
+
+  interface Layer {
+    getHeight: () => number;
+    draw: () => void;
+  }
+
+  interface CreatePointMarkerOptions {
+    point: Point;
+    view: string;
+    draggable: boolean;
+    color: string;
+    layer: Layer;
+  }
+
+  interface CreateSegmentMarkerOptions {
+    segment: Segment;
+    view: string;
+    draggable: boolean;
+    color: string;
+    layer: Layer;
+    startMarker: boolean;
+  }
+
+  interface CreateSegmentLabelOptions {
+    segment: Segment;
+    view: string;
+    layer: Layer;
+  }
+
   interface OptionalOptions {
     // If true, peaks will send credentials with all network requests
     // i.e. when fetching waveform data.
@@ -103,10 +144,10 @@ declare module 'peaks.js' {
     keyboard?: boolean;
     // Keyboard nudge increment in seconds (left arrow/right arrow)
     nudgeIncrement?: number;
-    // Colour for the in marker of segments
-    inMarkerColor?: string;
-    // Colour for the out marker of segments
-    outMarkerColor?: string;
+    // Colour for segment start marker handles
+    segmentStartMarkerColor?: string;
+    // Colour for segment end marker handles
+    segmentEndMarkerColor?: string;
     // Colour for the zoomed in waveform
     zoomWaveformColor?: string;
     // Colour for the overview waveform
@@ -143,6 +184,12 @@ declare module 'peaks.js' {
     points?: Point[];
     // Emit cue events when playing
     emitCueEvents?: boolean;
+    // Custom segment marker factory function
+    createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
+    // Custom segment label factory function
+    createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
+    // Custom point marker factory function
+    createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
   }
 
   interface SetSourceRequiredOptions {
@@ -167,9 +214,9 @@ declare module 'peaks.js' {
     'points.remove': (points: Point[]) => void;
     'points.enter': (point: Point) => void;
     'segments.add': (segments: Segment[]) => void;
-    'segments.dragstart': (segment: Segment, inMarker: boolean) => void;
-    'segments.dragged': (segment: Segment, inMarker: boolean) => void;
-    'segments.dragend': (segment: Segment, inMarker: boolean) => void;
+    'segments.dragstart': (segment: Segment, startMarker: boolean) => void;
+    'segments.dragged': (segment: Segment, startMarker: boolean) => void;
+    'segments.dragend': (segment: Segment, startMarker: boolean) => void;
     'segments.remove_all': () => void;
     'segments.remove': (segments: Segment[]) => void;
     'segments.mouseenter': (segment: Segment) => void;
@@ -190,6 +237,7 @@ declare module 'peaks.js' {
     showPlayheadTime: (show: boolean) => void;
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
+    fitToContainer: () => void;
   }
 
   interface PeaksInstance {

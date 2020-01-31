@@ -22,12 +22,11 @@ define([
    * @param {WaveformOverview|WaveformZoomView} view
    * @param {Boolean} showTime If <code>true</code> The playback time position
    *   is shown next to the playhead.
-   * @param {Number} time Initial position of the playhead, in seconds.
    */
 
-  function PlayheadLayer(peaks, view, showTime, time) {
+  function PlayheadLayer(peaks, view, showTime) {
     this._peaks = peaks;
-    this._view  = view;
+    this._view = view;
     this._playheadPixel = 0;
     this._playheadLineAnimation = null;
     this._playheadVisible = false;
@@ -42,8 +41,9 @@ define([
       this._createPlayheadText(this._playheadTextColor);
     }
 
+    this.fitToView();
+
     this.zoomLevelChanged();
-    this._syncPlayhead(time);
   }
 
   /**
@@ -89,6 +89,21 @@ define([
   };
 
   /**
+   * Resizes the playhead UI objects to fit the available space in the
+   * view.
+   */
+
+  PlayheadLayer.prototype.fitToView = function() {
+    var height = this._view.getHeight();
+
+    this._playheadLine.points([0.5, 0, 0.5, height]);
+
+    if (this._playheadText) {
+      this._playheadText.y(12);
+    }
+  };
+
+  /**
    * Creates the playhead UI objects.
    *
    * @private
@@ -96,9 +111,9 @@ define([
    */
 
   PlayheadLayer.prototype._createPlayhead = function(color) {
+    // Create with default points, the real values are set in fitToView().
     this._playheadLine = new Konva.Line({
-      points: [0.5, 0, 0.5, this._view.getHeight()],
-      stroke: color,
+      stroke:      color,
       strokeWidth: 1
     });
 
@@ -112,9 +127,10 @@ define([
   };
 
   PlayheadLayer.prototype._createPlayheadText = function(color) {
+    // Create with default y, the real value is set in fitToView().
     this._playheadText = new Konva.Text({
       x: 2,
-      y: 12,
+      y: 0,
       text: '00:00:00',
       fontSize: 11,
       fontFamily: 'sans-serif',

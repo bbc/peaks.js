@@ -7,20 +7,22 @@
  */
 
 define([
+  'peaks/views/highlight-layer',
+  'peaks/views/mouse-drag-handler',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/waveform-shape',
-  'peaks/views/helpers/mousedraghandler',
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.utils',
   'konva'
 ], function(
+  HighlightLayer,
+  MouseDragHandler,
   PlayheadLayer,
   PointsLayer,
   SegmentsLayer,
   WaveformShape,
-  MouseDragHandler,
   WaveformAxis,
   Utils,
   Konva) {
@@ -66,7 +68,7 @@ define([
     self._height = container.clientHeight || self._options.height;
 
     if (self._width !== 0) {
-      self._data = waveformData.resample(self._width);
+      self._data = waveformData.resample({ width: self._width });
     }
     else {
       self._data = waveformData;
@@ -91,20 +93,29 @@ define([
     self._segmentsLayer = new SegmentsLayer(peaks, self, false);
     self._segmentsLayer.addToStage(self._stage);
 
-    self._pointsLayer = new PointsLayer(peaks, self, false, false);
+    self._pointsLayer = new PointsLayer(peaks, self, false);
     self._pointsLayer.addToStage(self._stage);
 
-    self._createHighlightLayer();
+    self._highlightLayer = new HighlightLayer(
+      self,
+      self._options.overviewHighlightOffset,
+      self._options.overviewHighlightColor
+    );
+    self._highlightLayer.addToStage(self._stage);
+
     self._createAxisLabels();
 
     self._playheadLayer = new PlayheadLayer(
       peaks,
       self,
-      false, // showPlayheadTime
-      self._options.mediaElement.currentTime
+      false // showPlayheadTime
     );
 
     self._playheadLayer.addToStage(self._stage);
+
+    var time = self._peaks.player.getCurrentTime();
+
+    this._playheadLayer.updatePlayheadTime(time);
 
     self._mouseDragHandler = new MouseDragHandler(self._stage, {
       onMouseDown: function(mousePosX) {
@@ -139,6 +150,10 @@ define([
     });
   }
 
+  WaveformOverview.prototype.getName = function() {
+    return 'overview';
+  };
+
   WaveformOverview.prototype._onTimeUpdate = function(time) {
     this._playheadLayer.updatePlayheadTime(time);
   };
@@ -156,11 +171,7 @@ define([
   };
 
   WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
-    if (!this._highlightRect) {
-      this._createHighlightRect(startTime, endTime);
-    }
-
-    this._updateHighlightRect(startTime, endTime);
+    this._highlightLayer.showHighlight(startTime, endTime);
   };
 
   WaveformOverview.prototype._onWindowResize = function() {
@@ -178,7 +189,7 @@ define([
 
       self._resizeTimeoutId = setTimeout(function() {
         self._width = self._container.clientWidth;
-        self._data = self._originalWaveformData.resample(self._width);
+        self._data = self._originalWaveformData.resample({ width: self._width });
         self._stage.setWidth(self._width);
 
         self._updateWaveform();
@@ -190,7 +201,7 @@ define([
     this._originalWaveformData = waveformData;
 
     if (this._width !== 0) {
-      this._data = waveformData.resample(this._width);
+      this._data = waveformData.resample({ width: this._width });
     }
     else {
       this._data = waveformData;
@@ -293,70 +304,18 @@ define([
 
   WaveformOverview.prototype._createAxisLabels = function() {
     this._axisLayer = new Konva.FastLayer();
-    this._axis = new WaveformAxis(this, this._axisLayer, this._options);
+
+    this._axis = new WaveformAxis(this, {
+      axisGridlineColor: this._options.axisGridlineColor,
+      axisLabelColor:    this._options.axisLabelColor
+    });
+
+    this._axis.addToLayer(this._axisLayer);
     this._stage.add(this._axisLayer);
   };
 
-  WaveformOverview.prototype._createHighlightLayer = function() {
-    this._highlightLayer = new Konva.FastLayer();
-    this._stage.add(this._highlightLayer);
-  };
-
-  WaveformOverview.prototype._createHighlightRect = function(startTime, endTime) {
-    this._highlightRectStartTime = startTime;
-    this._highlightRectEndTime = endTime;
-
-    var startOffset = this.timeToPixels(startTime);
-    var endOffset   = this.timeToPixels(endTime);
-    var offset = Utils.clamp(
-      this._options.overviewHighlightOffset,
-      0,
-      Math.floor(this._height / 2)
-    );
-
-    this._highlightRect = new Konva.Rect({
-      startOffset: 0,
-      y: offset,
-      width: endOffset - startOffset,
-      stroke: this._options.overviewHighlightColor,
-      strokeWidth: 1,
-      height: this._height - (offset * 2),
-      fill: this._options.overviewHighlightColor,
-      opacity: 0.3,
-      cornerRadius: 2
-    });
-
-    this._highlightLayer.add(this._highlightRect);
-  };
-
-  /**
-   * Updates the position of the highlight region.
-   *
-   * @param {Number} startTime The start of the highlight region, in seconds.
-   * @param {Number} endTime The end of the highlight region, in seconds.
-   */
-
-  WaveformOverview.prototype._updateHighlightRect = function(startTime, endTime) {
-    this._highlightRectStartTime = startTime;
-    this._highlightRectEndTime = endTime;
-
-    var startOffset = this.timeToPixels(startTime);
-    var endOffset   = this.timeToPixels(endTime);
-
-    this._highlightRect.setAttrs({
-      x:     startOffset,
-      width: endOffset - startOffset
-    });
-
-    this._highlightLayer.draw();
-  };
-
   WaveformOverview.prototype.removeHighlightRect = function() {
-    if (this._highlightRect) {
-      this._highlightRect.destroy();
-      this._highlightRect = null;
-      this._highlightLayer.draw();
-    }
+    this._highlightLayer.removeHighlight();
   };
 
   WaveformOverview.prototype._updateWaveform = function() {
@@ -367,12 +326,7 @@ define([
 
     this._playheadLayer.updatePlayheadTime(playheadTime);
 
-    if (this._highlightRect) {
-      this._updateHighlightRect(
-        this._highlightRectStartTime,
-        this._highlightRectEndTime
-      );
-    }
+    this._highlightLayer.updateHighlight();
 
     var frameStartTime = 0;
     var frameEndTime   = this.pixelsToTime(this._width);
@@ -398,6 +352,39 @@ define([
   WaveformOverview.prototype.enableMarkerEditing = function(enable) {
     this._segmentsLayer.enableEditing(enable);
     this._pointsLayer.enableEditing(enable);
+  };
+
+  WaveformOverview.prototype.fitToContainer = function() {
+    var updateWaveform = false;
+
+    if (this._container.clientWidth !== this._width) {
+      this._width = this._container.clientWidth;
+
+      try {
+        this._data = this._originalWaveformData.resample({ width: this._width });
+      }
+      catch (error) {
+        // Ignore, and leave this._data as it was
+      }
+
+      this._stage.setWidth(this._width);
+
+      updateWaveform = true;
+    }
+
+    this._height = this._container.clientHeight;
+    this._stage.setHeight(this._height);
+
+    this._playheadLayer.fitToView();
+    this._segmentsLayer.fitToView();
+    this._pointsLayer.fitToView();
+    this._highlightLayer.fitToView();
+
+    if (updateWaveform) {
+      this._updateWaveform();
+    }
+
+    this._stage.draw();
   };
 
   WaveformOverview.prototype.destroy = function() {

@@ -102,7 +102,8 @@
         <a href="overview-waveform.html">Single Fixed Waveform</a> |
         <a href="cue-events.html">Cue Events</a> |
         <a href="set-source.html">Changing the Media URL</a> |
-        <a href="multi-channel.html">Multi-Channel Waveform</a>
+        <a href="multi-channel.html">Multi-Channel Waveform</a> |
+        <a href="custom-markers.html">Custom Point and Segment Markers</a>
       </p>
       <h2>Demo: Precomputed Waveform Data</h2>
       <p>
@@ -136,6 +137,7 @@
         <input type="range" id="amplitude-scale" min="0" max="10" step="1">
         <input type="checkbox" id="auto-scroll" checked>
         <label for="auto-scroll">Auto-scroll</label>
+        <button data-action="resize">Resize</button>
         <button data-action="destroy">Destroy</button>
       </div>
     </div>
@@ -354,7 +356,7 @@
             peaksInstance.segments.add({
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
-              labelText: "Test segment " + segmentCounter++,
+              labelText: 'Test segment ' + segmentCounter++,
               editable: true
             });
           });
@@ -362,7 +364,7 @@
           document.querySelector('button[data-action="add-point"]').addEventListener('click', function() {
             peaksInstance.points.add({
               time: peaksInstance.player.getCurrentTime(),
-              labelText: "Test point",
+              labelText: 'Test point',
               editable: true
             });
           });
@@ -428,6 +430,27 @@
             peaksInstance.views.getView('overview').setAmplitudeScale(scale);
           });
 
+          document.querySelector('button[data-action="resize"]').addEventListener('click', function(event) {
+            var zoomviewContainer = document.getElementById('zoomview-container');
+            var overviewContainer = document.getElementById('overview-container');
+
+            var zoomviewStyle = zoomviewContainer.offsetHeight === 200 ? 'height:300px' : 'height:200px';
+            var overviewStyle = overviewContainer.offsetHeight === 85  ? 'height:200px' : 'height:85px';
+
+            zoomviewContainer.setAttribute('style', zoomviewStyle);
+            overviewContainer.setAttribute('style', overviewStyle);
+
+            var zoomview = peaksInstance.views.getView('zoomview');
+            if (zoomview) {
+              zoomview.fitToContainer();
+            }
+
+            var overview = peaksInstance.views.getView('overview');
+            if (overview) {
+              overview.fitToContainer();
+            }
+          });
+
           // Points mouse events
 
           peaksInstance.on('points.mouseenter', function(point) {
@@ -456,16 +479,16 @@
 
           // Segments mouse events
 
-          peaksInstance.on('segments.dragstart', function(segment, inMarker) {
-            console.log('segments.dragstart:', segment, inMarker);
+          peaksInstance.on('segments.dragstart', function(segment, startMarker) {
+            console.log('segments.dragstart:', segment, startMarker);
           });
 
-          peaksInstance.on('segments.dragend', function(segment, inMarker) {
-            console.log('segments.dragend:', segment, inMarker);
+          peaksInstance.on('segments.dragend', function(segment, startMarker) {
+            console.log('segments.dragend:', segment, startMarker);
           });
 
-          peaksInstance.on('segments.dragged', function(segment, inMarker) {
-            console.log('segments.dragged:', segment, inMarker);
+          peaksInstance.on('segments.dragged', function(segment, startMarker) {
+            console.log('segments.dragged:', segment, startMarker);
           });
 
           peaksInstance.on('segments.mouseenter', function(segment) {

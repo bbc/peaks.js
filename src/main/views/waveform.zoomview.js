@@ -7,22 +7,22 @@
  */
 
 define([
+  'peaks/views/mouse-drag-handler',
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
   'peaks/views/waveform-shape',
-  'peaks/views/helpers/mousedraghandler',
   // 'peaks/views/zooms/animated',
   // 'peaks/views/zooms/static',
   'peaks/waveform/waveform.axis',
   'peaks/waveform/waveform.utils',
   'konva'
   ], function(
+    MouseDragHandler,
     PlayheadLayer,
     PointsLayer,
     SegmentsLayer,
     WaveformShape,
-    MouseDragHandler,
     // AnimatedZoomAdapter,
     // StaticZoomAdapter,
     WaveformAxis,
@@ -103,7 +103,7 @@ define([
     self._segmentsLayer = new SegmentsLayer(peaks, self, true);
     self._segmentsLayer.addToStage(self._stage);
 
-    self._pointsLayer = new PointsLayer(peaks, self, true, true);
+    self._pointsLayer = new PointsLayer(peaks, self, true);
     self._pointsLayer.addToStage(self._stage);
 
     self._createAxisLabels();
@@ -111,8 +111,7 @@ define([
     self._playheadLayer = new PlayheadLayer(
       peaks,
       self,
-      self._options.showPlayheadTime,
-      self._options.mediaElement.currentTime
+      self._options.showPlayheadTime
     );
 
     self._playheadLayer.addToStage(self._stage);
@@ -168,6 +167,10 @@ define([
       self._peaks.emit('zoomview.dblclick', time);
     });
   }
+
+  WaveformZoomView.prototype.getName = function() {
+    return 'zoomview';
+  };
 
   WaveformZoomView.prototype._onTimeUpdate = function(time) {
     if (this._mouseDragHandler.isDragging()) {
@@ -426,7 +429,13 @@ define([
 
   WaveformZoomView.prototype._createAxisLabels = function() {
     this._axisLayer = new Konva.FastLayer();
-    this._axis = new WaveformAxis(this, this._axisLayer, this._options);
+
+    this._axis = new WaveformAxis(this, {
+      axisGridlineColor: this._options.axisGridlineColor,
+      axisLabelColor:    this._options.axisLabelColor
+    });
+
+    this._axis.addToLayer(this._axisLayer);
     this._stage.add(this._axisLayer);
   };
 
@@ -486,6 +495,20 @@ define([
   WaveformZoomView.prototype.enableMarkerEditing = function(enable) {
     this._segmentsLayer.enableEditing(enable);
     this._pointsLayer.enableEditing(enable);
+  };
+
+  WaveformZoomView.prototype.fitToContainer = function() {
+    this._width = this._container.clientWidth;
+    this._height = this._container.clientHeight;
+
+    this._stage.width(this._width);
+    this._stage.height(this._height);
+
+    this._playheadLayer.fitToView();
+    this._segmentsLayer.fitToView();
+    this._pointsLayer.fitToView();
+
+    this._stage.draw();
   };
 
   /* WaveformZoomView.prototype.beginZoom = function() {
