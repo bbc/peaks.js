@@ -146,21 +146,17 @@ define([
       view:      this._view.getName()
     });
 
-    if (marker) {
-      return new PointMarker({
-        point:        point,
-        draggable:    editable,
-        marker:       marker,
-        onDblClick:   this._onPointHandleDblClick,
-        onDragStart:  this._onPointHandleDragStart,
-        onDragMove:   this._onPointHandleDragMove,
-        onDragEnd:    this._onPointHandleDragEnd,
-        onMouseEnter: this._onPointHandleMouseEnter,
-        onMouseLeave: this._onPointHandleMouseLeave
-      });
-    }
-
-    return null;
+    return new PointMarker({
+      point:        point,
+      draggable:    editable,
+      marker:       marker,
+      onDblClick:   this._onPointHandleDblClick,
+      onDragStart:  this._onPointHandleDragStart,
+      onDragMove:   this._onPointHandleDragMove,
+      onDragEnd:    this._onPointHandleDragEnd,
+      onMouseEnter: this._onPointHandleMouseEnter,
+      onMouseLeave: this._onPointHandleMouseLeave
+    });
   };
 
   PointsLayer.prototype.getHeight = function() {
@@ -178,11 +174,9 @@ define([
   PointsLayer.prototype._addPointMarker = function(point) {
     var pointMarker = this._createPointMarker(point);
 
-    if (pointMarker) {
-      this._pointMarkers[point.id] = pointMarker;
+    this._pointMarkers[point.id] = pointMarker;
 
-      pointMarker.addToLayer(this._layer);
-    }
+    pointMarker.addToLayer(this._layer);
 
     return pointMarker;
   };
@@ -282,13 +276,11 @@ define([
   PointsLayer.prototype._updatePoint = function(point) {
     var pointMarker = this._findOrAddPointMarker(point);
 
-    if (pointMarker) {
-      var pointMarkerOffset = this._view.timeToPixels(point.time);
+    var pointMarkerOffset = this._view.timeToPixels(point.time);
 
-      var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
+    var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
-      pointMarker.setX(pointMarkerX);
-    }
+    pointMarker.setX(pointMarkerX);
   };
 
   /**

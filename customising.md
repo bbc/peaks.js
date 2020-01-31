@@ -34,9 +34,9 @@ const options = {
   // Add other options, as needed.
   createPointMarker: createPointMarker,
   createSegmentMarker: createSegmentMarker,
-}
+};
 
-Peaks.init(options, function(err, instance) {
+Peaks.init(options, function(err, peaks) {
   // Use the Peaks.js instance here
 });
 ```
@@ -51,20 +51,19 @@ The `createPointMarker` function returns an object that renders a point marker
 handle. When called, this function receives an object containing the following
 options:
 
-| Name        | Type          | Description                                                                                       |
-| ----------- | ------------- | ------------------------------------------------------------------------------------------------- |
-| `point`     | `Point`       | The `Point` object associated with this marker handle.                                            |
-| `view`      | `string`      | The name of the view that the marker handle is being created in, either `zoomview` or `overview`. |
-| `layer`     | `PointsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                     |
-| `draggable` | `boolean`     | If `true`, the marker is draggable.                                                               |
-| `color`     | `string`      | Color for the marker handle (set by the `pointMarkerColor` option in `Peaks.init()`.              |
+| Name        | Type          | Description                                                                                                                          |
+| ----------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `point`     | `Point`       | The `Point` object associated with this marker handle. This provides access to the `time`, `color`, and `labelText` attributes, etc. |
+| `view`      | `string`      | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                                    |
+| `layer`     | `PointsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                        |
+| `draggable` | `boolean`     | If `true`, the marker is draggable.                                                                                                  |
+| `color`     | `string`      | Color for the marker handle (set by the `pointMarkerColor` option in `Peaks.init()`.                                                 |
 
 The function should return an instance of an object as illustrated by the
 `CustomPointMarker` class below.
 
 You can use the `view` option to give the marker a different appearance or
-behaviour in the zoomview and overview waveform views. You can also return
-`null` from this function if you do not want to display a point marker handle.
+behaviour in the zoomview and overview waveform views.
 
 ```javascript
 class CustomPointMarker {
@@ -105,14 +104,14 @@ The `createSegmentMarker` function returns an object that renders a segment
 marker handle. When called, this function receives an object containing the
 following options:
 
-| Name           | Type            | Description                                                                                                                  |
-| -------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `segment`      | `Segment`       | The `Segment` object associated with this marker handle.                                                                     |
-| `view`         | `string`        | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                            |
-| `layer`        | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                |
-| `draggable`    | `boolean`       | This value is always `true` for segment marker handles.                                                                      |
-| `color`        | `string`        | Color for the marker handle (set by the `segmentStartMarkerColor` or `segmentEndMarkerColor` option in `Peaks.init()`.       |
-| `startMarker`  | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment. |
+| Name           | Type            | Description                                                                                                                                            |
+| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `segment`      | `Segment`       | The `Segment` object associated with this marker handle. This provides access to the `startTime`, `endTime`, `color`, and `labelText` attributes, etc. |
+| `view`         | `string`        | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                                                      |
+| `layer`        | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                                          |
+| `draggable`    | `boolean`       | This value is always `true` for segment marker handles.                                                                                                |
+| `color`        | `string`        | Color for the marker handle (set by the `segmentStartMarkerColor` or `segmentEndMarkerColor` option in `Peaks.init()`.                                 |
+| `startMarker`  | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment.                           |
 
 The function should return an instance of an object as illustrated by the
 `CustomSegmentMarker` class below.
@@ -315,11 +314,11 @@ about a segment, such as its `labelText`.
 You can also return `null` from this function if you do not want to display a
 segment label.
 
-| Name      | Type            | Description                                                                               |
-| --------- | --------------- | ----------------------------------------------------------------------------------------- |
-| `segment` | `Segment`       | The `Segment` object associated with this label.                                          |
-| `view`    | `string`        | The name of the view that the label is being created in, either `zoomview` or `overview`. |
-| `layer`   | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                             |
+| Name      | Type            | Description                                                                                                                                    |
+| --------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `segment` | `Segment`       | The `Segment` object associated with this label. This provides access to the `startTime`, `endTime`, `color`, and `labelText` attributes, etc. |
+| `view`    | `string`        | The name of the view that the label is being created in, either `zoomview` or `overview`.                                                      |
+| `layer`   | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                                  |
 
 ```javascript
 function createSegmentLabel(options) {
