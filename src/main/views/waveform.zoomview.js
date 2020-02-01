@@ -54,7 +54,6 @@ define([
     self._onPlay = self._onPlay.bind(self);
     self._onPause = self._onPause.bind(self);
     self._onWindowResize = self._onWindowResize.bind(self);
-    self._onZoomUpdate = self._onZoomUpdate.bind(self);
     self._onKeyboardLeft = self._onKeyboardLeft.bind(self);
     self._onKeyboardRight = self._onKeyboardRight.bind(self);
     self._onKeyboardShiftLeft  = self._onKeyboardShiftLeft.bind(self);
@@ -65,7 +64,6 @@ define([
     self._peaks.on('user_seek', self._onSeek);
     self._peaks.on('player_play', self._onPlay);
     self._peaks.on('player_pause', self._onPause);
-    self._peaks.on('zoom.update', self._onZoomUpdate);
     self._peaks.on('window_resize', self._onWindowResize);
     self._peaks.on('keyboard.left', self._onKeyboardLeft);
     self._peaks.on('keyboard.right', self._onKeyboardRight);
@@ -199,10 +197,6 @@ define([
     this._playheadLayer.stop(time);
   };
 
-  WaveformZoomView.prototype._onZoomUpdate = function(currentScale, previousScale) {
-    this.setZoomLevel({ scale: currentScale });
-  };
-
   WaveformZoomView.prototype._onWindowResize = function() {
     var self = this;
 
@@ -266,7 +260,7 @@ define([
 
   WaveformZoomView.prototype.setWaveformData = function(waveformData) {
     this._originalWaveformData = waveformData;
-    // Don't update the UI here, call setZoomLevel().
+    // Don't update the UI here, call setZoom().
   };
 
   WaveformZoomView.prototype._syncPlayhead = function(time) {
@@ -310,7 +304,7 @@ define([
             (Utils.objectHasProperty(options, 'seconds') && options.seconds === 'auto'));
   }
 
-  WaveformZoomView.prototype.setZoomLevel = function(options) {
+  WaveformZoomView.prototype.setZoom = function(options) {
     var scale;
 
     if (isAutoScale(options)) {
@@ -342,7 +336,7 @@ define([
     }
 
     if (scale < this._originalWaveformData.scale) {
-      this._peaks.logger('peaks.zoomview.setZoomLevel(): zoom level must be at least ' + this._originalWaveformData.scale);
+      this._peaks.logger('peaks.zoomview.setZoom(): zoom level must be at least ' + this._originalWaveformData.scale);
       scale = this._originalWaveformData.scale;
     }
 
@@ -362,6 +356,8 @@ define([
       apexTime = this.pixelsToTime(this._frameOffset + playheadOffsetPixels);
     }
 
+    var prevScale = this._scale;
+
     this._resampleData({ scale: scale });
 
     var apexPixel = this.timeToPixels(apexTime);
@@ -378,6 +374,8 @@ define([
     // var adapter = this.createZoomAdapter(currentScale, previousScale);
 
     // adapter.start(relativePosition);
+
+    this._peaks.emit('zoom.update', scale, prevScale);
 
     return true;
   };
@@ -666,7 +664,6 @@ define([
     this._peaks.off('user_seek', this._onSeek);
     this._peaks.off('player_play', this._onPlay);
     this._peaks.off('player_pause', this._onPause);
-    this._peaks.off('zoom.update', this._onZoomUpdate);
     this._peaks.off('window_resize', this._onWindowResize);
     this._peaks.off('keyboard.left', this._onKeyboardLeft);
     this._peaks.off('keyboard.right', this._onKeyboardRight);

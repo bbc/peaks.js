@@ -66,6 +66,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.fitToContainer()](#viewfittocontainer)
+    - [view.setZoom()](#viewsetzoomoptions)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -703,15 +704,39 @@ instance.segments.add({
 
 ### `view.fitToContainer()`
 
-Resizes the waveform view to fit the container. You should call this function
-after changing the height of the container HTML element.
+Resizes the waveform view to fit the container. You should call this method
+after changing the width or height of the container HTML element.
+
+If the zoom level has been set to a number of seconds or `'auto'`, the waveform
+will be automatically rescaled to fit the container width.
 
 ```js
 const container = document.getElementById('zoomview-container');
 const view = instance.views.getView('zoomview');
 
-container.setAttribute('style', 'height:300px');
+container.setAttribute('style', 'height: 300px');
 view.fitToContainer();
+```
+
+### `view.setZoom(options)`
+
+Changes the zoom level of the zoomable waveform view.
+
+This method gives applications greater control over the zoom level than the
+older [Zoom API](#zoom-api) methods.
+
+The `options` parameter is an object with one of the following keys:
+
+* `scale`: Sets the zoom level, in samples per pixel.
+* `seconds`: Sets the zoom level to fit the given number of seconds in the available width.
+
+Either option may have the value `'auto'`, which fits the entire waveform to the container width.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setZoom({ scale: 512 }); // samples per pixel
+view.setZoom({ seconds: 5.0 });
+view.setZoom({ seconds: 'auto' });
 ```
 
 ## Zoom API
@@ -743,13 +768,17 @@ instance.zoom.zoomIn(); // zoom level is now 512 again
 
 ### `instance.zoom.setZoom(index)`
 
-Sets the zoom level to the element in the `options.zoomLevels` array at index `index`.
+Changes the zoom level of the zoomable waveform view to the element in the
+`options.zoomLevels` array at index `index`.
 
 ```js
 const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.setZoom(3); // zoom level is now 4096
 ```
+
+See also [view.setZoom()](#viewsetzoomoptions), which offers a more flexible
+way of setting the zoom level.
 
 ### `instance.zoom.getZoom()`
 
