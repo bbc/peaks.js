@@ -140,7 +140,7 @@
 
           var zoomLevels = [5, 10, 20, 30, 60, 120, 180, 'auto'];
 
-          zoomview.setZoomLevel({ seconds: zoomLevels[0] });
+          zoomview.setZoom({ seconds: zoomLevels[0] });
 
           var zoom = document.getElementById('zoom');
 
@@ -152,7 +152,7 @@
           zoom.addEventListener('change', function(event) {
             var zoomLevel = zoomLevels[event.target.value];
 
-            zoomview.setZoomLevel({ seconds: zoomLevel });
+            zoomview.setZoom({ seconds: zoomLevel });
           });
 
           document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {

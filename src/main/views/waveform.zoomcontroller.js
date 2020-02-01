@@ -67,15 +67,15 @@ define([], function() {
       return;
     }
 
-    var previousZoomLevelIndex = this._zoomLevelIndex;
-
     this._zoomLevelIndex = zoomLevelIndex;
 
-    this._peaks.emit(
-      'zoom.update',
-      this._zoomLevels[zoomLevelIndex],
-      this._zoomLevels[previousZoomLevelIndex]
-    );
+    var zoomview = this._peaks.views.getView('zoomview');
+
+    if (!zoomview) {
+      return;
+    }
+
+    zoomview.setZoom({ scale: this._zoomLevels[zoomLevelIndex] });
   };
 
   /**
