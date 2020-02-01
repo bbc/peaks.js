@@ -355,21 +355,23 @@ define([
   };
 
   WaveformOverview.prototype.fitToContainer = function() {
+    if (this._container.clientWidth === 0 && this._container.clientHeight === 0) {
+      return;
+    }
+
     var updateWaveform = false;
 
     if (this._container.clientWidth !== this._width) {
       this._width = this._container.clientWidth;
+      this._stage.setWidth(this._width);
 
       try {
         this._data = this._originalWaveformData.resample({ width: this._width });
+        updateWaveform = true;
       }
       catch (error) {
         // Ignore, and leave this._data as it was
       }
-
-      this._stage.setWidth(this._width);
-
-      updateWaveform = true;
     }
 
     this._height = this._container.clientHeight;
