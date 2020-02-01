@@ -577,15 +577,37 @@ define([
   };
 
   WaveformZoomView.prototype.fitToContainer = function() {
-    this._width = this._container.clientWidth;
-    this._height = this._container.clientHeight;
+    if (this._container.clientWidth === 0 && this._container.clientHeight === 0) {
+      return;
+    }
 
-    this._stage.width(this._width);
+    var updateWaveform = false;
+
+    if (this._container.clientWidth !== this._width) {
+      this._width = this._container.clientWidth;
+      this._stage.width(this._width);
+
+      if (!this._fixedZoom) {
+        try {
+          this._data = this._originalWaveformData.resample({ width: this._width });
+          updateWaveform = true;
+        }
+        catch (error) {
+          // Ignore, and leave this._data as it was
+        }
+      }
+    }
+
+    this._height = this._container.clientHeight;
     this._stage.height(this._height);
 
     this._playheadLayer.fitToView();
     this._segmentsLayer.fitToView();
     this._pointsLayer.fitToView();
+
+    if (updateWaveform) {
+      this._updateWaveform(this._frameOffset);
+    }
 
     this._stage.draw();
   };
