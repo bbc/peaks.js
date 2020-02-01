@@ -82,9 +82,11 @@ define([
 
     var initialZoomLevel = self._options.zoomLevels[peaks.zoom.getZoom()];
 
-    self._fixedZoom = true;
+    self._zoomLevelAuto = false;
+    self._zoomLevelSeconds = null;
+
     self._resizeTimeoutId = null;
-    self._resampleData(initialZoomLevel);
+    self._resampleData({ scale: initialZoomLevel });
 
     self._width = container.clientWidth;
     self._height = container.clientHeight || self._options.height;
@@ -206,7 +208,7 @@ define([
 
     var width = self._container.clientWidth;
 
-    if (self._fixedZoom) {
+    if (!self._zoomLevelAuto) {
       self._width = width;
       self._stage.width(width);
       self._updateWaveform(self._frameOffset);
@@ -318,11 +320,13 @@ define([
         return false;
       }
 
-      this._fixedZoom = false;
+      this._zoomLevelAuto = true;
+      this._zoomLevelSeconds = null;
       scale = this._getScale(seconds);
     }
     else {
       if (Utils.objectHasProperty(options, 'scale')) {
+        this._zoomLevelSeconds = null;
         scale = options.scale;
       }
       else if (Utils.objectHasProperty(options, 'seconds')) {
@@ -330,10 +334,11 @@ define([
             return false;
         }
 
+        this._zoomLevelSeconds = options.seconds;
         scale = this._getScale(options.seconds);
       }
 
-      this._fixedZoom = true;
+      this._zoomLevelAuto = false;
     }
 
     if (scale < this._originalWaveformData.scale) {
@@ -357,7 +362,7 @@ define([
       apexTime = this.pixelsToTime(this._frameOffset + playheadOffsetPixels);
     }
 
-    this._resampleData(scale);
+    this._resampleData({ scale: scale });
 
     var apexPixel = this.timeToPixels(apexTime);
 
@@ -377,10 +382,9 @@ define([
     return true;
   };
 
-  WaveformZoomView.prototype._resampleData = function(scale) {
-    this._scale = scale;
-    this._data = this._originalWaveformData.resample({ scale: scale });
-
+  WaveformZoomView.prototype._resampleData = function(options) {
+    this._data = this._originalWaveformData.resample(options);
+    this._scale = this._data.scale;
     this._pixelLength = this._data.length;
   };
 
@@ -587,9 +591,21 @@ define([
       this._width = this._container.clientWidth;
       this._stage.width(this._width);
 
-      if (!this._fixedZoom) {
+      var resample = false;
+      var resampleOptions;
+
+      if (this._zoomLevelAuto) {
+        resample = true;
+        resampleOptions = { width: this._width };
+      }
+      else if (this._zoomLevelSeconds !== null) {
+        resample = true;
+        resampleOptions = { scale: this._getScale(this._zoomLevelSeconds) };
+      }
+
+      if (resample) {
         try {
-          this._data = this._originalWaveformData.resample({ width: this._width });
+          this._resampleData(resampleOptions);
           updateWaveform = true;
         }
         catch (error) {
