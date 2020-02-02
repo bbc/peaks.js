@@ -238,7 +238,12 @@ declare module 'peaks.js' {
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;
+    setZoom: (options: XOR<{ scale: number | "auto" }, { seconds: number | "auto" }>) => void; 
+    setStartTime: (time: number) => void;
   }
+
+  type Without<T> = { [K in keyof T]?: undefined };
+  type XOR<T, U> = (Without<T> & U) | (T & Without<U>);
 
   interface PeaksInstance {
     setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;
@@ -256,7 +261,9 @@ declare module 'peaks.js' {
     views: {
       createOverview: (container: HTMLElement) => WaveformView;
       createZoomview: (container: HTMLElement) => WaveformView;
-      getView: (name: string) => WaveformView | null;
+      destroyOverview: () => void;
+      destroyZoomview: () => void;
+      getView: (name?: "overview" | "zoomview" ) => WaveformView | null;
     };
     // Zoom API
     zoom: {
