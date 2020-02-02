@@ -708,7 +708,10 @@ Resizes the waveform view to fit the container. You should call this method
 after changing the width or height of the container HTML element.
 
 If the zoom level has been set to a number of seconds or `'auto'`, the waveform
-will be automatically rescaled to fit the container width.
+will be automatically rescaled to fit the container width. As this can take
+a long time, particularly for long waveforms, we recommend using a debounce
+function (such as lodash's [_.debounce()](https://lodash.com/docs/#debounce))
+when changing the container's width.
 
 ```js
 const container = document.getElementById('zoomview-container');
