@@ -31,7 +31,7 @@ function createSegmentMarker(options) {
 const options = {
   // Add other options, as needed.
   createPointMarker: createPointMarker,
-  createSegmentMarker: createSegmentMarker,
+  createSegmentMarker: createSegmentMarker
 };
 
 Peaks.init(options, function(err, peaks) {
@@ -92,7 +92,7 @@ function createPointMarker(options) {
 ```
 
 Your custom point marker handle object must implement the `init` and
-`fitToView` methods. It may also optionally implement `positionUpdated` and
+`fitToView` methods. It may also optionally implement `timeUpdated` and
 `destroy`. Refer to the [Marker methods](#marker-methods) section for
 details.
 
@@ -147,7 +147,7 @@ function createSegmentMarker(options) {
 ```
 
 Your custom segment marker handle object must implement the `init` and
-`fitToView` methods. It may also optionally implement `positionUpdated` and
+`fitToView` methods. It may also optionally implement `timeUpdated` and
 `destroy`. Refer to the [Marker methods](#marker-methods) section for details.
 
 ### Marker methods
