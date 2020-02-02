@@ -3,6 +3,7 @@
   "main": "src/main.js",
   "ignore": [
     ".eslintrc",
+    "karma.conf.js",
     "**/*.txt",
     "**/.*",
     "node_modules",
