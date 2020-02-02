@@ -67,6 +67,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.fitToContainer()](#viewfittocontainer)
     - [view.setZoom()](#viewsetzoomoptions)
+    - [view.setStartTime()](#viewsetstarttimetime)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -741,6 +742,16 @@ view.setZoom({ scale: 512 }); // samples per pixel
 view.setZoom({ seconds: 5.0 });
 view.setZoom({ seconds: 'auto' });
 ```
+
+### `view.setStartTime(time)`
+
+Changes the start time, in seconds, of the zoomable waveform view.
+
+Note that this method is not available on the overview waveform.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setStartTime(6.0); // seconds
 
 ## Zoom API
 
