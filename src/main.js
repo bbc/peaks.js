@@ -6,7 +6,7 @@
  * @module peaks/main
  */
 
-define('peaks', [
+define([
   'colors.css',
   'EventEmitter',
   'peaks/markers/waveform.points',
