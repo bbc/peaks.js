@@ -189,7 +189,7 @@ class CustomPointMarker
   }
 
   init(group) {
-    const layer = this.getLayer();
+    const layer = this._options.layer;
     const height = layer.getHeight();
 
     this._handle = new Konva.Rect({
