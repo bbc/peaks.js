@@ -138,6 +138,8 @@
         <input type="checkbox" id="auto-scroll" checked>
         <label for="auto-scroll">Auto-scroll</label>
         <button data-action="resize">Resize</button>
+        <button data-action="toggle-zoomview">Show/hide zoomable waveform</button>
+        <button data-action="toggle-overview">Show/hide overview waveform</button>
         <button data-action="destroy">Destroy</button>
       </div>
     </div>
@@ -448,6 +450,34 @@
             var overview = peaksInstance.views.getView('overview');
             if (overview) {
               overview.fitToContainer();
+            }
+          });
+
+          document.querySelector('button[data-action="toggle-zoomview"]').addEventListener('click', function(event) {
+            var container = document.getElementById('zoomview-container');
+            var zoomview = peaksInstance.views.getView('zoomview');
+
+            if (zoomview) {
+              peaksInstance.views.destroyZoomview();
+              container.style.display = 'none';
+            }
+            else {
+              container.style.display = 'block';
+              peaksInstance.views.createZoomview(container);
+            }
+          });
+
+          document.querySelector('button[data-action="toggle-overview"]').addEventListener('click', function(event) {
+            var container = document.getElementById('overview-container');
+            var overview = peaksInstance.views.getView('overview');
+
+            if (overview) {
+              peaksInstance.views.destroyOverview();
+              container.style.display = 'none';
+            }
+            else {
+              container.style.display = 'block';
+              peaksInstance.views.createOverview(container);
             }
           });
 
