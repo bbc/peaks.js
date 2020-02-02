@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 0.18.1 (2020/02/02)
+
+ * (#306) Updated TypeScript declarations (@tscz)
+
+ * Documented zoomview.setStartTime() (@chrisn)
+
 ## 0.18.0 (2020/02/02)
 
  * (#300) Redesigned the marker customization API. Refer to customizing.md
@@ -8,6 +14,8 @@
 
  * Added a view.fitToContainer() method that resizes the waveform and point and
    segment marker handles to fit the available space (@chrisn)
+
+ * Added zoomview.setStartTime() method (@chrisn)
 
  * The `inMarkerColor` and `outMarkerColor` configuration options have been
    renamed to `segmentStartMarkerColor` and `segmentEndMarkerColor` (@chrisn)
