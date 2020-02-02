@@ -23,7 +23,6 @@
     "waveform"
   ],
   "browser": {
-    "EventEmitter": "eventemitter2",
     "peaks/cues/cue": "./src/main/cues/cue.js",
     "peaks/cues/cue-emitter": "./src/main/cues/cue-emitter.js",
     "peaks/markers/point": "./src/main/markers/point",

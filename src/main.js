@@ -8,7 +8,7 @@
 
 define([
   'colors.css',
-  'EventEmitter',
+  'eventemitter2',
   'peaks/cues/cue-emitter',
   'peaks/markers/waveform-points',
   'peaks/markers/waveform-segments',
