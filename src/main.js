@@ -3,23 +3,23 @@
  *
  * Defines the {@link Peaks} class.
  *
- * @module peaks/main
+ * @module main
  */
 
 define([
   'colors.css',
   'eventemitter2',
-  'peaks/cues/cue-emitter',
-  'peaks/markers/waveform-points',
-  'peaks/markers/waveform-segments',
-  'peaks/player/keyboard-handler',
-  'peaks/player/player',
-  'peaks/views/marker-factories',
-  'peaks/views/view-controller',
-  'peaks/views/time-controller',
-  'peaks/views/zoom-controller',
-  'peaks/waveform/waveform-builder',
-  'peaks/waveform/utils'
+  './cue-emitter',
+  './waveform-points',
+  './waveform-segments',
+  './keyboard-handler',
+  './player',
+  './marker-factories',
+  './view-controller',
+  './time-controller',
+  './zoom-controller',
+  './waveform-builder',
+  './utils'
   ], function(
     Colors,
     EventEmitter,
