@@ -399,9 +399,11 @@ define([
       time = 0;
     }
 
-    var frameOffset = Math.floor(time * this._data.sample_rate / this._scale);
+    if (this._zoomLevelAuto) {
+      time = 0;
+    }
 
-    this._updateWaveform(frameOffset);
+    this._updateWaveform(this.timeToPixels(time));
   };
 
   /**
