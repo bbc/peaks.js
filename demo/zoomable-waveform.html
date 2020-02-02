@@ -105,6 +105,8 @@
           <input type="range" id="amplitude-scale" min="0" max="10" step="1">
           <label for="waveform-color">Waveform color</label>
           <input type="color" id="waveform-color" value="#00e180">
+          <input type="text" id="start-time" value="0.0">
+          <button data-action="set-start-time">Set start time</button>
         </div>
       </div>
     </div>
@@ -189,6 +191,17 @@
             var view = peaksInstance.views.getView();
 
             view.setWaveformColor(event.target.value);
+          });
+
+          document.querySelector('button[data-action="set-start-time"]').addEventListener('click', function(event) {
+            var time = document.getElementById('start-time').value;
+            var seconds = parseFloat(time);
+
+            if (!Number.isNaN(seconds)) {
+              var view = peaksInstance.views.getView();
+
+              view.setStartTime(seconds);
+            }
           });
         });
       })(peaks);
