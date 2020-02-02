@@ -7,9 +7,9 @@
  */
 
 define([
-  'peaks/views/waveform.overview',
-  'peaks/views/waveform.zoomview',
-  'peaks/waveform/waveform.utils'
+  'peaks/views/waveform-overview',
+  'peaks/views/waveform-zoomview',
+  'peaks/waveform/utils'
   ], function(
     WaveformOverview,
     WaveformZoomView,

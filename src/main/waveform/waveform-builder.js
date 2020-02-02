@@ -8,7 +8,7 @@
 
  define([
   'waveform-data',
-  'peaks/waveform/waveform.utils'
+  'peaks/waveform/utils'
   ], function(
     WaveformData,
     Utils) {

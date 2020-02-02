@@ -7,7 +7,7 @@
  */
 
 define([
-  'peaks/waveform/waveform.utils'
+  'peaks/waveform/utils'
 ], function(Utils) {
   'use strict';
 

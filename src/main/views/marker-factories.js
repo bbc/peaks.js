@@ -3,7 +3,7 @@
  *
  * Factory functions for creating point and segment marker handles.
  *
- * @module peaks/waveform/waveform.mixins
+ * @module peaks/views/marker-factories
  */
 
 define([

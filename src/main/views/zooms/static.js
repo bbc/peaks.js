@@ -6,7 +6,7 @@
  * @module peaks/views/zooms/static
  */
 
-define(['peaks/waveform/waveform.utils'], function(Utils) {
+define([], function() {
   'use strict';
 
   return {

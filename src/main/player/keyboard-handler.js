@@ -3,7 +3,7 @@
  *
  * Defines the {@link KeyboardHandler} class.
  *
- * @module peaks/player/player.keyboard
+ * @module peaks/player/keyboard-handler
  */
 
 define([], function() {
@@ -26,6 +26,7 @@ define([], function() {
    *
    * @param {EventEmitter} eventEmitter
    */
+
   function KeyboardHandler(eventEmitter) {
     this.eventEmitter = eventEmitter;
 

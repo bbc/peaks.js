@@ -6,7 +6,7 @@
  * @module peaks/views/waveform-shape
  */
 
-define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
+define(['peaks/waveform/utils', 'konva'], function(Utils, Konva) {
   'use strict';
 
   /**

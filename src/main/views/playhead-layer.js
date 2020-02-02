@@ -7,7 +7,7 @@
  */
 
 define([
-  'peaks/waveform/waveform.utils',
+  'peaks/waveform/utils',
   'konva'
   ], function(Utils, Konva) {
   'use strict';

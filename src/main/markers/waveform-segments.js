@@ -3,13 +3,13 @@
  *
  * Defines the {@link WaveformSegments} class.
  *
- * @module peaks/markers/waveform.segments
+ * @module peaks/markers/waveform-segments
  */
 
 define([
   'colors.css',
   'peaks/markers/segment',
-  'peaks/waveform/waveform.utils'
+  'peaks/waveform/utils'
 ], function(Colors, Segment, Utils) {
   'use strict';
 

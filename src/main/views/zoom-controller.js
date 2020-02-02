@@ -3,7 +3,7 @@
  *
  * Defines the {@link ZoomController} class.
  *
- * @module peaks/views/waveform.zoomcontroller
+ * @module peaks/views/zoom-controller
  */
 
 define([], function() {

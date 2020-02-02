@@ -3,7 +3,7 @@
  *
  * Defines the {@link WaveformZoomView} class.
  *
- * @module peaks/views/waveform.zoomview
+ * @module peaks/views/waveform-zoomview
  */
 
 define([
@@ -11,21 +11,21 @@ define([
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
+  'peaks/views/waveform-axis',
   'peaks/views/waveform-shape',
   // 'peaks/views/zooms/animated',
   // 'peaks/views/zooms/static',
-  'peaks/waveform/waveform.axis',
-  'peaks/waveform/waveform.utils',
+  'peaks/waveform/utils',
   'konva'
   ], function(
     MouseDragHandler,
     PlayheadLayer,
     PointsLayer,
     SegmentsLayer,
+    WaveformAxis,
     WaveformShape,
     // AnimatedZoomAdapter,
     // StaticZoomAdapter,
-    WaveformAxis,
     Utils,
     Konva) {
   'use strict';

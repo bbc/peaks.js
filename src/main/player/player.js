@@ -6,7 +6,7 @@
  * @module peaks/player/player
  */
 
-define(['peaks/waveform/waveform.utils'], function(Utils) {
+define(['peaks/waveform/utils'], function(Utils) {
   'use strict';
 
   /**

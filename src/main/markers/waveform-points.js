@@ -3,12 +3,12 @@
  *
  * Defines the {@link WaveformPoints} class.
  *
- * @module peaks/markers/waveform.points
+ * @module peaks/markers/waveform-points
  */
 
 define([
   'peaks/markers/point',
-  'peaks/waveform/waveform.utils'
+  'peaks/waveform/utils'
 ], function(Point, Utils) {
   'use strict';
 

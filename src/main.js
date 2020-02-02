@@ -9,31 +9,31 @@
 define([
   'colors.css',
   'EventEmitter',
-  'peaks/markers/waveform.points',
-  'peaks/markers/waveform.segments',
+  'peaks/cues/cue-emitter',
+  'peaks/markers/waveform-points',
+  'peaks/markers/waveform-segments',
+  'peaks/player/keyboard-handler',
   'peaks/player/player',
   'peaks/views/marker-factories',
   'peaks/views/view-controller',
-  'peaks/views/waveform.timecontroller',
-  'peaks/views/waveform.zoomcontroller',
+  'peaks/views/time-controller',
+  'peaks/views/zoom-controller',
   'peaks/waveform/waveform-builder',
-  'peaks/waveform/waveform.utils',
-  'peaks/player/player.keyboard',
-  'peaks/cues/cue-emitter'
+  'peaks/waveform/utils'
   ], function(
     Colors,
     EventEmitter,
+    CueEmitter,
     WaveformPoints,
     WaveformSegments,
+    KeyboardHandler,
     Player,
     MarkerFactories,
     ViewController,
     TimeController,
     ZoomController,
     WaveformBuilder,
-    Utils,
-    KeyboardHandler,
-    CueEmitter) {
+    Utils) {
   'use strict';
 
   function buildUi(container) {

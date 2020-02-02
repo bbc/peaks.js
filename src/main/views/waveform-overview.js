@@ -3,7 +3,7 @@
  *
  * Defines the {@link WaveformOverview} class.
  *
- * @module peaks/views/waveform.overview
+ * @module peaks/views/waveform-overview
  */
 
 define([
@@ -12,9 +12,9 @@ define([
   'peaks/views/playhead-layer',
   'peaks/views/points-layer',
   'peaks/views/segments-layer',
+  'peaks/views/waveform-axis',
   'peaks/views/waveform-shape',
-  'peaks/waveform/waveform.axis',
-  'peaks/waveform/waveform.utils',
+  'peaks/waveform/utils',
   'konva'
 ], function(
   HighlightLayer,
@@ -22,8 +22,8 @@ define([
   PlayheadLayer,
   PointsLayer,
   SegmentsLayer,
-  WaveformShape,
   WaveformAxis,
+  WaveformShape,
   Utils,
   Konva) {
   'use strict';

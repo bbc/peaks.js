@@ -3,7 +3,7 @@
  *
  * Some general utility functions.
  *
- * @module peaks/waveform/waveform.utils
+ * @module peaks/waveform/utils
  */
 
 define(function() {

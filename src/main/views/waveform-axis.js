@@ -3,10 +3,10 @@
  *
  * Defines the {@link WaveformAxis} class.
  *
- * @module peaks/waveform/waveform.axis
+ * @module peaks/waveform/waveform-axis
  */
 
-define(['peaks/waveform/waveform.utils', 'konva'], function(Utils, Konva) {
+define(['peaks/waveform/utils', 'konva'], function(Utils, Konva) {
   'use strict';
 
   /**
