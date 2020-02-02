@@ -1160,4 +1160,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](https://github.com/chrisn)
 
-Copyright 2019 British Broadcasting Corporation
+Copyright 2020 British Broadcasting Corporation
