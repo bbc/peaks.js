@@ -90,17 +90,11 @@
    */
 
   WaveformBuilder.prototype.init = function(options, callback) {
-    if (options.dataUri && (options.webAudio || options.audioContext)) {
+    if ((options.dataUri && (options.webAudio || options.audioContext)) ||
+    (options.rawData && (options.webAudio || options.audioContext)) ||
+    (options.dataUri && options.rawData)) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass a webAudio or dataUri to render waveform data, not both');
-    }
-    if (options.rawData && (options.webAudio || options.audioContext)) {
-      // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass a webAudio or rawData to render waveform data, not both');
-    }
-    if (options.dataUri && options.rawData) {
-      // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass a dataUri or rawData to render waveform data, not both');
+      throw new Error('Peaks.init(): You may only pass once source (webAudio, or dataUri, or rawData) to render waveform data.');
     }
 
     if (options.audioContext) {
