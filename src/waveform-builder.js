@@ -6,12 +6,12 @@
  * @module waveform-builder
  */
 
- define([
+define([
   'waveform-data',
   './utils'
-  ], function(
-    WaveformData,
-    Utils) {
+], function (
+  WaveformData,
+  Utils) {
   'use strict';
 
   var isXhr2 = ('withCredentials' in new XMLHttpRequest());
@@ -41,6 +41,15 @@
    */
 
   /**
+   * Options for supplying local waveform data.
+   *
+   * @typedef {Object} LocalWaveformDataOptions
+   * @global
+   * @property {ArrayBuffer=} arraybuffer
+   * @property {Object=} json
+   */
+
+  /**
    * Options for the Web Audio waveform builder.
    *
    * @typedef {Object} WaveformBuilderWebAudioOptions
@@ -57,6 +66,7 @@
    * @typedef {Object} WaveformBuilderInitOptions
    * @global
    * @property {RemoteWaveformDataOptions=} dataUri
+   * @property {LocalWaveformDataOptions=} rawData
    * @property {WaveformBuilderWebAudioOptions=} webAudio
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
@@ -79,10 +89,18 @@
    * @param {WaveformBuilderInitCallback} callback
    */
 
-  WaveformBuilder.prototype.init = function(options, callback) {
+  WaveformBuilder.prototype.init = function (options, callback) {
     if (options.dataUri && (options.webAudio || options.audioContext)) {
       // eslint-disable-next-line max-len
       throw new Error('Peaks.init(): You must pass a webAudio or dataUri to render waveform data, not both');
+    }
+    if (options.rawData && (options.webAudio || options.audioContext)) {
+      // eslint-disable-next-line max-len
+      throw new Error('Peaks.init(): You must pass a webAudio or rawData to render waveform data, not both');
+    }
+    if (options.dataUri && options.rawData) {
+      // eslint-disable-next-line max-len
+      throw new Error('Peaks.init(): You must pass a dataUri or rawData to render waveform data, not both');
     }
 
     if (options.audioContext) {
@@ -95,6 +113,9 @@
 
     if (options.dataUri) {
       return this._getRemoteWaveformData(options, callback);
+    }
+    else if (options.rawData) {
+      return this._buildWaveformFromLocalData(options, callback);
     }
     else if (options.webAudio) {
       if (options.webAudio.audioBuffer) {
@@ -131,7 +152,7 @@
 
   /* eslint-enable max-len */
 
-  WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
+  WaveformBuilder.prototype._getRemoteWaveformData = function (options, callback) {
     var self = this;
     var dataUri = null;
     var requestType = null;
@@ -149,7 +170,7 @@
       throw new Error('Peaks.init(): The dataUri option must be an object');
     }
 
-    ['ArrayBuffer', 'JSON'].some(function(connector) {
+    ['ArrayBuffer', 'JSON'].some(function (connector) {
       if (window[connector]) {
         requestType = connector.toLowerCase();
         url = dataUri[requestType];
@@ -163,7 +184,7 @@
       throw new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser');
     }
 
-    var xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
+    var xhr = self._createXHR(url, requestType, options.withCredentials, function (event) {
       if (this.readyState !== 4) {
         return;
       }
@@ -185,11 +206,66 @@
 
       callback(null, waveformData);
     },
-    function() {
-      callback(new Error('XHR Failed'));
-    });
+      function () {
+        callback(new Error('XHR Failed'));
+      });
 
     xhr.send();
+  };
+
+  /* eslint-disable max-len */
+
+  /**
+   * Creates a waveform from given data, based on the given options.
+   *
+   * @private
+   * @param {Object} options
+   * @param {Object} options.rawData
+   * @param {ArrayBuffer} options.rawData.arraybuffer Waveform data (binary format)
+   * @param {Object} options.rawData.json Waveform data (JSON format)
+   * @param {WaveformBuilderInitCallback} callback
+   *
+   * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
+   *   for details of the binary and JSON waveform data formats.
+   */
+
+  /* eslint-enable max-len */
+
+  WaveformBuilder.prototype._buildWaveformFromLocalData = function (options, callback) {
+    var rawData = null;
+    var data = null;
+
+    if (Utils.isObject(options.rawData)) {
+      rawData = options.rawData;
+    }
+    else {
+      throw new Error('Peaks.init(): The rawData option must be an object');
+    }
+
+    if (rawData.json instanceof Object) {
+      data = rawData.json;
+    } else if (rawData.arraybuffer instanceof ArrayBuffer) {
+      data = rawData.arraybuffer;
+    }
+
+    if (!data) {
+      // eslint-disable-next-line max-len
+      throw new Error('Peaks.init(): Unable to determine a compatible rawData format for this browser');
+    }
+
+    try {
+      var waveformData = WaveformData.create(data);
+
+      if (waveformData.channels !== 1 && waveformData.channels !== 2) {
+        callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
+        return;
+      }
+
+      callback(null, waveformData);
+    }
+    catch (e) {
+      callback(e);
+    }
   };
 
   /**
@@ -202,7 +278,7 @@
    * @param {WaveformBuilderInitCallback} callback
    */
 
-  WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, callback) {
+  WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function (options, callback) {
     var self = this;
 
     var audioContext = window.AudioContext || window.webkitAudioContext;
@@ -233,7 +309,7 @@
       );
     }
     else {
-      self._peaks.once('player_canplay', function(player) {
+      self._peaks.once('player_canplay', function (player) {
         self._requestAudioAndBuildWaveformData(
           player.getCurrentSource(),
           webAudioOptions,
@@ -244,7 +320,7 @@
     }
   };
 
-  WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function(options, callback) {
+  WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function (options, callback) {
     var webAudioOptions = options.webAudio;
 
     if (webAudioOptions.scale !== options.zoomLevels[0]) {
@@ -271,7 +347,7 @@
    * @param {WaveformBuilderInitCallback} callback
    */
 
-  WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
+  WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function (url,
     webAudio, withCredentials, callback) {
     var self = this;
 
@@ -280,7 +356,7 @@
       return;
     }
 
-    var xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(event) {
+    var xhr = self._createXHR(url, 'arraybuffer', withCredentials, function (event) {
       if (this.readyState !== 4) {
         return;
       }
@@ -302,9 +378,9 @@
 
       WaveformData.createFromAudio(webAudioBuilderOptions, callback);
     },
-    function() {
-      callback(new Error('XHR Failed'));
-    });
+      function () {
+        callback(new Error('XHR Failed'));
+      });
 
     xhr.send();
   };
@@ -320,7 +396,7 @@
    * @returns {XMLHttpRequest}
    */
 
-  WaveformBuilder.prototype._createXHR = function(url, requestType, withCredentials, onLoad, onError) {
+  WaveformBuilder.prototype._createXHR = function (url, requestType, withCredentials, onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
     // open an XHR request to the data source file
