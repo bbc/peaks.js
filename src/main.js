@@ -389,10 +389,16 @@ define([
         instance._cueEmitter = new CueEmitter(instance);
       }
 
-      // TODO: Deprecated, use peaks.ready instead.
-      instance.emit('segments.ready');
+      /*
+        Account for a race condition when supplying local peak
+        data where it emits before the listeners can attach
+      */
+      setTimeout(function() {
+        // TODO: Deprecated, use peaks.ready instead.
+        instance.emit('segments.ready');
 
-      instance.emit('peaks.ready');
+        instance.emit('peaks.ready');
+      }, 0);
 
       if (callback) {
         callback(null, instance);
