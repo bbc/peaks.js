@@ -189,6 +189,17 @@ define(function() {
     },
 
     /**
+     * Checks whether the given value is a valid string.
+     *
+     * @param {ArrayBuffer} value The value to test
+     * @returns {Boolean}
+     */
+
+    isArrayBuffer: function(value) {
+      return Object.prototype.toString.call(value).includes('ArrayBuffer');
+    },
+
+    /**
      * Checks whether the given value is null or undefined.
      *
      * @param {Object} value The value to test
