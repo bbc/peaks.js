@@ -6,8 +6,9 @@
     "karma.conf.js",
     "**/*.txt",
     "**/.*",
-    "node_modules",
     "bower_components",
+    "demo",
+    "node_modules",
     "test",
     "test_data"
   ],
