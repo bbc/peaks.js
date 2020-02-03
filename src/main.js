@@ -3,37 +3,37 @@
  *
  * Defines the {@link Peaks} class.
  *
- * @module peaks/main
+ * @module main
  */
 
-define('peaks', [
+define([
   'colors.css',
-  'EventEmitter',
-  'peaks/markers/waveform.points',
-  'peaks/markers/waveform.segments',
-  'peaks/player/player',
-  'peaks/views/view-controller',
-  'peaks/views/waveform.timecontroller',
-  'peaks/views/waveform.zoomcontroller',
-  'peaks/waveform/waveform-builder',
-  'peaks/waveform/waveform.mixins',
-  'peaks/waveform/waveform.utils',
-  'peaks/player/player.keyboard',
-  'peaks/cues/cue-emitter'
+  'eventemitter2',
+  './cue-emitter',
+  './waveform-points',
+  './waveform-segments',
+  './keyboard-handler',
+  './player',
+  './marker-factories',
+  './view-controller',
+  './time-controller',
+  './zoom-controller',
+  './waveform-builder',
+  './utils'
   ], function(
     Colors,
     EventEmitter,
+    CueEmitter,
     WaveformPoints,
     WaveformSegments,
+    KeyboardHandler,
     Player,
+    MarkerFactories,
     ViewController,
     TimeController,
     ZoomController,
     WaveformBuilder,
-    mixins,
-    Utils,
-    KeyboardHandler,
-    CueEmitter) {
+    Utils) {
   'use strict';
 
   function buildUi(container) {
@@ -134,14 +134,14 @@ define('peaks', [
       nudgeIncrement: 1.0,
 
       /**
-       * Colour for the in marker of segments
+       * Colour for segment start marker handles
        */
-      inMarkerColor:         Colors.gray,
+      segmentStartMarkerColor: Colors.gray,
 
       /**
-       * Colour for the out marker of segments
+       * Colour for segment end marker handles
        */
-      outMarkerColor:        Colors.gray,
+      segmentEndMarkerColor: Colors.gray,
 
       /**
        * Colour for the zoomed in waveform
@@ -253,9 +253,9 @@ define('peaks', [
        *
        * @todo This part of the API is not stable.
        */
-      createSegmentMarker: mixins.createSegmentMarker,
-      createSegmentLabel:  mixins.createSegmentLabel,
-      createPointMarker:   mixins.createPointMarker
+      createSegmentMarker: MarkerFactories.createSegmentMarker,
+      createSegmentLabel:  MarkerFactories.createSegmentLabel,
+      createPointMarker:   MarkerFactories.createPointMarker
     };
 
     /**
@@ -401,7 +401,19 @@ define('peaks', [
     if (opts.overviewHighlightRectangleColor) {
       opts.overviewHighlightColor = opts.overviewHighlightRectangleColor;
       // eslint-disable-next-line max-len
-      opts.deprecationLogger('overviewHighlightRectangleColor has been renamed overviewHighlightColor');
+      opts.deprecationLogger('Peaks.init(): The overviewHighlightRectangleColor option is deprecated, please use overviewHighlightColor instead');
+    }
+
+    if (opts.inMarkerColor) {
+      opts.segmentStartMarkerColor = opts.inMarkerColor;
+      // eslint-disable-next-line max-len
+      opts.deprecationLogger('Peaks.init(): The inMarkerColor option is deprecated, please use segmentStartMarkerColor instead');
+    }
+
+    if (opts.outMarkerColor) {
+      opts.segmentEndMarkerColor = opts.outMarkerColor;
+      // eslint-disable-next-line max-len
+      opts.deprecationLogger('Peaks.init(): The outMarkerColor option is deprecated, please use segmentEndMarkerColor instead');
     }
 
     if (!opts.mediaElement) {

@@ -2,7 +2,7 @@
 
 require('./setup');
 
-var Utils = require('../../src/main/waveform/waveform.utils');
+var Utils = require('../../src/utils');
 
 describe('Utils', function() {
   describe('formatTime', function() {

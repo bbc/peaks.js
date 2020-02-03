@@ -2,7 +2,7 @@
 
 require('./setup');
 
-var WaveformBuilder = require('../../src/main/waveform/waveform-builder');
+var WaveformBuilder = require('../../src/waveform-builder');
 var WaveformData = require('waveform-data');
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;

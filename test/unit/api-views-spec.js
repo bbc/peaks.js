@@ -3,8 +3,8 @@
 require('./setup');
 
 var Peaks = require('../../src/main');
-var WaveformOverview = require('../../src/main/views/waveform.overview');
-var WaveformZoomView = require('../../src/main/views/waveform.zoomview');
+var WaveformOverview = require('../../src/waveform-overview');
+var WaveformZoomView = require('../../src/waveform-zoomview');
 
 describe('Peaks.views', function() {
   var p;

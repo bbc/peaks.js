@@ -3,8 +3,8 @@
 require('./setup');
 
 var Peaks = require('../../src/main');
-var CueEmitter = require('../../src/main/cues/cue-emitter');
-var Cue = require('../../src/main/cues/cue');
+var CueEmitter = require('../../src/cue-emitter');
+var Cue = require('../../src/cue');
 
 describe('CueEmitter', function() {
   var p;

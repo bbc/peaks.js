@@ -3,7 +3,7 @@
 require('./setup');
 
 var Peaks = require('../../src/main');
-var Point = require('../../src/main/markers/point');
+var Point = require('../../src/point');
 
 describe('Point', function() {
   describe('update()', function() {

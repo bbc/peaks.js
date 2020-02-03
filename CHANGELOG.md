@@ -1,5 +1,40 @@
 # Peaks.js
 
+## 0.18.1 (2020/02/02)
+
+ * (#306) Updated TypeScript declarations (@tscz)
+
+ * Documented zoomview.setStartTime() (@chrisn)
+
+## 0.18.0 (2020/02/02)
+
+ * (#300) Redesigned the marker customization API. Refer to customizing.md
+   for detailed documentation on how to customize the appearance of point
+   and segment marker handles (@chrisn)
+
+ * Added a view.fitToContainer() method that resizes the waveform and point and
+   segment marker handles to fit the available space (@chrisn)
+
+ * Added zoomview.setStartTime() method (@chrisn)
+
+ * The `inMarkerColor` and `outMarkerColor` configuration options have been
+   renamed to `segmentStartMarkerColor` and `segmentEndMarkerColor` (@chrisn)
+
+ * (#305) Added a zoomview.setZoom() method that gives applications greater
+   flexibility in setting the zoom level. The zoom level can be set to (a)
+   a number of samples per pixel, as per the existing peaks.zoom.setZoom() API,
+   (b) a number of seconds fit to the available width, or (c) the entire audio
+   duration fit to the available width (@chrisn)
+
+## 0.17.0 (2020/01/16)
+
+ * (#302) Fixed segment handle dragging so that dragging the start marker does
+   not change the segment end time, and vice versa (@chrisn)
+
+ * Added view.enableMarkerEditing() method (@chrisn)
+
+ * Updated Typescript definitions (@is343, @chrisn)
+
 ## 0.16.0 (2019/12/16)
 
  * (#262) Increased hit region for segment mouseenter and mouseleave events,

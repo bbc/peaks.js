@@ -14,7 +14,7 @@
 
 Peaks.js was developed by [BBC R&D](https://www.bbc.co.uk/rd) to allow users to make accurate clippings of audio content in the browser, using a backend API that serves the waveform data.
 
-Peaks.js uses the HTML canvas element to display the waveform at different zoom levels, and has configuration options to allow you to customise the waveform views. Peaks.js allows users to interact with the waveform views, including zooming and scrolling, and creating point or segment markers that denote content to be clipped or for reference, e.g., distinguishing music from speech or identifying different music tracks.
+Peaks.js uses the HTML canvas element to display the waveform at different zoom levels, and has configuration options to allow you to customize the waveform views. Peaks.js allows users to interact with the waveform views, including zooming and scrolling, and creating point or segment markers that denote content to be clipped or for reference, e.g., distinguishing music from speech or identifying different music tracks.
 
 ### Features
 
@@ -25,7 +25,7 @@ Peaks.js uses the HTML canvas element to display the waveform at different zoom 
 * Server-side waveform computation, for efficiency
 * Mono, stereo, or multi-channel waveform views
 * Create point or segment marker annotations
-* Customisable waveform views
+* Customizable waveform views
 
 You can read more about the project and see a demo [here](https://waveform.prototyping.bbc.co.uk/).
 
@@ -41,7 +41,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Generate waveform data](#generate-waveform-data)
   - [Web Audio based waveforms](#web-audio-based-waveforms)
 - [Configuration](#configuration)
-  - [Advanced configuration](#advanced-configuration)
+  - [Marker customization](#marker-customization)
 - [API](#api)
   - [Initalisation](#initialisation)
     - [Peaks.init()](#peaksinitoptions-callback)
@@ -65,6 +65,9 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
+    - [view.fitToContainer()](#viewfittocontainer)
+    - [view.setZoom()](#viewsetzoomoptions)
+    - [view.setStartTime()](#viewsetstarttimetime)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -355,33 +358,33 @@ var options = {
   // Keyboard nudge increment in seconds (left arrow/right arrow)
   nudgeIncrement: 0.01,
 
-  // Colour for the in marker of segments
-  inMarkerColor: '#a0a0a0',
+  // Color for segment start marker handles
+  segmentStartMarkerColor: '#a0a0a0',
 
-  // Colour for the out marker of segments
-  outMarkerColor: '#a0a0a0',
+  // Color for segment end marker handles
+  segmentEndMarkerColor: '#a0a0a0',
 
-  // Colour for the zoomed in waveform
+  // Color for the zoomable waveform
   zoomWaveformColor: 'rgba(0, 225, 128, 1)',
 
-  // Colour for the overview waveform
+  // Color for the overview waveform
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
 
-  // Colour for the overview waveform rectangle
-  // that shows what the zoom view shows
+  // Color for the overview waveform rectangle
+  // that shows what the zoomable view shows
   overviewHighlightColor: 'grey',
 
   // The default number of pixels from the top and bottom of the canvas
   // that the overviewHighlight takes up
   overviewHighlightOffset: 11,
 
-  // Colour for segments on the waveform
+  // Color for segments on the waveform
   segmentColor: 'rgba(255, 161, 39, 1)',
 
-  // Colour of the play head
+  // Color of the play head
   playheadColor: 'rgba(0, 0, 0, 1)',
 
-  // Colour of the play head text
+  // Color of the play head text
   playheadTextColor: '#aaa',
 
   // Show current time next to the play head
@@ -391,13 +394,13 @@ var options = {
   // the color of a point marker
   pointMarkerColor: '#FF0000',
 
-  // Colour of the axis gridlines
+  // Color of the axis gridlines
   axisGridlineColor: '#ccc',
 
-  // Colour of the axis labels
+  // Color of the axis labels
   axisLabelColor: '#aaa',
 
-  // Random colour per segment (overrides segmentColor)
+  // Random color per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
   // Array of initial segment objects with startTime and
@@ -434,22 +437,12 @@ var options = {
 }
 ```
 
-## Advanced configuration
+## Marker customization
 
-The marker and label Konva.js objects may be overridden to give the segment
-markers or label your own custom appearance (see main.js / waveform.mixins.js,
-[Konva Polygon Example](https://konvajs.github.io/docs/shapes/Line_-_Polygon.html)
-and [Konva Text Example](https://konvajs.github.io/docs/shapes/Text.html)):
-
-```javascript
-{
-  createSegmentMarker: mixins.createSegmentMarker(p.options),
-  createSegmentLabel: mixins.createSegmentLabel(p.options),
-  createPointMarker: mixins.createPointMarker(p.options)
-}
-```
-
-**Note:** This part of the API is not yet stable, and so may change at any time.
+Peaks.js allows you to customize the appearance of the point and segment
+markers, by specifying the following configuration options: `createPointMarker`,
+`createSegmentMarker`, and `createSegmentLabel`. Please read
+[Customizing Peaks.js](customizing.md) for more details.
 
 # API
 
@@ -698,7 +691,7 @@ Enables or disables point and segment marker editing. By default, the zoomable w
 
 Note that this method should be called before adding any point or segment markers. It will not change any existing non-editable markers to be editable.
 
-```javascript
+```js
 const view = instance.views.getView('overview');
 view.enableMarkerEditing(true);
 
@@ -709,6 +702,57 @@ instance.segments.add({
   editable: true
 });
 ```
+
+### `view.fitToContainer()`
+
+Resizes the waveform view to fit the container. You should call this method
+after changing the width or height of the container HTML element.
+
+If the zoom level has been set to a number of seconds or `'auto'`, the waveform
+will be automatically rescaled to fit the container width. As this can take
+a long time, particularly for long waveforms, we recommend using a debounce
+function (such as lodash's [_.debounce()](https://lodash.com/docs/#debounce))
+when changing the container's width.
+
+```js
+const container = document.getElementById('zoomview-container');
+const view = instance.views.getView('zoomview');
+
+container.setAttribute('style', 'height: 300px');
+view.fitToContainer();
+```
+
+### `view.setZoom(options)`
+
+Changes the zoom level of the zoomable waveform view.
+
+This method gives applications greater control over the zoom level than the
+older [Zoom API](#zoom-api) methods.
+
+The `options` parameter is an object with one of the following keys:
+
+* `scale`: Sets the zoom level, in samples per pixel.
+* `seconds`: Sets the zoom level to fit the given number of seconds in the available width.
+
+Either option may have the value `'auto'`, which fits the entire waveform to the container width.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setZoom({ scale: 512 }); // samples per pixel
+view.setZoom({ seconds: 5.0 });
+view.setZoom({ seconds: 'auto' });
+```
+
+### `view.setStartTime(time)`
+
+Changes the start time, in seconds, of the zoomable waveform view.
+
+Note that this method is not available on the overview waveform.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setStartTime(6.0); // seconds
+
 ## Zoom API
 
 ### `instance.zoom.zoomOut()`
@@ -738,13 +782,17 @@ instance.zoom.zoomIn(); // zoom level is now 512 again
 
 ### `instance.zoom.setZoom(index)`
 
-Sets the zoom level to the element in the `options.zoomLevels` array at index `index`.
+Changes the zoom level of the zoomable waveform view to the element in the
+`options.zoomLevels` array at index `index`.
 
 ```js
 const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
 
 instance.zoom.setZoom(3); // zoom level is now 4096
 ```
+
+See also [view.setZoom()](#viewsetzoomoptions), which offers a more flexible
+way of setting the zoom level.
 
 ### `instance.zoom.getZoom()`
 
@@ -1126,4 +1174,4 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](https://github.com/chrisn)
 
-Copyright 2019 British Broadcasting Corporation
+Copyright 2020 British Broadcasting Corporation

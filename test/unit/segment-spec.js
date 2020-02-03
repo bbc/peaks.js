@@ -3,7 +3,7 @@
 require('./setup');
 
 var Peaks = require('../../src/main');
-var Segment = require('../../src/main/markers/segment');
+var Segment = require('../../src/segment');
 
 describe('Segment', function() {
   describe('update()', function() {
