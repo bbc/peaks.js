@@ -66,12 +66,12 @@ declare module 'peaks.js' {
   type ContainerOptions = SingleContainerOptions | ViewContainerOptions;
 
   interface PreGeneratedWaveformOptions {
-    dataUri: {
+    dataUri?: {
       // URI to waveform data file in binary or JSON
       arraybuffer?: string;
       json?: string;
     }
-    rawData: {
+    rawData?: {
       // raw waveform data file in binary or JSON
       arraybuffer?: ArrayBuffer;
       json?: PeaksJsonData;
