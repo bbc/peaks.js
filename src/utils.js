@@ -189,7 +189,7 @@ define(function() {
     },
 
     /**
-     * Checks whether the given value is a valid string.
+     * Checks whether the given value is a valid ArrayBuffer.
      *
      * @param {ArrayBuffer} value The value to test
      * @returns {Boolean}
