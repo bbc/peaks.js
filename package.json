@@ -6,7 +6,8 @@
   "types": "./peaks.js.d.ts",
   "files": [
     "peaks.js",
-    "peaks.js.d.ts"
+    "peaks.js.d.ts",
+    "src"
   ],
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
