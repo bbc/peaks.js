@@ -243,7 +243,7 @@ describe('Peaks.segments', function() {
       expect(segments[0].id).to.equal('segment1');
     });
 
-    it('should add segment atomically', function() {
+    it('should add segments atomically', function() {
       p.segments.add([
         { startTime: 0,  endTime: 10 },
         { startTime: 10, endTime: 20 },
