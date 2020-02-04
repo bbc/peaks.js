@@ -45,20 +45,20 @@ declare module 'peaks.js' {
   }
 
   interface RequiredOptions {
-    // HTML5 Media element containing an audio track
+    /** HTML5 Media element containing an audio track */
     mediaElement: Element;
   }
 
   interface SingleContainerOptions {
-    // Container element for the waveform views
+    /** Container element for the waveform views */
     container: HTMLElement;
   }
 
   interface ViewContainerOptions {
     containers: {
-      // Container element for the overview (non-zoomable) waveform view
+      /** Container element for the overview (non-zoomable) waveform view */
       overview?: HTMLElement | null;
-      // Container element for the zoomable waveform view
+      /** Container element for the zoomable waveform view */
       zoomview?: HTMLElement | null;
     }
   }
@@ -67,24 +67,28 @@ declare module 'peaks.js' {
 
   interface PreGeneratedWaveformOptions {
     dataUri?: {
-      // URI to waveform data file in binary or JSON
+      /** URI to waveform data file in binary or JSON */
       arraybuffer?: string;
       json?: string;
     }
+    /** raw waveform data file in binary or JSON */
     rawData?: {
-      // raw waveform data file in binary or JSON
       arraybuffer?: ArrayBuffer;
-      json?: PeaksJsonData;
+      json?: JsonPeaks;
     }
   }
 
   interface WebAudioOptions {
     webAudio: {
-      // A Web Audio AudioContext instance which can be used
-      // to render the waveform if dataUri is not provided
+      /** 
+       * A Web Audio AudioContext instance which can be used
+       * to render the waveform if dataUri is not provided
+       */
       audioContext?: AudioContext;
-      // Alternatively, provide an AudioBuffer containing the decoded audio
-      // samples. In this case, an AudioContext is not needed
+      /**
+       * Alternatively, provide an AudioBuffer containing the decoded audio
+       * samples. In this case, an AudioContext is not needed
+       */
       audioBuffer?: AudioBuffer;
       scale?: number;
       multiChannel?: boolean;
@@ -136,64 +140,74 @@ declare module 'peaks.js' {
   }
 
   interface OptionalOptions {
-    // If true, peaks will send credentials with all network requests
-    // i.e. when fetching waveform data.
+    /**
+     * If true, peaks will send credentials with all network requests
+     * - i.e. when fetching waveform data.
+     */
     withCredentials?: boolean;
-    // async logging function
+    /** async logging function */
     logger?: (...args: any[]) => void;
-    // default height of the waveform canvases in pixels
+    /** default height of the waveform canvases in pixels */
     height?: number;
-    // Array of zoom levels in samples per pixel (big >> small)
+    /** Array of zoom levels in samples per pixel (big >> small) */
     zoomLevels?: number[];
-    // Bind keyboard controls
+    /** Bind keyboard controls */
     keyboard?: boolean;
-    // Keyboard nudge increment in seconds (left arrow/right arrow)
+    /** Keyboard nudge increment in seconds (left arrow/right arrow) */
     nudgeIncrement?: number;
-    // Colour for segment start marker handles
+    /** Color for segment start marker handles */
     segmentStartMarkerColor?: string;
-    // Colour for segment end marker handles
+    /** Color for segment end marker handles */
     segmentEndMarkerColor?: string;
-    // Colour for the zoomed in waveform
+    /** Color for the zoomed in waveform */
     zoomWaveformColor?: string;
-    // Colour for the overview waveform
+    /** Color for the overview waveform */
     overviewWaveformColor?: string;
-    // Colour for the overview waveform rectangle
-    // that shows what the zoom view shows
+    /**
+     * Color for the overview waveform rectangle
+     * that shows what the zoom view shows
+     */
     overviewHighlightColor?: string;
-    // The default number of pixels from the top and bottom of the canvas
-    // that the overviewHighlight takes up
+    /**
+     * The default number of pixels from the top and bottom of the canvas
+     * that the overviewHighlight takes up
+     */
     overviewHighlightOffset?: number;
-    // Colour for segments on the waveform
+    /** Color for segments on the waveform */
     segmentColor?: string;
-    // Colour of the play head
+    /** Color of the play head */
     playheadColor?: string;
-    // Colour of the play head text
+    /** Color of the play head text */
     playheadTextColor?: string;
-    // Show current time next to the play head
-    // (zoom view only)
+    /**
+     * Show current time next to the play head
+     * - (zoom view only)
+     */
     showPlayheadTime?: boolean;
-    // the color of a point marker
+    /** The color of a point marker */
     pointMarkerColor?: string;
-    // Colour of the axis gridlines
+    /** Color of the axis gridlines */
     axisGridlineColor?: string;
-    // Colour of the axis labels
+    /** Color of the axis labels */
     axisLabelColor?: string;
-    // Random colour per segment (overrides segmentColor)
+    /** Random color per segment (overrides segmentColor) */
     randomizeSegmentColor?: boolean;
-    // Zoom view adapter to use. Valid adapters are:
-    // 'animated' (default) and 'static'
+    /**
+     * Zoom view adapter to use.
+     * - Valid adapters are: `'animated'` (default) and `'static'`
+     */
     zoomAdapter?: string;
-    // Array of initial segment objects
+    /** Array of initial segment objects */
     segments?: Segment[];
-    // Array of initial point objects
+    /** Array of initial point objects */
     points?: Point[];
-    // Emit cue events when playing
+    /** Emit cue events when playing */
     emitCueEvents?: boolean;
-    // Custom segment marker factory function
+    /** Custom segment marker factory function */
     createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
-    // Custom segment label factory function
+    /** Custom segment label factory function */
     createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
-    // Custom point marker factory function
+    /** Custom point marker factory function */
     createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
   }
 
@@ -253,7 +267,7 @@ declare module 'peaks.js' {
   interface PeaksInstance {
     setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;
     destroy: () => void;
-    // Player API
+    /** Player API */
     player: {
       play: () => void;
       pause: () => void;
@@ -262,7 +276,7 @@ declare module 'peaks.js' {
       seek: (time: number) => void;
       playSegment: (segment: Segment) => void;
     };
-    // Views API
+    /** Views API */
     views: {
       createOverview: (container: HTMLElement) => WaveformView;
       createZoomview: (container: HTMLElement) => WaveformView;
@@ -270,14 +284,14 @@ declare module 'peaks.js' {
       destroyZoomview: () => void;
       getView: (name?: "overview" | "zoomview" ) => WaveformView | null;
     };
-    // Zoom API
+    /** Zoom API */
     zoom: {
       zoomOut: () => void;
       zoomIn: () => void;
       setZoom: (index: number) => void;
       getZoom: () => number;
     };
-    // Segments API
+    /** Segments API */
     segments: {
       add: (segments: SegmentAddOptions | SegmentAddOptions[]) => void;
       getSegments: () => Segment[];
@@ -286,7 +300,7 @@ declare module 'peaks.js' {
       removeById: (segmentId: string) => Segment[];
       removeAll: () => void;
     };
-    // Points API
+    /** Points API */
     points: {
       add: (points: PointAddOptions | PointAddOptions[]) => void;
       getPoints: () => Point[];
@@ -295,7 +309,7 @@ declare module 'peaks.js' {
       removeById: (id: string) => Point[];
       removeAll: () => void;
     };
-    // Events
+    /** Events */
     on: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
   }
 
@@ -303,7 +317,7 @@ declare module 'peaks.js' {
 
   interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
 
-  export interface PeaksJsonData {
+  export interface JsonPeaks {
     version: number;
     channels: number;
     sample_rate: number;
