@@ -389,10 +389,9 @@ define([
         instance._cueEmitter = new CueEmitter(instance);
       }
 
-      /*
-        Account for a race condition when supplying local peak
-        data where it emits before the listeners can attach
-      */
+      // Allow applications to attach event handlers before emitting events,
+      // when initialising with local waveform data.
+
       setTimeout(function() {
         // TODO: Deprecated, use peaks.ready instead.
         instance.emit('segments.ready');
