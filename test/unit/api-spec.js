@@ -16,7 +16,7 @@ describe('Peaks', function() {
     }
   });
 
-  describe('init', function() {
+  describe.only('init', function() {
     context('with valid options', function() {
       it('should emit peaks.ready and segments.ready events when initialised', function(done) {
         p = Peaks.init({
@@ -240,7 +240,7 @@ describe('Peaks', function() {
             dataUri: { arraybuffer: '/base/test_data/sample.dat' },
             audioContext: new TestAudioContext()
           });
-        }).to.throw(/not both/);
+        }).to.throw(/only pass one/);
       });
 
       it('should throw an exception if neither a dataUri nor an audioContext are provided', function() {
@@ -249,7 +249,7 @@ describe('Peaks', function() {
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media')
           });
-        }).to.throw(/audioContext or dataUri/);
+        }).to.throw(/audioContext, or dataUri, or rawData/);
       });
 
       it('should throw an exception if the dataUri is not an object', function() {
