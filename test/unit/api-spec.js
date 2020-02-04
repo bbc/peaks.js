@@ -16,7 +16,7 @@ describe('Peaks', function() {
     }
   });
 
-  describe.only('init', function() {
+  describe('init', function() {
     context('with valid options', function() {
       it('should emit peaks.ready and segments.ready events when initialised', function(done) {
         p = Peaks.init({
