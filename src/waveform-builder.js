@@ -91,10 +91,10 @@
 
   WaveformBuilder.prototype.init = function(options, callback) {
     if ((options.dataUri && (options.webAudio || options.audioContext)) ||
-    (options.rawData && (options.webAudio || options.audioContext)) ||
-    (options.dataUri && options.rawData)) {
+        (options.rawData && (options.webAudio || options.audioContext)) ||
+        (options.dataUri && options.rawData)) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You may only pass one source (webAudio, or dataUri, or rawData) to render waveform data.');
+      throw new Error('Peaks.init(): You may only pass one source (webAudio, dataUri, or rawData) to render waveform data.');
     }
 
     if (options.audioContext) {
