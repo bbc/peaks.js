@@ -21,3 +21,4 @@ deploy:
   on:
     tags: true
     repo: bbc/peaks.js
+    node_js: 'node'
