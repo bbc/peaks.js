@@ -8,7 +8,7 @@ describe('SegmentsLayer', function() {
   var p;
 
   beforeEach(function(done) {
-    p = Peaks.init({
+    var options = {
       container: document.getElementById('container'),
       mediaElement: document.getElementById('media'),
       dataUri: {
@@ -16,19 +16,23 @@ describe('SegmentsLayer', function() {
       },
       keyboard: true,
       height: 240
-    });
+    };
 
-    p.on('peaks.ready', done);
+    Peaks.init(options, function(err, instance) {
+      p = instance;
+      done(err);
+    });
   });
 
   afterEach(function() {
     if (p) {
       p.destroy();
+      p = null;
     }
   });
 
-  describe('segments.add', function() {
-    it('should redraw the view after adding a segment that is visible', function() {
+  context('when adding a segment', function() {
+    it('should redraw the view if the segment is visible', function() {
       var zoomview = p.views.getView('zoomview');
 
       expect(zoomview).to.be.ok;
@@ -40,7 +44,7 @@ describe('SegmentsLayer', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('should not redraw the view after adding a segment that is not visible', function() {
+    it('should not redraw the view if the segment is not visible', function() {
       var zoomview = p.views.getView('zoomview');
 
       expect(zoomview).to.be.ok;
