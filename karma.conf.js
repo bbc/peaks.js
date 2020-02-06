@@ -150,8 +150,10 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true,
+    singleRun: true
+  });
 
+  config.set({
     browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['ChromeHeadless']
   });
 };
