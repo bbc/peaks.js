@@ -1,5 +1,16 @@
 # Peaks.js
 
+## 0.19.0 (2020/02/06)
+
+ * (#309) Fixed rendering of non-editable segment marker handles (@chrisn)
+
+ * Reduced size of npm and Bower installs by removing unnecessary files
+   (@chrisn)
+
+ * Refactored to simplify code structure. All source files are now placed
+   in a single 'src' directory, and several files have been renamed for
+   consistency (@chrisn)
+
 ## 0.18.1 (2020/02/02)
 
  * (#306) Updated TypeScript declarations (@tscz)
