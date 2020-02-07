@@ -16,7 +16,6 @@ define([
   './player',
   './marker-factories',
   './view-controller',
-  './time-controller',
   './zoom-controller',
   './waveform-builder',
   './utils'
@@ -30,7 +29,6 @@ define([
     Player,
     MarkerFactories,
     ViewController,
-    TimeController,
     ZoomController,
     WaveformBuilder,
     Utils) {
@@ -336,7 +334,6 @@ define([
     instance.segments = new WaveformSegments(instance);
     instance.points = new WaveformPoints(instance);
     instance.zoom = new ZoomController(instance, instance.options.zoomLevels);
-    instance.time = new TimeController(instance);
     instance.views = new ViewController(instance);
 
     // Setup the UI components
