@@ -317,7 +317,7 @@ declare module 'peaks.js' {
 
   interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
 
-  export interface JsonPeaks {
+  export interface JsonWaveformData {
     version: number;
     channels: number;
     sample_rate: number;
