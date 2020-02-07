@@ -25,25 +25,7 @@ describe('Peaks', function() {
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         });
 
-        var segmentsReady = false;
-        var peaksReady = false;
-
-        function readyHandler() {
-          if (peaksReady && segmentsReady) {
-            done();
-          }
-        }
-
-        p.on('peaks.ready', function() {
-          peaksReady = true;
-          readyHandler();
-        });
-
-        // TODO: The segments.ready event is deprecated.
-        p.on('segments.ready', function() {
-          segmentsReady = true;
-          readyHandler();
-        });
+        p.on('peaks.ready', done);
       });
 
       it('should invoke callback when initialised', function(done) {

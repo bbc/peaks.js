@@ -372,9 +372,6 @@ define([
         instance._cueEmitter = new CueEmitter(instance);
       }
 
-      // TODO: Deprecated, use peaks.ready instead.
-      instance.emit('segments.ready');
-
       instance.emit('peaks.ready');
 
       if (callback) {
