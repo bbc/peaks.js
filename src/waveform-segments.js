@@ -201,19 +201,6 @@ define([
                    arguments[0] :
                    Array.prototype.slice.call(arguments);
 
-    if (typeof segments[0] === 'number') {
-      // eslint-disable-next-line max-len
-      this._peaks.options.deprecationLogger('peaks.segments.add(): expected a segment object or an array');
-
-      segments = [{
-        startTime: arguments[0],
-        endTime:   arguments[1],
-        editable:  arguments[2],
-        color:     arguments[3],
-        labelText: arguments[4]
-      }];
-    }
-
     segments = segments.map(function(segmentOptions) {
       var segment = self._createSegment(segmentOptions);
 

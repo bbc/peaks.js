@@ -145,18 +145,6 @@ define([
                  arguments[0] :
                  Array.prototype.slice.call(arguments);
 
-    if (typeof points[0] === 'number') {
-      // eslint-disable-next-line max-len
-      this._peaks.options.deprecationLogger('peaks.points.add(): expected a segment object or an array');
-
-      points = [{
-        time:      arguments[0],
-        editable:  arguments[1],
-        color:     arguments[2],
-        labelText: arguments[3]
-      }];
-    }
-
     points = points.map(function(pointOptions) {
       var point = self._createPoint(pointOptions);
 

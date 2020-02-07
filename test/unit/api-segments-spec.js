@@ -88,17 +88,10 @@ describe('Peaks.segments', function() {
       expect(deprecationLogger).to.not.have.been.called;
     });
 
-    it('should accept a list of properties for a single segment (deprecated)', function() {
-      p.segments.add(0, 10);
-
-      var segments = p.segments.getSegments();
-
-      expect(segments).to.have.lengthOf(1);
-      expect(segments[0]).to.be.an.instanceOf(Segment);
-      expect(segments[0].startTime).to.equal(0);
-      expect(segments[0].endTime).to.equal(10);
-
-      expect(deprecationLogger).to.have.been.calledOnce;
+    it('should should throw if the argument is not an object', function() {
+      expect(function() {
+        p.segments.add(0, 10);
+      }).to.throw(TypeError);
     });
 
     it('should throw an exception if the startTime argument is missing', function() {

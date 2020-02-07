@@ -92,16 +92,10 @@ describe('Peaks.points', function() {
       expect(p.points.getPoints()[1].labelText).to.equal('Another point');
     });
 
-    it('should accept a list of properties for a single point (deprecated)', function() {
-      p.points.add(10, true, '#ff0000', 'A point');
-
-      var points = p.points.getPoints();
-
-      expect(points).to.have.lengthOf(1);
-      expect(points[0]).to.be.an.instanceOf(Point);
-      expect(points[0].time).to.equal(10);
-
-      expect(deprecationLogger).to.have.been.calledOnce;
+    it('should should throw if the argument is not an object', function() {
+      expect(function() {
+        p.points.add(10, true, '#ff0000', 'A point');
+      }).to.throw(TypeError);
     });
 
     it('should accept a point with a timestamp value (deprecated)', function() {
