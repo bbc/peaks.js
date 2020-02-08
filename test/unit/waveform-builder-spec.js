@@ -193,6 +193,60 @@ describe('WaveformBuilder', function() {
       }).to.throw();
     });
 
+    ('ArrayBuffer' in window) && it('should throw if arraybuffer data is invalid', function(done) {
+      expect(function() {
+        var peaks = {
+          options: {
+            mediaElement: document.getElementById('media'),
+            waveformData: {
+              arraybuffer: 'foo'
+            }
+          }
+        };
+        var waveformBuilder = new WaveformBuilder(peaks);
+        waveformBuilder.init(peaks.options, function() {
+        });
+      }).to.throw(/Unable to determine/);
+      done();
+    });
+
+    it('should use the waveformData json data connector', function(done) {
+      var sampleJsonData = require('../../test_data/sample.json');
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          waveformData: {
+            json: sampleJsonData
+          }
+        }
+      };
+
+      var waveformBuilder = new WaveformBuilder(peaks);
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.equal(null);
+        expect(waveformData).to.be.an.instanceOf(WaveformData);
+        done();
+      });
+    });
+
+    it('should throw if waveformData json data is invalid', function(done) {
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          waveformData: {
+            json: { test: 'foo' }
+          }
+        }
+      };
+
+      var waveformBuilder = new WaveformBuilder(peaks);
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(waveformData).to.not.be.ok;
+        done();
+      });
+    });
+
     it('should prefer binary waveform data over JSON', function(done) {
       var peaks = {
         options: {

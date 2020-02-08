@@ -161,7 +161,7 @@ describe('Peaks', function() {
         });
       });
 
-      context('with audioBuffer', function() {
+      context('with audioBuffer url', function() {
         it('should initialise correctly', function(done) {
           var audioContext = new TestAudioContext();
 
@@ -357,6 +357,40 @@ describe('Peaks', function() {
       });
     });
 
+    context('with invalid json waveformData', function() {
+      it('should return an error', function(done) {
+        var options = {
+          mediaUrl: '/base/test_data/sample.mp3',
+          waveformData: {
+            json: { data: 'foo' }
+          }
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.an.instanceOf(Error);
+          done();
+        });
+      });
+    });
+
+    context('with valid json waveformData', function() {
+      it('should update the waveform', function(done) {
+        var sampleJsonData = require('../../test_data/sample.json');
+        var options = {
+          mediaUrl: '/base/test_data/sample.mp3',
+          waveformData: {
+            json: sampleJsonData
+          }
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.undefined;
+          expect(waveformLayerDraw.callCount).to.equal(1);
+          done();
+        });
+      });
+    });
+
     context('with waveform data url', function() {
       it('should update the waveform', function(done) {
         var options = {
@@ -414,6 +448,51 @@ describe('Peaks', function() {
             p.setSource(options, function(error) {
               expect(error).to.be.undefined;
               expect(waveformLayerDraw.callCount).to.equal(1);
+              done();
+            });
+          });
+      });
+    });
+
+    context('with arrayBuffer waveformData', function() {
+      it('should update the waveform', function(done) {
+        fetch('/base/test_data/sample.dat')
+          .then(function(response) {
+            return response.arrayBuffer();
+          })
+          .then(function(buffer) {
+            var options = {
+              mediaUrl: '/base/test_data/sample.mp3',
+              waveformData: {
+                arraybuffer: buffer
+              }
+            };
+
+            p.setSource(options, function(error) {
+              expect(error).to.be.undefined;
+              expect(waveformLayerDraw.callCount).to.equal(1);
+              done();
+            });
+          });
+      });
+    });
+
+    context('with invalid arraybuffer waveformData', function() {
+      it('should return an error', function(done) {
+        fetch('/base/test_data/unknown.dat')
+          .then(function(response) {
+            return response.arrayBuffer();
+          })
+          .then(function(buffer) {
+            var options = {
+              mediaUrl: '/base/test_data/sample.mp3',
+              waveformData: {
+                arraybuffer: buffer
+              }
+            };
+
+            p.setSource(options, function(error) {
+              expect(error).to.be.an.instanceOf(Error);
               done();
             });
           });
