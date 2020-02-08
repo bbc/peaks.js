@@ -98,16 +98,11 @@ describe('Peaks.points', function() {
       }).to.throw(TypeError);
     });
 
-    it('should accept a point with a timestamp value (deprecated)', function() {
-      p.points.add({ timestamp: 10, editable: true, labelText: 'A point' });
-
-      var points = p.points.getPoints();
-
-      expect(points).to.have.lengthOf(1);
-      expect(points[0]).to.be.an.instanceOf(Point);
-      expect(points[0].time).to.equal(10);
-
-      expect(deprecationLogger).to.have.been.calledOnce;
+    it('should throw if the time is missing', function() {
+      expect(function() {
+        // 'timestamp' should be 'time'
+        p.points.add({ timestamp: 10, editable: true, labelText: 'A point' });
+      }).to.throw(TypeError);
     });
 
     it('should accept an optional id', function() {

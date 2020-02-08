@@ -78,13 +78,6 @@ define([
    */
 
   WaveformPoints.prototype._createPoint = function(options) {
-    if (Object.prototype.hasOwnProperty.call(options, 'timestamp') ||
-      !Object.prototype.hasOwnProperty.call(options, 'time')) {
-      // eslint-disable-next-line max-len
-      this._peaks.options.deprecationLogger("peaks.points.add(): The 'timestamp' attribute is deprecated; use 'time' instead");
-      options.time = options.timestamp;
-    }
-
     var point = new Point(
       this,
       Utils.isNullOrUndefined(options.id) ? this._getNextPointId() : options.id,
