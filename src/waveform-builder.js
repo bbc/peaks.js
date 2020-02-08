@@ -249,14 +249,14 @@
     }
 
     try {
-      var waveformData = WaveformData.create(data);
+      var createdWaveformData = WaveformData.create(data);
 
-      if (waveformData.channels !== 1 && waveformData.channels !== 2) {
+      if (createdWaveformData.channels !== 1 && createdWaveformData.channels !== 2) {
         callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
         return;
       }
 
-      callback(null, waveformData);
+      callback(null, createdWaveformData);
     }
     catch (e) {
       callback(e);
