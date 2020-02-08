@@ -124,6 +124,11 @@
         };
 
         Peaks.init(options, function(err, peaksInstance) {
+          if (err) {
+            console.error(err.message);
+            return;
+          }
+
           console.log('Peaks instance ready');
 
           document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
