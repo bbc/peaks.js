@@ -453,23 +453,18 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 ### `Peaks.init(options, callback)`
 
 Returns a new `Peaks` instance with the [assigned options](#Configuration).
-The callback is invoked after the instance has been created and initialised.
+The callback is invoked after the instance has been created and initialised, or if any errors occur during initialization.
 You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
 ```js
 const options = { ... };
 
 Peaks.init(options, function(err, peaks) {
-  console.log(peaks.player.getCurrentTime());
-});
-```
+  if (err) {
+    console.error('Failed to initialize Peaks instance: ' + err.message);
+    return;
+  }
 
-For backwards compatibility, you can still create a new `Peaks` instance using:
-
-```js
-const peaks = Peaks.init({ ... });
-
-peaks.on('ready', function() {
   console.log(peaks.player.getCurrentTime());
 });
 ```
