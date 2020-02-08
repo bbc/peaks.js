@@ -66,7 +66,7 @@
    * @typedef {Object} WaveformBuilderInitOptions
    * @global
    * @property {RemoteWaveformDataOptions=} dataUri
-   * @property {LocalWaveformDataOptions=} rawData
+   * @property {LocalWaveformDataOptions=} waveformData
    * @property {WaveformBuilderWebAudioOptions=} webAudio
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
@@ -91,10 +91,10 @@
 
   WaveformBuilder.prototype.init = function(options, callback) {
     if ((options.dataUri && (options.webAudio || options.audioContext)) ||
-        (options.rawData && (options.webAudio || options.audioContext)) ||
-        (options.dataUri && options.rawData)) {
+        (options.waveformData && (options.webAudio || options.audioContext)) ||
+        (options.dataUri && options.waveformData)) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You may only pass one source (webAudio, dataUri, or rawData) to render waveform data.');
+      throw new Error('Peaks.init(): You may only pass one source (webAudio, dataUri, or waveformData) to render waveform data.');
     }
 
     if (options.audioContext) {
@@ -108,7 +108,7 @@
     if (options.dataUri) {
       return this._getRemoteWaveformData(options, callback);
     }
-    else if (options.rawData) {
+    else if (options.waveformData) {
       return this._buildWaveformFromLocalData(options, callback);
     }
     else if (options.webAudio) {
@@ -121,7 +121,7 @@
     }
     else {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass an audioContext, or dataUri, or rawData to render waveform data');
+      throw new Error('Peaks.init(): You must pass an audioContext, or dataUri, or waveformData to render waveform data');
     }
   };
 
@@ -214,9 +214,9 @@
    *
    * @private
    * @param {Object} options
-   * @param {Object} options.rawData
-   * @param {ArrayBuffer} options.rawData.arraybuffer Waveform data (binary format)
-   * @param {Object} options.rawData.json Waveform data (JSON format)
+   * @param {Object} options.waveformData
+   * @param {ArrayBuffer} options.waveformData.arraybuffer Waveform data (binary format)
+   * @param {Object} options.waveformData.json Waveform data (JSON format)
    * @param {WaveformBuilderInitCallback} callback
    *
    * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
@@ -226,26 +226,26 @@
   /* eslint-enable max-len */
 
   WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callback) {
-    var rawData = null;
+    var waveformData = null;
     var data = null;
 
-    if (Utils.isObject(options.rawData)) {
-      rawData = options.rawData;
+    if (Utils.isObject(options.waveformData)) {
+      waveformData = options.waveformData;
     }
     else {
-      throw new Error('Peaks.init(): The rawData option must be an object');
+      throw new Error('Peaks.init(): The waveformData option must be an object');
     }
 
-    if (Utils.isObject(rawData.json)) {
-      data = rawData.json;
+    if (Utils.isObject(waveformData.json)) {
+      data = waveformData.json;
     }
-    else if (Utils.isArrayBuffer(rawData.arraybuffer)) {
-      data = rawData.arraybuffer;
+    else if (Utils.isArrayBuffer(waveformData.arraybuffer)) {
+      data = waveformData.arraybuffer;
     }
 
     if (!data) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): Unable to determine a compatible rawData format for this browser');
+      throw new Error('Peaks.init(): Unable to determine a compatible waveformData format for this browser');
     }
 
     try {

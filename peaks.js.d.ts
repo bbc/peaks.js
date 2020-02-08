@@ -72,9 +72,9 @@ declare module 'peaks.js' {
       json?: string;
     }
     /** raw waveform data file in binary or JSON */
-    rawData?: {
+    waveformData?: {
       arraybuffer?: ArrayBuffer;
-      json?: JsonPeaks;
+      json?: JsonWaveformData;
     }
   }
 

@@ -249,7 +249,7 @@ describe('Peaks', function() {
             container: document.getElementById('container'),
             mediaElement: document.getElementById('media')
           });
-        }).to.throw(/audioContext, or dataUri, or rawData/);
+        }).to.throw(/audioContext, or dataUri, or waveformData/);
       });
 
       it('should throw an exception if the dataUri is not an object', function() {

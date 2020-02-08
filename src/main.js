@@ -112,13 +112,13 @@ define([
        * Only one source is required
        *
        * ```js
-       * rawData: {
+       * waveformData: {
        *   arraybuffer: ArrayBuffer,
        *   json: Object
        * }
        * ```
        */
-      rawData:               null,
+      waveformData:               null,
 
       /**
        * Will report errors to that function
@@ -542,7 +542,7 @@ define([
    * @global
    * @property {String} mediaUrl
    * @property {RemoteWaveformDataOptions=} dataUri
-   * @property {LocalWaveformDataOptions=} rawData
+   * @property {LocalWaveformDataOptions=} waveformData
    * @property {WebAudioOptions=} webAudio
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
