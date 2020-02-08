@@ -245,7 +245,7 @@
 
     if (!data) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): Unable to determine a compatible waveformData format for this browser');
+      throw new Error('Peaks.init(): Unable to determine a compatible waveformData format');
     }
 
     try {
