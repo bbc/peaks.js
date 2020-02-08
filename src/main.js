@@ -393,9 +393,6 @@ define([
       // when initialising with local waveform data.
 
       setTimeout(function() {
-        // TODO: Deprecated, use peaks.ready instead.
-        instance.emit('segments.ready');
-
         instance.emit('peaks.ready');
       }, 0);
 
