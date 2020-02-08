@@ -296,7 +296,12 @@ define([
 
     opts = opts || {};
 
-    instance._setOptions(opts);
+    var err = instance._setOptions(opts);
+
+    if (err) {
+      callback(err);
+      return;
+    }
 
     /*
      Setup the layout
@@ -319,7 +324,8 @@ define([
     }
     else {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object');
+      callback(new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object'));
+      return;
     }
 
     var zoomviewContainer = containers.zoomview || containers.zoom;
@@ -327,17 +333,20 @@ define([
     if (!Utils.isHTMLElement(zoomviewContainer) &&
         !Utils.isHTMLElement(containers.overview)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements');
+      callback(new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements'));
+      return;
     }
 
     if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width');
+      callback(new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width'));
+      return;
     }
 
     if (containers.overview && containers.overview.clientWidth <= 0) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width');
+      callback(new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width'));
+      return;
     }
 
     if (instance.options.keyboard) {
@@ -430,23 +439,23 @@ define([
     }
 
     if (!opts.mediaElement) {
-      throw new Error('Peaks.init(): Missing mediaElement option');
+      return new Error('Peaks.init(): Missing mediaElement option');
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
+      return new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
     }
 
     if (!opts.container && !opts.containers) {
-      throw new Error('Peaks.init(): Please specify either a container or containers option');
+      return new Error('Peaks.init(): Please specify either a container or containers option');
     }
     else if (Boolean(opts.container) === Boolean(opts.containers)) {
-      throw new Error('Peaks.init(): Please specify either a container or containers option, but not both');
+      return new Error('Peaks.init(): Please specify either a container or containers option, but not both');
     }
 
     if (opts.template && opts.containers) {
-      throw new Error('Peaks.init(): Please specify either a template or a containers option, but not both');
+      return new Error('Peaks.init(): Please specify either a template or a containers option, but not both');
     }
 
     // The 'containers' option overrides 'template'.
@@ -456,30 +465,30 @@ define([
 
     if (opts.logger && !Utils.isFunction(opts.logger)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The logger option should be a function');
+      return new TypeError('Peaks.init(): The logger option should be a function');
     }
 
     if (opts.segments && !Array.isArray(opts.segments)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): options.segments must be an array of segment objects');
+      return new TypeError('Peaks.init(): options.segments must be an array of segment objects');
     }
 
     if (opts.points && !Array.isArray(opts.points)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): options.points must be an array of point objects');
+      return new TypeError('Peaks.init(): options.points must be an array of point objects');
     }
 
     Utils.extend(this.options, opts);
 
     if (!Array.isArray(this.options.zoomLevels)) {
-      throw new TypeError('Peaks.init(): The zoomLevels option should be an array');
+      return new TypeError('Peaks.init(): The zoomLevels option should be an array');
     }
     else if (this.options.zoomLevels.length === 0) {
-      throw new Error('Peaks.init(): The zoomLevels array must not be empty');
+      return new Error('Peaks.init(): The zoomLevels array must not be empty');
     }
     else {
       if (!Utils.isInAscendingOrder(this.options.zoomLevels)) {
-        throw new Error('Peaks.init(): The zoomLevels array must be sorted in ascending order');
+        return new Error('Peaks.init(): The zoomLevels array must be sorted in ascending order');
       }
     }
 
@@ -493,12 +502,11 @@ define([
       this.on('points.dragend', this.options.pointDragEndHandler);
     }
 
-    /*
-     Setup the logger
-     */
     if (opts.logger) {
       this.logger = opts.logger;
     }
+
+    return null;
   };
 
   /**

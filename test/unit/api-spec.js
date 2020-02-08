@@ -3,6 +3,7 @@
 require('./setup');
 
 var Peaks = require('../../src/main');
+var WaveformData = require('waveform-data');
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
@@ -18,14 +19,17 @@ describe('Peaks', function() {
 
   describe('init', function() {
     context('with valid options', function() {
-      it('should emit peaks.ready and segments.ready events when initialised', function(done) {
+      it('should emit a peaks.ready event when initialised', function(done) {
         p = Peaks.init({
           container: document.getElementById('container'),
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         });
 
-        p.on('peaks.ready', done);
+        p.on('peaks.ready', function() {
+          expect(p.getWaveformData()).to.be.an.instanceOf(WaveformData);
+          done();
+        });
       });
 
       it('should invoke callback when initialised', function(done) {
@@ -112,19 +116,22 @@ describe('Peaks', function() {
           });
         });
 
-        it('should throw an error if no containers are given', function() {
-          expect(function() {
-            p = Peaks.init({
-              containers: {
-              },
-              mediaElement: document.getElementById('media'),
-              dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-            });
-          }).to.throw(/must be valid HTML elements/);
+        it('should return an error if no containers are given', function(done) {
+          Peaks.init({
+            containers: {
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.be.an.instanceOf(TypeError);
+            expect(err.message).to.match(/must be valid HTML elements/);
+            expect(instance).to.equal(undefined);
+            done();
+          });
         });
       });
 
-      context('with precomputed stereo waveform data', function() {
+      context('with precomputed stereo waveform data', function(done) {
         it('should initialise correctly', function(done) {
           Peaks.init({
             container: document.getElementById('container'),
@@ -161,7 +168,7 @@ describe('Peaks', function() {
         });
       });
 
-      context('with audioBuffer url', function() {
+      context('with audioBuffer', function() {
         it('should initialise correctly', function(done) {
           var audioContext = new TestAudioContext();
 
@@ -195,127 +202,163 @@ describe('Peaks', function() {
     });
 
     context('with invalid options', function() {
-      it('should throw an exception if no mediaElement is provided', function() {
-        expect(function() {
+      it('should invoke callback with an error if no mediaElement is provided', function(done) {
           Peaks.init({
             container: document.getElementById('container'),
             dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.be.an.instanceOf(Error);
+            expect(err.message).to.match(/Missing mediaElement option/);
+            expect(instance).to.equal(undefined);
+            done();
           });
-        }).to.throw(/Missing mediaElement option/);
       });
 
-      it('should throw an exception if mediaElement is not an HTMLMediaElement', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.createElement('div'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          });
-        }).to.throw(/HTMLMediaElement/);
+      it('should invoke callback with an error if mediaElement is not an HTMLMediaElement', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.createElement('div'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(TypeError);
+          expect(err.message).to.match(/HTMLMediaElement/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if both a dataUri and audioContext are provided', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' },
-            audioContext: new TestAudioContext()
-          });
-        }).to.throw(/only pass one/);
+      it('should invoke callback with an error if both a dataUri and audioContext are provided', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+          audioContext: new TestAudioContext()
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(TypeError);
+          expect(err.message).to.match(/only pass one/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if neither a dataUri nor an audioContext are provided', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media')
-          });
-        }).to.throw(/audioContext, or dataUri, or waveformData/);
+      it('should invoke callback with an error if neither a dataUri nor an audioContext are provided', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media')
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/audioContext, or dataUri, or waveformData/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the dataUri is not an object', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: true
-          });
-        }).to.throw(/dataUri/);
+      it('should invoke callback with an error if the dataUri is not an object', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: true
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(TypeError);
+          expect(err.message).to.match(/dataUri/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if no container is provided', function() {
-        expect(function() {
-          Peaks.init({
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          });
-        }).to.throw(/container or containers option/);
+      it('should invoke callback with an error if no container is provided', function(done) {
+        Peaks.init({
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/container or containers option/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the container has no layout', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.createElement('div'),
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          });
-        }).to.throw(/width/);
+      it('should invoke callback with an error if the container has no layout', function(done) {
+        Peaks.init({
+          container: document.createElement('div'),
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(TypeError);
+          expect(err.message).to.match(/width/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the template is not a string or an HTMLElement', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' },
-            template: null
-          });
-        }).to.throw(/template/);
+      it('should invoke callback with an error if the template is not a string or an HTMLElement', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+          template: null
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(TypeError);
+          expect(err.message).to.match(/template/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the logger is defined and not a function', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: '/base/test_data/sample.json',
-            logger: 'foo'
-          });
-        }).to.throw(/logger/);
+      it('should invoke callback with an error if the logger is defined and not a function', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: '/base/test_data/sample.json',
+          logger: 'foo'
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(TypeError);
+          expect(err.message).to.match(/logger/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the zoomLevels option is missing', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: '/base/test_data/sample.json',
-            zoomLevels: null
-          });
-        }).to.throw(/zoomLevels/);
+      it('should invoke callback with an error if the zoomLevels option is missing', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: '/base/test_data/sample.json',
+          zoomLevels: null
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/zoomLevels/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the zoomLevels option is empty', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: '/base/test_data/sample.json',
-            zoomLevels: []
-          });
-        }).to.throw(/zoomLevels/);
+      it('should invoke callback with an error if the zoomLevels option is empty', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: '/base/test_data/sample.json',
+          zoomLevels: []
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/zoomLevels/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
-      it('should throw an exception if the zoomLevels option is not in ascending order', function() {
-        expect(function() {
-          Peaks.init({
-            container: document.getElementById('container'),
-            mediaElement: document.getElementById('media'),
-            dataUri: '/base/test_data/sample.json',
-            zoomLevels: [1024, 512]
-          });
-        }).to.throw(/zoomLevels/);
+      it('should invoke callback with an error if the zoomLevels option is not in ascending order', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          dataUri: '/base/test_data/sample.json',
+          zoomLevels: [1024, 512]
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/zoomLevels/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
     });
   });
@@ -357,7 +400,7 @@ describe('Peaks', function() {
       });
     });
 
-    context('with invalid json waveformData', function() {
+    context('with invalid json waveform data', function() {
       it('should return an error', function(done) {
         var options = {
           mediaUrl: '/base/test_data/sample.mp3',
@@ -373,7 +416,7 @@ describe('Peaks', function() {
       });
     });
 
-    context('with valid json waveformData', function() {
+    context('with valid json waveform data', function() {
       it('should update the waveform', function(done) {
         var sampleJsonData = require('../../test_data/sample.json');
         var options = {
@@ -454,7 +497,7 @@ describe('Peaks', function() {
       });
     });
 
-    context('with arrayBuffer waveformData', function() {
+    context('with binary waveform data', function() {
       it('should update the waveform', function(done) {
         fetch('/base/test_data/sample.dat')
           .then(function(response) {
@@ -477,7 +520,7 @@ describe('Peaks', function() {
       });
     });
 
-    context('with invalid arraybuffer waveformData', function() {
+    context('with invalid binary waveform data', function() {
       it('should return an error', function(done) {
         fetch('/base/test_data/unknown.dat')
           .then(function(response) {

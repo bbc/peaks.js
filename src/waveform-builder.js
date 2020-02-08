@@ -94,7 +94,8 @@
         (options.waveformData && (options.webAudio || options.audioContext)) ||
         (options.dataUri && options.waveformData)) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You may only pass one source (webAudio, dataUri, or waveformData) to render waveform data.');
+      callback(new TypeError('Peaks.init(): You may only pass one source (webAudio, dataUri, or waveformData) to render waveform data.'));
+      return;
     }
 
     if (options.audioContext) {
@@ -121,7 +122,7 @@
     }
     else {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass an audioContext, or dataUri, or waveformData to render waveform data');
+      callback(new Error('Peaks.init(): You must pass an audioContext, or dataUri, or waveformData to render waveform data'));
     }
   };
 
@@ -161,7 +162,8 @@
       dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
     }
     else {
-      throw new Error('Peaks.init(): The dataUri option must be an object');
+      callback(new TypeError('Peaks.init(): The dataUri option must be an object'));
+      return;
     }
 
     ['ArrayBuffer', 'JSON'].some(function(connector) {
@@ -175,7 +177,8 @@
 
     if (!url) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser');
+      callback(new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser'));
+      return;
     }
 
     var xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
@@ -233,7 +236,8 @@
       waveformData = options.waveformData;
     }
     else {
-      throw new Error('Peaks.init(): The waveformData option must be an object');
+      callback(new Error('Peaks.init(): The waveformData option must be an object'));
+      return;
     }
 
     if (Utils.isObject(waveformData.json)) {
@@ -245,7 +249,8 @@
 
     if (!data) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): Unable to determine a compatible waveformData format');
+      callback(new Error('Peaks.init(): Unable to determine a compatible waveformData format'));
+      return;
     }
 
     try {
@@ -258,8 +263,8 @@
 
       callback(null, createdWaveformData);
     }
-    catch (e) {
-      callback(e);
+    catch (err) {
+      callback(err);
     }
   };
 
@@ -280,7 +285,8 @@
 
     if (!(options.webAudio.audioContext instanceof audioContext)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The webAudio.audioContext option must be a valid AudioContext');
+      callback(new TypeError('Peaks.init(): The webAudio.audioContext option must be a valid AudioContext'));
+      return;
     }
 
     var webAudioOptions = options.webAudio;
