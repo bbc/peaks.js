@@ -813,10 +813,10 @@ console.log(instance.zoom.getZoom()); // -> 1
 **Segments** give the ability to visually tag timed portions of the audio media.
 This is a great way to provide visual cues to your users.
 
-### `instance.segments.add({startTime, endTime, editable, color, labelText, id})`
+### `instance.segments.add({ startTime, endTime, editable, color, labelText, id })`
 ### `instance.segments.add(segment[])`
 
-Adds a segment to the waveform timeline. Accepts the following parameters:
+Adds a segment to the waveform timeline. Accepts an object containing the following parameters:
 
 * `startTime`: the segment start time (seconds)
 * `endTime`: the segment end time (seconds)
@@ -929,10 +929,10 @@ segment.udpate({ startTime: 7, endTime: 9, labelText: 'new label text' });
 
 **Points** give the ability to visually tag points in time of the audio media.
 
-### `instance.points.add({time, editable, color, labelText, id})`
+### `instance.points.add({ time, editable, color, labelText, id })`
 ### `instance.points.add(point[])`
 
-Adds one or more points to the waveform timeline. Accepts the following parameters:
+Adds one or more points to the waveform timeline. Accepts an object containing the following parameters:
 
 * `time`: the point time (seconds)
 * `editable`: (optional) sets whether the point is user editable (boolean, defaults to `false`)
