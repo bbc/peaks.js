@@ -148,6 +148,49 @@ describe('Peaks', function() {
         });
       });
 
+      context('with valid json waveform data', function(done) {
+        it('should initialise correctly', function(done) {
+          var sampleJsonData = require('../../test_data/sample.json');
+          Peaks.init({
+            container: document.getElementById('container'),
+            mediaElement: document.getElementById('media'),
+            waveformData: {
+              json: sampleJsonData
+            }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceOf(Peaks);
+            expect(instance.getWaveformData().channels).to.equal(1);
+            instance.destroy();
+            done();
+          });
+        });
+      });
+
+      context('with valid binary waveform data', function(done) {
+        it('should initialise correctly', function(done) {
+          fetch('/base/test_data/sample.dat')
+            .then(function(response) {
+              return response.arrayBuffer();
+            })
+            .then(function(buffer) {
+              Peaks.init({
+                container: document.getElementById('container'),
+                mediaElement: document.getElementById('media'),
+                waveformData: {
+                  arraybuffer: buffer
+                }
+              }, function(err, instance) {
+                expect(err).to.equal(null);
+                expect(instance).to.be.an.instanceOf(Peaks);
+                expect(instance.getWaveformData().channels).to.equal(1);
+                instance.destroy();
+                done();
+              });
+            });
+        });
+      });
+
       context('with audioContext and multiChannel enabled', function() {
         it('should initialise correctly', function(done) {
           Peaks.init({
@@ -264,6 +307,40 @@ describe('Peaks', function() {
           expect(instance).to.equal(undefined);
           done();
         });
+      });
+
+      it('should invoke callback with an error if provided json waveform data is invalid', function(done) {
+        Peaks.init({
+          container: document.getElementById('container'),
+          mediaElement: document.getElementById('media'),
+          waveformData: {
+            json: { data: 'foo' }
+          }
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(instance).to.equal(undefined);
+          done();
+        });
+      });
+
+      it('should invoke callback with an error if provided binary waveform data is invalid', function(done) {
+        fetch('/base/test_data/unknown.dat')
+          .then(function(response) {
+            return response.arrayBuffer();
+          })
+          .then(function(buffer) {
+            Peaks.init({
+              container: document.getElementById('container'),
+              mediaElement: document.getElementById('media'),
+              waveformData: {
+                arraybuffer: buffer
+              }
+            }, function(err, instance) {
+              expect(err).to.be.an.instanceOf(Error);
+              expect(instance).to.equal(undefined);
+              done();
+            });
+          });
       });
 
       it('should invoke callback with an error if no container is provided', function(done) {
