@@ -41,6 +41,15 @@
    */
 
   /**
+   * Options for supplying local waveform data.
+   *
+   * @typedef {Object} LocalWaveformDataOptions
+   * @global
+   * @property {ArrayBuffer=} arraybuffer
+   * @property {Object=} json
+   */
+
+  /**
    * Options for the Web Audio waveform builder.
    *
    * @typedef {Object} WaveformBuilderWebAudioOptions
@@ -57,6 +66,7 @@
    * @typedef {Object} WaveformBuilderInitOptions
    * @global
    * @property {RemoteWaveformDataOptions=} dataUri
+   * @property {LocalWaveformDataOptions=} waveformData
    * @property {WaveformBuilderWebAudioOptions=} webAudio
    * @property {Boolean=} withCredentials
    * @property {Array<Number>=} zoomLevels
@@ -80,9 +90,12 @@
    */
 
   WaveformBuilder.prototype.init = function(options, callback) {
-    if (options.dataUri && (options.webAudio || options.audioContext)) {
+    if ((options.dataUri && (options.webAudio || options.audioContext)) ||
+        (options.waveformData && (options.webAudio || options.audioContext)) ||
+        (options.dataUri && options.waveformData)) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass a webAudio or dataUri to render waveform data, not both');
+      callback(new TypeError('Peaks.init(): You may only pass one source (webAudio, dataUri, or waveformData) to render waveform data.'));
+      return;
     }
 
     if (options.audioContext) {
@@ -96,6 +109,9 @@
     if (options.dataUri) {
       return this._getRemoteWaveformData(options, callback);
     }
+    else if (options.waveformData) {
+      return this._buildWaveformFromLocalData(options, callback);
+    }
     else if (options.webAudio) {
       if (options.webAudio.audioBuffer) {
         return this._buildWaveformDataFromAudioBuffer(options, callback);
@@ -106,7 +122,7 @@
     }
     else {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): You must pass an audioContext or dataUri to render waveform data');
+      callback(new Error('Peaks.init(): You must pass an audioContext, or dataUri, or waveformData to render waveform data'));
     }
   };
 
@@ -146,7 +162,8 @@
       dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
     }
     else {
-      throw new Error('Peaks.init(): The dataUri option must be an object');
+      callback(new TypeError('Peaks.init(): The dataUri option must be an object'));
+      return;
     }
 
     ['ArrayBuffer', 'JSON'].some(function(connector) {
@@ -160,7 +177,8 @@
 
     if (!url) {
       // eslint-disable-next-line max-len
-      throw new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser');
+      callback(new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser'));
+      return;
     }
 
     var xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
@@ -192,6 +210,64 @@
     xhr.send();
   };
 
+  /* eslint-disable max-len */
+
+  /**
+   * Creates a waveform from given data, based on the given options.
+   *
+   * @private
+   * @param {Object} options
+   * @param {Object} options.waveformData
+   * @param {ArrayBuffer} options.waveformData.arraybuffer Waveform data (binary format)
+   * @param {Object} options.waveformData.json Waveform data (JSON format)
+   * @param {WaveformBuilderInitCallback} callback
+   *
+   * @see Refer to the <a href="https://github.com/bbc/audiowaveform/blob/master/doc/DataFormat.md">data format documentation</a>
+   *   for details of the binary and JSON waveform data formats.
+   */
+
+  /* eslint-enable max-len */
+
+  WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callback) {
+    var waveformData = null;
+    var data = null;
+
+    if (Utils.isObject(options.waveformData)) {
+      waveformData = options.waveformData;
+    }
+    else {
+      callback(new Error('Peaks.init(): The waveformData option must be an object'));
+      return;
+    }
+
+    if (Utils.isObject(waveformData.json)) {
+      data = waveformData.json;
+    }
+    else if (Utils.isArrayBuffer(waveformData.arraybuffer)) {
+      data = waveformData.arraybuffer;
+    }
+
+    if (!data) {
+      // eslint-disable-next-line max-len
+      callback(new Error('Peaks.init(): Unable to determine a compatible waveformData format'));
+      return;
+    }
+
+    try {
+      var createdWaveformData = WaveformData.create(data);
+
+      if (createdWaveformData.channels !== 1 && createdWaveformData.channels !== 2) {
+        callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
+        return;
+      }
+
+      callback(null, createdWaveformData);
+    }
+    catch (err) {
+      callback(err);
+    }
+  };
+
   /**
    * Creates waveform data using the Web Audio API.
    *
@@ -209,7 +285,8 @@
 
     if (!(options.webAudio.audioContext instanceof audioContext)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('Peaks.init(): The webAudio.audioContext option must be a valid AudioContext');
+      callback(new TypeError('Peaks.init(): The webAudio.audioContext option must be a valid AudioContext'));
+      return;
     }
 
     var webAudioOptions = options.webAudio;

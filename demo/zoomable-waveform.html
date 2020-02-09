@@ -136,6 +136,11 @@
         };
 
         Peaks.init(options, function(err, peaksInstance) {
+          if (err) {
+            console.error(err.message);
+            return;
+          }
+
           console.log('Peaks instance ready');
 
           var zoomview = peaksInstance.views.getView('zoomview');

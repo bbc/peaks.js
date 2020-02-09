@@ -33,7 +33,7 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    it('should return an error if the data handling fails', function(done) {
+    it('should invoke callback with an error if the data handling fails', function(done) {
       var peaks = {
         options: {
           mediaElement: document.getElementById('media'),
@@ -51,7 +51,7 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    it('should return an error if the data handling fails due to a network error', function(done) {
+    it('should invoke callback with an error if the data handling fails due to a network error', function(done) {
       var peaks = {
         options: {
           mediaElement: document.getElementById('media'),
@@ -175,22 +175,83 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    !('ArrayBuffer' in window) && it('should throw an exception if the only available format is browser incompatible', function() {
-      expect(function() {
-        var peaks = {
-          options: {
-            mediaElement: document.getElementById('media'),
-            dataUri: {
-              arraybuffer: 'base/test_data/sample.dat'
-            }
+    !('ArrayBuffer' in window) && it('invoke callback with an error if the only available format is browser incompatible', function(done) {
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
           }
-        };
+        }
+      };
 
-        var waveformBuilder = new WaveformBuilder(peaks);
+      var waveformBuilder = new WaveformBuilder(peaks);
 
-        waveformBuilder.init(peaks.options, function() {
-        });
-      }).to.throw();
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(err.message).to.match(/Unable to determine/);
+        expect(waveformData).to.equal(undefined);
+        done();
+      });
+    });
+
+    ('ArrayBuffer' in window) && it('invoke callback with an error if arraybuffer data is invalid', function(done) {
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          waveformData: {
+            arraybuffer: 'foo'
+          }
+        }
+      };
+
+      var waveformBuilder = new WaveformBuilder(peaks);
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(err.message).to.match(/Unable to determine/);
+        expect(waveformData).to.equal(undefined);
+        done();
+      });
+    });
+
+    it('should use the waveformData json data connector', function(done) {
+      var sampleJsonData = require('../../test_data/sample.json');
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          waveformData: {
+            json: sampleJsonData
+          }
+        }
+      };
+
+      var waveformBuilder = new WaveformBuilder(peaks);
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.equal(null);
+        expect(waveformData).to.be.an.instanceOf(WaveformData);
+        done();
+      });
+    });
+
+    it('should throw if waveformData json data is invalid', function(done) {
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          waveformData: {
+            json: { test: 'foo' }
+          }
+        }
+      };
+
+      var waveformBuilder = new WaveformBuilder(peaks);
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(waveformData).to.not.be.ok;
+        done();
+      });
     });
 
     it('should prefer binary waveform data over JSON', function(done) {

@@ -337,6 +337,11 @@
         };
 
         Peaks.init(options, function(err, peaksInstance) {
+          if (err) {
+            console.error(err.message);
+            return;
+          }
+
           console.log("Peaks instance ready");
 
           document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {

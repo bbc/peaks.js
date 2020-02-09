@@ -107,8 +107,14 @@
       </p>
       <h2>Demo: Changing the Media URL</h2>
       <p>
-        This demo shows how to change the media URL and update the waveform.
+        This demo shows how to change the media URL and update the waveform,
+        using the three different methods of providing waveform data to Peaks.js:
       </p>
+      <ul>
+        <li>Fetching pre-computed waveform data from a web server (<code>dataUri</code> option)</li>
+        <li>Computing in the browser using the Web Audio API (<code>webAudio</code> option)</li>
+        <li>Passing waveform data directly to the Peaks instance (<code>waveformData</code> option)</li>
+      </ul>
     </div>
 
     <div id="waveform-container">
@@ -137,44 +143,57 @@
         var AudioContext = window.AudioContext || window.webkitAudioContext;
         var audioContext = new AudioContext();
 
-        var sources = [
-          {
-            title: 'Tree of Life',
-            mediaUrl: 'TOL_6min_720p_download.mp3',
-            dataUri: {
-              arraybuffer: 'TOL_6min_720p_download.dat',
-              json: 'TOL_6min_720p_download.json'
-            }
-          },
-          {
-            title: 'Desert Island Discs',
-            mediaUrl: 'sample.mp3',
-            webAudio: {
-              audioContext: audioContext
+        function requestWaveformData(url) {
+          return fetch(url)
+            .then(function(response) {
+              return response.arrayBuffer();
+            });
+        }
+
+        function createSources(waveformData) {
+          return [
+            {
+              title: 'Tree of Life',
+              mediaUrl: 'TOL_6min_720p_download.mp3',
+              dataUri: {
+                arraybuffer: 'TOL_6min_720p_download.dat',
+                json: 'TOL_6min_720p_download.json'
+              }
             },
-            zoomLevels: [128, 256]
-          }
-        ];
+            {
+              title: 'Desert Island Discs',
+              mediaUrl: 'sample.mp3',
+              webAudio: {
+                audioContext: audioContext
+              },
+              zoomLevels: [128, 256]
+            },
+            {
+              title: 'BBC Sound Effect (Cars)',
+              mediaUrl: '07023003.mp3',
+              waveformData: {
+                arraybuffer: waveformData
+              }
+            }
+          ];
+        }
 
-        var options = {
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
-          },
-          mediaElement: document.getElementById('audio'),
-          dataUri: {
-            arraybuffer: 'TOL_6min_720p_download.dat',
-            json: 'TOL_6min_720p_download.json'
-          },
-          keyboard: true,
-          pointMarkerColor: '#006eb0',
-          showPlayheadTime: true,
-          zoomLevels: [512, 1024, 2048]
-        };
+        function createPeaksInstance(options) {
+          return new Promise(function(resolve, reject) {
+            Peaks.init(options, function(err, peaksInstance) {
+              if (err) {
+                reject(err);
+              }
+              else {
+                console.log('Peaks instance ready');
 
-        Peaks.init(options, function(err, peaksInstance) {
-          console.log('Peaks instance ready');
+                return resolve(peaksInstance);
+              }
+            });
+          });
+        }
 
+        function bindEventHandlers(peaksInstance, sources) {
           document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
             peaksInstance.zoom.zoomIn();
           });
@@ -198,7 +217,38 @@
               }
             });
           });
-        });
+        }
+
+        function errorHandler(err) {
+          console.error(err.message);
+        }
+
+        var options = {
+          containers: {
+            overview: document.getElementById('overview-container'),
+            zoomview: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('audio'),
+          dataUri: {
+            arraybuffer: 'TOL_6min_720p_download.dat',
+            json: 'TOL_6min_720p_download.json'
+          },
+          keyboard: true,
+          pointMarkerColor: '#006eb0',
+          showPlayheadTime: true,
+          zoomLevels: [512, 1024, 2048]
+        };
+
+        createPeaksInstance(options)
+          .then(function(peaksInstance) {
+            requestWaveformData('07023003-2channel.dat')
+              .then(function(waveformData) {
+                return createSources(waveformData);
+              })
+              .then(function(sources) {
+                bindEventHandlers(peaksInstance, sources);
+              }, errorHandler);
+          }, errorHandler);
       })(peaks);
     </script>
   </body>
