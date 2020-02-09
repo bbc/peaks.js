@@ -194,7 +194,7 @@ define([
    * @param {SegmentOptions|Array<SegmentOptions>} segmentOrSegments
    */
 
-  WaveformSegments.prototype.add = function(segmentOrSegments) {
+  WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
     var self = this;
 
     var segments = Array.isArray(arguments[0]) ?

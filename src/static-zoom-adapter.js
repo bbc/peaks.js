@@ -10,7 +10,7 @@ define([], function() {
   'use strict';
 
   return {
-    create: function(currentScale, previousScale, view) {
+    create: function(view /* , currentScale, previousScale */) {
       return {
         start: function(relativePosition) {
           // This function is called after data is rescaled to currentScale

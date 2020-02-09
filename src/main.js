@@ -438,13 +438,16 @@ define([
     }
 
     if (!opts.container && !opts.containers) {
+      // eslint-disable-next-line max-len
       return new Error('Peaks.init(): Please specify either a container or containers option');
     }
     else if (Boolean(opts.container) === Boolean(opts.containers)) {
+      // eslint-disable-next-line max-len
       return new Error('Peaks.init(): Please specify either a container or containers option, but not both');
     }
 
     if (opts.template && opts.containers) {
+      // eslint-disable-next-line max-len
       return new Error('Peaks.init(): Please specify either a template or a containers option, but not both');
     }
 

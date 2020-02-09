@@ -12,13 +12,13 @@ define(['konva'], function(Konva) {
   return {
 
     /**
+     * @param {WaveformZoomView} view
      * @param {Number} currentScale
      * @param {Number} previousScale
-     * @param {WaveformZoomView} view
      * @returns {Konva.Animation}
      */
 
-    create: function(currentScale, previousScale, view) {
+    create: function(view, currentScale, previousScale) {
       var currentTime = view.peaks.player.getCurrentTime();
       var frameData = [];
 
@@ -100,7 +100,7 @@ define(['konva'], function(Konva) {
        * @this {Konva.Animation}
        */
 
-      return function(frame) {
+      return function(/* frame */) {
         if (index < frameData.length) {
           // Send correct resampled waveform data object to drawFunc and draw it
           view.intermediateData = frameData[index];

@@ -99,6 +99,7 @@
     }
 
     if (options.audioContext) {
+      // eslint-disable-next-line max-len
       this._peaks.options.deprecationLogger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
 
       options.webAudio = {
@@ -397,7 +398,8 @@
    * @returns {XMLHttpRequest}
    */
 
-  WaveformBuilder.prototype._createXHR = function(url, requestType, withCredentials, onLoad, onError) {
+  WaveformBuilder.prototype._createXHR = function(url, requestType,
+    withCredentials, onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
     // open an XHR request to the data source file

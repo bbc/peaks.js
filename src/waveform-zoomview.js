@@ -142,7 +142,7 @@ define([
         }
       },
 
-      onMouseUp: function(mousePosX) {
+      onMouseUp: function(/* mousePosX */) {
         // Set playhead position only on click release, when not dragging.
         if (!self._mouseDragHandler.isDragging()) {
           var mouseDownX = Math.floor(this.mouseDownX);
@@ -336,6 +336,7 @@ define([
     }
 
     if (scale < this._originalWaveformData.scale) {
+      // eslint-disable-next-line max-len
       this._peaks.logger('peaks.zoomview.setZoom(): zoom level must be at least ' + this._originalWaveformData.scale);
       scale = this._originalWaveformData.scale;
     }
@@ -440,7 +441,7 @@ define([
       throw new Error('Invalid zoomAdapter: ' + this._peaks.options.zoomAdapter);
     }
 
-    return ZoomAdapter.create(currentScale, previousScale, this);
+    return ZoomAdapter.create(this, currentScale, previousScale);
   }; */
 
   /**

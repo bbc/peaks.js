@@ -131,7 +131,7 @@ define([
    * @param {PointOptions|Array<PointOptions>} pointOrPoints
    */
 
-  WaveformPoints.prototype.add = function(pointOrPoints) {
+  WaveformPoints.prototype.add = function(/* pointOrPoints */) {
     var self = this;
 
     var points = Array.isArray(arguments[0]) ?
