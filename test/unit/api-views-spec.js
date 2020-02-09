@@ -265,4 +265,174 @@ describe('Peaks.views', function() {
       });
     });
   });
+
+  describe('destroyZoomview', function() {
+    context('with zoomview and overview containers', function() {
+      beforeEach(function(done) {
+        var options = {
+          containers: {
+            zoomview: document.getElementById('zoomview-container'),
+            overview: document.getElementById('overview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.equal(null);
+          p = instance;
+          done();
+        });
+      });
+
+      it('should destroy the zoomview', function() {
+        var view = p.views.getView('zoomview');
+        var spy = sinon.spy(view, 'destroy');
+
+        p.views.destroyZoomview();
+
+        expect(p.views.getView('zoomview')).to.equal(null);
+        expect(spy.callCount).to.equal(1);
+      });
+    });
+
+    context('with only a zoomview', function() {
+      beforeEach(function(done) {
+        var options = {
+          containers: {
+            zoomview: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.equal(null);
+          p = instance;
+          done();
+        });
+      });
+
+      it('should not destroy the zoomview', function() {
+        p.views.destroyZoomview();
+
+        expect(p.views.getView('zoomview')).to.be.an.instanceOf(WaveformZoomView);
+      });
+    });
+
+    context('with no zoomview', function() {
+      beforeEach(function(done) {
+        var options = {
+          containers: {
+            overview: document.getElementById('overview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.equal(null);
+          p = instance;
+          done();
+        });
+      });
+
+      it('should do nothing', function() {
+        p.views.destroyZoomview();
+
+        expect(p.views.getView('zoomview')).to.equal(null);
+      });
+    });
+  });
+
+  describe('destroyOverview', function() {
+    context('with zoomview and overview containers', function() {
+      beforeEach(function(done) {
+        var options = {
+          containers: {
+            zoomview: document.getElementById('zoomview-container'),
+            overview: document.getElementById('overview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.equal(null);
+          p = instance;
+          done();
+        });
+      });
+
+      it('should destroy the overview', function() {
+        var view = p.views.getView('overview');
+        var spy = sinon.spy(view, 'destroy');
+
+        p.views.destroyOverview();
+
+        expect(p.views.getView('overview')).to.equal(null);
+        expect(spy.callCount).to.equal(1);
+      });
+    });
+
+    context('with only an overview', function() {
+      beforeEach(function(done) {
+        var options = {
+          containers: {
+            overview: document.getElementById('overview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.equal(null);
+          p = instance;
+          done();
+        });
+      });
+
+      it('should not destroy the overview', function() {
+        p.views.destroyOverview();
+
+        expect(p.views.getView('overview')).to.be.an.instanceOf(WaveformOverview);
+      });
+    });
+
+    context('with no overview', function() {
+      beforeEach(function(done) {
+        var options = {
+          containers: {
+            zoomview: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.equal(null);
+          p = instance;
+          done();
+        });
+      });
+
+      it('should do nothing', function() {
+        p.views.destroyOverview();
+
+        expect(p.views.getView('overview')).to.equal(null);
+      });
+    });
+  });
 });
