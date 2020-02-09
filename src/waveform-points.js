@@ -141,7 +141,7 @@ define([
     points = points.map(function(pointOptions) {
       var point = self._createPoint(pointOptions);
 
-      if (Object.prototype.hasOwnProperty.call(self._pointsById, point.id)) {
+      if (Utils.objectHasProperty(self._pointsById, point.id)) {
         throw new Error('peaks.points.add(): duplicate id');
       }
 

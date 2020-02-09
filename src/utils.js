@@ -110,7 +110,7 @@ define(function() {
 
     extend: function(to, from) {
       for (var key in from) {
-        if (Object.prototype.hasOwnProperty.call(from, key)) {
+        if (this.objectHasProperty(from, key)) {
           to[key] = from[key];
         }
       }

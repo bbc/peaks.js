@@ -8,9 +8,11 @@
 
 define([
   './segment-shape',
+  './utils',
   'konva'
 ], function(
   SegmentShape,
+  Utils,
   Konva) {
   'use strict';
 
@@ -240,7 +242,7 @@ define([
     var count = 0;
 
     for (var segmentId in this._segmentShapes) {
-      if (Object.prototype.hasOwnProperty.call(this._segmentShapes, segmentId)) {
+      if (Utils.objectHasProperty(this._segmentShapes, segmentId)) {
         var segment = this._segmentShapes[segmentId].getSegment();
 
         if (!segment.isVisible(startTime, endTime)) {
@@ -292,7 +294,7 @@ define([
 
   SegmentsLayer.prototype.fitToView = function() {
     for (var segmentId in this._segmentShapes) {
-      if (Object.hasOwnProperty.call(this._segmentShapes, segmentId)) {
+      if (Utils.objectHasProperty(this._segmentShapes, segmentId)) {
         var segmentShape = this._segmentShapes[segmentId];
 
         segmentShape.fitToView();

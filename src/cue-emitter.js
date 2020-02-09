@@ -7,8 +7,11 @@
  */
 
 define([
-  './cue'
-], function(Cue) {
+  './cue',
+  './utils'
+], function(
+    Cue,
+    Utils) {
   'use strict';
 
   var isHeadless = /HeadlessChrome/.test(navigator.userAgent);
@@ -253,7 +256,7 @@ define([
     // Remove any segments no longer active.
 
     for (var id in self._activeSegments) {
-      if (Object.prototype.hasOwnProperty.call(self._activeSegments, id)) {
+      if (Utils.objectHasProperty(self._activeSegments, id)) {
         var segment = activeSegments.find(getSegmentIdComparator(id));
 
         if (!segment) {

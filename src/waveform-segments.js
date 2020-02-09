@@ -204,7 +204,7 @@ define([
     segments = segments.map(function(segmentOptions) {
       var segment = self._createSegment(segmentOptions);
 
-      if (Object.prototype.hasOwnProperty.call(self._segmentsById, segment.id)) {
+      if (Utils.objectHasProperty(self._segmentsById, segment.id)) {
         throw new Error('peaks.segments.add(): duplicate id');
       }
 

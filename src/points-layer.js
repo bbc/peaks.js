@@ -8,9 +8,11 @@
 
 define([
   './point-marker',
+  './utils',
   'konva'
-  ], function(
+], function(
     PointMarker,
+    Utils,
     Konva) {
   'use strict';
 
@@ -313,7 +315,7 @@ define([
     var count = 0;
 
     for (var pointId in this._pointMarkers) {
-      if (Object.prototype.hasOwnProperty.call(this._pointMarkers, pointId)) {
+      if (Utils.objectHasProperty(this._pointMarkers, pointId)) {
         var point = this._pointMarkers[pointId].getPoint();
 
         if (!point.isVisible(startTime, endTime)) {
@@ -364,7 +366,7 @@ define([
 
   PointsLayer.prototype.fitToView = function() {
     for (var pointId in this._pointMarkers) {
-      if (Object.hasOwnProperty.call(this._pointMarkers, pointId)) {
+      if (Utils.objectHasProperty(this._pointMarkers, pointId)) {
         var pointMarker = this._pointMarkers[pointId];
 
         pointMarker.fitToView();
