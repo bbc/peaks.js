@@ -127,11 +127,11 @@ define([
     }
 
     var segment = new Segment(
-      this,
+      this._peaks,
       Utils.isNullOrUndefined(options.id) ? this._getNextSegmentId() : options.id,
       options.startTime,
       options.endTime,
-      options.labelText || '',
+      options.labelText,
       options.color || this._getSegmentColor(),
       options.editable || false
     );

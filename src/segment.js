@@ -11,30 +11,38 @@ define([
 ], function(Utils) {
   'use strict';
 
-  function validateSegment(startTime, endTime, validationContext) {
-    if (!Utils.isValidTime(startTime)) {
+  function validateSegment(options, context) {
+    if (!Utils.isValidTime(options.startTime)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.' + validationContext + ': startTime should be a valid number');
+      throw new TypeError('peaks.segments.' + context + ': startTime should be a valid number');
     }
 
-    if (!Utils.isValidTime(endTime)) {
+    if (!Utils.isValidTime(options.endTime)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.' + validationContext + ': endTime should be a valid number');
+      throw new TypeError('peaks.segments.' + context + ': endTime should be a valid number');
     }
 
-    if (startTime < 0) {
+    if (options.startTime < 0) {
       // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.' + validationContext + ': startTime should not be negative');
+      throw new RangeError('peaks.segments.' + context + ': startTime should not be negative');
     }
 
-    if (endTime < 0) {
+    if (options.endTime < 0) {
       // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.' + validationContext + ': endTime should not be negative');
+      throw new RangeError('peaks.segments.' + context + ': endTime should not be negative');
     }
 
-    if (endTime <= startTime) {
+    if (options.endTime <= options.startTime) {
       // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.' + validationContext + ': endTime should be greater than startTime');
+      throw new RangeError('peaks.segments.' + context + ': endTime should be greater than startTime');
+    }
+
+    if (Utils.isNullOrUndefined(options.labelText)) {
+      // Set default label text
+      options.labelText = '';
+    }
+    else if (!Utils.isString(options.labelText)) {
+      throw new TypeError('peaks.points.' + context + ': labelText must be a string');
     }
   }
 
@@ -44,7 +52,7 @@ define([
    * @class
    * @alias Segment
    *
-   * @param {Object} parent A reference to the parent WaveformSegments instance
+   * @param {Peaks} peaks A reference to the Peaks instance.
    * @param {String} id A unique identifier for the segment.
    * @param {Number} startTime Segment start time, in seconds.
    * @param {Number} endTime Segment end time, in seconds.
@@ -54,23 +62,27 @@ define([
    *   end times can be adjusted via the user interface.
    */
 
-  function Segment(parent, id, startTime, endTime, labelText, color, editable) {
-    validateSegment(startTime, endTime, 'add()');
-    this._parent    = parent;
+  function Segment(peaks, id, startTime, endTime, labelText, color, editable) {
+    var opts = {
+      startTime: startTime,
+      endTime:   endTime,
+      labelText: labelText,
+      color:     color,
+      editable:  editable
+    };
+
+    validateSegment(opts, 'add()');
+
+    this._peaks     = peaks;
     this._id        = id;
-    this._startTime = startTime;
-    this._endTime   = endTime;
-    this._labelText = labelText;
-    this._color     = color;
-    this._editable  = editable;
+    this._startTime = opts.startTime;
+    this._endTime   = opts.endTime;
+    this._labelText = opts.labelText;
+    this._color     = opts.color;
+    this._editable  = opts.editable;
   }
 
   Object.defineProperties(Segment.prototype, {
-    parent: {
-      get: function() {
-        return this._parent;
-      }
-    },
     id: {
       enumerable: true,
       get: function() {
@@ -118,20 +130,25 @@ define([
   });
 
   Segment.prototype.update = function(options) {
-    var startTime = Object.prototype.hasOwnProperty.call(options, 'startTime') ? options.startTime : this.startTime;
-    var endTime   = Object.prototype.hasOwnProperty.call(options, 'endTime')   ? options.endTime   : this.endTime;
-    var labelText = Object.prototype.hasOwnProperty.call(options, 'labelText') ? options.labelText : this.labelText;
-    var color     = Object.prototype.hasOwnProperty.call(options, 'color')     ? options.color     : this.color;
-    var editable  = Object.prototype.hasOwnProperty.call(options, 'editable')  ? options.editable  : this.editable;
+    var opts = {
+      startTime: this.startTime,
+      endTime:   this.endTime,
+      labelText: this.labelText,
+      color:     this.color,
+      editable:  this.editable
+    };
 
-    validateSegment(startTime, endTime, 'updateTime()');
+    Utils.extend(opts, options);
 
-    this._startTime = startTime;
-    this._endTime   = endTime;
-    this._labelText = labelText;
-    this._color     = color;
-    this._editable  = editable;
-    this._parent._peaks.emit('segments.update', this);
+    validateSegment(opts, 'update()');
+
+    this._startTime = opts.startTime;
+    this._endTime   = opts.endTime;
+    this._labelText = opts.labelText;
+    this._color     = opts.color;
+    this._editable  = opts.editable;
+
+    this._peaks.emit('segments.update', this);
   };
 
   /**

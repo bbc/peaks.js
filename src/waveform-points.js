@@ -79,7 +79,7 @@ define([
 
   WaveformPoints.prototype._createPoint = function(options) {
     var point = new Point(
-      this,
+      this._peaks,
       Utils.isNullOrUndefined(options.id) ? this._getNextPointId() : options.id,
       options.time,
       options.labelText,

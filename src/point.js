@@ -11,23 +11,23 @@ define([
 ], function(Utils) {
   'use strict';
 
-  function validatePoint(time, labelText) {
-    if (!Utils.isValidTime(time)) {
+  function validatePoint(options, context) {
+    if (!Utils.isValidTime(options.time)) {
       // eslint-disable-next-line max-len
-      throw new TypeError('peaks.points.add(): time should be a numeric value');
+      throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
     }
 
-    if (time < 0) {
+    if (options.time < 0) {
       // eslint-disable-next-line max-len
-      throw new TypeError('peaks.points.add(): time should not be negative');
+      throw new TypeError('peaks.points.' + context + ': time should not be negative');
     }
 
-    if (Utils.isNullOrUndefined(labelText)) {
+    if (Utils.isNullOrUndefined(options.labelText)) {
       // Set default label text
-      labelText = '';
+      options.labelText = '';
     }
-    else if (!Utils.isString(labelText)) {
-      throw new TypeError('peaks.points.add(): labelText must be a string');
+    else if (!Utils.isString(options.labelText)) {
+      throw new TypeError('peaks.points.' + context + ': labelText must be a string');
     }
   }
 
@@ -37,7 +37,7 @@ define([
    * @class
    * @alias Point
    *
-   * @param {Object} parent A reference to the parent WaveformPoints instance
+   * @param {Peaks} peaks A reference to the Peaks instance.
    * @param {String} id A unique identifier for the point.
    * @param {Number} time Point time, in seconds.
    * @param {String} labelText Point label text.
@@ -46,23 +46,25 @@ define([
    *   end times can be adjusted via the user interface.
    */
 
-  function Point(parent, id, time, labelText, color, editable) {
-    labelText = labelText || '';
-    validatePoint(time, labelText);
-    this._parent    = parent;
+  function Point(peaks, id, time, labelText, color, editable) {
+    var opts = {
+      time:      time,
+      labelText: labelText,
+      color:     color,
+      editable:  editable
+    };
+
+    validatePoint(opts, 'add()');
+
+    this._peaks     = peaks;
     this._id        = id;
-    this._time      = time;
-    this._labelText = labelText;
-    this._color     = color;
-    this._editable  = editable;
+    this._time      = opts.time;
+    this._labelText = opts.labelText;
+    this._color     = opts.color;
+    this._editable  = opts.editable;
   }
 
   Object.defineProperties(Point.prototype, {
-    parent: {
-      get: function() {
-        return this._parent;
-      }
-    },
     id: {
       enumerable: true,
       get: function() {
@@ -99,18 +101,23 @@ define([
   });
 
   Point.prototype.update = function(options) {
-    var time      = Object.prototype.hasOwnProperty.call(options, 'time')      ? options.time            : this.time;
-    var labelText = Object.prototype.hasOwnProperty.call(options, 'labelText') ? options.labelText || '' : this.labelText;
-    var color     = Object.prototype.hasOwnProperty.call(options, 'color')     ? options.color           : this.color;
-    var editable  = Object.prototype.hasOwnProperty.call(options, 'editable')  ? options.editable        : this.editable;
+    var opts = {
+      time:      this.time,
+      labelText: this.labelText,
+      color:     this.color,
+      editable:  this.editable
+    };
 
-    validatePoint(time, labelText);
+    Utils.extend(opts, options);
 
-    this._time      = time;
-    this._labelText = labelText;
-    this._color     = color;
-    this._editable  = editable;
-    this._parent._peaks.emit('points.update', this);
+    validatePoint(opts, 'update()');
+
+    this._time      = opts.time;
+    this._labelText = opts.labelText;
+    this._color     = opts.color;
+    this._editable  = opts.editable;
+
+    this._peaks.emit('points.update', this);
   };
 
   /**
