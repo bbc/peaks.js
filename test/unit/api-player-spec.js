@@ -42,8 +42,11 @@ describe('Peaks.player', function() {
 
     it('should return an updated time if it has been modified through the audio element', function(done) {
       p.on('player_seek', function(currentTime) {
-        var diff = Math.abs(p.player.getCurrentTime() - newTime);
+        expect(currentTime).to.equal(p.player.getCurrentTime());
+
+        var diff = Math.abs(currentTime - newTime);
         expect(diff).to.be.lessThan(0.2);
+
         done();
       });
 
