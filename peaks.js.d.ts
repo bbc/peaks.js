@@ -80,7 +80,7 @@ declare module 'peaks.js' {
 
   interface WebAudioOptions {
     webAudio: {
-      /** 
+      /**
        * A Web Audio AudioContext instance which can be used
        * to render the waveform if dataUri is not provided
        */
@@ -257,7 +257,7 @@ declare module 'peaks.js' {
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;
-    setZoom: (options: XOR<{ scale: number | "auto" }, { seconds: number | "auto" }>) => void; 
+    setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
     setStartTime: (time: number) => void;
   }
 
@@ -282,7 +282,7 @@ declare module 'peaks.js' {
       createZoomview: (container: HTMLElement) => WaveformView;
       destroyOverview: () => void;
       destroyZoomview: () => void;
-      getView: (name?: "overview" | "zoomview" ) => WaveformView | null;
+      getView: (name?: 'overview' | 'zoomview' ) => WaveformView | null;
     };
     /** Zoom API */
     zoom: {
