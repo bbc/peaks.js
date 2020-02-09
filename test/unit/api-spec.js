@@ -138,7 +138,7 @@ describe('Peaks', function() {
         });
       });
 
-      context('with valid json waveform data', function(done) {
+      context('with valid json waveform data', function() {
         it('should initialise correctly', function(done) {
           var sampleJsonData = require('../../test_data/sample.json');
           Peaks.init({
@@ -160,7 +160,7 @@ describe('Peaks', function() {
         });
       });
 
-      context('with valid binary waveform data', function(done) {
+      context('with valid binary waveform data', function() {
         it('should initialise correctly', function(done) {
           fetch('/base/test_data/sample.dat')
             .then(function(response) {
