@@ -49,7 +49,12 @@ describe('Point', function() {
     });
 
     it('should not allow invalid updates', function() {
-      p.points.add({ time: 10, editable: true, color: '#ff0000', labelText: 'A point' });
+      p.points.add({
+        time:      10,
+        editable:  true,
+        color:     '#ff0000',
+        labelText: 'A point'
+      });
 
       var point = p.points.getPoints()[0];
 
@@ -63,6 +68,31 @@ describe('Point', function() {
 
       point.update({ labelText: undefined });
       expect(point.labelText).to.equal('');
+    });
+
+    it('should not update any attributes if invalid', function() {
+      p.points.add({
+        time:      10,
+        editable:  true,
+        color:     '#ff0000',
+        labelText: 'A point'
+      });
+
+      var point = p.points.getPoints()[0];
+
+      expect(function() {
+        point.update({
+          time:      NaN,
+          editable:  false,
+          color:     '#000000',
+          labelText: 'Updated'
+        });
+      }).to.throw(TypeError);
+
+      expect(point.time).to.equal(10);
+      expect(point.editable).to.equal(true);
+      expect(point.color).to.equal('#ff0000');
+      expect(point.labelText).to.equal('A point');
     });
   });
 

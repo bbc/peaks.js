@@ -45,6 +45,7 @@ describe('Segment', function() {
         endTime: newEndTime,
         labelText: newLabelText
       });
+
       expect(segment.startTime).to.equal(newStartTime);
       expect(segment.endTime).to.equal(newEndTime);
       expect(segment.labelText).to.equal(newLabelText);
@@ -66,6 +67,34 @@ describe('Segment', function() {
       expect(function() {
         segment.update({ startTime: 8, endTime: 3 });
       }).to.throw(RangeError);
+    });
+
+    it('should not update any attributes if invalid', function() {
+      p.segments.add({
+        startTime: 0,
+        endTime:   10,
+        editable:  true,
+        color:     '#ff0000',
+        labelText: 'A segment'
+      });
+
+      var segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({
+          startTime: 10,
+          endTime:   0,
+          editable:  false,
+          color:     '#000000',
+          labelText: 'Updated'
+        });
+      }).to.throw(RangeError);
+
+      expect(segment.startTime).to.equal(0);
+      expect(segment.endTime).to.equal(10);
+      expect(segment.editable).to.equal(true);
+      expect(segment.color).to.equal('#ff0000');
+      expect(segment.labelText).to.equal('A segment');
     });
   });
 
