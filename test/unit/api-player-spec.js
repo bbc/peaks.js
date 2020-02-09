@@ -105,7 +105,7 @@ describe('Peaks.player', function() {
 
   describe('getCurrentSource', function() {
     it('should return the media url', function() {
-      expect(p.player.getCurrentSource()).to.match(/http:\/\/localhost:8080\/base\/test_data\/sample.(?:mp3|ogg)/);
+      expect(p.player.getCurrentSource()).to.match(/^http:\/\/localhost:\d+\/base\/test_data\/sample.(?:mp3|ogg)$/);
     });
   });
 
