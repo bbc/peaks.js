@@ -234,16 +234,6 @@ define([
       pointMarkerColor:     Colors.teal,
 
       /**
-       * Handler function called when point handle double clicked
-       */
-      pointDblClickHandler: null,
-
-      /*
-       * Handler function called when the point handle has finished dragging
-       */
-      pointDragEndHandler:  null,
-
-      /**
        * An object containing an AudioContext, used when creating waveform data
        * using the Web Audio API
        */
@@ -490,16 +480,6 @@ define([
       if (!Utils.isInAscendingOrder(this.options.zoomLevels)) {
         return new Error('Peaks.init(): The zoomLevels array must be sorted in ascending order');
       }
-    }
-
-    if (this.options.pointDblClickHandler) {
-      opts.deprecationLogger('Peaks.init(): The pointDblClickHandler option is deprecated, please use the points.dblclick event instead');
-      this.on('points.dblclick', this.options.pointDblClickHandler);
-    }
-
-    if (this.options.pointDragEndHandler) {
-      opts.deprecationLogger('Peaks.init(): The pointDragEndHandler option is deprecated, please use the points.dragend event instead');
-      this.on('points.dragend', this.options.pointDragEndHandler);
     }
 
     if (opts.logger) {
