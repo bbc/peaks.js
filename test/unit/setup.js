@@ -4,6 +4,18 @@ beforeEach(function(done) {
   container.width = '1000px';
   document.body.appendChild(container);
 
+  var overviewContainer = document.createElement('div');
+  overviewContainer.id = 'overview-container';
+  overviewContainer.style.width = '1000px';
+  overviewContainer.style.height = '100px';
+  document.body.appendChild(overviewContainer);
+
+  var zoomviewContainer = document.createElement('div');
+  zoomviewContainer.id = 'zoomview-container';
+  zoomviewContainer.style.width = '1000px';
+  zoomviewContainer.style.height = '100px';
+  document.body.appendChild(zoomviewContainer);
+
   var mediaElement = document.createElement('audio');
   mediaElement.id = 'media';
   mediaElement.src = '/base/test_data/sample.mp3';
@@ -12,16 +24,17 @@ beforeEach(function(done) {
   setTimeout(done, 0);
 });
 
+function removeElement(id) {
+  var element = document.getElementById(id);
+
+  if (element) {
+    document.body.removeChild(element);
+  }
+}
+
 afterEach(function() {
-  var container = document.getElementById('container');
-
-  if (container) {
-    document.body.removeChild(container);
-  }
-
-  var mediaElement = document.getElementById('media');
-
-  if (mediaElement) {
-    document.body.removeChild(mediaElement);
-  }
+  removeElement('container');
+  removeElement('zoomview-container');
+  removeElement('overview-container');
+  removeElement('media');
 });

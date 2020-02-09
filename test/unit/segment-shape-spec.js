@@ -19,8 +19,9 @@ describe('SegmentShape', function() {
     };
 
     Peaks.init(options, function(err, instance) {
+      expect(err).to.equal(null);
       p = instance;
-      done(err);
+      done();
     });
   });
 

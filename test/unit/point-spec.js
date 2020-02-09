@@ -10,13 +10,20 @@ describe('Point', function() {
     var p;
 
     beforeEach(function(done) {
-      p = Peaks.init({
-        container: document.getElementById('container'),
+      var options = {
+        containers: {
+          overview: document.getElementById('overview-container'),
+          zoomview: document.getElementById('zoomview-container')
+        },
         mediaElement: document.getElementById('media'),
         dataUri: { arraybuffer: 'base/test_data/sample.dat' }
-      });
+      };
 
-      p.on('peaks.ready', done);
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+        p = instance;
+        done();
+      });
     });
 
     afterEach(function() {

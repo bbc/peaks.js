@@ -11,14 +11,21 @@ describe('Peaks.points', function() {
   beforeEach(function(done) {
     deprecationLogger = sinon.spy();
 
-    p = Peaks.init({
-      container: document.getElementById('container'),
+    var options = {
+      containers: {
+        overview: document.getElementById('overview-container'),
+        zoomview: document.getElementById('zoomview-container')
+      },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
       deprecationLogger: deprecationLogger
-    });
+    };
 
-    p.on('peaks.ready', done);
+    Peaks.init(options, function(err, instance) {
+      expect(err).to.equal(null);
+      p = instance;
+      done();
+    });
   });
 
   afterEach(function() {

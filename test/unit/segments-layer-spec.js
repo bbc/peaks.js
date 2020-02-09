@@ -9,7 +9,10 @@ describe('SegmentsLayer', function() {
 
   beforeEach(function(done) {
     var options = {
-      container: document.getElementById('container'),
+      containers: {
+        overview: document.getElementById('overview-container'),
+        zoomview: document.getElementById('zoomview-container')
+      },
       mediaElement: document.getElementById('media'),
       dataUri: {
         json: 'base/test_data/sample.json'
@@ -19,8 +22,9 @@ describe('SegmentsLayer', function() {
     };
 
     Peaks.init(options, function(err, instance) {
+      expect(err).to.equal(null);
       p = instance;
-      done(err);
+      done();
     });
   });
 

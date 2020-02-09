@@ -17,23 +17,33 @@ describe('CueEmitter', function() {
   };
 
   beforeEach(function(done) {
-    p = Peaks.init({
-      container: document.getElementById('container'),
+    var options = {
+      containers: {
+        overview: document.getElementById('overview-container'),
+        zoomview: document.getElementById('zoomview-container')
+      },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
       emitCueEvents: false
-    });
+    };
 
-    cueEmitter = new CueEmitter(p);
-    p.on('peaks.ready', done);
+    Peaks.init(options, function(err, instance) {
+      expect(err).to.equal(null);
+
+      p = instance;
+      cueEmitter = new CueEmitter(instance);
+
+      done();
+    });
   });
 
   afterEach(function() {
     if (p) {
       p.destroy();
+      p = null;
     }
-    p = undefined;
-    cueEmitter = undefined;
+
+    cueEmitter = null;
   });
 
   it('should initialise correctly', function() {
