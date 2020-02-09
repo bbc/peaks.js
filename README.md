@@ -492,8 +492,6 @@ The `options` parameter is an object with the following keys. Only one of `dataU
 For example, to change the media URL and request pre-computed waveform data from the server:
 
 ```js
-const peaks = Peaks.init({ ... });
-
 const options = {
   mediaUrl: '/sample.mp3',
   dataUri: {
@@ -502,7 +500,7 @@ const options = {
   }
 };
 
-peaks.setSource(options, function(error) {
+instance.setSource(options, function(error) {
   // Waveform updated
 });
 ```
@@ -510,8 +508,6 @@ peaks.setSource(options, function(error) {
 Or, to change the media URL and use the Web Audio API to generate the waveform:
 
 ```js
-const peaks = Peaks.init({ ... });
-
 const audioContext = new AudioContext();
 
 const options = {
@@ -522,7 +518,7 @@ const options = {
   }
 };
 
-peaks.setSource(options, function(error) {
+instance.setSource(options, function(error) {
   // Waveform updated
 });
 ```
@@ -718,6 +714,12 @@ const view = instance.views.getView('zoomview');
 
 container.setAttribute('style', 'height: 300px');
 view.fitToContainer();
+
+// or, with debounce of 500ms:
+
+window.addEventListener('resize', _.debounce(function() {
+  view.fitToContainer();
+}, 500);
 ```
 
 ### `view.setZoom(options)`
@@ -750,6 +752,7 @@ Note that this method is not available on the overview waveform.
 ```js
 const view = instance.views.getView('zoomview');
 view.setStartTime(6.0); // seconds
+```
 
 ## Zoom API
 
@@ -1168,8 +1171,14 @@ This project includes sample audio from the radio show [Desert Island Discs](htt
 
 # Credits
 
+This software was written by:
+
 - [Chris Finch](https://github.com/chrisfinch)
 - [Thomas Parisot](https://github.com/oncletom)
 - [Chris Needham](https://github.com/chrisn)
+
+Thank you to all our [contributors](https://github.com/bbc/peaks.js/graphs/contributors).
+
+# Copyright
 
 Copyright 2020 British Broadcasting Corporation
