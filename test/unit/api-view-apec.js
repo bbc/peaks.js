@@ -38,8 +38,10 @@ describe('WaveformView', function() {
           var view = p.views.getView(viewName);
 
           expect(function() {
-            view.setAmplitudeScale(1.0);
-          }).to.not.throw;
+            view.setAmplitudeScale(1.2);
+          }).to.not.throw();
+
+          expect(view.getAmplitudeScale()).to.equal(1.2);
         });
 
         it('should throw if no scale is given', function() {
