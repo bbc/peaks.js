@@ -63,22 +63,12 @@ module.exports = function(config) {
 
     // configure the test coverage reporter
     coverageReporter: {
-      type: 'html',
-      dir: 'coverage',
       reporters: [
-        { type: 'html', subdir: 'html' },
-        { type: 'text' }
+        { type: 'html', dir: 'coverage', subdir: '.' },
+        { type: 'text' },
+        { type: 'text-summary' }
       ]
     },
-
-    plugins: [
-      'karma-browserify',
-      'karma-coverage',
-      'karma-mocha',
-      'karma-chai-sinon',
-      'karma-spec-reporter',
-      'karma-chrome-launcher'
-    ],
 
     // web server port
     port: 8080,
