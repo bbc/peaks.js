@@ -1161,13 +1161,13 @@ Tests run in Karma using Mocha + Chai + Sinon.
 
 # Contributing
 
-If you'd like to contribute to Peaks.js, please take a look at our [contributer guidelines](CONTRIBUTING.md).
+If you'd like to contribute to Peaks.js, please take a look at our [contributor guidelines](CONTRIBUTING.md).
 
 # License
 
 See [COPYING](COPYING).
 
-This project includes sample audio from the radio show [Desert Island Discs](https://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
+This project includes sample audio from the BBC radio programme [Desert Island Discs](https://en.wikipedia.org/wiki/File:Alice_walker_bbc_radio4_desert_island_discs_19_05_2013.flac), used under the terms of the [Creative Commons 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
 # Credits
 
