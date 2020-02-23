@@ -4,9 +4,13 @@ Thank you for your interest in Peaks.js!
 
 We love hearing feedback from people who use our software, so if you build something interesting using this library, please let us know.
 
-Contributions are welcomed and encouraged. If you're thinking of writing a new feature, please first discuss the change you wish to make, either by raising an issue, or contacting us directly, e.g, [by email](mailto:irfs@bbc.co.uk).
+Contributions are welcomed and encouraged. If you're thinking of fixing a bug or writing a new feature, please first read the following guidelines.
 
 ## Making changes
+
+* Before creating a pull request, we prefer that you first discuss the change you wish to make, either by raising an issue, or contacting us directly, e.g, [by email](mailto:irfs@bbc.co.uk).
+
+* Please check our [development plan](https://github.com/bbc/peaks.js/projects/1), which shows the current and planned changes.
 
 * If we agree with your feature proposal, we'll work with you to develop and integrate the feature. But please bear with us, as we may not always be able to respond immediately.
 
@@ -29,6 +33,7 @@ Contributions are welcomed and encouraged. If you're thinking of writing a new f
 When it's time to publish a new release version, e.g,. to npm, create a single commit on `master` with the following changes only:
 
 * Increment the `version` field in [package.json](https://github.com/bbc/peaks.js/blob/master/package.json)
+
 * Describe the new features in this release in [CHANGELOG.md](https://github.com/bbc/peaks.js/blob/master/CHANGELOG.md)
 
 Tag this commit using the form `vX.Y.Z` and push the commit using `git push origin master --tags`.
