@@ -11,105 +11,29 @@ define([
 ], function(Utils) {
   'use strict';
 
-  /**
-   * A wrapper for interfacing with the HTML5 media element API.
-   * Initializes the player for a given media element.
-   *
-   * @class
-   * @alias Player
-   *
-   * @param {Peaks} peaks The parent {@link Peaks} object.
-   * @param {HTMLMediaElement} mediaElement The HTML <code>&lt;audio&gt;</code>
-   *   or <code>&lt;video&gt;</code> element to associate with the
-   *   {@link Peaks} instance.
-   */
-
-  function Player(peaks, mediaElement) {
+    /**
+     * A wrapper for interfacing with Audio Players.
+     *
+     * @class
+     * @alias Player
+     *
+     * @param {Peaks} peaks The parent {@link Peaks} object.
+     * @param {Adapter} adapter The player adapter.
+     *   {@link Peaks} instance.
+     */
+  function Player(peaks, adapter) {
     var self = this;
 
     self._peaks = peaks;
-    self._listeners = [];
-    self._mediaElement = mediaElement;
-    self._duration = self.getDuration();
-    self._isPlaying = false;
-
-    self._addMediaListener('timeupdate', function() {
-      self._peaks.emit('player_time_update', self.getCurrentTime());
-    });
-
-    self._addMediaListener('play', function() {
-      self._isPlaying = true;
-      self._peaks.emit('player_play', self.getCurrentTime());
-    });
-
-    self._addMediaListener('pause', function() {
-      self._isPlaying = false;
-      self._peaks.emit('player_pause', self.getCurrentTime());
-    });
-
-    self._addMediaListener('seeked', function() {
-      self._peaks.emit('player_seek', self.getCurrentTime());
-    });
-
-    self._addMediaListener('canplay', function() {
-      self._peaks.emit('player_canplay', self);
-    });
-
-    self._addMediaListener('error', function(event) {
-      self._peaks.emit('player_error', event.target.error);
-    });
-
-    self._interval = null;
+    self._adapter = adapter;
   }
 
   /**
-   * Adds an event listener to the media element.
-   *
-   * @private
-   * @param {String} type The event type to listen for.
-   * @param {Function} callback An event handler function.
-   */
-
-  Player.prototype._addMediaListener = function(type, callback) {
-    this._listeners.push({ type: type, callback: callback });
-    this._mediaElement.addEventListener(type, callback);
-  };
-
-  /**
-   * Cleans up the player object, removing all event listeners from the
-   * associated media element.
+   * Cleans up the player object.
    */
 
   Player.prototype.destroy = function() {
-    for (var i = 0; i < this._listeners.length; i++) {
-      var listener = this._listeners[i];
-
-      this._mediaElement.removeEventListener(
-        listener.type,
-        listener.callback
-      );
-    }
-
-    this._listeners.length = 0;
-
-    if (this._interval !== null) {
-      clearTimeout(this._interval);
-      this._interval = null;
-    }
-
-    this._mediaElement = null;
-  };
-
-  Player.prototype.setSource = function(source) {
-    this._mediaElement.setAttribute('src', source);
-  };
-
-  Player.prototype.getSource = function() {
-    return this._mediaElement.src;
-  };
-
-  Player.prototype.getCurrentSource = function() {
-    return this._mediaElement.currentSrc;
+    this._adapter.destroy();
   };
 
   /**
@@ -117,7 +41,7 @@ define([
    */
 
   Player.prototype.play = function() {
-    this._mediaElement.play();
+    this._adapter.play();
   };
 
   /**
@@ -125,7 +49,7 @@ define([
    */
 
   Player.prototype.pause = function() {
-    this._mediaElement.pause();
+    this._adapter.pause();
   };
 
   /**
@@ -134,14 +58,14 @@ define([
    */
 
   Player.prototype.isPlaying = function() {
-    return this._isPlaying;
+    return this._adapter.isPlaying();
   };
 
   /**
    * @returns {boolean} <code>true</code> if seeking
    */
   Player.prototype.isSeeking = function() {
-    return this._mediaElement.seeking;
+    return this._adapter.isSeeking();
   };
 
   /**
@@ -151,7 +75,7 @@ define([
    */
 
   Player.prototype.getCurrentTime = function() {
-    return this._mediaElement.currentTime;
+    return this._adapter.getCurrentTime();
   };
 
   /**
@@ -161,7 +85,7 @@ define([
    */
 
   Player.prototype.getDuration = function() {
-    return this._mediaElement.duration;
+    return this._adapter.getDuration();
   };
 
   /**
@@ -176,7 +100,7 @@ define([
       return;
     }
 
-    this._mediaElement.currentTime = time;
+    this._adapter.seek(time);
   };
 
   /**
@@ -195,25 +119,32 @@ define([
       return;
     }
 
-    clearTimeout(self._interval);
-    self._interval = null;
-
-    // Set audio time to segment start time
-    self.seek(segment.startTime);
-
-    // Start playing audio
-    self._mediaElement.play();
-
-    // We need to use setInterval here as the timeupdate event doesn't fire
-    // often enough.
-    self._interval = setInterval(function() {
-      if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
-        clearTimeout(self._interval);
-        self._interval = null;
-        self._mediaElement.pause();
-      }
-    }, 30);
+    self._adapter.playSegment(segment);
   };
+
+    Player.prototype._updatedTime = function() {
+        this._peaks.emit('player_time_update', this.getCurrentTime());
+    };
+
+    Player.prototype._triggeredPlay = function() {
+        this._peaks.emit('player_play', this.getCurrentTime());
+    };
+
+    Player.prototype._triggeredPause = function() {
+        this._peaks.emit('player_pause', this.getCurrentTime());
+    };
+
+    Player.prototype._triggeredCanPlay = function() {
+        this._peaks.emit('player_canplay', this);
+    };
+
+    Player.prototype._triggeredError = function(error) {
+        this._peaks.emit('player_error', error);
+    };
+
+    Player.prototype._triggeredSeek = function() {
+        this._peaks.emit('player_seek', this.getCurrentTime());
+    };
 
   return Player;
 });
