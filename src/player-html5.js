@@ -30,6 +30,39 @@ define([
     self._mediaElement = mediaElement;
 
     var adapter = {
+        init: function() {
+          self._listeners = [];
+          self._duration = self.getDuration();
+          self._isPlaying = false;
+
+          self._addMediaListener('timeupdate', function() {
+            self._updatedTime();
+          });
+
+          self._addMediaListener('play', function() {
+            self._isPlaying = true;
+            self._triggeredPlay();
+          });
+
+          self._addMediaListener('pause', function() {
+            self._isPlaying = false;
+            self._triggeredPause();
+          });
+
+          self._addMediaListener('seeked', function() {
+            self._triggeredSeek();
+          });
+
+          self._addMediaListener('canplay', function() {
+            self._triggeredCanPlay();
+          });
+
+          self._addMediaListener('error', function(event) {
+            self._triggeredError(event.target.error);
+          });
+
+          self._interval = null;
+        },
         /**
          * Cleans up the player object, removing all event listeners from the
          * associated media element.
@@ -97,45 +130,13 @@ define([
     };
 
     Player.call(this, peaks, adapter);
-
-    self._listeners = [];
-    self._duration = self.getDuration();
-    self._isPlaying = false;
-
-    self._addMediaListener('timeupdate', function() {
-      self._updatedTime();
-    });
-
-    self._addMediaListener('play', function() {
-      self._isPlaying = true;
-      self._triggeredPlay();
-    });
-
-    self._addMediaListener('pause', function() {
-      self._isPlaying = false;
-      self._triggeredPause();
-    });
-
-    self._addMediaListener('seeked', function() {
-      self._triggeredSeek();
-    });
-
-    self._addMediaListener('canplay', function() {
-      self._triggeredCanPlay();
-    });
-
-    self._addMediaListener('error', function(event) {
-      self._triggeredError(event.target.error);
-    });
-
-    self._interval = null;
   }
 
-    // inherit Player
-    Html5Player.prototype = Object.create(Player.prototype);
+  // inherit Player
+  Html5Player.prototype = Object.create(Player.prototype);
 
-    // correct the constructor pointer
-    Html5Player.prototype.constructor = Html5Player;
+  // correct the constructor pointer
+  Html5Player.prototype.constructor = Html5Player;
 
   /**
    * Adds an event listener to the media element.

@@ -14,6 +14,7 @@ define([
   './waveform-segments',
   './keyboard-handler',
   './player-html5',
+  './player-external',
   './marker-factories',
   './view-controller',
   './zoom-controller',
@@ -27,6 +28,7 @@ define([
     WaveformSegments,
     KeyboardHandler,
     Html5Player,
+    ExternalPlayer,
     MarkerFactories,
     ViewController,
     ZoomController,
@@ -343,7 +345,13 @@ define([
       instance._keyboardHandler = new KeyboardHandler(instance);
     }
 
-    instance.player = new Html5Player(instance, instance.options.mediaElement);
+    if (instance.options.player) {
+      instance.player = new ExternalPlayer(instance, instance.options.player);
+    }
+    else {
+      instance.player = new Html5Player(instance, instance.options.mediaElement);
+    }
+
     instance.segments = new WaveformSegments(instance);
     instance.points = new WaveformPoints(instance);
     instance.zoom = new ZoomController(instance, instance.options.zoomLevels);

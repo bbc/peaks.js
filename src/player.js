@@ -26,6 +26,8 @@ define([
 
     self._peaks = peaks;
     self._adapter = adapter;
+
+    adapter.init(self);
   }
 
   /**
