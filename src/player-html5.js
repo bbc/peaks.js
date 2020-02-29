@@ -50,7 +50,7 @@ define([
           });
 
           self._addMediaListener('seeked', function() {
-            self._triggeredSeek();
+            self._triggeredSeek(self.getCurrentTime());
           });
 
           self._addMediaListener('canplay', function() {

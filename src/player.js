@@ -144,8 +144,8 @@ define([
         this._peaks.emit('player_error', error);
     };
 
-    Player.prototype._triggeredSeek = function() {
-        this._peaks.emit('player_seek', this.getCurrentTime());
+    Player.prototype._triggeredSeek = function(time) {
+        this._peaks.emit('player_seek', time);
     };
 
   return Player;

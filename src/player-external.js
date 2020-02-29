@@ -54,7 +54,7 @@ define([
         },
         seek: function(time) {
             adapter.seek(time);
-            self._triggeredSeek();
+            self._triggeredSeek(time);
             self._updatedTime();
         },
         playSegment: function(segment) {
