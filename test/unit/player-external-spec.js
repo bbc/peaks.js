@@ -54,6 +54,33 @@ describe('External Player', function() {
     });
   });
 
+  describe('constructor', function() {
+    it('should throw a type error if an adapter property is missing', function() {
+      var adapter = {
+        init: function() {}
+      };
+
+      expect(function() {new ExternalPlayer(null,adapter);}).to.throw(TypeError);
+    });
+
+    it('should throw a type error if an adapter property is not a function', function() {
+      var adapter = {
+        init: 'wrong: this should be a function',
+        destroy: sinon.spy(),
+        play: sinon.spy(),
+        pause: sinon.spy(),
+        isPlaying: sinon.spy(),
+        isSeeking: sinon.spy(),
+        getCurrentTime: sinon.spy(),
+        getDuration: sinon.spy(),
+        seek: sinon.spy(),
+        playSegment: sinon.spy()
+      };
+
+      expect(function() {new ExternalPlayer(null,adapter);}).to.throw(TypeError);
+    });
+  });
+
   describe('init', function() {
     it('should have been triggered during initialization of peaks', function() {
       expect(options.player.init.calledOnce);

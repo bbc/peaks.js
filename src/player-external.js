@@ -10,6 +10,30 @@ define([
 ], function(Player) {
   'use strict';
 
+function validateAdapter(adapter) {
+      var adapterMethods = [
+        'init',
+        'destroy',
+        'play',
+        'pause',
+        'isPlaying',
+        'isSeeking',
+        'getCurrentTime',
+        'getDuration',
+        'seek',
+        'playSegment'
+      ];
+
+      adapterMethods.forEach(function(method) {
+        if (!Object.hasOwnProperty.call(adapter,method)) {
+          throw new TypeError('peaks.player: property ' + method + ' is undefined');
+        }
+        if ((typeof adapter[method]) !== 'function') {
+          throw new TypeError('peaks.player: property ' + method + ' is not a function');
+        }
+      });
+    }
+
   /**
    * A wrapper for interfacing with an external player API.
    *
@@ -24,6 +48,8 @@ define([
     var self = this;
 
     self._peaks = peaks;
+
+    validateAdapter(adapter);
 
     var _adapter = {
         init: function(player) {
