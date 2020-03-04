@@ -209,6 +209,8 @@ declare module 'peaks.js' {
     createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
     /** Custom point marker factory function */
     createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
+    /** External Player */
+    player?: PlayerAdapter;
   }
 
   interface SetSourceRequiredOptions {
@@ -248,6 +250,23 @@ declare module 'peaks.js' {
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
     player_seek: (time: number) => void;
     user_seek: (time: number) => void;
+  }
+
+  interface PlayerAdapter {
+    init: (player:InternalPlayer) => void,
+    destroy: () => void,
+    play: () => void,
+    pause: () => void,
+    isPlaying: () => boolean,
+    isSeeking: () => boolean,
+    getCurrentTime: () => number,
+    getDuration: () => number,
+    seek: (time: number) => void,
+    playSegment: (segment: Segment) => void
+  }
+
+  interface InternalPlayer implements PlayerAdapter {
+    _updatedTime: () => void,
   }
 
   interface WaveformView {
