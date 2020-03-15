@@ -1,6 +1,79 @@
 # Customizing Peaks.js
 
-This document describes how to customize various aspects of the waveform rendering in Peaks.js.
+This document describes how to customize various aspects of the waveform rendering and audio playback in Peaks.js.
+
+# Audio Playback
+
+Peaks.js default internal audio player is based on the [HTMLAudioElement](https://html.spec.whatwg.org/multipage/media.html#the-audio-element). But Peaks.js also allows customization in case an audio player of an external library or a custom written audio player should be used. An external audio player can be used by implementing an audio player adapter interface.
+
+## Configuration
+The configuration option `player` allows to define callback functions which will be used 
+
+1) to be invoked directly by the player api from outside (see [Player API](README.md#Player-API))
+2) to be invoked indirectly by interacting with the waveform view (i.e. seeking via mouse click or keyboard)
+
+The structure of the `player` config option is given below:
+```javascript
+var options = {
+  ...
+  player: {
+    init:           function(player) {...},
+    destroy:        function() {...},
+    play:           function() {...},
+    pause:          function() {...},
+    isPlaying:      function() {..., return boolean},
+    isSeeking:      function() {..., return boolean},
+    getCurrentTime: function() {..., return number},
+    getDuration:    function() {..., return number},
+    seek:           function(time) {...},
+    playSegment:    function(segment) {...}
+  }
+}
+```
+The functional expectations for an external player implementation is summarized in the following table:
+
+|Method         |Parameter Type       | Return Type|Description|
+|---------------|----------------------|-----------|-----------|
+|init           |player: internalPlayer|-          |Lifecycle method for initialization logic. This lifecycle hook is called during the internal construction of the player. See [Initialization](#Initialization) for further details.|
+|destroy        |-                     |-          |Lifecycle method for destroying logic. This lifecycle hook is called during the destroying of the player.|
+|play           |-                     |-          |Starts playback from current time.
+|pause          |-                     |-          |Pauses playback at current time.
+|isPlaying      |-                     |boolean    |Returns `true`, if player is currently playing. Returns `false` otherwise.
+|isSeeking      |-                     |boolean    |Returns `true`, if player is currently in seeking process. Returns `false` otherwise.
+|getCurrentTime |-                     |number     |Returns the current time of the player within the audio file in seconds. 
+|getDuration    |-                     |number     |Returns the complete duration of the audio file within the stream.
+|seek           |time: number          |           |Seeks to the given time in seconds.
+|playSegment    |segment: segment      |           |Starts playing from the start time of the given segment and stops and the endtime.
+
+## Initialization
+
+A major communication item between any audio player implementation and the waveform is the current playhead position. Every implementation must ensure that it informs the waveform proactively about updates of the current time.
+
+The `init(player)` method should be used to setup this communication between player and waveform. 
+To this purpose the init callback function uses a reference to a player object which exposes the method `_updatedTime()`, which internally informs Peaks.js that the current player time has changed.
+
+
+In the following example you see how the init method can be used to setup a connection between Peaks.js and a [Tone.js](https://tonejs.github.io/) Player.
+```javascript
+var externalPlayer = new Tone.Player(audioBuffer)
+
+var options = {
+  player: {
+    init: function(internalPlayer) {
+            externalPlayer.sync();
+            externalPlayer.start();
+
+            Tone.connectSeries(externalPlayer,Tone.Master);
+
+            Tone.Transport.scheduleRepeat(time => {
+              internalPlayer._updatedTime(); // Exactly here Peaks.js gets informed that the playhead moved
+            },0.03);
+          }
+}
+```
+
+
+# Waveform rendering
 
 Peaks.js makes use of the [Konva.js](https://konvajs.org/) graphics library,
 and so we recommend becoming familiar with Konva. You may find the following tutorials helpful:
