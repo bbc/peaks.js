@@ -28,7 +28,7 @@ define(function() {
     this.id = id;
   }
 
-   /**
+  /**
     * @constant
     * @type {Number}
     */

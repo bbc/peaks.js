@@ -17,15 +17,15 @@ define([
   './utils',
   'konva'
 ], function(
-  HighlightLayer,
-  MouseDragHandler,
-  PlayheadLayer,
-  PointsLayer,
-  SegmentsLayer,
-  WaveformAxis,
-  WaveformShape,
-  Utils,
-  Konva) {
+    HighlightLayer,
+    MouseDragHandler,
+    PlayheadLayer,
+    PointsLayer,
+    SegmentsLayer,
+    WaveformAxis,
+    WaveformShape,
+    Utils,
+    Konva) {
   'use strict';
 
   /**
@@ -266,7 +266,7 @@ define([
 
   WaveformOverview.prototype.setAmplitudeScale = function(scale) {
     if (!Utils.isNumber(scale) || !Number.isFinite(scale)) {
-       throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
+      throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
     }
 
     this._amplitudeScale = scale;

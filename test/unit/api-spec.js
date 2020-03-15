@@ -246,18 +246,18 @@ describe('Peaks', function() {
 
     context('with invalid options', function() {
       it('should invoke callback with an error if no mediaElement is provided', function(done) {
-          Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container'),
-              zoomview: document.getElementById('zoomview-container')
-            },
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          }, function(err, instance) {
-            expect(err).to.be.an.instanceOf(Error);
-            expect(err.message).to.match(/Missing mediaElement option/);
-            expect(instance).to.equal(undefined);
-            done();
-          });
+        Peaks.init({
+          containers: {
+            overview: document.getElementById('overview-container'),
+            zoomview: document.getElementById('zoomview-container')
+          },
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        }, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/Missing mediaElement option/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
       });
 
       it('should invoke callback with an error if mediaElement is not an HTMLMediaElement', function(done) {

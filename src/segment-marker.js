@@ -8,7 +8,7 @@
 
 define([
   'konva'
-  ], function(Konva) {
+], function(Konva) {
   'use strict';
 
   /**

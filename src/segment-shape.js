@@ -10,8 +10,8 @@ define([
   './segment-marker',
   './waveform-shape'
 ], function(
-  SegmentMarker,
-  WaveformShape) {
+    SegmentMarker,
+    WaveformShape) {
   'use strict';
 
   /**

@@ -81,14 +81,14 @@ define(function() {
 
     roundUpToNearest: function(value, multiple) {
       if (multiple === 0) {
-          return 0;
+        return 0;
       }
 
       var multiplier = 1;
 
       if (value < 0.0) {
-          multiplier = -1;
-          value = -value;
+        multiplier = -1;
+        value = -value;
       }
 
       var roundedUp = Math.ceil(value);

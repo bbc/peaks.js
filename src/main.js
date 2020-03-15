@@ -19,7 +19,7 @@ define([
   './zoom-controller',
   './waveform-builder',
   './utils'
-  ], function(
+], function(
     Colors,
     EventEmitter,
     CueEmitter,
@@ -222,11 +222,11 @@ define([
        *
        */
       template:              [
-                               '<div class="waveform">',
-                               '<div class="zoom-container"></div>',
-                               '<div class="overview-container"></div>',
-                               '</div>'
-                             ].join(''),
+        '<div class="waveform">',
+        '<div class="zoom-container"></div>',
+        '<div class="overview-container"></div>',
+        '</div>'
+      ].join(''),
 
       /**
        * Color for point markers
@@ -406,7 +406,7 @@ define([
 
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
-        // eslint-disable-next-line max-len
+      // eslint-disable-next-line max-len
       opts.deprecationLogger('Peaks.init(): The audioElement option is deprecated, please use mediaElement instead');
     }
 

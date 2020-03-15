@@ -10,8 +10,8 @@ define([
   './utils',
   'konva'
 ], function(
-  Utils,
-  Konva) {
+    Utils,
+    Konva) {
   'use strict';
 
   /**
