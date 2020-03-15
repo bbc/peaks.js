@@ -97,31 +97,31 @@ describe('External Player', function() {
     });
   });
 
-    describe('play', function() {
-      it('should invoke play callback and emit play event', function(done) {
-        currentTime = 42;
-        p.on('player_play', function(time) {
-          expect(time).to.equal(42);
-          done();
-        });
-
-        p.player.play();
-
-        expect(options.player.play.calledOnce);
+  describe('play', function() {
+    it('should invoke play callback and emit play event', function(done) {
+      currentTime = 42;
+      p.on('player_play', function(time) {
+        expect(time).to.equal(42);
+        done();
       });
+
+      p.player.play();
+
+      expect(options.player.play.calledOnce);
     });
+  });
 
-    describe('pause', function() {
-      it('should invoke pause callback and emit pause event', function(done) {
-        p.on('player_pause', function() {
-          done();
-        });
-
-        p.player.pause();
-
-        expect(options.player.pause.calledOnce);
+  describe('pause', function() {
+    it('should invoke pause callback and emit pause event', function(done) {
+      p.on('player_pause', function() {
+        done();
       });
+
+      p.player.pause();
+
+      expect(options.player.pause.calledOnce);
     });
+  });
 
   describe('isPlaying', function() {
     it('should invoke callback and return its value', function() {
@@ -160,31 +160,31 @@ describe('External Player', function() {
   });
 
   describe('seek', function() {
-      it('should invoke seek callback and emit seeked and updated time event', function(done) {
-        var numberOfTriggeredEvents = 0;
-        currentTime = 43;
+    it('should invoke seek callback and emit seeked and updated time event', function(done) {
+      var numberOfTriggeredEvents = 0;
+      currentTime = 43;
 
-        p.on('player_seek', function(time) {
-          expect(time).to.equal(42);
-           p.emit('done');
-        });
-        p.on('player_time_update', function(time) {
-          expect(time).to.equal(43);
-          p.emit('done');
-        });
-        p.on('done', function() {
-          numberOfTriggeredEvents++;
-          if (numberOfTriggeredEvents === 2) {
-            done();
-          }
-        });
-
-        p.player.seek(42);
-
-        expect(p.logger.notCalled);
-        expect(options.player.seek.calledOnce);
-        expect(options.player.seek).to.have.been.calledWith(42);
+      p.on('player_seek', function(time) {
+        expect(time).to.equal(42);
+        p.emit('done');
       });
+      p.on('player_time_update', function(time) {
+        expect(time).to.equal(43);
+        p.emit('done');
+      });
+      p.on('done', function() {
+        numberOfTriggeredEvents++;
+        if (numberOfTriggeredEvents === 2) {
+          done();
+        }
+      });
+
+      p.player.seek(42);
+
+      expect(p.logger.notCalled);
+      expect(options.player.seek.calledOnce);
+      expect(options.player.seek).to.have.been.calledWith(42);
+    });
 
     it('should log an error if the given time is not valid', function() {
       p.player.seek('6.0');

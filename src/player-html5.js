@@ -30,103 +30,103 @@ define([
     self._mediaElement = mediaElement;
 
     var adapter = {
-        init: function() {
-          self._listeners = [];
-          self._duration = self.getDuration();
+      init: function() {
+        self._listeners = [];
+        self._duration = self.getDuration();
+        self._isPlaying = false;
+
+        self._addMediaListener('timeupdate', function() {
+          self._updatedTime();
+        });
+
+        self._addMediaListener('play', function() {
+          self._isPlaying = true;
+          self._triggeredPlay();
+        });
+
+        self._addMediaListener('pause', function() {
           self._isPlaying = false;
+          self._triggeredPause();
+        });
 
-          self._addMediaListener('timeupdate', function() {
-            self._updatedTime();
-          });
+        self._addMediaListener('seeked', function() {
+          self._triggeredSeek(self.getCurrentTime());
+        });
 
-          self._addMediaListener('play', function() {
-            self._isPlaying = true;
-            self._triggeredPlay();
-          });
+        self._addMediaListener('canplay', function() {
+          self._triggeredCanPlay();
+        });
 
-          self._addMediaListener('pause', function() {
-            self._isPlaying = false;
-            self._triggeredPause();
-          });
+        self._addMediaListener('error', function(event) {
+          self._triggeredError(event.target.error);
+        });
 
-          self._addMediaListener('seeked', function() {
-            self._triggeredSeek(self.getCurrentTime());
-          });
-
-          self._addMediaListener('canplay', function() {
-            self._triggeredCanPlay();
-          });
-
-          self._addMediaListener('error', function(event) {
-            self._triggeredError(event.target.error);
-          });
-
-          self._interval = null;
-        },
-        /**
+        self._interval = null;
+      },
+      /**
          * Cleans up the player object, removing all event listeners from the
          * associated media element.
          */
-        destroy: function() {
-            for (var i = 0; i < self._listeners.length; i++) {
-                var listener = self._listeners[i];
+      destroy: function() {
+        for (var i = 0; i < self._listeners.length; i++) {
+          var listener = self._listeners[i];
 
-                self._mediaElement.removeEventListener(
-                    listener.type,
-                    listener.callback
-                );
-            }
+          self._mediaElement.removeEventListener(
+            listener.type,
+            listener.callback
+          );
+        }
 
-            self._listeners.length = 0;
+        self._listeners.length = 0;
 
-            if (self._interval !== null) {
-                clearTimeout(self._interval);
-                self._interval = null;
-            }
+        if (self._interval !== null) {
+          clearTimeout(self._interval);
+          self._interval = null;
+        }
 
-            self._mediaElement = null;
-        },
-        play: function() {
-            self._mediaElement.play();
-        },
-        pause: function() {
-            self._mediaElement.pause();
-        },
-        isPlaying: function() {
-            return self._isPlaying;
-        },
-        isSeeking: function() {
-            return self._mediaElement.seeking;
-        },
-        getCurrentTime: function() {
-            return self._mediaElement.currentTime;
-        },
-        getDuration: function() {
-            return self._mediaElement.duration;
-        },
-        seek: function(time) {
-            self._mediaElement.currentTime = time;
-        },
-        playSegment: function(segment) {
+        self._mediaElement = null;
+      },
+      play: function() {
+        self._mediaElement.play();
+      },
+      pause: function() {
+        self._mediaElement.pause();
+      },
+      isPlaying: function() {
+        return self._isPlaying;
+      },
+      isSeeking: function() {
+        return self._mediaElement.seeking;
+      },
+      getCurrentTime: function() {
+        return self._mediaElement.currentTime;
+      },
+      getDuration: function() {
+        return self._mediaElement.duration;
+      },
+      seek: function(time) {
+        self._mediaElement.currentTime = time;
+      },
+      playSegment: function(segment) {
+        clearTimeout(self._interval);
+        self._interval = null;
+
+        // Set audio time to segment start time
+        self.seek(segment.startTime);
+
+        // Start playing audio
+        self._mediaElement.play();
+
+        // We need to use setInterval here as the timeupdate event doesn't fire
+        // often enough.
+        self._interval = setInterval(function() {
+          if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
             clearTimeout(self._interval);
             self._interval = null;
-
-            // Set audio time to segment start time
-            self.seek(segment.startTime);
-
-            // Start playing audio
-            self._mediaElement.play();
-
-            // We need to use setInterval here as the timeupdate event doesn't fire
-            // often enough.
-            self._interval = setInterval(function() {
-                if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
-                clearTimeout(self._interval);
-                self._interval = null;
-                self._mediaElement.pause();
-                }
-            }, 30);
-        }
+            self._mediaElement.pause();
+          }
+        }, 30);
+      }
     };
 
     Player.call(this, peaks, adapter);

@@ -10,29 +10,29 @@ define([
 ], function(Player) {
   'use strict';
 
-function validateAdapter(adapter) {
-      var adapterMethods = [
-        'init',
-        'destroy',
-        'play',
-        'pause',
-        'isPlaying',
-        'isSeeking',
-        'getCurrentTime',
-        'getDuration',
-        'seek',
-        'playSegment'
-      ];
+  function validateAdapter(adapter) {
+    var adapterMethods = [
+      'init',
+      'destroy',
+      'play',
+      'pause',
+      'isPlaying',
+      'isSeeking',
+      'getCurrentTime',
+      'getDuration',
+      'seek',
+      'playSegment'
+    ];
 
-      adapterMethods.forEach(function(method) {
-        if (!Object.hasOwnProperty.call(adapter,method)) {
-          throw new TypeError('peaks.player: property ' + method + ' is undefined');
-        }
-        if ((typeof adapter[method]) !== 'function') {
-          throw new TypeError('peaks.player: property ' + method + ' is not a function');
-        }
-      });
-    }
+    adapterMethods.forEach(function(method) {
+      if (!Object.hasOwnProperty.call(adapter,method)) {
+        throw new TypeError('peaks.player: property ' + method + ' is undefined');
+      }
+      if ((typeof adapter[method]) !== 'function') {
+        throw new TypeError('peaks.player: property ' + method + ' is not a function');
+      }
+    });
+  }
 
   /**
    * A wrapper for interfacing with an external player API.
@@ -52,40 +52,40 @@ function validateAdapter(adapter) {
     validateAdapter(adapter);
 
     var _adapter = {
-        init: function(player) {
-          adapter.init(player);
-        },
-        destroy: function() {
-          adapter.destroy();
-        },
-        play: function() {
-          adapter.play();
-          self._triggeredPlay();
-        },
-        pause: function() {
-          adapter.pause();
-          self._triggeredPause();
-        },
-        isPlaying: function() {
-            return adapter.isPlaying();
-        },
-        isSeeking: function() {
-            return adapter.isSeeking();
-        },
-        getCurrentTime: function() {
-            return adapter.getCurrentTime();
-        },
-        getDuration: function() {
-            return adapter.getDuration();
-        },
-        seek: function(time) {
-            adapter.seek(time);
-            self._triggeredSeek(time);
-            self._updatedTime();
-        },
-        playSegment: function(segment) {
-          adapter.playSegment(segment);
-        }
+      init: function(player) {
+        adapter.init(player);
+      },
+      destroy: function() {
+        adapter.destroy();
+      },
+      play: function() {
+        adapter.play();
+        self._triggeredPlay();
+      },
+      pause: function() {
+        adapter.pause();
+        self._triggeredPause();
+      },
+      isPlaying: function() {
+        return adapter.isPlaying();
+      },
+      isSeeking: function() {
+        return adapter.isSeeking();
+      },
+      getCurrentTime: function() {
+        return adapter.getCurrentTime();
+      },
+      getDuration: function() {
+        return adapter.getDuration();
+      },
+      seek: function(time) {
+        adapter.seek(time);
+        self._triggeredSeek(time);
+        self._updatedTime();
+      },
+      playSegment: function(segment) {
+        adapter.playSegment(segment);
+      }
     };
 
     Player.call(this, peaks, _adapter);

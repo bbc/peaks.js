@@ -11,7 +11,7 @@ define([
 ], function(Utils) {
   'use strict';
 
-    /**
+  /**
      * A wrapper for interfacing with Audio Players.
      *
      * @class
@@ -124,29 +124,29 @@ define([
     self._adapter.playSegment(segment);
   };
 
-    Player.prototype._updatedTime = function() {
-        this._peaks.emit('player_time_update', this.getCurrentTime());
-    };
+  Player.prototype._updatedTime = function() {
+    this._peaks.emit('player_time_update', this.getCurrentTime());
+  };
 
-    Player.prototype._triggeredPlay = function() {
-        this._peaks.emit('player_play', this.getCurrentTime());
-    };
+  Player.prototype._triggeredPlay = function() {
+    this._peaks.emit('player_play', this.getCurrentTime());
+  };
 
-    Player.prototype._triggeredPause = function() {
-        this._peaks.emit('player_pause', this.getCurrentTime());
-    };
+  Player.prototype._triggeredPause = function() {
+    this._peaks.emit('player_pause', this.getCurrentTime());
+  };
 
-    Player.prototype._triggeredCanPlay = function() {
-        this._peaks.emit('player_canplay', this);
-    };
+  Player.prototype._triggeredCanPlay = function() {
+    this._peaks.emit('player_canplay', this);
+  };
 
-    Player.prototype._triggeredError = function(error) {
-        this._peaks.emit('player_error', error);
-    };
+  Player.prototype._triggeredError = function(error) {
+    this._peaks.emit('player_error', error);
+  };
 
-    Player.prototype._triggeredSeek = function(time) {
-        this._peaks.emit('player_seek', time);
-    };
+  Player.prototype._triggeredSeek = function(time) {
+    this._peaks.emit('player_seek', time);
+  };
 
   return Player;
 });
