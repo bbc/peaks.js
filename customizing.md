@@ -6,6 +6,9 @@ This document describes how to customize various aspects of the waveform renderi
 
 Peaks.js default internal audio player is based on the [HTMLAudioElement](https://html.spec.whatwg.org/multipage/media.html#the-audio-element). But Peaks.js also allows customization in case an audio player of an external library or a custom written audio player should be used. An external audio player can be used by implementing an audio player adapter interface.
 
+You can find an example demo [here](demo/external-player.html) that
+shows how to implement such a player adapter and how to configure Peaks.js accordingly.
+
 ## Configuration
 The configuration option `player` allows to define callback functions which will be used 
 
