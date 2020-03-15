@@ -253,7 +253,7 @@ declare module 'peaks.js' {
   }
 
   interface PlayerAdapter {
-    init: (player:InternalPlayer) => void,
+    init: (player: InternalPlayer) => void,
     destroy: () => void,
     play: () => void,
     pause: () => void,
@@ -265,7 +265,7 @@ declare module 'peaks.js' {
     playSegment: (segment: Segment) => void
   }
 
-  interface InternalPlayer implements PlayerAdapter {
+  interface InternalPlayer extends PlayerAdapter {
     _updatedTime: () => void,
   }
 
