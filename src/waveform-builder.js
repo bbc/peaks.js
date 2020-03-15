@@ -6,10 +6,10 @@
  * @module waveform-builder
  */
 
- define([
+define([
   'waveform-data',
   './utils'
-  ], function(
+], function(
     WaveformData,
     Utils) {
   'use strict';
@@ -350,7 +350,7 @@
    */
 
   WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
-    webAudio, withCredentials, callback) {
+      webAudio, withCredentials, callback) {
     var self = this;
 
     if (!url) {
@@ -399,7 +399,7 @@
    */
 
   WaveformBuilder.prototype._createXHR = function(url, requestType,
-    withCredentials, onLoad, onError) {
+      withCredentials, onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
     // open an XHR request to the data source file

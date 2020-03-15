@@ -10,7 +10,7 @@ define([
   './waveform-overview',
   './waveform-zoomview',
   './utils'
-  ], function(
+], function(
     WaveformOverview,
     WaveformZoomView,
     Utils) {

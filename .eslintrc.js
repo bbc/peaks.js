@@ -18,7 +18,24 @@ module.exports = {
     "for-direction": "off",
     "func-style": ["error", "declaration"],
     "guard-for-in": "error",
-    "indent": ["off", 2],
+    "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1,
+          "VariableDeclarator": 2,
+          "FunctionDeclaration": {
+            "body": 1,
+            "parameters": 1
+          },
+          "FunctionExpression": {
+            "body": 1,
+            "parameters": 2
+          },
+          "ignoredNodes": [ "ConditionalExpression"],
+          "ArrayExpression": 1
+        }
+      ],
     "key-spacing": ["error", { "beforeColon": false, "afterColon": true, "mode": "minimum" }],
     "keyword-spacing": ["error", { "before": true }],
     "linebreak-style": ["error", "unix"],

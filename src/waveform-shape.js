@@ -100,7 +100,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    */
 
   WaveformShape.prototype._drawWaveform = function(context, waveformData,
-    frameOffset, startPixels, endPixels, width, height) {
+      frameOffset, startPixels, endPixels, width, height) {
     if (startPixels < frameOffset) {
       startPixels = frameOffset;
     }
@@ -140,7 +140,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   };
 
   WaveformShape.prototype._drawChannel = function(context, channel,
-    frameOffset, startPixels, endPixels, top, height) {
+      frameOffset, startPixels, endPixels, top, height) {
     var x, val;
 
     var amplitudeScale = this._view.getAmplitudeScale();

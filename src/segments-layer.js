@@ -11,9 +11,9 @@ define([
   './utils',
   'konva'
 ], function(
-  SegmentShape,
-  Utils,
-  Konva) {
+    SegmentShape,
+    Utils,
+    Konva) {
   'use strict';
 
   /**

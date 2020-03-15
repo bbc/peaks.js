@@ -17,7 +17,7 @@ define([
   // './static-zoom-adapter',
   './utils',
   'konva'
-  ], function(
+], function(
     MouseDragHandler,
     PlayheadLayer,
     PointsLayer,
@@ -325,7 +325,7 @@ define([
       }
       else if (Utils.objectHasProperty(options, 'seconds')) {
         if (!Utils.isValidTime(options.seconds)) {
-            return false;
+          return false;
         }
 
         this._zoomLevelSeconds = options.seconds;
@@ -478,7 +478,7 @@ define([
 
   WaveformZoomView.prototype.setAmplitudeScale = function(scale) {
     if (!Utils.isNumber(scale) || !Number.isFinite(scale)) {
-       throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
+      throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
     }
 
     this._amplitudeScale = scale;
