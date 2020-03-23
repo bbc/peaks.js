@@ -1,287 +1,256 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Peaks.js Demo Page</title>
+    <style>
+      body {
+        font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <title>Peaks.js Demo Page</title>
-  <style>
-    body {
-      font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
-    }
+      #titles, #waveform-container {
+        margin: 24px auto;
+        width: 1000px;
+      }
 
-    #titles,
-    #waveform-container {
-      margin: 24px auto;
-      width: 1000px;
-    }
+      #zoomview-container, #overview-container {
+        box-shadow: 3px 3px 20px #919191;
+        margin: 0 0 24px 0;
+        -moz-box-shadow: 3px 3px 20px #919191;
+        -webkit-box-shadow: 3px 3px 20px #919191;
+        line-height: 0;
+      }
 
-    #zoomview-container,
-    #overview-container {
-      box-shadow: 3px 3px 20px #919191;
-      margin: 0 0 24px 0;
-      -moz-box-shadow: 3px 3px 20px #919191;
-      -webkit-box-shadow: 3px 3px 20px #919191;
-      line-height: 0;
-    }
+      #zoomview-container {
+        height: 200px;
+      }
 
-    #zoomview-container {
-      height: 200px;
-    }
+      #overview-container {
+        height: 85px;
+      }
 
-    #overview-container {
-      height: 85px;
-    }
+      #demo-controls {
+        margin: 0 auto 24px auto;
+        width: 1000px;
+        display: flex;
+        align-items: center;
+      }
 
-    #demo-controls {
-      margin: 0 auto 24px auto;
-      width: 1000px;
-      display: flex;
-      align-items: center;
-    }
+      #demo-controls button {
+        background: #fff;
+        border: 1px solid #919191;
+        cursor: pointer;
+      }
 
-    #demo-controls button {
-      background: #fff;
-      border: 1px solid #919191;
-      cursor: pointer;
-    }
+      #audio {
+        flex: 0 0 30%;
+      }
 
-    #audio {
-      flex: 0 0 30%;
-    }
+      #controls {
+        flex: 1;
+        margin-left: 1em;
+      }
 
-    #controls {
-      flex: 1;
-      margin-left: 1em;
-    }
+      #seek-time {
+        width: 4em;
+      }
 
-    #seek-time {
-      width: 4em;
-    }
+      .log {
+        margin: 0 auto 24px auto;
+        width: 1000px;
+      }
 
-    .log {
-      margin: 0 auto 24px auto;
-      width: 1000px;
-    }
+      table {
+        width: 100%;
+      }
 
-    table {
-      width: 100%;
-    }
+      table th {
+        text-align: left;
+      }
 
-    table th {
-      text-align: left;
-    }
+      table th, table td {
+        padding: 0.5em;
+      }
 
-    table th,
-    table td {
-      padding: 0.5em;
-    }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="titles">
+      <h1>Peaks.js</h1>
+      <p>
+        Peaks.js is a JavaScript library that allows you to display and
+        interaction with audio waveforms in the browser.
+      </p>
+      <p>
+        It was developed by <a href="https://www.bbc.co.uk/rd">BBC R&amp;D</a>
+        to allow audio editors to make accurate clippings of audio content.
+        You can read more about the project
+        <a href="https://waveform.prototyping.bbc.co.uk/">here</a>.
+      </p>
 
-    .hide {
-      display: none;
-    }
-  </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script>
-</head>
-
-<body>
-  <div id="titles">
-    <h1>Peaks.js</h1>
-    <p>
-      Peaks.js is a JavaScript library that allows you to display and
-      interaction with audio waveforms in the browser.
-    </p>
-    <p>
-      It was developed by <a href="https://www.bbc.co.uk/rd">BBC R&amp;D</a>
-      to allow audio editors to make accurate clippings of audio content.
-      You can read more about the project
-      <a href="https://waveform.prototyping.bbc.co.uk/">here</a>.
-    </p>
-
-    <h2>Demo pages</h2>
-    <p>
-      The following pages demonstrate various configuration options:
-    </p>
-    <p>
-      <a href="index.html">Precomputed Waveform Data</a> |
-      <a href="webaudio.html">Web Audio API</a> |
-      <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
-      <a href="overview-waveform.html">Single Fixed Waveform</a> |
-      <a href="cue-events.html">Cue Events</a> |
-      <a href="set-source.html">Changing the Media URL</a> |
-      <a href="multi-channel.html">Multi-Channel Waveform</a> |
-      <a href="custom-markers.html">Custom Point and Segment Markers</a> |
-      External Audio Player
-    </p>
-    <h2>Demo: Exteral Player</h2>
-    <p>
-      This demo shows how to use an external player for audioplayback and use it with Peaks. A Tone.js Player is setup in the example.
-    </p>
-  </div>
-
-  <div id="waveform-container">
-    <div id="zoomview-container"></div>
-    <div id="overview-container"></div>
-  </div>
-
-  <div id="demo-controls">
-    <audio id="audio" controls="controls" hidden>
-      <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
-      <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
-      Your browser does not support the audio element.
-    </audio>
-
-    <div id="controls">
-      <button data-action="play">Play</button>
-      <button data-action="pause">Pause</button>
-      <input type="text" id="seek-time" value="0.0">
-      <button data-action="seek">Seek</button>
+      <h2>Demo pages</h2>
+      <p>
+        The following pages demonstrate various configuration options:
+      </p>
+      <p>
+        <a href="index.html">Precomputed Waveform Data</a> |
+        <a href="webaudio.html">Web Audio API</a> |
+        <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
+        <a href="overview-waveform.html">Single Fixed Waveform</a> |
+        <a href="cue-events.html">Cue Events</a> |
+        <a href="set-source.html">Changing the Media URL</a> |
+        <a href="multi-channel.html">Multi-Channel Waveform</a> |
+        <a href="custom-markers.html">Custom Point and Segment Markers</a> |
+        External Audio Player
+      </p>
+      <h2>Demo: External Player</h2>
+      <p>
+        This demo shows how to use an external player for audio playback with Peaks.js. A Tone.js Player is setup in the example.
+      </p>
     </div>
-  </div>
 
-  <script src="peaks.js"></script>
+    <div id="waveform-container">
+      <div id="zoomview-container"></div>
+      <div id="overview-container"></div>
+    </div>
 
-  <script>
-    (async function(Peaks) {
+    <div id="demo-controls">
+      <audio id="audio" controls="controls" hidden>
+        <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
+        <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+      </audio>
 
-      var AudioContext=window.AudioContext||window.webkitAudioContext;
-      var audioContext=Tone.context;
+      <div id="controls">
+        <button data-action="play">Play</button>
+        <button data-action="pause">Pause</button>
+        <input type="text" id="seek-time" value="0.0">
+        <button data-action="seek">Seek</button>
+      </div>
+    </div>
 
-      var externalPlayer;
-      var audioBuffer;
+    <script src="peaks.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script>
 
-      // Load audioFile into audio buffer
-      await fetch("TOL_6min_720p_download.mp3")
-        .then(function(response) {
-          return response.arrayBuffer();
-        })
-        .then(function(buffer) {
-          return audioContext.decodeAudioData(buffer);
-        })
-        .then(function(buffer) {
-          audioBuffer=buffer;
-          externalPlayer=new Tone.Player(audioBuffer);
+    <script>
+      (async function(Peaks) {
+        const audioContext = Tone.context;
 
-          var options={
-            containers: {
-              zoomview: document.getElementById('zoomview-container'),
-              overview: document.getElementById('overview-container')
-            },
-            mediaElement: document.getElementById('audio'),
-            webAudio: {
-              audioBuffer: audioBuffer,
-              scale: 128,
-              multiChannel: false
-            },
-            keyboard: true,
-            pointMarkerColor: '#006eb0',
-            showPlayheadTime: true,
-            zoomLevels: [128,256,512,1024,2048,4096],
-            player: {
+        // Load audio file into audio buffer
+        await fetch("TOL_6min_720p_download.mp3")
+          .then(function(response) {
+            return response.arrayBuffer();
+          })
+          .then(function(buffer) {
+            return audioContext.decodeAudioData(buffer);
+          })
+          .then(function(audioBuffer) {
+            const externalPlayer = new Tone.Player(audioBuffer);
+
+            const player = {
               init: function(internalPlayer) {
                 externalPlayer.sync();
                 externalPlayer.start();
 
-                Tone.connectSeries(externalPlayer,Tone.Master);
+                Tone.connectSeries(externalPlayer, Tone.Master);
 
                 Tone.Transport.scheduleRepeat(time => {
                   internalPlayer._updatedTime();
-                  if(internalPlayer.getCurrentTime()>=internalPlayer.getDuration()) {
+
+                  if (internalPlayer.getCurrentTime() >= internalPlayer.getDuration()) {
                     Tone.Transport.stop();
                     onSongComplete();
                   }
-                },0.03);
+                }, 0.03);
               },
+
               destroy: () => {
                 Tone.context.dispose();
               },
+
               play: () => {
                 Tone.Transport.start(
                   Tone.now(),
                   options.player.getCurrentTime()
                 );
               },
+
               pause: () => {
                 Tone.Transport.pause();
               },
+
               isPlaying: () => {
-                return Tone.Transport.state==="started";
+                return Tone.Transport.state === "started";
               },
+
               isSeeking: () => {
                 return false;
               },
+
               getCurrentTime: () => {
-                return (
-                  externalPlayer.buffer.toSeconds(Tone.Transport.position)
-                );
+                return externalPlayer.buffer.toSeconds(Tone.Transport.position);
               },
+
               getDuration: () => {
                 return externalPlayer.buffer.duration;
               },
+
               seek: (time) => {
-                Tone.Transport.seconds=time;
+                Tone.Transport.seconds = time;
               },
+
               playSegment: (segment) => {
-
               }
-            }
-          };
+            };
 
-          Peaks.init(options,function(err,peaksInstance) {
-            if(err) {
-              console.error(err.message);
-              return;
-            }
+            var options = {
+              containers: {
+                zoomview: document.getElementById('zoomview-container'),
+                overview: document.getElementById('overview-container')
+              },
+              mediaElement: document.getElementById('audio'),
+              webAudio: {
+                audioBuffer: audioBuffer,
+                scale: 128,
+                multiChannel: false
+              },
+              keyboard: true,
+              pointMarkerColor: '#006eb0',
+              showPlayheadTime: true,
+              zoomLevels: [128,256,512,1024,2048,4096],
+              player: player
+            };
 
-            console.log('Peaks instance ready');
-
-            document.querySelector('[data-action="play"]').addEventListener('click',function() {
-              peaksInstance.player.play();
-            });
-
-            document.querySelector('[data-action="pause"]').addEventListener('click',function() {
-              peaksInstance.player.pause();
-            });
-
-            document.querySelector('button[data-action="seek"]').addEventListener('click',function(event) {
-              var time=document.getElementById('seek-time').value;
-              var seconds=parseFloat(time);
-
-              if(!Number.isNaN(seconds)) {
-                peaksInstance.player.seek(seconds);
+            Peaks.init(options, function(err, peaksInstance) {
+              if (err) {
+                console.error(err.message);
+                return;
               }
-            });
 
-            // Points mouse events
+              console.log('Peaks instance ready');
 
-            peaksInstance.on('points.mouseenter',function(point) {
-              console.log('points.mouseenter:',point);
-            });
+              document.querySelector('[data-action="play"]').addEventListener('click', function() {
+                peaksInstance.player.play();
+              });
 
-            peaksInstance.on('points.mouseleave',function(point) {
-              console.log('points.mouseleave:',point);
-            });
+              document.querySelector('[data-action="pause"]').addEventListener('click', function() {
+                peaksInstance.player.pause();
+              });
 
-            peaksInstance.on('points.dblclick',function(point) {
-              console.log('points.dblclick:',point);
-            });
+              document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
+                var time = document.getElementById('seek-time').value;
+                var seconds = parseFloat(time);
 
-            peaksInstance.on('points.dragstart',function(point) {
-              console.log('points.dragstart:',point);
-            });
-
-            peaksInstance.on('points.dragmove',function(point) {
-              console.log('points.dragmove:',point);
-            });
-
-            peaksInstance.on('points.dragend',function(point) {
-              console.log('points.dragend:',point);
+                if (!Number.isNaN(seconds)) {
+                  peaksInstance.player.seek(seconds);
+                }
+              });
             });
           });
-        });
-
-
-    })(peaks);
-  </script>
-</body>
-
+      })(peaks);
+    </script>
+  </body>
 </html>
