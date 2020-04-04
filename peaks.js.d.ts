@@ -253,20 +253,20 @@ declare module 'peaks.js' {
   }
 
   interface PlayerAdapter {
-    init: (player: InternalPlayer) => void,
-    destroy: () => void,
-    play: () => void,
-    pause: () => void,
-    isPlaying: () => boolean,
-    isSeeking: () => boolean,
-    getCurrentTime: () => number,
-    getDuration: () => number,
-    seek: (time: number) => void,
-    playSegment: (segment: Segment) => void
+    init: (player: InternalPlayer) => void;
+    destroy: () => void;
+    play: () => void;
+    pause: () => void;
+    isPlaying: () => boolean;
+    isSeeking: () => boolean;
+    getCurrentTime: () => number;
+    getDuration: () => number;
+    seek: (time: number) => void;
+    playSegment: (segment: Segment) => void;
   }
 
   interface InternalPlayer extends PlayerAdapter {
-    _updatedTime: () => void,
+    _updatedTime: () => void;
   }
 
   interface WaveformView {
@@ -301,7 +301,7 @@ declare module 'peaks.js' {
       createZoomview: (container: HTMLElement) => WaveformView;
       destroyOverview: () => void;
       destroyZoomview: () => void;
-      getView: (name?: 'overview' | 'zoomview' ) => WaveformView | null;
+      getView: (name?: 'overview' | 'zoomview') => WaveformView | null;
     };
     /** Zoom API */
     zoom: {
@@ -334,7 +334,7 @@ declare module 'peaks.js' {
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
-  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
+  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions { }
 
   export interface JsonWaveformData {
     version: number;

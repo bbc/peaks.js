@@ -12,7 +12,7 @@ define([
   'use strict';
 
   function validateAdapter(adapter) {
-    var adapterMethods = [
+    var publicAdapterMethods = [
       'init',
       'destroy',
       'play',
@@ -25,7 +25,7 @@ define([
       'playSegment'
     ];
 
-    adapterMethods.forEach(function(method) {
+    publicAdapterMethods.forEach(function(method) {
       if (!Object.hasOwnProperty.call(adapter,method)) {
         throw new TypeError('peaks.player: property ' + method + ' is undefined');
       }
@@ -51,52 +51,7 @@ define([
     self._peaks = peaks;
 
     validateAdapter(adapter);
-
-    var _adapter = {
-      init: function(player) {
-        adapter.init(player);
-      },
-      destroy: function() {
-        adapter.destroy();
-      },
-      play: function() {
-        adapter.play();
-        self._triggeredPlay();
-      },
-      pause: function() {
-        adapter.pause();
-        self._triggeredPause();
-      },
-      isPlaying: function() {
-        return adapter.isPlaying();
-      },
-      isSeeking: function() {
-        return adapter.isSeeking();
-      },
-      getCurrentTime: function() {
-        return adapter.getCurrentTime();
-      },
-      getDuration: function() {
-        return adapter.getDuration();
-      },
-      seek: function(time) {
-        adapter.seek(time);
-        self._triggeredSeek(time);
-        self._updatedTime();
-      },
-      playSegment: function(segment) {
-        adapter.playSegment(segment);
-      },
-      _setSource: function(source) {
-        adapter._setSource(source);
-      },
-      _getCurrentSource: function() {
-        return adapter._getCurrentSource();
-      }
-    };
-
-    self._wrappedAdapter = adapter;
-    self._adapter = _adapter;
+    self._adapter = adapter;
 
     self._adapter.init(self);
 
@@ -114,6 +69,7 @@ define([
 
     self.play = function() {
       self._adapter.play();
+      self._triggeredPlay();
     };
 
     /**
@@ -122,6 +78,7 @@ define([
 
     self.pause = function() {
       self._adapter.pause();
+      self._triggeredPause();
     };
 
     /**
@@ -173,6 +130,8 @@ define([
       }
 
       self._adapter.seek(time);
+      self._triggeredSeek(time);
+      self._updatedTime();
     };
 
     /**
@@ -192,12 +151,19 @@ define([
       self._adapter.playSegment(segment);
     };
 
-    self.setSource = function(source) {
-      return self._adapter._setSource(source);
+    self._setSource = function(source) {
+      if (self._adapter._setSource) {
+        self._adapter._setSource(source);
+      }
     };
 
-    self.getCurrentSource = function() {
-      return self._adapter._getCurrentSource();
+    self._getCurrentSource = function() {
+      if (self._adapter._getCurrentSource) {
+        return self._adapter._getCurrentSource();
+      }
+      else {
+        return undefined;
+      }
     };
 
     self._updatedTime = function() {

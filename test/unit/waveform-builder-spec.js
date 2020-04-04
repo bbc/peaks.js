@@ -293,7 +293,7 @@ describe('WaveformBuilder', function() {
           zoomLevels: [512, 1024, 2048, 4096]
         },
         player: {
-          getCurrentSource: sinon.stub().returns(document.getElementById('media').currentSrc)
+          _getCurrentSource: sinon.stub().returns(document.getElementById('media').currentSrc)
         }
       };
 

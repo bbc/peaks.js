@@ -604,7 +604,7 @@ define([
     self.once('player_canplay', playerCanPlayHandler);
     self.once('player_error', playerErrorHandler);
 
-    self.player.setSource(options.mediaUrl);
+    self.player._setSource(options.mediaUrl);
   };
 
   Peaks.prototype.getWaveformData = function() {

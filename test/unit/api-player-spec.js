@@ -103,9 +103,9 @@ describe('Peaks.player', function() {
     });
   });
 
-  describe('getCurrentSource', function() {
+  describe('_getCurrentSource', function() {
     it('should return the media url', function() {
-      expect(p.player.getCurrentSource()).to.match(/^http:\/\/localhost:\d+\/base\/test_data\/sample.(?:mp3|ogg)$/);
+      expect(p.player._getCurrentSource()).to.match(/^http:\/\/localhost:\d+\/base\/test_data\/sample.(?:mp3|ogg)$/);
     });
   });
 
@@ -113,7 +113,7 @@ describe('Peaks.player', function() {
     it('should remove all event listeners', function() {
       p.player.destroy();
 
-      expect(p.player._wrappedAdapter._listeners).to.be.empty;
+      expect(p.player._adapter._listeners).to.be.empty;
     });
   });
 });
