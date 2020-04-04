@@ -3,10 +3,9 @@
 require('./setup');
 
 var Peaks = require('../../src/main');
-var ExternalPlayer = require('../../src/player-external');
 var Player = require('../../src/player');
 
-describe('External Player', function() {
+describe('Player', function() {
   var p;
   var currentTime;
   var duration;
@@ -48,8 +47,7 @@ describe('External Player', function() {
   });
 
   describe('instance', function() {
-    it('should be of type external player', function() {
-      expect(p.player).to.be.an.instanceof(ExternalPlayer);
+    it('should be of type player', function() {
       expect(p.player).to.be.an.instanceof(Player);
     });
   });
@@ -60,7 +58,7 @@ describe('External Player', function() {
         init: function() {}
       };
 
-      expect(function() {new ExternalPlayer(null,adapter);}).to.throw(TypeError);
+      expect(function() {  new Player(null,adapter);}).to.throw(TypeError);
     });
 
     it('should throw a type error if an adapter property is not a function', function() {
@@ -77,7 +75,7 @@ describe('External Player', function() {
         playSegment: sinon.spy()
       };
 
-      expect(function() {new ExternalPlayer(null,adapter);}).to.throw(TypeError);
+      expect(function() {new Player(null,adapter);}).to.throw(TypeError);
     });
   });
 

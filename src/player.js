@@ -1,152 +1,229 @@
 /**
  * @file
  *
- * Defines the {@link Player} class.
+ * A general audio player class which interfaces with external audio players.
+ * The default audio player in Peaks.js is {@link MediaElementPlayer}.
  *
  * @module player
  */
-
 define([
   './utils'
 ], function(Utils) {
   'use strict';
 
+  function validateAdapter(adapter) {
+    var adapterMethods = [
+      'init',
+      'destroy',
+      'play',
+      'pause',
+      'isPlaying',
+      'isSeeking',
+      'getCurrentTime',
+      'getDuration',
+      'seek',
+      'playSegment'
+    ];
+
+    adapterMethods.forEach(function(method) {
+      if (!Object.hasOwnProperty.call(adapter,method)) {
+        throw new TypeError('peaks.player: property ' + method + ' is undefined');
+      }
+      if ((typeof adapter[method]) !== 'function') {
+        throw new TypeError('peaks.player: property ' + method + ' is not a function');
+      }
+    });
+  }
+
   /**
-     * A wrapper for interfacing with Audio Players.
-     *
-     * @class
-     * @alias Player
-     *
-     * @param {Peaks} peaks The parent {@link Peaks} object.
-     * @param {Adapter} adapter The player adapter.
-     *   {@link Peaks} instance.
-     */
+   * A wrapper for interfacing with an external player API.
+   *
+   * @class
+   * @alias Player
+   *
+   * @param {Peaks} peaks The parent {@link Peaks} object.
+   * @param {Adapter} adapter The player adapter.
+   */
+
   function Player(peaks, adapter) {
     var self = this;
 
     self._peaks = peaks;
-    self._adapter = adapter;
 
-    adapter.init(self);
-  }
+    validateAdapter(adapter);
 
-  /**
+    var _adapter = {
+      init: function(player) {
+        adapter.init(player);
+      },
+      destroy: function() {
+        adapter.destroy();
+      },
+      play: function() {
+        adapter.play();
+        self._triggeredPlay();
+      },
+      pause: function() {
+        adapter.pause();
+        self._triggeredPause();
+      },
+      isPlaying: function() {
+        return adapter.isPlaying();
+      },
+      isSeeking: function() {
+        return adapter.isSeeking();
+      },
+      getCurrentTime: function() {
+        return adapter.getCurrentTime();
+      },
+      getDuration: function() {
+        return adapter.getDuration();
+      },
+      seek: function(time) {
+        adapter.seek(time);
+        self._triggeredSeek(time);
+        self._updatedTime();
+      },
+      playSegment: function(segment) {
+        adapter.playSegment(segment);
+      },
+      _setSource: function(source) {
+        adapter._setSource(source);
+      },
+      _getCurrentSource: function() {
+        return adapter._getCurrentSource();
+      }
+    };
+
+    self._wrappedAdapter = adapter;
+    self._adapter = _adapter;
+
+    self._adapter.init(self);
+
+    /**
    * Cleans up the player object.
    */
 
-  Player.prototype.destroy = function() {
-    this._adapter.destroy();
-  };
+    self.destroy = function() {
+      self._adapter.destroy();
+    };
 
-  /**
+    /**
    * Starts playback.
    */
 
-  Player.prototype.play = function() {
-    this._adapter.play();
-  };
+    self.play = function() {
+      self._adapter.play();
+    };
 
-  /**
+    /**
    * Pauses playback.
    */
 
-  Player.prototype.pause = function() {
-    this._adapter.pause();
-  };
+    self.pause = function() {
+      self._adapter.pause();
+    };
 
-  /**
+    /**
    * @returns {Boolean} <code>true</code> if playing, <code>false</code>
    * otherwise.
    */
 
-  Player.prototype.isPlaying = function() {
-    return this._adapter.isPlaying();
-  };
+    self.isPlaying = function() {
+      return self._adapter.isPlaying();
+    };
 
-  /**
+    /**
    * @returns {boolean} <code>true</code> if seeking
    */
-  Player.prototype.isSeeking = function() {
-    return this._adapter.isSeeking();
-  };
+    self.isSeeking = function() {
+      return self._adapter.isSeeking();
+    };
 
-  /**
+    /**
    * Returns the current playback time position, in seconds.
    *
    * @returns {Number}
    */
 
-  Player.prototype.getCurrentTime = function() {
-    return this._adapter.getCurrentTime();
-  };
+    self.getCurrentTime = function() {
+      return self._adapter.getCurrentTime();
+    };
 
-  /**
+    /**
    * Returns the media duration, in seconds.
    *
    * @returns {Number}
    */
 
-  Player.prototype.getDuration = function() {
-    return this._adapter.getDuration();
-  };
+    self.getDuration = function() {
+      return self._adapter.getDuration();
+    };
 
-  /**
+    /**
    * Seeks to a given time position within the media.
    *
    * @param {Number} time The time position, in seconds.
    */
 
-  Player.prototype.seek = function(time) {
-    if (!Utils.isValidTime(time)) {
-      this._peaks.logger('peaks.player.seek(): parameter must be a valid time, in seconds');
-      return;
-    }
+    self.seek = function(time) {
+      if (!Utils.isValidTime(time)) {
+        self._peaks.logger('peaks.player.seek(): parameter must be a valid time, in seconds');
+        return;
+      }
 
-    this._adapter.seek(time);
-  };
+      self._adapter.seek(time);
+    };
 
-  /**
+    /**
    * Plays the given segment.
    *
    * @param {Segment} segment The segment denoting the time region to play.
    */
 
-  Player.prototype.playSegment = function(segment) {
-    var self = this;
-
-    if (!segment ||
+    self.playSegment = function(segment) {
+      if (!segment ||
         !Utils.isValidTime(segment.startTime) ||
         !Utils.isValidTime(segment.endTime)) {
-      self._peaks.logger('peaks.player.playSegment(): parameter must be a segment object');
-      return;
-    }
+        self._peaks.logger('peaks.player.playSegment(): parameter must be a segment object');
+        return;
+      }
 
-    self._adapter.playSegment(segment);
-  };
+      self._adapter.playSegment(segment);
+    };
 
-  Player.prototype._updatedTime = function() {
-    this._peaks.emit('player_time_update', this.getCurrentTime());
-  };
+    self.setSource = function(source) {
+      return self._adapter._setSource(source);
+    };
 
-  Player.prototype._triggeredPlay = function() {
-    this._peaks.emit('player_play', this.getCurrentTime());
-  };
+    self.getCurrentSource = function() {
+      return self._adapter._getCurrentSource();
+    };
 
-  Player.prototype._triggeredPause = function() {
-    this._peaks.emit('player_pause', this.getCurrentTime());
-  };
+    self._updatedTime = function() {
+      self._peaks.emit('player_time_update', self.getCurrentTime());
+    };
 
-  Player.prototype._triggeredCanPlay = function() {
-    this._peaks.emit('player_canplay', this);
-  };
+    self._triggeredPlay = function() {
+      self._peaks.emit('player_play', self.getCurrentTime());
+    };
 
-  Player.prototype._triggeredError = function(error) {
-    this._peaks.emit('player_error', error);
-  };
+    self._triggeredPause = function() {
+      self._peaks.emit('player_pause', self.getCurrentTime());
+    };
 
-  Player.prototype._triggeredSeek = function(time) {
-    this._peaks.emit('player_seek', time);
-  };
+    self._triggeredCanPlay = function() {
+      self._peaks.emit('player_canplay', self);
+    };
+
+    self._triggeredError = function(error) {
+      self._peaks.emit('player_error', error);
+    };
+
+    self._triggeredSeek = function(time) {
+      self._peaks.emit('player_seek', time);
+    };
+  }
 
   return Player;
 });

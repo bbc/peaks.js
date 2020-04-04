@@ -13,8 +13,8 @@ define([
   './waveform-points',
   './waveform-segments',
   './keyboard-handler',
-  './player-html5',
-  './player-external',
+  './player-mediaelement',
+  './player',
   './marker-factories',
   './view-controller',
   './zoom-controller',
@@ -27,8 +27,8 @@ define([
     WaveformPoints,
     WaveformSegments,
     KeyboardHandler,
-    Html5Player,
-    ExternalPlayer,
+    MediaElementPlayer,
+    Player,
     MarkerFactories,
     ViewController,
     ZoomController,
@@ -346,10 +346,11 @@ define([
     }
 
     if (instance.options.player) {
-      instance.player = new ExternalPlayer(instance, instance.options.player);
+      instance.player = new Player(instance,instance.options.player);
     }
     else {
-      instance.player = new Html5Player(instance, instance.options.mediaElement);
+      instance.player = new Player(instance,
+        new MediaElementPlayer(instance.options.mediaElement));
     }
 
     instance.segments = new WaveformSegments(instance);

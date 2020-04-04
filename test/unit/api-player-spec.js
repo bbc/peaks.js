@@ -113,7 +113,7 @@ describe('Peaks.player', function() {
     it('should remove all event listeners', function() {
       p.player.destroy();
 
-      expect(p.player._listeners).to.be.empty;
+      expect(p.player._wrappedAdapter._listeners).to.be.empty;
     });
   });
 });
