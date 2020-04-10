@@ -39,14 +39,6 @@ define([
       self._mediaElement.addEventListener(type, callback);
     };
 
-    self._setSource = function(source) {
-      self._mediaElement.setAttribute('src', source);
-    };
-
-    self._getCurrentSource = function() {
-      return self._mediaElement.currentSrc;
-    };
-
     self.init = function(player) {
       self._player = player;
       self._listeners = [];

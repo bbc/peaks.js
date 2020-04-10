@@ -210,10 +210,4 @@ describe('Player', function() {
       expect(options.player.playSegment).to.have.been.calledWith(segment);
     });
   });
-
-  describe('_getCurrentSource', function() {
-    it('should return undefined if used with a custom player not based on media element', function() {
-      expect(p.player._getCurrentSource()).to.equal(undefined);
-    });
-  });
 });

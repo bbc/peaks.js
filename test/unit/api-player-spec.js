@@ -103,12 +103,6 @@ describe('Peaks.player', function() {
     });
   });
 
-  describe('_getCurrentSource', function() {
-    it('should return the media url', function() {
-      expect(p.player._getCurrentSource()).to.match(/^http:\/\/localhost:\d+\/base\/test_data\/sample.(?:mp3|ogg)$/);
-    });
-  });
-
   describe('destroy', function() {
     it('should remove all event listeners', function() {
       p.player.destroy();

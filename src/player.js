@@ -151,21 +151,6 @@ define([
       self._adapter.playSegment(segment);
     };
 
-    self._setSource = function(source) {
-      if (self._adapter._setSource) {
-        self._adapter._setSource(source);
-      }
-    };
-
-    self._getCurrentSource = function() {
-      if (self._adapter._getCurrentSource) {
-        return self._adapter._getCurrentSource();
-      }
-      else {
-        return undefined;
-      }
-    };
-
     self._updatedTime = function() {
       self._peaks.emit('player_time_update', self.getCurrentTime());
     };
