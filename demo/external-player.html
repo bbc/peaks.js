@@ -168,9 +168,8 @@
 
                 if (internalPlayer.getCurrentTime() >= internalPlayer.getDuration()) {
                   Tone.Transport.stop();
-                  onSongComplete();
                 }
-              }, 0.03);
+              }, 0.25);
             },
 
             destroy: () => {
