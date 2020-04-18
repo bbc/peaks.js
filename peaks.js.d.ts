@@ -266,7 +266,7 @@ declare module 'peaks.js' {
   }
 
   interface InternalPlayer extends PlayerAdapter {
-    _updatedTime: () => void;
+    _timeUpdate: () => void;
   }
 
   interface WaveformView {

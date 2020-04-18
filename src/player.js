@@ -148,7 +148,7 @@ define([
 
       this._adapter.seek(time);
       this._triggeredSeek(time);
-      this._updatedTime();
+      this._timeUpdate();
     };
 
     /**
@@ -168,7 +168,7 @@ define([
       this._adapter.playSegment(segment);
     };
 
-    Player.prototype._updatedTime = function() {
+    Player.prototype._timeUpdate = function() {
       this._peaks.emit('player_time_update', this.getCurrentTime());
     };
 

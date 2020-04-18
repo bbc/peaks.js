@@ -53,7 +53,7 @@ The functional expectations for an external player implementation is summarized 
 A major communication item between any audio player implementation and the waveform is the current playhead position. Every implementation must ensure that it informs the waveform proactively about updates of the current time.
 
 The `init(player)` method should be used to setup this communication between player and waveform. 
-To this purpose the init callback function uses a reference to a player object which exposes the method `_updatedTime()`, which internally informs Peaks.js that the current player time has changed.
+To this purpose the init callback function uses a reference to a player object which exposes the method `_timeUpdate()`, which internally informs Peaks.js that the current player time has changed.
 
 
 In the following example you see how the init method can be used to setup a connection between Peaks.js and a [Tone.js](https://tonejs.github.io/) Player.
@@ -69,7 +69,7 @@ var options = {
             Tone.connectSeries(externalPlayer,Tone.Master);
 
             Tone.Transport.scheduleRepeat(time => {
-              internalPlayer._updatedTime(); // Exactly here Peaks.js gets informed that the playhead moved
+              internalPlayer._timeUpdate(); // Exactly here Peaks.js gets informed that the playhead moved
             },0.03);
           }
 }

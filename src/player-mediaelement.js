@@ -47,7 +47,7 @@ define([
       self._isPlaying = false;
 
       self._addMediaListener('timeupdate', function() {
-        self._player._updatedTime();
+        self._player._timeUpdate();
       });
 
       self._addMediaListener('play', function() {
