@@ -5,6 +5,7 @@
  *
  * @module player-medialement
  */
+
 define([
 ], function() {
   'use strict';
@@ -27,19 +28,19 @@ define([
     self._mediaElement = mediaElement;
 
     /**
-   * Adds an event listener to the media element.
-   *
-   * @private
-   * @param {String} type The event type to listen for.
-   * @param {Function} callback An event handler function.
-   */
+     * Adds an event listener to the media element.
+     *
+     * @private
+     * @param {String} type The event type to listen for.
+     * @param {Function} callback An event handler function.
+     */
 
-    self._addMediaListener = function(type, callback) {
-      self._listeners.push({ type: type, callback: callback });
-      self._mediaElement.addEventListener(type, callback);
+    MediaElementPlayer.prototype._addMediaListener = function(type, callback) {
+      this._listeners.push({ type: type, callback: callback });
+      this._mediaElement.addEventListener(type, callback);
     };
 
-    self.init = function(player) {
+    MediaElementPlayer.prototype.init = function(player) {
       self._player = player;
       self._listeners = [];
       self._duration = self.getDuration();
@@ -73,67 +74,76 @@ define([
 
       self._interval = null;
     };
-    /**
-         * Cleans up the player object, removing all event listeners from the
-         * associated media element.
-         */
-    self.destroy = function() {
-      for (var i = 0; i < self._listeners.length; i++) {
-        var listener = self._listeners[i];
 
-        self._mediaElement.removeEventListener(
+    /**
+     * Cleans up the player object, removing all event listeners from the
+     * associated media element.
+     */
+    MediaElementPlayer.prototype.destroy = function() {
+      for (var i = 0; i < this._listeners.length; i++) {
+        var listener = this._listeners[i];
+
+        this._mediaElement.removeEventListener(
           listener.type,
           listener.callback
         );
       }
 
-      self._listeners.length = 0;
+      this._listeners.length = 0;
 
-      if (self._interval !== null) {
-        clearTimeout(self._interval);
-        self._interval = null;
+      if (this._interval !== null) {
+        clearTimeout(this._interval);
+        this._interval = null;
       }
 
-      self._mediaElement = null;
+      this._mediaElement = null;
     };
-    self.play = function() {
-      self._mediaElement.play();
+
+    MediaElementPlayer.prototype.play = function() {
+      this._mediaElement.play();
     };
-    self.pause = function() {
-      self._mediaElement.pause();
+
+    MediaElementPlayer.prototype.pause = function() {
+      this._mediaElement.pause();
     };
-    self.isPlaying = function() {
-      return self._isPlaying;
+
+    MediaElementPlayer.prototype.isPlaying = function() {
+      return this._isPlaying;
     };
-    self.isSeeking = function() {
-      return self._mediaElement.seeking;
+
+    MediaElementPlayer.prototype.isSeeking = function() {
+      return this._mediaElement.seeking;
     };
-    self.getCurrentTime = function() {
-      return self._mediaElement.currentTime;
+
+    MediaElementPlayer.prototype.getCurrentTime = function() {
+      return this._mediaElement.currentTime;
     };
-    self.getDuration = function() {
-      return self._mediaElement.duration;
+
+    MediaElementPlayer.prototype.getDuration = function() {
+      return this._mediaElement.duration;
     };
-    self.seek = function(time) {
-      self._mediaElement.currentTime = time;
+
+    MediaElementPlayer.prototype.seek = function(time) {
+      this._mediaElement.currentTime = time;
     };
-    self.playSegment = function(segment) {
-      clearTimeout(self._interval);
-      self._interval = null;
+
+    MediaElementPlayer.prototype.playSegment = function(segment) {
+      clearTimeout(this._interval);
+      this._interval = null;
 
       // Set audio time to segment start time
-      self.seek(segment.startTime);
+      this.seek(segment.startTime);
 
       // Start playing audio
-      self._mediaElement.play();
+      this._mediaElement.play();
 
       // We need to use setInterval here as the timeupdate event doesn't fire
       // often enough.
-      self._interval = setInterval(function() {
-        if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
-          clearTimeout(self._interval);
-          self._interval = null;
-          self._mediaElement.pause();
+      this._interval = setInterval(function() {
+        if (this.getCurrentTime() >= segment.endTime || this._mediaElement.paused) {
+          clearTimeout(this._interval);
+          this._interval = null;
+          this._mediaElement.pause();
         }
       }, 30);
     };
