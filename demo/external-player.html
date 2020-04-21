@@ -119,12 +119,6 @@
     </div>
 
     <div id="demo-controls">
-      <audio id="audio" controls="controls" hidden>
-        <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
-        <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
-        Your browser does not support the audio element.
-      </audio>
-
       <div id="controls">
         <button data-action="play">Play</button>
         <button data-action="pause">Pause</button>
@@ -154,54 +148,67 @@
             const externalPlayer = new Tone.Player(audioBuffer);
 
             const player = {
-              init: function(internalPlayer) {
+              eventEmitter: null,
+
+              init: function(eventEmitter) {
+                this.eventEmitter = eventEmitter;
+
                 externalPlayer.sync();
                 externalPlayer.start();
 
                 Tone.connectSeries(externalPlayer, Tone.Master);
 
-                Tone.Transport.scheduleRepeat(time => {
-                  internalPlayer._timeUpdate();
+                eventEmitter.emit('player_canplay');
 
-                  if (internalPlayer.getCurrentTime() >= internalPlayer.getDuration()) {
+                Tone.Transport.scheduleRepeat((time) => {
+                  eventEmitter.emit('player_time_update', time);
+
+                  if (this.getCurrentTime() >= this.getDuration()) {
                     Tone.Transport.stop();
                   }
                 }, 0.25);
               },
 
-              destroy: () => {
+              destroy: function() {
                 Tone.context.dispose();
               },
 
-              play: () => {
+              play: function() {
                 Tone.Transport.start(
                   Tone.now(),
-                  options.player.getCurrentTime()
+                  this.getCurrentTime()
                 );
+
+                this.eventEmitter.emit('player_play', this.getCurrentTime());
               },
 
-              pause: () => {
+              pause: function() {
                 Tone.Transport.pause();
+
+                this.eventEmitter.emit('player_pause', this.getCurrentTime());
               },
 
-              isPlaying: () => {
+              isPlaying: function() {
                 return Tone.Transport.state === "started";
               },
 
-              isSeeking: () => {
+              isSeeking: function() {
                 return false;
               },
 
-              getCurrentTime: () => {
+              getCurrentTime: function() {
                 return externalPlayer.buffer.toSeconds(Tone.Transport.position);
               },
 
-              getDuration: () => {
+              getDuration: function() {
                 return externalPlayer.buffer.duration;
               },
 
-              seek: (time) => {
+              seek: function(time) {
                 Tone.Transport.seconds = time;
+
+                this.eventEmitter.emit('player_seek', this.getCurrentTime());
+                this.eventEmitter.emit('player_time_update', this.getCurrentTime());
               },
 
               playSegment: (segment) => {
@@ -213,17 +220,15 @@
                 zoomview: document.getElementById('zoomview-container'),
                 overview: document.getElementById('overview-container')
               },
-              mediaElement: document.getElementById('audio'),
+              player: player,
               webAudio: {
                 audioBuffer: audioBuffer,
                 scale: 128,
                 multiChannel: false
               },
               keyboard: true,
-              pointMarkerColor: '#006eb0',
               showPlayheadTime: true,
-              zoomLevels: [128, 256, 512, 1024, 2048, 4096],
-              player: player
+              zoomLevels: [128, 256, 512, 1024, 2048, 4096]
             };
 
             Peaks.init(options, function(err, peaksInstance) {

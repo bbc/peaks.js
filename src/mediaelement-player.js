@@ -21,9 +21,10 @@ define([
    *   {@link Peaks} instance.
    */
 
-  function MediaElementPlayer(mediaElement) {
+  function MediaElementPlayer(peaks, mediaElement) {
     var self = this;
 
+    self._peaks = peaks;
     self._listeners = [];
     self._mediaElement = mediaElement;
 
@@ -47,29 +48,29 @@ define([
       self._isPlaying = false;
 
       self._addMediaListener('timeupdate', function() {
-        self._player._timeUpdate();
+        self._peaks.emit('player_time_update', self.getCurrentTime());
       });
 
       self._addMediaListener('play', function() {
         self._isPlaying = true;
-        self._player._triggeredPlay();
+        self._peaks.emit('player_play', self.getCurrentTime());
       });
 
       self._addMediaListener('pause', function() {
         self._isPlaying = false;
-        self._player._triggeredPause();
+        self._peaks.emit('player_pause', self.getCurrentTime());
       });
 
       self._addMediaListener('seeked', function() {
-        self._player._triggeredSeek(self.getCurrentTime());
+        self._peaks.emit('player_seek', self.getCurrentTime());
       });
 
       self._addMediaListener('canplay', function() {
-        self._player._triggeredCanPlay();
+        self._peaks.emit('player_canplay');
       });
 
       self._addMediaListener('error', function(event) {
-        self._player._triggeredError(event.target.error);
+        self._peaks.emit('player_error', event.target.error);
       });
 
       self._interval = null;

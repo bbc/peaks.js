@@ -34,8 +34,10 @@ define([
         Object.getOwnPropertyNames(obj).forEach(function(p) {
           allProperties.push(p);
         });
+
         obj = Object.getPrototypeOf(obj);
       }
+
       return allProperties;
     }
 
@@ -43,10 +45,11 @@ define([
 
     publicAdapterMethods.forEach(function(method) {
       if (!allProperties.includes(method)) {
-        throw new TypeError('peaks.player: property ' + method + ' is undefined');
+        throw new TypeError('Peaks.init(): Player method ' + method + ' is undefined');
       }
+
       if ((typeof adapter[method]) !== 'function') {
-        throw new TypeError('peaks.player: property ' + method + ' is not a function');
+        throw new TypeError('Peaks.init(): Player method ' + method + ' is not a function');
       }
     });
   }
@@ -69,7 +72,7 @@ define([
     validateAdapter(adapter);
     self._adapter = adapter;
 
-    self._adapter.init(self);
+    self._adapter.init(peaks);
 
     /**
      * Cleans up the player object.
@@ -85,7 +88,6 @@ define([
 
     Player.prototype.play = function() {
       this._adapter.play();
-      this._triggeredPlay();
     };
 
     /**
@@ -94,7 +96,6 @@ define([
 
     Player.prototype.pause = function() {
       this._adapter.pause();
-      this._triggeredPause();
     };
 
     /**
@@ -147,8 +148,6 @@ define([
       }
 
       this._adapter.seek(time);
-      this._triggeredSeek(time);
-      this._timeUpdate();
     };
 
     /**
@@ -166,30 +165,6 @@ define([
       }
 
       this._adapter.playSegment(segment);
-    };
-
-    Player.prototype._timeUpdate = function() {
-      this._peaks.emit('player_time_update', this.getCurrentTime());
-    };
-
-    Player.prototype._triggeredPlay = function() {
-      this._peaks.emit('player_play', this.getCurrentTime());
-    };
-
-    Player.prototype._triggeredPause = function() {
-      this._peaks.emit('player_pause', this.getCurrentTime());
-    };
-
-    Player.prototype._triggeredCanPlay = function() {
-      this._peaks.emit('player_canplay', this);
-    };
-
-    Player.prototype._triggeredError = function(error) {
-      this._peaks.emit('player_error', error);
-    };
-
-    Player.prototype._triggeredSeek = function(time) {
-      this._peaks.emit('player_seek', time);
     };
   }
 

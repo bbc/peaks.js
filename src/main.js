@@ -13,7 +13,7 @@ define([
   './waveform-points',
   './waveform-segments',
   './keyboard-handler',
-  './player-mediaelement',
+  './mediaelement-player',
   './player',
   './marker-factories',
   './view-controller',
@@ -345,14 +345,11 @@ define([
       instance._keyboardHandler = new KeyboardHandler(instance);
     }
 
-    if (instance.options.player) {
-      instance.player = new Player(instance,instance.options.player);
-    }
-    else {
-      instance.player = new Player(instance,
-        new MediaElementPlayer(instance.options.mediaElement));
-    }
+    var player = instance.options.player ?
+      instance.options.player :
+      new MediaElementPlayer(instance, instance.options.mediaElement);
 
+    instance.player = new Player(instance, player);
     instance.segments = new WaveformSegments(instance);
     instance.points = new WaveformPoints(instance);
     instance.zoom = new ZoomController(instance, instance.options.zoomLevels);
@@ -437,13 +434,15 @@ define([
       opts.deprecationLogger('Peaks.init(): The outMarkerColor option is deprecated, please use segmentEndMarkerColor instead');
     }
 
-    if (!opts.mediaElement) {
-      return new Error('Peaks.init(): Missing mediaElement option');
-    }
+    if (!opts.player) {
+      if (!opts.mediaElement) {
+        return new Error('Peaks.init(): Missing mediaElement option');
+      }
 
-    if (!(opts.mediaElement instanceof HTMLMediaElement)) {
-      // eslint-disable-next-line max-len
-      return new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
+      if (!(opts.mediaElement instanceof HTMLMediaElement)) {
+        // eslint-disable-next-line max-len
+        return new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
+      }
     }
 
     if (!opts.container && !opts.containers) {
