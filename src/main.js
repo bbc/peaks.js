@@ -251,6 +251,11 @@ define([
       emitCueEvents: false,
 
       /**
+       * Number of precision points in timecode
+       */
+      precisionPoints: 3,
+
+      /**
        * Point/Segment marker customisation.
        *
        * @todo This part of the API is not stable.

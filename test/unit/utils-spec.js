@@ -25,6 +25,27 @@ describe('Utils', function() {
       });
     });
 
+    context('with thousandths', function() {
+      var tests = [
+        { input: 0,            output:    '00:00.000' },
+        { input: 1,            output:    '00:01.000' },
+        { input: 60,           output:    '01:00.000' },
+        { input: 60 * 60,      output: '01:00:00.000' },
+        { input: 24 * 60 * 60, output: '24:00:00.000' },
+        { input: 10.5,         output:    '00:10.500' },
+        { input: 20.003,       output:    '00:20.003' },
+        { input: 25.07,        output:    '00:25.070' }
+      ];
+
+      tests.forEach(function(test) {
+        context('given ' + test.input, function() {
+          it('should output ' + test.output, function() {
+            expect(Utils.formatTime(test.input, false, 3)).to.equal(test.output);
+          });
+        });
+      });
+    });
+
     context('without hundredths', function() {
       var tests = [
         { input: 0,            output:    '00:00' },

@@ -145,7 +145,8 @@ define([
       draggable: editable,
       color:     point.color ? point.color : this._peaks.options.pointMarkerColor,
       layer:     this,
-      view:      this._view.getName()
+      view:      this._view.getName(),
+      precision: this._peaks.options.precisionPoints
     });
 
     return new PointMarker({

@@ -403,6 +403,9 @@ var options = {
   // Random color per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
+  // Number of precision points (decimal points) in timecode
+  precisionPoints: 2,
+
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.
   // See below.

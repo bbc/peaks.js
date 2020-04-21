@@ -122,6 +122,7 @@ declare module 'peaks.js' {
     draggable: boolean;
     color: string;
     layer: Layer;
+    precision: number;
   }
 
   interface CreateSegmentMarkerOptions {
@@ -131,6 +132,7 @@ declare module 'peaks.js' {
     color: string;
     layer: Layer;
     startMarker: boolean;
+    precision: number;
   }
 
   interface CreateSegmentLabelOptions {
@@ -203,6 +205,8 @@ declare module 'peaks.js' {
     points?: Point[];
     /** Emit cue events when playing */
     emitCueEvents?: boolean;
+    /** Number of precision points in timecode */
+    precisionPoints?: number;
     /** Custom segment marker factory function */
     createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
     /** Custom segment label factory function */
