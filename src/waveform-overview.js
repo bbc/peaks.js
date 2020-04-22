@@ -344,8 +344,8 @@ define([
     this._playheadLayer.showPlayheadTime(show);
   };
 
-  WaveformOverview.prototype.setPlayheadTimePrecision = function() {
-    // The overview waveform doesn't show time codes for play head and markers
+  WaveformOverview.prototype.setPlayheadTimePrecision = function(precision) {
+    this._playheadLayer.setPlayheadTimePrecision(precision);
   };
 
   WaveformOverview.prototype.enableAutoScroll = function() {

@@ -678,7 +678,7 @@ view.showPlayeadTime(false); // Remove the time from the playhead marker.
 
 Change the precision of timecode displayed for playhead and markers.
 
-The initial setting is `2`, for the zoomable waveform view. This is controlled by the `playheadTimePrecision` configuration options. This does not apply for overview waveform, because it doesn't display time codes for playhead and markers.
+The initial setting is `2`, for both zoomable and overview waveform views. This is controlled by the `playheadTimePrecision` configuration option in both views.
 
 ```js
 const view = instance.views.getView('zoomview');
