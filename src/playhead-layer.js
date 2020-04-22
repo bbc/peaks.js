@@ -172,7 +172,7 @@ define([
                     (pixelIndex <  frameOffset + width);
 
     this._playheadPixel = pixelIndex;
-    var precision = this._peaks.options.precisionPoints;
+    var precision = this._peaks.options.playheadTimePrecision;
 
     if (isVisible) {
       var playheadX = this._playheadPixel - frameOffset;

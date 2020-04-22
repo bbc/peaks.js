@@ -181,6 +181,8 @@ declare module 'peaks.js' {
     playheadColor?: string;
     /** Color of the play head text */
     playheadTextColor?: string;
+    /** Precision of timecode of play head/markers */
+    playheadTimePrecision?: number;
     /**
      * Show current time next to the play head
      * - (zoom view only)
@@ -205,8 +207,6 @@ declare module 'peaks.js' {
     points?: Point[];
     /** Emit cue events when playing */
     emitCueEvents?: boolean;
-    /** Number of precision points in timecode */
-    precisionPoints?: number;
     /** Custom segment marker factory function */
     createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
     /** Custom segment label factory function */

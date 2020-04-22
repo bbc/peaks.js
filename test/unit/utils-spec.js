@@ -46,6 +46,24 @@ describe('Utils', function() {
       });
     });
 
+    context('with precision = 0', function() {
+      var tests = [
+        { input: 0,            output:    '00:00' },
+        { input: 60,           output:    '01:00' },
+        { input: 60 * 60,      output: '01:00:00' },
+        { input: 10.5,         output:    '00:10' },
+        { input: 20.003,       output:    '00:20' }
+      ];
+
+      tests.forEach(function(test) {
+        context('given ' + test.input, function() {
+          it('should output ' + test.output, function() {
+            expect(Utils.formatTime(test.input, false, 0)).to.equal(test.output);
+          });
+        });
+      });
+    });
+
     context('without hundredths', function() {
       var tests = [
         { input: 0,            output:    '00:00' },

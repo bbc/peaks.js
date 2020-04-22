@@ -146,7 +146,7 @@ define([
       color:     point.color ? point.color : this._peaks.options.pointMarkerColor,
       layer:     this,
       view:      this._view.getName(),
-      precision: this._peaks.options.precisionPoints
+      precision: this._peaks.options.playheadTimePrecision
     });
 
     return new PointMarker({

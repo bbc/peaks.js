@@ -308,7 +308,7 @@ define([
     this._axis = new WaveformAxis(this, {
       axisGridlineColor: this._options.axisGridlineColor,
       axisLabelColor:    this._options.axisLabelColor,
-      precisionPoints: this._options.precisionPoints
+      precision:         this._options.playheadTimePrecision
     });
 
     this._axis.addToLayer(this._axisLayer);

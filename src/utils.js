@@ -63,7 +63,7 @@ define(function() {
 
       result = result.join(':');
 
-      if (!dropFraction) {
+      if (!dropFraction && precision !== 0) {
         result += '.' + zeroPad(fractionSeconds, precision);
       }
 

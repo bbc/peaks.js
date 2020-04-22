@@ -203,6 +203,11 @@ define([
       playheadTextColor:     Colors.gray,
 
       /**
+       * Precision of timecode of play head/markers
+       */
+      playheadTimePrecision: 2,
+
+      /**
        * Show current time position by the play head marker
        * (zoom view only)
        */
@@ -249,11 +254,6 @@ define([
        * Emit cue events
        */
       emitCueEvents: false,
-
-      /**
-       * Number of precision points in timecode
-       */
-      precisionPoints: 3,
 
       /**
        * Point/Segment marker customisation.

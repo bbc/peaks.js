@@ -112,7 +112,7 @@ define([
       color:        this._peaks.options.segmentStartMarkerColor,
       layer:        this._layer,
       view:         this._view.getName(),
-      precision:    this._peaks.options.precisionPoints
+      precision:    this._peaks.options.playheadTimePrecision
     });
 
     if (startMarker) {
@@ -135,7 +135,7 @@ define([
       color:        this._peaks.options.segmentEndMarkerColor,
       layer:        this._layer,
       view:         this._view.getName(),
-      precision:    this._peaks.options.precisionPoints
+      precision:    this._peaks.options.playheadTimePrecision
     });
 
     if (endMarker) {
