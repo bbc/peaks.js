@@ -63,6 +63,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
+    - [view.setPlayheadTimePrecision()](#viewsetplayheadtimeprecisionprecision)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.fitToContainer()](#viewfittocontainer)
@@ -671,6 +672,17 @@ The initial setting is `false`, for the overview waveform view, or controlled by
 ```js
 const view = instance.views.getView('zoomview');
 view.showPlayeadTime(false); // Remove the time from the playhead marker.
+```
+
+### `view.setPlayheadTimePrecision(precision)`
+
+Change the precision of timecode displayed for playhead and markers.
+
+The initial setting is `2`, for the zoomable waveform view. This is controlled by the `playheadTimePrecision` configuration options. This does not apply for overview waveform, because it doesn't display time codes for playhead and markers.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setPlayheadTimePrecision(3); // Displays time of playhead/marker in hh:mm:ss.sss
 ```
 
 ### `view.enableAutoScroll(enable)`

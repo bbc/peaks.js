@@ -258,6 +258,7 @@ declare module 'peaks.js' {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: string) => void;
     showPlayheadTime: (show: boolean) => void;
+    setPlayheadTimePrecision: (precision: number) => void;
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;

@@ -516,8 +516,7 @@ define([
 
     this._axis = new WaveformAxis(this, {
       axisGridlineColor: this._options.axisGridlineColor,
-      axisLabelColor:    this._options.axisLabelColor,
-      precision:         this._options.playheadTimePrecision
+      axisLabelColor:    this._options.axisLabelColor
     });
 
     this._axis.addToLayer(this._axisLayer);
@@ -571,6 +570,10 @@ define([
 
   WaveformZoomView.prototype.showPlayheadTime = function(show) {
     this._playheadLayer.showPlayheadTime(show);
+  };
+
+  WaveformZoomView.prototype.setPlayheadTimePrecision = function(precision) {
+    this._playheadLayer.setPlayheadTimePrecision(precision);
   };
 
   WaveformZoomView.prototype.enableAutoScroll = function(enable) {

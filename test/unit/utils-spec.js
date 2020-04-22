@@ -19,7 +19,7 @@ describe('Utils', function() {
       tests.forEach(function(test) {
         context('given ' + test.input, function() {
           it('should output ' + test.output, function() {
-            expect(Utils.formatTime(test.input, false)).to.equal(test.output);
+            expect(Utils.formatTime(test.input)).to.equal(test.output);
           });
         });
       });
@@ -40,31 +40,13 @@ describe('Utils', function() {
       tests.forEach(function(test) {
         context('given ' + test.input, function() {
           it('should output ' + test.output, function() {
-            expect(Utils.formatTime(test.input, false, 3)).to.equal(test.output);
+            expect(Utils.formatTime(test.input, 3)).to.equal(test.output);
           });
         });
       });
     });
 
-    context('with precision = 0', function() {
-      var tests = [
-        { input: 0,            output:    '00:00' },
-        { input: 60,           output:    '01:00' },
-        { input: 60 * 60,      output: '01:00:00' },
-        { input: 10.5,         output:    '00:10' },
-        { input: 20.003,       output:    '00:20' }
-      ];
-
-      tests.forEach(function(test) {
-        context('given ' + test.input, function() {
-          it('should output ' + test.output, function() {
-            expect(Utils.formatTime(test.input, false, 0)).to.equal(test.output);
-          });
-        });
-      });
-    });
-
-    context('without hundredths', function() {
+    context('without fraction seconds', function() {
       var tests = [
         { input: 0,            output:    '00:00' },
         { input: 1,            output:    '00:01' },
@@ -77,7 +59,7 @@ describe('Utils', function() {
       tests.forEach(function(test) {
         context('given ' + test.input, function() {
           it('should output ' + test.output, function() {
-            expect(Utils.formatTime(test.input, true)).to.equal(test.output);
+            expect(Utils.formatTime(test.input, 0)).to.equal(test.output);
           });
         });
       });

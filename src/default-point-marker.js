@@ -75,7 +75,7 @@ define([
       this._time = new Konva.Text({
         x:          -24,
         y:          0,
-        text:       Utils.formatTime(this._options.point.time, false, this._options.precision),
+        text:       Utils.formatTime(this._options.point.time, this._options.precision),
         fontSize:   10,
         fontFamily: 'sans-serif',
         fill:       '#000',
@@ -153,7 +153,7 @@ define([
 
   DefaultPointMarker.prototype.timeUpdated = function(time) {
     if (this._time) {
-      this._time.setText(Utils.formatTime(time, false, this._options.precision));
+      this._time.setText(Utils.formatTime(time, this._options.precision));
     }
   };
 

@@ -185,7 +185,7 @@ define([
       this._playheadGroup.setAttr('x', playheadX);
 
       if (this._playheadText) {
-        var text = Utils.formatTime(time, false, precision);
+        var text = Utils.formatTime(time, precision);
 
         this._playheadText.setText(text);
       }
@@ -276,6 +276,26 @@ define([
         this._playheadText = null;
         updated = true;
       }
+    }
+
+    if (updated) {
+      this._playheadLayer.draw();
+    }
+  };
+
+  PlayheadLayer.prototype.setPlayheadTimePrecision = function(precision) {
+    var updated = false;
+
+    if (this._playheadText) {
+      // Set option in peaks
+      this._peaks.options.playheadTimePrecision = precision;
+
+      var time = this._peaks.player.getCurrentTime();
+      var text = Utils.formatTime(time, precision);
+
+      // Update current play head
+      this._playheadText.setText(text);
+      updated = true;
     }
 
     if (updated) {

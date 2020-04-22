@@ -35,12 +35,11 @@ define(function() {
      * Returns a formatted time string.
      *
      * @param {Number} time The time to be formatted, in seconds.
-     * @param {Boolean} dropFraction Don't display hundredths/thousandths of a second if true.
      * @param {Number} precision Decimal places to which time is displayed
      * @returns {String}
      */
 
-    formatTime: function(time, dropFraction, precision) {
+    formatTime: function(time, precision) {
       // Set default value to 2 decimal points
       precision = typeof precision !== 'undefined' ? precision : 2;
 
@@ -63,7 +62,7 @@ define(function() {
 
       result = result.join(':');
 
-      if (!dropFraction && precision !== 0) {
+      if (precision !== 0) {
         result += '.' + zeroPad(fractionSeconds, precision);
       }
 

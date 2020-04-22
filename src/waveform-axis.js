@@ -29,7 +29,6 @@ define([
 
     self._axisGridlineColor = options.axisGridlineColor;
     self._axisLabelColor    = options.axisLabelColor;
-    self._precision         = options.precision;
 
     self._axisShape = new Konva.Shape({
       sceneFunc: function(context) {
@@ -133,7 +132,8 @@ define([
       context.lineTo(x + 0.5, height - markerHeight);
       context.stroke();
 
-      var label      = Utils.formatTime(secs, true, this._precision);
+      // precision = 0, drops the fractional seconds
+      var label      = Utils.formatTime(secs, 0);
       var labelWidth = context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
       var labelY     = height - 1 - markerHeight;

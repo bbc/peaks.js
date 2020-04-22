@@ -307,8 +307,7 @@ define([
 
     this._axis = new WaveformAxis(this, {
       axisGridlineColor: this._options.axisGridlineColor,
-      axisLabelColor:    this._options.axisLabelColor,
-      precision:         this._options.playheadTimePrecision
+      axisLabelColor:    this._options.axisLabelColor
     });
 
     this._axis.addToLayer(this._axisLayer);
@@ -343,6 +342,10 @@ define([
 
   WaveformOverview.prototype.showPlayheadTime = function(show) {
     this._playheadLayer.showPlayheadTime(show);
+  };
+
+  WaveformOverview.prototype.setPlayheadTimePrecision = function() {
+    // The overview waveform doesn't show time codes for play head and markers
   };
 
   WaveformOverview.prototype.enableAutoScroll = function() {
