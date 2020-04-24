@@ -72,6 +72,7 @@ define([
 
     self._enableAutoScroll = true;
     self._amplitudeScale = 1.0;
+    self._timeLabelPrecision = peaks.options.timeLabelPrecision;
 
     self._options = peaks.options;
 
@@ -572,8 +573,13 @@ define([
     this._playheadLayer.showPlayheadTime(show);
   };
 
-  WaveformZoomView.prototype.setPlayheadTimePrecision = function(precision) {
-    this._playheadLayer.setPlayheadTimePrecision(precision);
+  WaveformZoomView.prototype.setTimeLabelPrecision = function(precision) {
+    this._timeLabelPrecision = precision;
+    this._playheadLayer.setTimeLabelPrecision();
+  };
+
+  WaveformZoomView.prototype.formatTime = function(time) {
+    return Utils.formatTime(time, this._timeLabelPrecision);
   };
 
   WaveformZoomView.prototype.enableAutoScroll = function(enable) {

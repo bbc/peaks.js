@@ -66,6 +66,10 @@ define([
     return this._allowEditing;
   };
 
+  SegmentsLayer.prototype.formatTime = function(time) {
+    return this._view.formatTime(time);
+  };
+
   SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
     var redraw = false;
     var segmentShape = this._segmentShapes[segment.id];

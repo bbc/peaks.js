@@ -27,7 +27,6 @@ define([
    * @property {String} color
    * @property {Layer} layer
    * @property {String} view
-   * @property {Number} precision # of precision points in marker label
    */
 
   /**
@@ -87,7 +86,6 @@ define([
    * @property {String} color
    * @property {Layer} layer
    * @property {String} view
-   * @property {Number} precision # of precision points in marker label
    */
 
   /**

@@ -7,9 +7,8 @@
  */
 
 define([
-  './utils',
   'konva'
-], function(Utils, Konva) {
+], function(Konva) {
   'use strict';
 
   /**
@@ -172,7 +171,6 @@ define([
                     (pixelIndex <  frameOffset + width);
 
     this._playheadPixel = pixelIndex;
-    var precision = this._peaks.options.playheadTimePrecision;
 
     if (isVisible) {
       var playheadX = this._playheadPixel - frameOffset;
@@ -185,7 +183,7 @@ define([
       this._playheadGroup.setAttr('x', playheadX);
 
       if (this._playheadText) {
-        var text = Utils.formatTime(time, precision);
+        var text = this._view.formatTime(time);
 
         this._playheadText.setText(text);
       }
@@ -283,24 +281,15 @@ define([
     }
   };
 
-  PlayheadLayer.prototype.setPlayheadTimePrecision = function(precision) {
-    var updated = false;
-
+  PlayheadLayer.prototype.setTimeLabelPrecision = function() {
+    // Update current play head
     if (this._playheadText) {
-      // Set option in peaks
-      this._peaks.options.playheadTimePrecision = precision;
-
       var time = this._peaks.player.getCurrentTime();
-      var text = Utils.formatTime(time, precision);
+      var text = this._view.formatTime(time);
 
-      // Update current play head
       this._playheadText.setText(text);
-      updated = true;
     }
-
-    if (updated) {
-      this._playheadLayer.draw();
-    }
+    this._playheadLayer.draw();
   };
 
   return PlayheadLayer;

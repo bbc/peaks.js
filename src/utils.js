@@ -62,7 +62,7 @@ define(function() {
 
       result = result.join(':');
 
-      if (precision !== 0) {
+      if (precision > 0) {
         result += '.' + zeroPad(fractionSeconds, precision);
       }
 

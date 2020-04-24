@@ -122,7 +122,6 @@ declare module 'peaks.js' {
     draggable: boolean;
     color: string;
     layer: Layer;
-    precision: number;
   }
 
   interface CreateSegmentMarkerOptions {
@@ -132,7 +131,6 @@ declare module 'peaks.js' {
     color: string;
     layer: Layer;
     startMarker: boolean;
-    precision: number;
   }
 
   interface CreateSegmentLabelOptions {
@@ -181,8 +179,8 @@ declare module 'peaks.js' {
     playheadColor?: string;
     /** Color of the play head text */
     playheadTextColor?: string;
-    /** Precision of timecode of play head/markers */
-    playheadTimePrecision?: number;
+    /** Precision of time label for play head and point/segment markers */
+    timeLabelPrecision?: number;
     /**
      * Show current time next to the play head
      * - (zoom view only)
@@ -258,7 +256,7 @@ declare module 'peaks.js' {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: string) => void;
     showPlayheadTime: (show: boolean) => void;
-    setPlayheadTimePrecision: (precision: number) => void;
+    setTimeLabelPrecision: (precision: number) => void;
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;

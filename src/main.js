@@ -203,9 +203,9 @@ define([
       playheadTextColor:     Colors.gray,
 
       /**
-       * Precision of timecode of play head/markers
+       * Precision of time label for play head and point/segment markers
        */
-      playheadTimePrecision: 2,
+      timeLabelPrecision: 2,
 
       /**
        * Show current time position by the play head marker
