@@ -264,6 +264,7 @@ define([
       if (!this._playheadText) {
         // Create it
         this._createPlayheadText(this._playheadTextColor);
+        this.fitToView();
         updated = true;
       }
     }
