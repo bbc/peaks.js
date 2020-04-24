@@ -281,7 +281,7 @@ define([
     }
   };
 
-  PlayheadLayer.prototype.setTimeLabelPrecision = function() {
+  PlayheadLayer.prototype.updatePlayheadText = function() {
     // Update current play head
     if (this._playheadText) {
       var time = this._peaks.player.getCurrentTime();

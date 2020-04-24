@@ -347,7 +347,7 @@ define([
 
   WaveformOverview.prototype.setTimeLabelPrecision = function(precision) {
     this._timeLabelPrecision = precision;
-    this._playheadLayer.setTimeLabelPrecision();
+    this._playheadLayer.updatePlayheadText();
   };
 
   WaveformOverview.prototype.formatTime = function(time) {

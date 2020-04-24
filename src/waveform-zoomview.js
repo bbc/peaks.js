@@ -575,7 +575,7 @@ define([
 
   WaveformZoomView.prototype.setTimeLabelPrecision = function(precision) {
     this._timeLabelPrecision = precision;
-    this._playheadLayer.setTimeLabelPrecision();
+    this._playheadLayer.updatePlayheadText();
   };
 
   WaveformZoomView.prototype.formatTime = function(time) {
