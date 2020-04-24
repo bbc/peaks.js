@@ -132,7 +132,8 @@ define([
       context.lineTo(x + 0.5, height - markerHeight);
       context.stroke();
 
-      var label      = Utils.formatTime(secs, true);
+      // precision = 0, drops the fractional seconds
+      var label      = Utils.formatTime(secs, 0);
       var labelWidth = context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
       var labelY     = height - 1 - markerHeight;

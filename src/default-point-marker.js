@@ -7,10 +7,8 @@
  */
 
 define([
-  './utils',
   'konva'
 ], function(
-    Utils,
     Konva) {
   'use strict';
 
@@ -75,7 +73,7 @@ define([
       this._time = new Konva.Text({
         x:          -24,
         y:          0,
-        text:       Utils.formatTime(this._options.point.time, false),
+        text:       this._options.layer.formatTime(this._options.point.time),
         fontSize:   10,
         fontFamily: 'sans-serif',
         fill:       '#000',
@@ -153,7 +151,7 @@ define([
 
   DefaultPointMarker.prototype.timeUpdated = function(time) {
     if (this._time) {
-      this._time.setText(Utils.formatTime(time, false));
+      this._time.setText(this._options.layer.formatTime(time));
     }
   };
 

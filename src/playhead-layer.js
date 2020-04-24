@@ -7,9 +7,8 @@
  */
 
 define([
-  './utils',
   'konva'
-], function(Utils, Konva) {
+], function(Konva) {
   'use strict';
 
   /**
@@ -184,7 +183,7 @@ define([
       this._playheadGroup.setAttr('x', playheadX);
 
       if (this._playheadText) {
-        var text = Utils.formatTime(time, false);
+        var text = this._view.formatTime(time);
 
         this._playheadText.setText(text);
       }
@@ -280,6 +279,17 @@ define([
     if (updated) {
       this._playheadLayer.draw();
     }
+  };
+
+  PlayheadLayer.prototype.updatePlayheadText = function() {
+    // Update current play head
+    if (this._playheadText) {
+      var time = this._peaks.player.getCurrentTime();
+      var text = this._view.formatTime(time);
+
+      this._playheadText.setText(text);
+    }
+    this._playheadLayer.draw();
   };
 
   return PlayheadLayer;
