@@ -19,6 +19,7 @@ beforeEach(function(done) {
   var mediaElement = document.createElement('audio');
   mediaElement.id = 'media';
   mediaElement.src = '/base/test_data/sample.mp3';
+  mediaElement.muted = true;
   document.body.appendChild(mediaElement);
 
   setTimeout(done, 0);
