@@ -126,11 +126,14 @@ define([
   };
 
   PlayheadLayer.prototype._createPlayheadText = function(color) {
+    var time = this._peaks.player.getCurrentTime();
+    var text = this._view.formatTime(time);
+
     // Create with default y, the real value is set in fitToView().
     this._playheadText = new Konva.Text({
       x: 2,
       y: 0,
-      text: '00:00:00',
+      text: text,
       fontSize: 11,
       fontFamily: 'sans-serif',
       fill: color,
