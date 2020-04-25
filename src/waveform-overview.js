@@ -74,7 +74,7 @@ define([
       try {
         self._data = waveformData.resample({ width: self._width });
       }
-      catch () {
+      catch (error) {
         // This error usually indicates that the waveform length
         // is less than the container width
       }
