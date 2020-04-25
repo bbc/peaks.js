@@ -14,7 +14,7 @@ describe('Player', function() {
       player = {
         init: sinon.spy(),
         destroy: sinon.spy(),
-        play: sinon.spy(),
+        play: sinon.spy(function() { return 42; }),
         pause: sinon.spy(),
         isPlaying: sinon.spy(function() { return true; }),
         isSeeking: sinon.spy(function() { return false; }),
@@ -103,6 +103,12 @@ describe('Player', function() {
         p.player.play();
 
         expect(player.play.calledOnce);
+      });
+
+      it("should return the value from the player's play() method", function() {
+        var result = p.player.play();
+
+        expect(result).to.equal(42);
       });
     });
 
@@ -213,18 +219,10 @@ describe('Player', function() {
       it('should trigger mediaelement play event', function(done) {
         p.on('player_play', function(currentTime) {
           expect(currentTime).to.equal(0);
-
-          p.player.pause();
-        });
-
-        p.on('player_pause', function() {
           done();
         });
 
-        p.player.play()
-          .then(function() {},function(reason) {
-            done(new Error('Play did not succeed: ' + reason));
-          });
+        p.player.play();
       });
     });
 
@@ -299,9 +297,12 @@ describe('Player', function() {
       it('should play a segment if an object with startTime and endTime values is given', function(done) {
         var expectedStart = 1;
         var expectedEnd = 2;
+
         p.player.playSegment({ startTime: expectedStart, endTime: expectedEnd });
 
-        p.on('player_play', function(currentTime) {expect(currentTime).to.equal(expectedStart);});
+        p.on('player_play', function(currentTime) {
+          expect(currentTime).to.equal(expectedStart);
+        });
 
         p.on('player_pause',function() {
           var diff = Math.abs(p.player.getCurrentTime() - expectedEnd);
