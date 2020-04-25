@@ -61,6 +61,7 @@ define([
     peaks.on('window_resize', self._onWindowResize);
 
     self._amplitudeScale = 1.0;
+    self._timeLabelPrecision = peaks.options.timeLabelPrecision;
 
     self._options = peaks.options;
 
@@ -342,6 +343,15 @@ define([
 
   WaveformOverview.prototype.showPlayheadTime = function(show) {
     this._playheadLayer.showPlayheadTime(show);
+  };
+
+  WaveformOverview.prototype.setTimeLabelPrecision = function(precision) {
+    this._timeLabelPrecision = precision;
+    this._playheadLayer.updatePlayheadText();
+  };
+
+  WaveformOverview.prototype.formatTime = function(time) {
+    return Utils.formatTime(time, this._timeLabelPrecision);
   };
 
   WaveformOverview.prototype.enableAutoScroll = function() {

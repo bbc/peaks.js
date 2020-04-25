@@ -179,6 +179,8 @@ declare module 'peaks.js' {
     playheadColor?: string;
     /** Color of the play head text */
     playheadTextColor?: string;
+    /** Precision of time label for play head and point/segment markers */
+    timeLabelPrecision?: number;
     /**
      * Show current time next to the play head
      * - (zoom view only)
@@ -273,6 +275,7 @@ declare module 'peaks.js' {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: string) => void;
     showPlayheadTime: (show: boolean) => void;
+    setTimeLabelPrecision: (precision: number) => void;
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;

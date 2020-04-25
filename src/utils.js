@@ -25,8 +25,14 @@ define(function() {
     };
   }
 
-  function zeroPad(number) {
-    return number < 10 ? '0' + number : number;
+  function zeroPad(number, precision) {
+    number = number.toString();
+
+    while (number.length < precision) {
+      number = '0' + number;
+    }
+
+    return number;
   }
 
   return {
@@ -35,14 +41,14 @@ define(function() {
      * Returns a formatted time string.
      *
      * @param {Number} time The time to be formatted, in seconds.
-     * @param {Boolean} dropHundredths Don't display hundredths of a second if true.
+     * @param {Number} precision Decimal places to which time is displayed
      * @returns {String}
      */
 
-    formatTime: function(time, dropHundredths) {
+    formatTime: function(time, precision) {
       var result = [];
 
-      var hundredths = Math.floor((time % 1) * 100);
+      var fractionSeconds = Math.floor((time % 1) * Math.pow(10, precision));
       var seconds = Math.floor(time);
       var minutes = Math.floor(seconds / 60);
       var hours = Math.floor(minutes / 60);
@@ -54,13 +60,13 @@ define(function() {
       result.push(seconds % 60); // Seconds
 
       for (var i = 0; i < result.length; i++) {
-        result[i] = zeroPad(result[i]);
+        result[i] = zeroPad(result[i], 2);
       }
 
       result = result.join(':');
 
-      if (!dropHundredths) {
-        result += '.' + zeroPad(hundredths);
+      if (precision > 0) {
+        result += '.' + zeroPad(fractionSeconds, precision);
       }
 
       return result;

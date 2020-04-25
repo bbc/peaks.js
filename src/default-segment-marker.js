@@ -7,10 +7,8 @@
  */
 
 define([
-  './utils',
   'konva'
 ], function(
-    Utils,
     Konva) {
   'use strict';
 
@@ -41,7 +39,7 @@ define([
     this._label = new Konva.Text({
       x:          xPosition,
       y:          0,
-      text:       Utils.formatTime(time, false),
+      text:       this._options.layer.formatTime(time),
       fontSize:   10,
       fontFamily: 'sans-serif',
       fill:       '#000',
@@ -124,7 +122,7 @@ define([
   };
 
   DefaultSegmentMarker.prototype.timeUpdated = function(time) {
-    this._label.setText(Utils.formatTime(time, false));
+    this._label.setText(this._options.layer.formatTime(time));
   };
 
   return DefaultSegmentMarker;

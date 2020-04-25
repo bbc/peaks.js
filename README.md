@@ -64,6 +64,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
+    - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.fitToContainer()](#viewfittocontainer)
@@ -388,6 +389,9 @@ var options = {
   // Color of the play head text
   playheadTextColor: '#aaa',
 
+  // Precision of time label of play head and point/segment markers
+  timeLabelPrecision: 2,
+
   // Show current time next to the play head
   // (zoom view only)
   showPlayheadTime: false,
@@ -675,6 +679,17 @@ The initial setting is `false`, for the overview waveform view, or controlled by
 ```js
 const view = instance.views.getView('zoomview');
 view.showPlayeadTime(false); // Remove the time from the playhead marker.
+```
+
+### `view.setTimeLabelPrecision(precision)`
+
+Change the precision of time label displayed for playhead and point/segment markers.
+
+The initial setting is `2`, for both zoomable and overview waveform views. This is controlled by the `timeLabelPrecision` configuration option in both views.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setTimeLabelPrecision(3); // Displays time of playhead/marker as hh:mm:ss.sss
 ```
 
 ### `view.enableAutoScroll(enable)`

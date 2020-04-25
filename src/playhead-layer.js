@@ -7,9 +7,8 @@
  */
 
 define([
-  './utils',
   'konva'
-], function(Utils, Konva) {
+], function(Konva) {
   'use strict';
 
   /**
@@ -127,11 +126,14 @@ define([
   };
 
   PlayheadLayer.prototype._createPlayheadText = function(color) {
+    var time = this._peaks.player.getCurrentTime();
+    var text = this._view.formatTime(time);
+
     // Create with default y, the real value is set in fitToView().
     this._playheadText = new Konva.Text({
       x: 2,
       y: 0,
-      text: '00:00:00',
+      text: text,
       fontSize: 11,
       fontFamily: 'sans-serif',
       fill: color,
@@ -184,7 +186,7 @@ define([
       this._playheadGroup.setAttr('x', playheadX);
 
       if (this._playheadText) {
-        var text = Utils.formatTime(time, false);
+        var text = this._view.formatTime(time);
 
         this._playheadText.setText(text);
       }
@@ -265,6 +267,7 @@ define([
       if (!this._playheadText) {
         // Create it
         this._createPlayheadText(this._playheadTextColor);
+        this.fitToView();
         updated = true;
       }
     }
@@ -282,6 +285,18 @@ define([
     }
   };
 
+  PlayheadLayer.prototype.updatePlayheadText = function() {
+    // Update current play head
+    if (this._playheadText) {
+      var time = this._peaks.player.getCurrentTime();
+      var text = this._view.formatTime(time);
+
+      this._playheadText.setText(text);
+    }
+    
+    this._playheadLayer.draw();
+  };
+  
   PlayheadLayer.prototype.destroy = function() {
     if (this._playheadLineAnimation) {
       this._playheadLineAnimation.stop();

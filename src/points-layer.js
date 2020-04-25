@@ -73,6 +73,10 @@ define([
     this._allowEditing = enable;
   };
 
+  PointsLayer.prototype.formatTime = function(time) {
+    return this._view.formatTime(time);
+  };
+
   PointsLayer.prototype._onPointsUpdate = function(point) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
