@@ -19,7 +19,7 @@ describe('Utils', function() {
       tests.forEach(function(test) {
         context('given ' + test.input, function() {
           it('should output ' + test.output, function() {
-            expect(Utils.formatTime(test.input)).to.equal(test.output);
+            expect(Utils.formatTime(test.input, 2)).to.equal(test.output);
           });
         });
       });

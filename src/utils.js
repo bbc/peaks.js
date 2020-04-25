@@ -46,12 +46,9 @@ define(function() {
      */
 
     formatTime: function(time, precision) {
-      // Set default value to 2 decimal points
-      precision = typeof precision !== 'undefined' ? precision : 2;
-
       var result = [];
 
-      var fractionSeconds = Math.floor((time % 1) * (Math.pow(10, precision)));
+      var fractionSeconds = Math.floor((time % 1) * Math.pow(10, precision));
       var seconds = Math.floor(time);
       var minutes = Math.floor(seconds / 60);
       var hours = Math.floor(minutes / 60);
