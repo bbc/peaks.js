@@ -44,6 +44,13 @@ describe('Player', function() {
       });
     });
 
+    afterEach(function() {
+      if (p) {
+        p.destroy();
+        p = null;
+      }
+    });
+
     describe('constructor', function() {
       it('should throw a type error if an adapter property is missing', function() {
         var adapter = {
@@ -198,6 +205,7 @@ describe('Player', function() {
     afterEach(function() {
       if (p) {
         p.destroy();
+        p = null;
       }
     });
 
