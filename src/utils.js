@@ -26,7 +26,13 @@ define(function() {
   }
 
   function zeroPad(number, precision) {
-    return number.toString().padStart(precision, '0');
+    number = number.toString();
+
+    while (number.length < precision) {
+      number = '0' + number;
+    }
+
+    return number;
   }
 
   return {
