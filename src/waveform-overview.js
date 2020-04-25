@@ -68,11 +68,16 @@ define([
     self._width = container.clientWidth;
     self._height = container.clientHeight || self._options.height;
 
+    self._data = waveformData;
+
     if (self._width !== 0) {
-      self._data = waveformData.resample({ width: self._width });
-    }
-    else {
-      self._data = waveformData;
+      try {
+        self._data = waveformData.resample({ width: self._width });
+      }
+      catch () {
+        // This error usually indicates that the waveform length
+        // is less than the container width
+      }
     }
 
     // Disable warning: The stage has 6 layers.
