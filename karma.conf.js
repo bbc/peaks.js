@@ -157,6 +157,10 @@ module.exports = function(config) {
         browser_version: '11',
         os: 'Windows',
         os_version: '8.1'
+      },
+      'ChromeHeadlessWithoutAutoplayPolicy': {
+        base: 'ChromeHeadless',
+        flags: ['--autoplay-policy=no-user-gesture-required']
       }
     },
 
@@ -169,6 +173,7 @@ module.exports = function(config) {
   });
 
   config.set({
-    browsers: isCI ? filterBrowsers(config.customLaunchers, /^BS/) : ['ChromeHeadless']
+    browsers: isCI  ? filterBrowsers(config.customLaunchers, /^BS/)
+                    : ['ChromeHeadlessWithoutAutoplayPolicy']
   });
 };

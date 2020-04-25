@@ -84,10 +84,11 @@ define([
 
     /**
      * Starts playback.
+     * @returns {Promise}
      */
 
     Player.prototype.play = function() {
-      this._adapter.play();
+      return this._adapter.play();
     };
 
     /**

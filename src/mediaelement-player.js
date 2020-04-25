@@ -101,7 +101,7 @@ define([
     };
 
     MediaElementPlayer.prototype.play = function() {
-      this._mediaElement.play();
+      return this._mediaElement.play();
     };
 
     MediaElementPlayer.prototype.pause = function() {
@@ -141,10 +141,10 @@ define([
       // We need to use setInterval here as the timeupdate event doesn't fire
       // often enough.
       this._interval = setInterval(function() {
-        if (this.getCurrentTime() >= segment.endTime || this._mediaElement.paused) {
+        if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
           clearTimeout(this._interval);
           this._interval = null;
-          this._mediaElement.pause();
+          self._mediaElement.pause();
         }
       }, 30);
     };

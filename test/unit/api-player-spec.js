@@ -201,6 +201,31 @@ describe('Player', function() {
       }
     });
 
+    describe('play', function() {
+      it('should trigger mediaelement play event', function(done) {
+        p.on('player_play', function(currentTime) {
+          expect(currentTime).to.equal(0);
+
+          p.player.pause();
+        });
+
+        p.on('player_pause', function() {
+          done();
+        });
+
+        p.player.play()
+          .then(function() {},function(reason) {
+            done(new Error('Play did not succeed: ' + reason));
+          });
+      });
+    });
+
+    describe('isSeeking', function() {
+      it('should return the actual value of the audio element', function() {
+        expect(p.player.isSeeking()).to.equal(document.getElementById('media').seeking);
+      });
+    });
+
     describe('getCurrentTime', function() {
       var newTime = 6.0;
 
@@ -263,11 +288,18 @@ describe('Player', function() {
         expect(p.logger.notCalled);
       });
 
-      it('should play a segment if an object with startTime and endTime values is given', function() {
-        p.player.playSegment({ startTime: 10, endTime: 20 });
-        p.player.pause();
+      it('should play a segment if an object with startTime and endTime values is given', function(done) {
+        var expectedStart = 1;
+        var expectedEnd = 2;
+        p.player.playSegment({ startTime: expectedStart, endTime: expectedEnd });
 
-        expect(p.logger.notCalled);
+        p.on('player_play', function(currentTime) {expect(currentTime).to.equal(expectedStart);});
+
+        p.on('player_pause',function() {
+          var diff = Math.abs(p.player.getCurrentTime() - expectedEnd);
+          expect(diff).to.be.lessThan(0.2);
+          done();
+        });
       });
     });
 
