@@ -673,6 +673,7 @@ define([
     this._peaks.off('keyboard.shift_left', this._onKeyboardShiftLeft);
     this._peaks.off('keyboard.shift_right', this._onKeyboardShiftRight);
 
+    this._playheadLayer.destroy();
     this._segmentsLayer.destroy();
     this._pointsLayer.destroy();
 

@@ -282,5 +282,12 @@ define([
     }
   };
 
+  PlayheadLayer.prototype.destroy = function() {
+    if (this._playheadLineAnimation) {
+      this._playheadLineAnimation.stop();
+      this._playheadLineAnimation = null;
+    }
+  };
+
   return PlayheadLayer;
 });
