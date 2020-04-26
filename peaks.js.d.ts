@@ -211,6 +211,8 @@ declare module 'peaks.js' {
     createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
     /** Custom point marker factory function */
     createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
+    /** External Player */
+    player?: PlayerAdapter;
   }
 
   interface SetSourceRequiredOptions {
@@ -251,6 +253,33 @@ declare module 'peaks.js' {
     player_seek: (time: number) => void;
   }
 
+  interface PlayerAdapter {
+    init: (eventEmitter: EventEmitterForPlayerEvents) => void;
+    destroy: () => void;
+    play: () => void;
+    pause: () => void;
+    isPlaying: () => boolean;
+    isSeeking: () => boolean;
+    getCurrentTime: () => number;
+    getDuration: () => number;
+    seek: (time: number) => void;
+  }
+
+  interface EventEmitterForPlayerEvents {
+    emit<E extends keyof PlayerEvents>(event: E, ...eventData: EventData<PlayerEvents[E]>): void;
+  }
+
+  interface PlayerEvents {
+    player_canplay: () => void;
+    player_error: (error: any) => void;
+    player_pause: (time: number) => void;
+    player_play: (time: number) => void;
+    player_seek: (time: number) => void;
+    player_time_update: (time: number) => void;
+  }
+
+  type EventData<T> = [T] extends [(...eventData: infer U) => any] ? U : [T] extends [void] ? [] : [T];
+
   interface WaveformView {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: string) => void;
@@ -284,7 +313,7 @@ declare module 'peaks.js' {
       createZoomview: (container: HTMLElement) => WaveformView;
       destroyOverview: () => void;
       destroyZoomview: () => void;
-      getView: (name?: 'overview' | 'zoomview' ) => WaveformView | null;
+      getView: (name?: 'overview' | 'zoomview') => WaveformView | null;
     };
     /** Zoom API */
     zoom: {
@@ -317,7 +346,7 @@ declare module 'peaks.js' {
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
-  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions {}
+  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions { }
 
   export interface JsonWaveformData {
     version: number;

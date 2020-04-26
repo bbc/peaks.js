@@ -291,9 +291,6 @@ describe('WaveformBuilder', function() {
             scale: 512
           },
           zoomLevels: [512, 1024, 2048, 4096]
-        },
-        player: {
-          getCurrentSource: sinon.stub().returns(document.getElementById('media').currentSrc)
         }
       };
 

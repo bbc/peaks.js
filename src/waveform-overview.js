@@ -436,6 +436,7 @@ define([
     this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
     this._peaks.off('window_resize', this._onWindowResize);
 
+    this._playheadLayer.destroy();
     this._segmentsLayer.destroy();
     this._pointsLayer.destroy();
 

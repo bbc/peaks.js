@@ -42,6 +42,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Web Audio based waveforms](#web-audio-based-waveforms)
 - [Configuration](#configuration)
   - [Marker customization](#marker-customization)
+  - [Player customization](#player-customization)
 - [API](#api)
   - [Initalisation](#initialisation)
     - [Peaks.init()](#peaksinitoptions-callback)
@@ -448,9 +449,16 @@ markers, by specifying the following configuration options: `createPointMarker`,
 `createSegmentMarker`, and `createSegmentLabel`. Please read
 [Customizing Peaks.js](customizing.md) for more details.
 
+## Player customization
+
+By default, Peaks.js supports audio playback using the HTML `<audio>` or
+`<video>` element using the `mediaElement` configuration option. Peaks.js also
+allows you to use your own custom media player library, using the `player`
+option. Please read [Customizing Peaks.js](customizing.md) for more details.
+
 # API
 
-## Initialisation
+## Initialization
 
 The top level `Peaks` object exposes a factory function to create new `Peaks` instances.
 
