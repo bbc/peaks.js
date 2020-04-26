@@ -9,6 +9,7 @@ module.exports = {
     "brace-style": ["error", "stroustrup"],
     "block-scoped-var": "error",
     "comma-dangle": ["error", "never"],
+    "comma-spacing": ["warn", { "before": false, "after": true }],
     "comma-style": ["error", "last"],
     "consistent-this": ["error", "self"],
     "curly": ["error", "all"],
