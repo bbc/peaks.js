@@ -5,7 +5,6 @@ This document describes how to customize various aspects of the waveform renderi
 ## Contents
 
 - [Introduction](#introduction)
-- [Waveform Rendering](#waveform-rendering)
 - [Point and Segment Markers](#point-and-segment-markers)
   - [createPointMarker()](#createpointmarkeroptions)
   - [createSegmentMarker()](#createsegmentmarkeroptions)
