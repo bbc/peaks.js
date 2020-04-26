@@ -80,6 +80,7 @@ define([
      * Cleans up the player object, removing all event listeners from the
      * associated media element.
      */
+
     MediaElementPlayer.prototype.destroy = function() {
       for (var i = 0; i < this._listeners.length; i++) {
         var listener = this._listeners[i];
@@ -91,11 +92,6 @@ define([
       }
 
       this._listeners.length = 0;
-
-      if (this._interval !== null) {
-        clearTimeout(this._interval);
-        this._interval = null;
-      }
 
       this._mediaElement = null;
     };
@@ -126,27 +122,6 @@ define([
 
     MediaElementPlayer.prototype.seek = function(time) {
       this._mediaElement.currentTime = time;
-    };
-
-    MediaElementPlayer.prototype.playSegment = function(segment) {
-      clearTimeout(this._interval);
-      this._interval = null;
-
-      // Set audio time to segment start time
-      this.seek(segment.startTime);
-
-      // Start playing audio
-      this._mediaElement.play();
-
-      // We need to use setInterval here as the timeupdate event doesn't fire
-      // often enough.
-      this._interval = setInterval(function() {
-        if (self.getCurrentTime() >= segment.endTime || self._mediaElement.paused) {
-          clearTimeout(this._interval);
-          this._interval = null;
-          self._mediaElement.pause();
-        }
-      }, 30);
     };
   }
 

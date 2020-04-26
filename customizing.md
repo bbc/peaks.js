@@ -32,7 +32,6 @@ This document describes how to customize various aspects of the waveform renderi
     - [player.isSeeking()](#playerisseeking)
     - [player.getCurrentTime()](#playergetcurrenttime)
     - [player.getDuration()](#playergetduration)
-    - [player.playSegment()](#playerplaysegmentsegment)
   - [Configuration](#configuration)
   - [Initialization](#initialization)
   - [Events](#events)
@@ -416,12 +415,11 @@ const player = {
   destroy:        function() { ... },
   play:           function() { ... },
   pause:          function() { ... },
+  seek:           function(time) { ... },
   isPlaying:      function() { ..., return boolean; },
   isSeeking:      function() { ..., return boolean; },
   getCurrentTime: function() { ..., return number; },
   getDuration:    function() { ..., return number; },
-  seek:           function(time) { ... },
-  playSegment:    function(segment) { ... }
 };
 
 const options = {
@@ -507,16 +505,6 @@ pause() {
 }
 ```
 
-#### player.isPlaying()
-
-Returns `true` if the player is currently playing, or `false` otherwise.
-
-```javascript
-pause() {
-  return this.state === 'playing';
-}
-```
-
 #### player.seek(time)
 
 Seeks to the given time in seconds.
@@ -530,6 +518,16 @@ seek(time) {
     this.state = this.previousState;
     this.eventEmitter.emit('player_seek', this.getCurrentTime());
   });
+}
+```
+
+#### player.isPlaying()
+
+Returns `true` if the player is currently playing, or `false` otherwise.
+
+```javascript
+pause() {
+  return this.state === 'playing';
 }
 ```
 
@@ -560,27 +558,6 @@ Returns the total media duration, in seconds.
 ```javascript
 getDuration() {
   return this.externalPlayer.duration;
-}
-```
-
-#### player.playSegment(segment)
-
-Starts playing from the `startTime` of the given segment and stops at the `endTime`.
-
-```javascript
-playSegment(segment) {
-  this.externalPlayer.seek(segment.startTime).then(() => {
-    return this.externalPlayer.play();
-  })
-  .then(() => {
-    this.interval = setInterval(() => {
-      if (this.getCurrentTime() >= segment.endTime || this.state !== 'playing') {
-        clearTimeout(this.interval);
-        this.interval = null;
-        this.externalPlayer.pause();
-      }
-    }, 30);
-  });
 }
 ```
 

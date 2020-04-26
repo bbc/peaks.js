@@ -194,6 +194,13 @@
                 return Tone.Transport.state === "started";
               },
 
+              seek: function(time) {
+                Tone.Transport.seconds = time;
+
+                this.eventEmitter.emit('player_seek', this.getCurrentTime());
+                this.eventEmitter.emit('player_time_update', this.getCurrentTime());
+              },
+
               isSeeking: function() {
                 return false;
               },
@@ -204,16 +211,6 @@
 
               getDuration: function() {
                 return this.externalPlayer.buffer.duration;
-              },
-
-              seek: function(time) {
-                Tone.Transport.seconds = time;
-
-                this.eventEmitter.emit('player_seek', this.getCurrentTime());
-                this.eventEmitter.emit('player_time_update', this.getCurrentTime());
-              },
-
-              playSegment: (segment) => {
               }
             };
 

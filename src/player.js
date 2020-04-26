@@ -22,8 +22,7 @@ define([
       'isSeeking',
       'getCurrentTime',
       'getDuration',
-      'seek',
-      'playSegment'
+      'seek'
     ];
 
     function getAllPropertiesFrom(adapter) {
@@ -68,6 +67,7 @@ define([
     var self = this;
 
     self._peaks = peaks;
+    self._interval = null;
 
     validateAdapter(adapter);
     self._adapter = adapter;
@@ -79,6 +79,11 @@ define([
      */
 
     Player.prototype.destroy = function() {
+      if (this._interval !== null) {
+        clearTimeout(this._interval);
+        this._interval = null;
+      }
+
       this._adapter.destroy();
     };
 
@@ -158,14 +163,33 @@ define([
      */
 
     Player.prototype.playSegment = function(segment) {
+      var self = this;
+
       if (!segment ||
         !Utils.isValidTime(segment.startTime) ||
         !Utils.isValidTime(segment.endTime)) {
-        this._peaks.logger('peaks.player.playSegment(): parameter must be a segment object');
+        self._peaks.logger('peaks.player.playSegment(): parameter must be a segment object');
         return;
       }
 
-      this._adapter.playSegment(segment);
+      clearTimeout(self._interval);
+      self._interval = null;
+
+      // Set audio time to segment start time
+      self.seek(segment.startTime);
+
+      // Start playing audio
+      self.play();
+
+      // We need to use setInterval here as the timeupdate event doesn't fire
+      // often enough.
+      self._interval = setInterval(function() {
+        if (self.getCurrentTime() >= segment.endTime || !self.isPlaying()) {
+          clearTimeout(self._interval);
+          self._interval = null;
+          self.pause();
+        }
+      }, 30);
     };
   }
 
