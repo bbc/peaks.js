@@ -128,6 +128,13 @@ define([
         mousePosX = Utils.clamp(mousePosX, 0, self._width);
 
         var time = self.pixelsToTime(mousePosX);
+        var duration = self._getDuration();
+
+        // Prevent the playhead position from jumping by limiting click
+        // handling to the waveform duration.
+        if (time > duration) {
+          time = duration;
+        }
 
         self._playheadLayer.updatePlayheadTime(time);
 
@@ -138,6 +145,11 @@ define([
         mousePosX = Utils.clamp(mousePosX, 0, self._width);
 
         var time = self.pixelsToTime(mousePosX);
+        var duration = self._getDuration();
+
+        if (time > duration) {
+          time = duration;
+        }
 
         // Update the playhead position. This gives a smoother visual update
         // than if we only use the player_time_update event.
@@ -261,6 +273,14 @@ define([
 
   WaveformOverview.prototype.getHeight = function() {
     return this._height;
+  };
+
+  /**
+   * @returns {Number} The media duration, in seconds.
+   */
+
+  WaveformOverview.prototype._getDuration = function() {
+    return this._peaks.player.getDuration();
   };
 
   /**

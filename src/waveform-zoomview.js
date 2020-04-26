@@ -149,6 +149,13 @@ define([
           var pixelIndex = self._frameOffset + mouseDownX;
 
           var time = self.pixelsToTime(pixelIndex);
+          var duration = self._getDuration();
+
+          // Prevent the playhead position from jumping by limiting click
+          // handling to the waveform duration.
+          if (time > duration) {
+            time = duration;
+          }
 
           self._updateWaveform(pixelIndex - mouseDownX);
           self._playheadLayer.updatePlayheadTime(time);
@@ -459,6 +466,14 @@ define([
 
   WaveformZoomView.prototype.getHeight = function() {
     return this._height;
+  };
+
+  /**
+   * @returns {Number} The media duration, in seconds.
+   */
+
+  WaveformZoomView.prototype._getDuration = function() {
+    return this._peaks.player.getDuration();
   };
 
   /**
