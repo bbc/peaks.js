@@ -516,6 +516,7 @@ seek(time) {
   this.externalPlayer.seek(time).then(() => {
     this.state = this.previousState;
     this.eventEmitter.emit('player.seeked', this.getCurrentTime());
+    this.eventEmitter.emit('player.timeupdate', this.getCurrentTime());
   });
 }
 ```
@@ -570,7 +571,7 @@ emit events to inform Peaks.js of state changes within the player.
 These player events are based on the
 [`HTMLMediaElement` events](https://html.spec.whatwg.org/#mediaevents).
 
-To enable Peak.js to correctly update its internal state and visually
+To enable Peaks.js to correctly update its internal state and visually
 reflect player state changes, events should only be emitted after the
 corresponding player actions have been started.
 
