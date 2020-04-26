@@ -54,7 +54,7 @@ define([
    */
 
   function Peaks() {
-    EventEmitter.call(this); // , { wildcard: true });
+    EventEmitter.call(this);
 
     this.options = {
 
