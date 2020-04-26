@@ -631,7 +631,8 @@ this.eventEmitter.emit('player.seeked', this.getCurrentTime());
 
 Notifies Peaks.js that the current playback position has changed. To mimic
 `HTMLMediaElement` behavior, this event should be emitted approximately every
-250 milliseconds. It should also be emitted after a successful seek operation.
+250 milliseconds during media playback. It should also be emitted after a
+successful seek operation.
 
 The event data should be the current playback position, in seconds.
 
