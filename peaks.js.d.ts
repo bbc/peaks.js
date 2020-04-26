@@ -264,7 +264,6 @@ declare module 'peaks.js' {
     getCurrentTime: () => number;
     getDuration: () => number;
     seek: (time: number) => void;
-    playSegment: (segment: Segment) => void;
   }
 
   interface EventEmitterForPlayerEvents {
