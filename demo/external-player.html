@@ -126,6 +126,9 @@
         <button data-action="seek">Seek</button>
         <button data-action="zoom-in">Zoom in</button>
         <button data-action="zoom-out">Zoom out</button>
+        <input type="text" id="segment-start" value="2.0">
+        <input type="text" id="segment-end" value="5.0">
+        <button data-action="play-segment">Play segment</button>
       </div>
     </div>
 
@@ -261,6 +264,16 @@
 
               document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
                 peaksInstance.zoom.zoomOut();
+              });
+
+              document.querySelector('[data-action="play-segment"]').addEventListener('click', function () {
+                var start = document.getElementById('segment-start').value;
+                var startInSeconds = parseFloat(start);
+
+                var end = document.getElementById('segment-end').value;
+                var endInSeconds = parseFloat(end);
+
+                peaksInstance.player.playSegment({ startTime: startInSeconds, endTime: endInSeconds, editable: true });
               });
             });
           });
