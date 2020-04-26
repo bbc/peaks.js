@@ -145,25 +145,25 @@
             return audioContext.decodeAudioData(buffer);
           })
           .then(function(audioBuffer) {
-            const externalPlayer = new Tone.Player(audioBuffer);
-
             const player = {
+              externalPlayer: new Tone.Player(audioBuffer),
               eventEmitter: null,
 
               init: function(eventEmitter) {
                 this.eventEmitter = eventEmitter;
 
-                externalPlayer.sync();
-                externalPlayer.start();
+                this.externalPlayer.sync();
+                this.externalPlayer.start();
 
-                Tone.connectSeries(externalPlayer, Tone.Master);
+                Tone.connectSeries(this.externalPlayer, Tone.Master);
 
                 eventEmitter.emit('player_canplay');
 
-                Tone.Transport.scheduleRepeat((time) => {
+                Tone.Transport.scheduleRepeat(() => {
+                  var time = this.getCurrentTime();
                   eventEmitter.emit('player_time_update', time);
 
-                  if (this.getCurrentTime() >= this.getDuration()) {
+                  if (time >= this.getDuration()) {
                     Tone.Transport.stop();
                   }
                 }, 0.25);
@@ -171,6 +171,8 @@
 
               destroy: function() {
                 Tone.context.dispose();
+                this.externalPlayer = null;
+                this.eventEmitter = null;
               },
 
               play: function() {
@@ -197,11 +199,11 @@
               },
 
               getCurrentTime: function() {
-                return externalPlayer.buffer.toSeconds(Tone.Transport.position);
+                return this.externalPlayer.buffer.toSeconds(Tone.Transport.position);
               },
 
               getDuration: function() {
-                return externalPlayer.buffer.duration;
+                return this.externalPlayer.buffer.duration;
               },
 
               seek: function(time) {
