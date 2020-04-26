@@ -249,7 +249,6 @@ declare module 'peaks.js' {
     'zoomview.dblclick': (time: number) => void;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
     player_seek: (time: number) => void;
-    user_seek: (time: number) => void;
   }
 
   interface WaveformView {

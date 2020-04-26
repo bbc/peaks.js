@@ -50,7 +50,6 @@ define([
 
     // Bind event handlers
     self._onTimeUpdate = self._onTimeUpdate.bind(self);
-    self._onSeek = self._onSeek.bind(self);
     self._onPlay = self._onPlay.bind(self);
     self._onPause = self._onPause.bind(self);
     self._onWindowResize = self._onWindowResize.bind(self);
@@ -61,7 +60,6 @@ define([
 
     // Register event handlers
     self._peaks.on('player_time_update', self._onTimeUpdate);
-    self._peaks.on('user_seek', self._onSeek);
     self._peaks.on('player_play', self._onPlay);
     self._peaks.on('player_pause', self._onPause);
     self._peaks.on('window_resize', self._onWindowResize);
@@ -181,13 +179,6 @@ define([
     }
 
     this._syncPlayhead(time);
-  };
-
-  WaveformZoomView.prototype._onSeek = function(time) {
-    var frameIndex = this.timeToPixels(time);
-
-    this._updateWaveform(frameIndex - Math.floor(this._width / 2));
-    this._playheadLayer.updatePlayheadTime(time);
   };
 
   WaveformZoomView.prototype._onPlay = function(time) {
@@ -674,7 +665,6 @@ define([
 
     // Unregister event handlers
     this._peaks.off('player_time_update', this._onTimeUpdate);
-    this._peaks.off('user_seek', this._onSeek);
     this._peaks.off('player_play', this._onPlay);
     this._peaks.off('player_pause', this._onPause);
     this._peaks.off('window_resize', this._onWindowResize);
