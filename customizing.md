@@ -1,126 +1,49 @@
 # Customizing Peaks.js
 
-This document describes how to customize various aspects of the waveform rendering and audio playback in Peaks.js.
+This document describes how to customize various aspects of the waveform rendering and media playback in Peaks.js.
 
-# Audio Playback
+## Contents
 
-Peaks.js default internal audio player is based on the [HTMLAudioElement](https://html.spec.whatwg.org/multipage/media.html#the-audio-element).
-But Peaks.js also allows customization in case an audio player of an external library or a custom written audio player should be used.
-An external audio player can be used by implementing an audio player adapter interface.
-Peaks can be informed about state changes of the player via an event API.
+- [Introduction](#introduction)
+- [Waveform Rendering](#waveform-rendering)
+- [Point and Segment Markers](#point-and-segment-markers)
+  - [createPointMarker()](#createpointmarkeroptions)
+  - [createSegmentMarker()](#createsegmentmarkeroptions)
+  - [Marker Methods](#marker-methods)
+    - [marker.constructor()](#markerconstructoroptions)
+    - [marker.init()](#markerinitgroup)
+    - [marker.fitToView()](#markerfittoview)
+    - [marker.timeUpdated()](#markertimeupdatedtime)
+    - [marker.destroy()](#markerdestroy)
+  - [Layer API](#layer-api)
+    - [layer.getHeight()](#layergetheight)
+    - [layer.draw()](#layerdraw)
+    - [layer.formatTime()](#layerformattime)
+- [Segment Labels](#segment-labels)
+  - [createSegmentLabel()](#createsegmentlabeloptions)
+- [Media Playback](#media-playback)
+  - [Player Methods](#player-methods)
+    - [player.init()](#playeriniteventemitter)
+    - [player.destroy()](#playerdestroy)
+    - [player.play()](#playerplay)
+    - [player.pause()](#playerpause)
+    - [player.isPlaying()](#playerisplaying)
+    - [player.seek()](#playerseektime)
+    - [player.isSeeking()](#playerisseeking)
+    - [player.getCurrentTime()](#playergetcurrenttime)
+    - [player.getDuration()](#playergetduration)
+    - [player.playSegment()](#playerplaysegmentsegment)
+  - [Configuration](#configuration)
+  - [Initialization](#initialization)
+  - [Events](#events)
+    - [player_canplay](#player_canplay)
+    - [player_error](#player_error)
+    - [player_play](#player_play)
+    - [player_pause](#player_pause)
+    - [player_seek](#player_seek)
+    - [player_time_update](#player_time_update)
 
-You can find an example demo [here](demo/external-player.html) that
-shows how to implement such a player adapter and how to configure Peaks.js accordingly.
-
-## Configuration
-The configuration option `player` allows to define callback functions which will be used 
-
-1) to be invoked directly by the player api from outside (see [Player API](README.md#Player-API))
-2) to be invoked indirectly by interacting with the waveform view (i.e. seeking via mouse click or keyboard)
-
-The structure of the `player` config option is given below:
-```javascript
-var options = {
-  ...
-  player: {
-    init:           function(eventEmitter) {...},
-    destroy:        function() {...},
-    play:           function() {...},
-    pause:          function() {...},
-    isPlaying:      function() {..., return boolean},
-    isSeeking:      function() {..., return boolean},
-    getCurrentTime: function() {..., return number},
-    getDuration:    function() {..., return number},
-    seek:           function(time) {...},
-    playSegment:    function(segment) {...}
-  }
-}
-```
-The functional expectations for an external player implementation is summarized in the following table:
-
-|Method         |Parameter Type            | Return Type|Description|
-|---------------|--------------------------|------------|-----------|
-|init           |eventEmitter: eventEmitter|-          |Lifecycle method for initialization logic. This lifecycle hook is called during the internal construction of the player. See [Initialization](#Initialization) for further details.|
-|destroy        |-                         |-          |Lifecycle method for destroying logic. This lifecycle hook is called during the destroying of the player.|
-|play           |-                         |-          |Starts playback from current time.
-|pause          |-                         |-          |Pauses playback at current time.
-|isPlaying      |-                         |boolean    |Returns `true`, if player is currently playing. Returns `false` otherwise.
-|isSeeking      |-                         |boolean    |Returns `true`, if player is currently in seeking process. Returns `false` otherwise.
-|getCurrentTime |-                         |number     |Returns the current time of the player within the audio file in seconds. 
-|getDuration    |-                         |number     |Returns the complete duration of the audio file within the stream.
-|seek           |time: number              |           |Seeks to the given time in seconds.
-|playSegment    |segment: segment          |           |Starts playing from the start time of the given segment and stops and the endtime.
-
-## Initialization
-
-The communication between any audio player implementation and the waveform is done via events.
-Peaks.js internally communicates with player events and all custom player implementations need to 
-inform Peaks about updates/invocations by firing exactly those. 
-An example is the current playhead position. 
-Every implementation must ensure that it informs the waveform proactively about updates of the current time.
-
-The `init(player)` method should be used to setup this communication between player and waveform. 
-To this purpose the init callback function uses a reference to an event emitter object
-which exposes an `eventEmitter.emit(event, eventData)` function to fire events and specify event data.
-These player events are based on the [MediaEvents](https://html.spec.whatwg.org/#mediaevents).
-The following table depicts the available event API.
-
-|Player Event      |Event Data Type             |Description                                            |
-|------------------|----------------------------|-------------------------------------------------------|
-|player_canplay    |-                           |Informs that player is fully initialized and ready.    |
-|player_error      |error (error object)        |Informs that player is encountering an internal error. | 
-|player_pause      |number (current time in sec)|Informs that the playback is paused.                   |
-|player_play       |number (current time in sec)|Informs that the playback is resumed/started.          |
-|player_seek       |number (current time in sec)|Informs that a seek action has been started.           |
-|player_time_update|number (current time in sec)|Informs that the current playhead position has changed.|
-
-These events must be fired after the corresponding player action have been started. Otherwise Peaks.js will only be able to invoke the external player but not be able to visually reflect player state changes. 
-
-In the following example you see how the init method can be used to setup a connection 
-between Peaks.js and a [Tone.js](https://tonejs.github.io/) Player.
-```javascript
-const externalPlayer = new Tone.Player(audioBuffer)
-
-const player = {
-  eventEmitter: null,
-
-  init: function(eventEmitter) {
-    this.eventEmitter = eventEmitter;
-
-    externalPlayer.sync();
-    externalPlayer.start();
-
-    Tone.connectSeries(externalPlayer, Tone.Master);
-
-    eventEmitter.emit('player_canplay'); // Here Peaks.js gets informed that the player is ready
-
-    Tone.Transport.scheduleRepeat((time) => {
-      eventEmitter.emit('player_time_update', time); // Here Peaks.js gets informed that the playhead moved
-
-      if (this.getCurrentTime() >= this.getDuration()) {
-        Tone.Transport.stop();
-      }
-    }, 0.25);
-  },
-
-  play: function() {
-    Tone.Transport.start(
-      Tone.now(),
-      this.getCurrentTime()
-    );
-
-    this.eventEmitter.emit('player_play', this.getCurrentTime()); // Here Peaks.js gets informed that play has been triggered
-  },
-
-...
-
-var options = {
-  player: player,
-
-```
-
-
-# Waveform rendering
+## Introduction
 
 Peaks.js makes use of the [Konva.js](https://konvajs.org/) graphics library,
 and so we recommend becoming familiar with Konva. You may find the following tutorials helpful:
@@ -213,7 +136,7 @@ function createPointMarker(options) {
 
 Your custom point marker handle object must implement the `init` and
 `fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker methods](#marker-methods) section for
+`destroy`. Refer to the [Marker Methods](#marker-methods) section for
 details.
 
 ### `createSegmentMarker(options)`
@@ -235,7 +158,7 @@ The function should return an instance of an object as illustrated by the
 `CustomSegmentMarker` class below.
 
 You can use the `view` option to give the marker a different appearance or
-behaviour in the zoomview and overview waveform views. You can also return
+behavior in the zoomview and overview waveform views. You can also return
 `null` from this function if you do not want to display a segment marker handle.
 
 ```javascript
@@ -270,13 +193,13 @@ Your custom segment marker handle object must implement the `init` and
 `fitToView` methods. It may also optionally implement `timeUpdated` and
 `destroy`. Refer to the [Marker methods](#marker-methods) section for details.
 
-### Marker methods
+### Marker API
 
 Marker objects are constructed in two stages, firstly your code uses `new` to
 create the marker object, passing the supplied `options` to the constructor.
 Then, Peaks.js will call your `init()` method to complete the initialization.
 
-#### `constructor(options)`
+#### `marker.constructor(options)`
 
 The constructor typically just stores the `options` for later use.
 
@@ -286,7 +209,7 @@ constructor(options) {
 }
 ```
 
-#### `init(group)`
+#### `marker.init(group)`
 
 The `init` method should create the Konva objects needed to render the
 marker handle and add them to the supplied `group` object.
@@ -357,7 +280,7 @@ this._handle.on('mouseleave', () => {
 });
 ```
 
-#### `fitToView()`
+#### `marker.fitToView()`
 
 The `fitToView` method is called after the waveform view has been resized.
 This method should resize the marker using the available space.
@@ -372,7 +295,7 @@ fitToView() {
 }
 ```
 
-#### `timeUpdated(time)`
+#### `marker.timeUpdated(time)`
 
 The `timeUpdated` method is called when the marker's time position has changed.
 This is the marker's `time` attribute (for point markers), or `startTime` or
@@ -388,7 +311,7 @@ timeUpdated(time) {
 }
 ```
 
-#### `destroy()`
+#### `marker.destroy()`
 
 The `destroy` method is called when the marker is removed from the view.
 Any Konva objects added to the `group` in `init()` will be destroyed
@@ -460,4 +383,281 @@ const options = {
 Peaks.init(options, function(err, instance) {
   // Use the Peaks.js instance here
 });
+```
+
+## Media Playback
+
+Peaks.js default media player is based on the
+[HTMLMediaElement](https://html.spec.whatwg.org/multipage/media.html#media-elements).
+Peaks.js allows you to interface with external media player libraries. This is
+most useful for Web Audio based media players such as
+[Tone.js](https://tonejs.github.io/) or [Howler.js](https://howlerjs.com/).
+Players based on the `HTMLMediaElement` should work as-is without requiring you
+to customize Peaks.js.
+
+An external media player can be used by implementing the player interface described
+below.
+
+You can find a complete example [here](demo/external-player.html) that shows how
+to implement such a player, using [Tone.js](https://tonejs.github.io/).
+
+### Player Interface
+
+The `player` configuration option allows you to pass an object that will be
+invoked, either directly by the Peaks.js [Player API](README.md#player-api),
+or indirectly by interacting with the waveform view (e.g., seeking via mouse
+click or keyboard).
+
+The structure of the `player` interface is given below:
+
+```javascript
+const player = {
+  init:           function(eventEmitter) { ... },
+  destroy:        function() { ... },
+  play:           function() { ... },
+  pause:          function() { ... },
+  isPlaying:      function() { ..., return boolean; },
+  isSeeking:      function() { ..., return boolean; },
+  getCurrentTime: function() { ..., return number; },
+  getDuration:    function() { ..., return number; },
+  seek:           function(time) { ... },
+  playSegment:    function(segment) { ... }
+};
+
+const options = {
+  // Add other options, as needed.
+  player: player
+};
+
+Peaks.init(options, function(err, instance) {
+  // Use the Peaks.js instance here
+});
+```
+
+#### player.init(eventEmitter)
+
+Initializes the external media player. This method is called during Peaks.js
+initialization.
+
+The player implementation should store the `eventEmitter` for later use.
+See the [Events](#events) section for more details for how your custom player
+should use the `eventEmitter` to communicate with the `Peaks` instance.
+
+```javascript
+init(eventEmitter) {
+  this.eventEmitter = eventEmitter;
+  this.state = 'paused';
+  this.interval = null;
+
+  // Initialize the external player
+  this.externalPlayer = new MediaPlayer();
+
+  this.eventEmitter.emit('player_canplay');
+}
+```
+
+#### player.destroy()
+
+Releases resources used by the player.
+
+```javascript
+destroy() {
+  if (this.interval !== null) {
+    clearTimeout(this.interval);
+    this.interval = null;
+  }
+
+  // Release the external player
+  this.externalPlayer.destroy();
+  this.externalPlayer = null;
+}
+```
+
+#### player.play()
+
+Starts playback from the current playback position.
+
+This function may return a `Promise` which resolves when playback actually
+starts.
+
+A [`player_play`](#player_play) event should be emitted when playback starts.
+
+```javascript
+play() {
+  return this.externalPlayer.play().then(() => {
+    this.state = 'playing';
+    this.eventEmitter.emit('player_play', this.getCurrentTime());
+  });
+}
+```
+
+#### player.pause()
+
+Pauses media playback.
+
+A [`player_pause`](#player_pause) event should be emitted when playback becomes
+paused.
+
+```javascript
+pause() {
+  this.externalPlayer.pause().then(() => {
+    this.state = 'paused';
+    this.eventEmitter.emit('player_pause', this.getCurrentTime());
+  });
+}
+```
+
+#### player.isPlaying()
+
+Returns `true` if the player is currently playing, or `false` otherwise.
+
+```javascript
+pause() {
+  return this.state === 'playing';
+}
+```
+
+#### player.seek(time)
+
+Seeks to the given time in seconds.
+
+```javascript
+seek(time) {
+  this.previousState = this.state; // 'paused' or 'playing'
+  this.state = 'seeking';
+
+  this.externalPlayer.seek(time).then(() => {
+    this.state = this.previousState;
+    this.eventEmitter.emit('player_seek', this.getCurrentTime());
+  });
+}
+```
+
+#### player.isSeeking()
+
+Returns `true` if the player is currently seeking, or `false` otherwise.
+
+```javascript
+pause() {
+  return this.state === 'seeking';
+}
+```
+
+#### player.getCurrentTime()
+
+Returns the current media playback position, in seconds.
+
+```javascript
+getCurrentTime() {
+  return this.externalPlayer.currentTime;
+}
+```
+
+#### player.getDuration()
+
+Returns the total media duration, in seconds.
+
+```javascript
+getDuration() {
+  return this.externalPlayer.duration;
+}
+```
+
+#### player.playSegment(segment)
+
+Starts playing from the `startTime` of the given segment and stops at the `endTime`.
+
+```javascript
+playSegment(segment) {
+  this.externalPlayer.seek(segment.startTime).then(() => {
+    return this.externalPlayer.play();
+  })
+  .then(() => {
+    this.interval = setInterval(() => {
+      if (this.getCurrentTime() >= segment.endTime || this.state !== 'playing') {
+        clearTimeout(this.interval);
+        this.interval = null;
+        this.externalPlayer.pause();
+      }
+    }, 30);
+  });
+}
+```
+
+### Events
+
+Communication between the custom player and Peaks.js is done via events.
+Peaks.js uses these events to update its internal state, such as the
+location of the playhead position on screen. Your custom player should
+emit events to inform Peaks.js of state changes within the player.
+
+These player events are based on the
+[`HTMLMediaElement` events](https://html.spec.whatwg.org/#mediaevents).
+
+To enable Peak.js to correctly update its internal state and visually
+reflect player state changes, events should only be emitted after the
+corresponding player actions have been started.
+
+The following sections describe the events that custom players are
+expected to emit.
+
+#### `player_canplay`
+
+Notifies Peaks.js that media is ready to play.
+
+```javascript
+this.eventEmitter.emit('player_canplay');
+```
+
+#### `player_error`
+
+Notifies Peaks.js that an internal player error occurred, such as a failure to
+fetch the media data.
+
+The event data should be an `Error` object.
+
+```javascript
+this.eventEmitter.emit('player_error', new Error("Failed to start playback"));
+```
+
+#### `player_play`
+
+Notifies Peaks.js that media playback has started.
+
+The event data should be the current playback position, in seconds.
+
+```javascript
+this.eventEmitter.emit('player_play', this.getCurrentTime());
+```
+
+#### `player_pause`
+
+Notifies Peaks.js that media playback has stopped or been paused.
+
+The event data should be the current playback position, in seconds.
+
+```javascript
+this.eventEmitter.emit('player_pause', this.getCurrentTime());
+```
+
+#### `player_seek`
+
+Notifies Peaks.js that a seek operation has completed.
+
+The event data should be the current playback position, in seconds.
+
+```javascript
+this.eventEmitter.emit('player_seek', this.getCurrentTime());
+```
+
+#### `player_time_update`
+
+Notifies Peaks.js that the current playback position has changed. To mimic
+`HTMLMediaElement` behavior, this event should be emitted approximately every
+250 milliseconds. It should also be emitted after a successful seek operation.
+
+The event data should be the current playback position, in seconds.
+
+```javascript
+this.eventEmitter.emit('player_time_update', this.getCurrentTime());
 ```

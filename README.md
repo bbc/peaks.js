@@ -447,17 +447,18 @@ var options = {
 Peaks.js allows you to customize the appearance of the point and segment
 markers, by specifying the following configuration options: `createPointMarker`,
 `createSegmentMarker`, and `createSegmentLabel`. Please read
-[Customizing Peaks.js - Waveform Rendering](customizing.md#Waveform-Rendering) for more details.
-
+[Customizing Peaks.js](customizing.md) for more details.
 
 ## Player customization
 
-By default, Peaks.js supports audio playback by using the HTML5 Media element given with configuration option `mediaElement`. However, a custom audio player can also be combined with the waveform by defining a player adapter in configuration option `player`. Please read
-[Customizing Peaks.js - Audio Playback](customizing.md#Audio-Playback) for more details.
+By default, Peaks.js supports audio playback using the HTML `<audio>` or
+`<video>` element using the `mediaElement` configuration option. Peaks.js also
+allows you to use your own custom media player library, using the `player`
+option. Please read [Customizing Peaks.js](customizing.md) for more details.
 
 # API
 
-## Initialisation
+## Initialization
 
 The top level `Peaks` object exposes a factory function to create new `Peaks` instances.
 
