@@ -72,8 +72,7 @@ describe('Player', function() {
           isSeeking: sinon.spy(),
           getCurrentTime: sinon.spy(),
           getDuration: sinon.spy(),
-          seek: sinon.spy(),
-          playSegment: sinon.spy()
+          seek: sinon.spy()
         };
 
         expect(function() {
@@ -172,15 +171,18 @@ describe('Player', function() {
         expect(p.logger.calledOnce);
       });
 
-      it("should call the player's playSegment() method", function() {
+      it("should call the player's seek(), play() and pause() method", function() {
         var segment = { startTime: 10, endTime: 20, editable: true };
 
         p.player.playSegment(segment);
 
         expect(p.logger.notCalled);
 
-        expect(player.playSegment.calledOnce);
-        expect(player.playSegment).to.have.been.calledWith(segment);
+        expect(player.seek.calledOnce);
+        expect(player.seek).to.have.been.calledWith(segment.startTime);
+
+        expect(player.play.calledOnce);
+        expect(player.pause.calledOnce);
       });
     });
   });
