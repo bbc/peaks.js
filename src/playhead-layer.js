@@ -293,10 +293,10 @@ define([
 
       this._playheadText.setText(text);
     }
-    
+
     this._playheadLayer.draw();
   };
-  
+
   PlayheadLayer.prototype.destroy = function() {
     if (this._playheadLineAnimation) {
       this._playheadLineAnimation.stop();
