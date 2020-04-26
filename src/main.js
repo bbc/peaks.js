@@ -8,7 +8,7 @@
 
 define([
   'colors.css',
-  'eventemitter2',
+  'eventemitter3',
   './cue-emitter',
   './waveform-points',
   './waveform-segments',
@@ -54,7 +54,7 @@ define([
    */
 
   function Peaks() {
-    EventEmitter.call(this, { wildcard: true });
+    EventEmitter.call(this); // , { wildcard: true });
 
     this.options = {
 

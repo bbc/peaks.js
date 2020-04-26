@@ -73,7 +73,7 @@
   },
   "dependencies": {
     "colors.css": "~3.0.0",
-    "eventemitter2": "~6.3.1",
+    "eventemitter3": "~4.0.0",
     "konva": "~5.0.2",
     "waveform-data": "~3.3.1"
   }
