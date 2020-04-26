@@ -35,12 +35,12 @@ This document describes how to customize various aspects of the waveform renderi
   - [Configuration](#configuration)
   - [Initialization](#initialization)
   - [Events](#events)
-    - [player_canplay](#player_canplay)
-    - [player_error](#player_error)
-    - [player_play](#player_play)
-    - [player_pause](#player_pause)
-    - [player_seek](#player_seek)
-    - [player_time_update](#player_time_update)
+    - [player.canplay](#playercanplay-event)
+    - [player.error](#playererror-event)
+    - [player.play](#playerplay-event)
+    - [player.pause](#playerpause-event)
+    - [player.seeked](#playerseeked-event)
+    - [player.timeupdate](#playertimeupdate-event)
 
 ## Introduction
 
@@ -450,7 +450,7 @@ init(eventEmitter) {
   // Initialize the external player
   this.externalPlayer = new MediaPlayer();
 
-  this.eventEmitter.emit('player_canplay');
+  this.eventEmitter.emit('player.canplay');
 }
 ```
 
@@ -478,13 +478,13 @@ Starts playback from the current playback position.
 This function may return a `Promise` which resolves when playback actually
 starts.
 
-A [`player_play`](#player_play) event should be emitted when playback starts.
+A [`player.play`](#playerplay-event) event should be emitted when playback starts.
 
 ```javascript
 play() {
   return this.externalPlayer.play().then(() => {
     this.state = 'playing';
-    this.eventEmitter.emit('player_play', this.getCurrentTime());
+    this.eventEmitter.emit('player.play', this.getCurrentTime());
   });
 }
 ```
@@ -493,14 +493,14 @@ play() {
 
 Pauses media playback.
 
-A [`player_pause`](#player_pause) event should be emitted when playback becomes
+A [`player.pause`](#playerpause-event) event should be emitted when playback becomes
 paused.
 
 ```javascript
 pause() {
   this.externalPlayer.pause().then(() => {
     this.state = 'paused';
-    this.eventEmitter.emit('player_pause', this.getCurrentTime());
+    this.eventEmitter.emit('player.pause', this.getCurrentTime());
   });
 }
 ```
@@ -516,7 +516,7 @@ seek(time) {
 
   this.externalPlayer.seek(time).then(() => {
     this.state = this.previousState;
-    this.eventEmitter.emit('player_seek', this.getCurrentTime());
+    this.eventEmitter.emit('player.seeked', this.getCurrentTime());
   });
 }
 ```
@@ -578,15 +578,15 @@ corresponding player actions have been started.
 The following sections describe the events that custom players are
 expected to emit.
 
-#### `player_canplay`
+#### `player.canplay` event
 
 Notifies Peaks.js that media is ready to play.
 
 ```javascript
-this.eventEmitter.emit('player_canplay');
+this.eventEmitter.emit('player.canplay');
 ```
 
-#### `player_error`
+#### `player.error` event
 
 Notifies Peaks.js that an internal player error occurred, such as a failure to
 fetch the media data.
@@ -594,40 +594,40 @@ fetch the media data.
 The event data should be an `Error` object.
 
 ```javascript
-this.eventEmitter.emit('player_error', new Error("Failed to start playback"));
+this.eventEmitter.emit('player.error', new Error("Failed to start playback"));
 ```
 
-#### `player_play`
+#### `player.play` event
 
 Notifies Peaks.js that media playback has started.
 
 The event data should be the current playback position, in seconds.
 
 ```javascript
-this.eventEmitter.emit('player_play', this.getCurrentTime());
+this.eventEmitter.emit('player.play', this.getCurrentTime());
 ```
 
-#### `player_pause`
+#### `player.pause` event
 
 Notifies Peaks.js that media playback has stopped or been paused.
 
 The event data should be the current playback position, in seconds.
 
 ```javascript
-this.eventEmitter.emit('player_pause', this.getCurrentTime());
+this.eventEmitter.emit('player.pause', this.getCurrentTime());
 ```
 
-#### `player_seek`
+#### `player.seeked` event
 
 Notifies Peaks.js that a seek operation has completed.
 
 The event data should be the current playback position, in seconds.
 
 ```javascript
-this.eventEmitter.emit('player_seek', this.getCurrentTime());
+this.eventEmitter.emit('player.seeked', this.getCurrentTime());
 ```
 
-#### `player_time_update`
+#### `player.timeupdate` event
 
 Notifies Peaks.js that the current playback position has changed. To mimic
 `HTMLMediaElement` behavior, this event should be emitted approximately every
@@ -636,5 +636,5 @@ Notifies Peaks.js that the current playback position has changed. To mimic
 The event data should be the current playback position, in seconds.
 
 ```javascript
-this.eventEmitter.emit('player_time_update', this.getCurrentTime());
+this.eventEmitter.emit('player.timeupdate', this.getCurrentTime());
 ```

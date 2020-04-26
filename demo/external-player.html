@@ -160,11 +160,11 @@
 
                 Tone.connectSeries(this.externalPlayer, Tone.Master);
 
-                eventEmitter.emit('player_canplay');
+                eventEmitter.emit('player.canplay');
 
                 Tone.Transport.scheduleRepeat(() => {
                   var time = this.getCurrentTime();
-                  eventEmitter.emit('player_time_update', time);
+                  eventEmitter.emit('player.timeupdate', time);
 
                   if (time >= this.getDuration()) {
                     Tone.Transport.stop();
@@ -184,13 +184,13 @@
                   this.getCurrentTime()
                 );
 
-                this.eventEmitter.emit('player_play', this.getCurrentTime());
+                this.eventEmitter.emit('player.play', this.getCurrentTime());
               },
 
               pause: function() {
                 Tone.Transport.pause();
 
-                this.eventEmitter.emit('player_pause', this.getCurrentTime());
+                this.eventEmitter.emit('player.pause', this.getCurrentTime());
               },
 
               isPlaying: function() {
@@ -200,8 +200,8 @@
               seek: function(time) {
                 Tone.Transport.seconds = time;
 
-                this.eventEmitter.emit('player_seek', this.getCurrentTime());
-                this.eventEmitter.emit('player_time_update', this.getCurrentTime());
+                this.eventEmitter.emit('player.seeked', this.getCurrentTime());
+                this.eventEmitter.emit('player.timeupdate', this.getCurrentTime());
               },
 
               isSeeking: function() {

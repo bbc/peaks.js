@@ -311,7 +311,7 @@ define([
       );
     }
     else {
-      self._peaks.once('player_canplay', function() {
+      self._peaks.once('player.canplay', function() {
         self._requestAudioAndBuildWaveformData(
           self._peaks.options.mediaElement.currentSrc,
           webAudioOptions,

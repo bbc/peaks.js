@@ -563,8 +563,8 @@ define([
     }
 
     function reset() {
-      self.removeAllListeners('player_canplay');
-      self.removeAllListeners('player_error');
+      self.removeAllListeners('player.canplay');
+      self.removeAllListeners('player.error');
     }
 
     function playerErrorHandler(err) {
@@ -605,8 +605,8 @@ define([
       });
     }
 
-    self.once('player_canplay', playerCanPlayHandler);
-    self.once('player_error', playerErrorHandler);
+    self.once('player.canplay', playerCanPlayHandler);
+    self.once('player.error', playerErrorHandler);
 
     self.options.mediaElement.setAttribute('src', options.mediaUrl);
   };

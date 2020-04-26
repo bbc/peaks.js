@@ -219,7 +219,7 @@ describe('Player', function() {
 
     describe('play', function() {
       it('should trigger mediaelement play event', function(done) {
-        p.on('player_play', function(currentTime) {
+        p.on('player.play', function(currentTime) {
           expect(currentTime).to.equal(0);
           done();
         });
@@ -242,7 +242,7 @@ describe('Player', function() {
       });
 
       it('should return an updated time if it has been modified through the audio element', function(done) {
-        p.on('player_seek', function(currentTime) {
+        p.on('player.seeked', function(currentTime) {
           expect(currentTime).to.equal(p.player.getCurrentTime());
 
           var diff = Math.abs(currentTime - newTime);
@@ -302,11 +302,11 @@ describe('Player', function() {
 
         p.player.playSegment({ startTime: expectedStart, endTime: expectedEnd });
 
-        p.on('player_play', function(currentTime) {
+        p.on('player.play', function(currentTime) {
           expect(currentTime).to.equal(expectedStart);
         });
 
-        p.on('player_pause',function() {
+        p.on('player.pause', function() {
           var diff = Math.abs(p.player.getCurrentTime() - expectedEnd);
           expect(diff).to.be.lessThan(0.2);
           done();

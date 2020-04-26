@@ -102,7 +102,7 @@ define([
     this._updateCues = this._updateCues.bind(this);
     // Event handlers:
     this._onPlay = this.onPlay.bind(this);
-    this._onSeek = this.onSeek.bind(this);
+    this._onSeeked = this.onSeeked.bind(this);
     this._onTimeUpdate = this.onTimeUpdate.bind(this);
     this._onAnimationFrame = this.onAnimationFrame.bind(this);
     this._rAFHandle = null;
@@ -230,7 +230,7 @@ define([
     this._rAFHandle = requestAnimationFrame(this._onAnimationFrame);
   };
 
-  CueEmitter.prototype.onSeek = function(time) {
+  CueEmitter.prototype.onSeeked = function(time) {
     this._previousTime = time;
 
     this._updateActiveSegments(time);
@@ -290,9 +290,9 @@ define([
   );
 
   CueEmitter.prototype._attachEventHandlers = function() {
-    this._peaks.on('player_time_update', this._onTimeUpdate);
-    this._peaks.on('player_play', this._onPlay);
-    this._peaks.on('player_seek', this._onSeek);
+    this._peaks.on('player.timeupdate', this._onTimeUpdate);
+    this._peaks.on('player.play', this._onPlay);
+    this._peaks.on('player.seeked', this._onSeeked);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
       this._peaks.on(triggerUpdateOn[i], this._updateCues);
@@ -302,9 +302,9 @@ define([
   };
 
   CueEmitter.prototype._detachEventHandlers = function() {
-    this._peaks.off('player_time_update', this._onTimeUpdate);
-    this._peaks.off('player_play', this._onPlay);
-    this._peaks.off('player_seek', this._onSeek);
+    this._peaks.off('player.timeupdate', this._onTimeUpdate);
+    this._peaks.off('player.play', this._onPlay);
+    this._peaks.off('player.seeked', this._onSeeked);
 
     for (var i = 0; i < triggerUpdateOn.length; i++) {
       this._peaks.off(triggerUpdateOn[i], this._updateCues);

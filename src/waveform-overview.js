@@ -54,9 +54,9 @@ define([
     self._onWindowResize = self._onWindowResize.bind(this);
 
     // Register event handlers
-    peaks.on('player_time_update', self._onTimeUpdate);
-    peaks.on('player_play', self._onPlay);
-    peaks.on('player_pause', self._onPause);
+    peaks.on('player.timeupdate', self._onTimeUpdate);
+    peaks.on('player.play', self._onPlay);
+    peaks.on('player.pause', self._onPause);
     peaks.on('zoomview.displaying', self._onZoomviewDisplaying);
     peaks.on('window_resize', self._onWindowResize);
 
@@ -152,7 +152,7 @@ define([
         }
 
         // Update the playhead position. This gives a smoother visual update
-        // than if we only use the player_time_update event.
+        // than if we only use the player.timeupdate event.
         self._playheadLayer.updatePlayheadTime(time);
 
         self._peaks.player.seek(time);
@@ -430,9 +430,9 @@ define([
       this._resizeTimeoutId = null;
     }
 
-    this._peaks.off('player_play', this._onPlay);
-    this._peaks.off('player_pause', this._onPause);
-    this._peaks.off('player_time_update', this._onTimeUpdate);
+    this._peaks.off('player.play', this._onPlay);
+    this._peaks.off('player.pause', this._onPause);
+    this._peaks.off('player.timeupdate', this._onTimeUpdate);
     this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
     this._peaks.off('window_resize', this._onWindowResize);
 

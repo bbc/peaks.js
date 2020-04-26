@@ -48,29 +48,29 @@ define([
       self._isPlaying = false;
 
       self._addMediaListener('timeupdate', function() {
-        self._peaks.emit('player_time_update', self.getCurrentTime());
+        self._peaks.emit('player.timeupdate', self.getCurrentTime());
       });
 
       self._addMediaListener('play', function() {
         self._isPlaying = true;
-        self._peaks.emit('player_play', self.getCurrentTime());
+        self._peaks.emit('player.play', self.getCurrentTime());
       });
 
       self._addMediaListener('pause', function() {
         self._isPlaying = false;
-        self._peaks.emit('player_pause', self.getCurrentTime());
+        self._peaks.emit('player.pause', self.getCurrentTime());
       });
 
       self._addMediaListener('seeked', function() {
-        self._peaks.emit('player_seek', self.getCurrentTime());
+        self._peaks.emit('player.seeked', self.getCurrentTime());
       });
 
       self._addMediaListener('canplay', function() {
-        self._peaks.emit('player_canplay');
+        self._peaks.emit('player.canplay');
       });
 
       self._addMediaListener('error', function(event) {
-        self._peaks.emit('player_error', event.target.error);
+        self._peaks.emit('player.error', event.target.error);
       });
 
       self._interval = null;

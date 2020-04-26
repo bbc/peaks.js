@@ -187,9 +187,9 @@ describe('CueEmitter', function() {
 
   describe('events', function() {
     it('should update internal previous time when seeking', function() {
-      p.emit('player_time_update', 1.0);
+      p.emit('player.timeupdate', 1.0);
       expect(cueEmitter._previousTime).equals(1.0, 'did not move previous time');
-      p.emit('player_time_update', 2.0);
+      p.emit('player.timeupdate', 2.0);
       expect(cueEmitter._previousTime).equals(2.0, 'did not move previous time');
     });
 

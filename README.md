@@ -1074,13 +1074,24 @@ function dblClickHandler(time) {
 instance.on('zoomview.dblclick', dblClickHandler);
 ```
 
-The following sections describe the availabe events.
+The following sections describe the available events.
 
-#### Media / User interactions
+#### Initialization
 
 | Event name    | Arguments |
 | ------------- | --------- |
 | `peaks.ready` | (none)    |
+
+#### Player
+
+| Event name          | Arguments     |
+| ------------------- | ------------- |
+| `player.canplay`    | (none)        |
+| `player.error`      | `Error error` |
+| `player.pause`      | `Number time` |
+| `player.play`       | `Number time` |
+| `player.seeked`     | `Number time` |
+| `player.timeupdate` | `Number time` |
 
 #### Views
 

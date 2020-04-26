@@ -59,9 +59,9 @@ define([
     self._onKeyboardShiftRight = self._onKeyboardShiftRight.bind(self);
 
     // Register event handlers
-    self._peaks.on('player_time_update', self._onTimeUpdate);
-    self._peaks.on('player_play', self._onPlay);
-    self._peaks.on('player_pause', self._onPause);
+    self._peaks.on('player.timeupdate', self._onTimeUpdate);
+    self._peaks.on('player.play', self._onPlay);
+    self._peaks.on('player.pause', self._onPause);
     self._peaks.on('window_resize', self._onWindowResize);
     self._peaks.on('keyboard.left', self._onKeyboardLeft);
     self._peaks.on('keyboard.right', self._onKeyboardRight);
@@ -679,9 +679,9 @@ define([
     }
 
     // Unregister event handlers
-    this._peaks.off('player_time_update', this._onTimeUpdate);
-    this._peaks.off('player_play', this._onPlay);
-    this._peaks.off('player_pause', this._onPause);
+    this._peaks.off('player.timeupdate', this._onTimeUpdate);
+    this._peaks.off('player.play', this._onPlay);
+    this._peaks.off('player.pause', this._onPause);
     this._peaks.off('window_resize', this._onWindowResize);
     this._peaks.off('keyboard.left', this._onKeyboardLeft);
     this._peaks.off('keyboard.right', this._onKeyboardRight);

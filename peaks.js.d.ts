@@ -250,7 +250,12 @@ declare module 'peaks.js' {
     'overview.dblclick': (time: number) => void;
     'zoomview.dblclick': (time: number) => void;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
-    player_seek: (time: number) => void;
+    'player.canplay': () => void;
+    'player.error': (error: any) => void;
+    'player.pause': (time: number) => void;
+    'player.play': (time: number) => void;
+    'player.seeked': (time: number) => void;
+    'player.timeupdate': (time: number) => void;
   }
 
   interface PlayerAdapter {
@@ -270,12 +275,12 @@ declare module 'peaks.js' {
   }
 
   interface PlayerEvents {
-    player_canplay: () => void;
-    player_error: (error: any) => void;
-    player_pause: (time: number) => void;
-    player_play: (time: number) => void;
-    player_seek: (time: number) => void;
-    player_time_update: (time: number) => void;
+    'player.canplay': () => void;
+    'player.error': (error: any) => void;
+    'player.pause': (time: number) => void;
+    'player.play': (time: number) => void;
+    'player.seeked': (time: number) => void;
+    'player.timeupdate': (time: number) => void;
   }
 
   type EventData<T> = [T] extends [(...eventData: infer U) => any] ? U : [T] extends [void] ? [] : [T];
