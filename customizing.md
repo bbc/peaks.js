@@ -4,7 +4,10 @@ This document describes how to customize various aspects of the waveform renderi
 
 # Audio Playback
 
-Peaks.js default internal audio player is based on the [HTMLAudioElement](https://html.spec.whatwg.org/multipage/media.html#the-audio-element). But Peaks.js also allows customization in case an audio player of an external library or a custom written audio player should be used. An external audio player can be used by implementing an audio player adapter interface.
+Peaks.js default internal audio player is based on the [HTMLAudioElement](https://html.spec.whatwg.org/multipage/media.html#the-audio-element).
+But Peaks.js also allows customization in case an audio player of an external library or a custom written audio player should be used.
+An external audio player can be used by implementing an audio player adapter interface.
+Peaks can be informed about state changes of the player via an event API.
 
 You can find an example demo [here](demo/external-player.html) that
 shows how to implement such a player adapter and how to configure Peaks.js accordingly.
@@ -20,7 +23,7 @@ The structure of the `player` config option is given below:
 var options = {
   ...
   player: {
-    init:           function(player) {...},
+    init:           function(eventEmitter) {...},
     destroy:        function() {...},
     play:           function() {...},
     pause:          function() {...},
@@ -35,44 +38,85 @@ var options = {
 ```
 The functional expectations for an external player implementation is summarized in the following table:
 
-|Method         |Parameter Type       | Return Type|Description|
-|---------------|----------------------|-----------|-----------|
-|init           |player: internalPlayer|-          |Lifecycle method for initialization logic. This lifecycle hook is called during the internal construction of the player. See [Initialization](#Initialization) for further details.|
-|destroy        |-                     |-          |Lifecycle method for destroying logic. This lifecycle hook is called during the destroying of the player.|
-|play           |-                     |-          |Starts playback from current time.
-|pause          |-                     |-          |Pauses playback at current time.
-|isPlaying      |-                     |boolean    |Returns `true`, if player is currently playing. Returns `false` otherwise.
-|isSeeking      |-                     |boolean    |Returns `true`, if player is currently in seeking process. Returns `false` otherwise.
-|getCurrentTime |-                     |number     |Returns the current time of the player within the audio file in seconds. 
-|getDuration    |-                     |number     |Returns the complete duration of the audio file within the stream.
-|seek           |time: number          |           |Seeks to the given time in seconds.
-|playSegment    |segment: segment      |           |Starts playing from the start time of the given segment and stops and the endtime.
+|Method         |Parameter Type            | Return Type|Description|
+|---------------|--------------------------|------------|-----------|
+|init           |eventEmitter: eventEmitter|-          |Lifecycle method for initialization logic. This lifecycle hook is called during the internal construction of the player. See [Initialization](#Initialization) for further details.|
+|destroy        |-                         |-          |Lifecycle method for destroying logic. This lifecycle hook is called during the destroying of the player.|
+|play           |-                         |-          |Starts playback from current time.
+|pause          |-                         |-          |Pauses playback at current time.
+|isPlaying      |-                         |boolean    |Returns `true`, if player is currently playing. Returns `false` otherwise.
+|isSeeking      |-                         |boolean    |Returns `true`, if player is currently in seeking process. Returns `false` otherwise.
+|getCurrentTime |-                         |number     |Returns the current time of the player within the audio file in seconds. 
+|getDuration    |-                         |number     |Returns the complete duration of the audio file within the stream.
+|seek           |time: number              |           |Seeks to the given time in seconds.
+|playSegment    |segment: segment          |           |Starts playing from the start time of the given segment and stops and the endtime.
 
 ## Initialization
 
-A major communication item between any audio player implementation and the waveform is the current playhead position. Every implementation must ensure that it informs the waveform proactively about updates of the current time.
+The communication between any audio player implementation and the waveform is done via events.
+Peaks.js internally communicates with player events and all custom player implementations need to 
+inform Peaks about updates/invocations by firing exactly those. 
+An example is the current playhead position. 
+Every implementation must ensure that it informs the waveform proactively about updates of the current time.
 
 The `init(player)` method should be used to setup this communication between player and waveform. 
-To this purpose the init callback function uses a reference to a player object which exposes the method `_timeUpdate()`, which internally informs Peaks.js that the current player time has changed.
+To this purpose the init callback function uses a reference to an event emitter object
+which exposes an `eventEmitter.emit(event, eventData)` function to fire events and specify event data.
+These player events are based on the [MediaEvents](https://html.spec.whatwg.org/#mediaevents).
+The following table depicts the available event API.
 
+|Player Event      |Event Data Type             |Description                                            |
+|------------------|----------------------------|-------------------------------------------------------|
+|player_canplay    |-                           |Informs that player is fully initialized and ready.    |
+|player_error      |error (error object)        |Informs that player is encountering an internal error. | 
+|player_pause      |number (current time in sec)|Informs that the playback is paused.                   |
+|player_play       |number (current time in sec)|Informs that the playback is resumed/started.          |
+|player_seek       |number (current time in sec)|Informs that a seek action has been started.           |
+|player_time_update|number (current time in sec)|Informs that the current playhead position has changed.|
 
-In the following example you see how the init method can be used to setup a connection between Peaks.js and a [Tone.js](https://tonejs.github.io/) Player.
+These events must be fired after the corresponding player action have been started. Otherwise Peaks.js will only be able to invoke the external player but not be able to visually reflect player state changes. 
+
+In the following example you see how the init method can be used to setup a connection 
+between Peaks.js and a [Tone.js](https://tonejs.github.io/) Player.
 ```javascript
-var externalPlayer = new Tone.Player(audioBuffer)
+const externalPlayer = new Tone.Player(audioBuffer)
+
+const player = {
+  eventEmitter: null,
+
+  init: function(eventEmitter) {
+    this.eventEmitter = eventEmitter;
+
+    externalPlayer.sync();
+    externalPlayer.start();
+
+    Tone.connectSeries(externalPlayer, Tone.Master);
+
+    eventEmitter.emit('player_canplay'); // Here Peaks.js gets informed that the player is ready
+
+    Tone.Transport.scheduleRepeat((time) => {
+      eventEmitter.emit('player_time_update', time); // Here Peaks.js gets informed that the playhead moved
+
+      if (this.getCurrentTime() >= this.getDuration()) {
+        Tone.Transport.stop();
+      }
+    }, 0.25);
+  },
+
+  play: function() {
+    Tone.Transport.start(
+      Tone.now(),
+      this.getCurrentTime()
+    );
+
+    this.eventEmitter.emit('player_play', this.getCurrentTime()); // Here Peaks.js gets informed that play has been triggered
+  },
+
+...
 
 var options = {
-  player: {
-    init: function(internalPlayer) {
-            externalPlayer.sync();
-            externalPlayer.start();
+  player: player,
 
-            Tone.connectSeries(externalPlayer,Tone.Master);
-
-            Tone.Transport.scheduleRepeat(time => {
-              internalPlayer._timeUpdate(); // Exactly here Peaks.js gets informed that the playhead moved
-            },0.03);
-          }
-}
 ```
 
 
