@@ -255,7 +255,7 @@ declare module 'peaks.js' {
   }
 
   interface PlayerAdapter {
-    init: (player: InternalPlayer) => void;
+    init: (eventEmitter: EventEmitterForPlayerEvents) => void;
     destroy: () => void;
     play: () => void;
     pause: () => void;
@@ -267,9 +267,20 @@ declare module 'peaks.js' {
     playSegment: (segment: Segment) => void;
   }
 
-  interface InternalPlayer extends PlayerAdapter {
-    _timeUpdate: () => void;
+  interface EventEmitterForPlayerEvents {
+    emit<E extends keyof PlayerEvents>(event: E, ...eventData: EventData<PlayerEvents[E]>): void;
   }
+
+  interface PlayerEvents {
+    player_canplay: () => void;
+    player_error: (error: any) => void;
+    player_pause: (time: number) => void;
+    player_play: (time: number) => void;
+    player_seek: (time: number) => void;
+    player_time_update: (time: number) => void;
+  }
+
+  type EventData<T> = [T] extends [(...eventData: infer U) => any] ? U : [T] extends [void] ? [] : [T];
 
   interface WaveformView {
     setAmplitudeScale: (scale: number) => void;
