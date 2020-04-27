@@ -1,5 +1,19 @@
 # Peaks.js
 
+## 0.21.0 (2020/04/27)
+
+ * (#314) Added `player` option to allow use of external media player libraries.
+   See customizing.md for details (@tscz)
+
+ * (#104) Fixed initialization error for short media files, where the overview
+   waveform is shorter than the container width (@chrisn)
+
+ * (#31) Added player events to the public API, and renamed events for
+   consistency (e.g., `player_seek` to `player.seeked`). See README.md for
+   the new event names (@chrisn)
+
+ * Replaced EventEmitter2 with EventEmitter3, to reduce file size (@chrisn)
+
 ## 0.20.0 (2020/04/25)
 
  * (#319) Added `timeLabelPrecision` option and `view.setTimeLabelPrecision()`
