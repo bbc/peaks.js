@@ -190,11 +190,12 @@ define([
         var playheadTextWidth = this._playheadText.getTextWidth();
 
         this._playheadText.setText(text);
-        
-        if(playheadTextWidth + playheadX > width - 2){
-          this._playheadText.setAttr('x',-playheadTextWidth - 2);
-        }else if(playheadTextWidth + playheadX < width){
-          this._playheadText.setAttr('x',2);
+
+        if (playheadTextWidth + playheadX > width - 2) {
+          this._playheadText.setAttr('x', -playheadTextWidth - 2);
+        }
+        else if (playheadTextWidth + playheadX < width) {
+          this._playheadText.setAttr('x', 2);
         }
       }
 
