@@ -44,7 +44,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Marker customization](#marker-customization)
   - [Player customization](#player-customization)
 - [API](#api)
-  - [Initalisation](#initialisation)
+  - [Initialisation](#initialisation)
     - [Peaks.init()](#peaksinitoptions-callback)
     - [instance.setSource()](#instancesetsourceoptions-callback)
   - [Player API](#player-api)
@@ -942,7 +942,7 @@ const segment = instance.segments.getSegments()[0]
 
 segment.update({ startTime: 7 });
 segment.update({ startTime: 7, labelText: "new label text" });
-segment.udpate({ startTime: 7, endTime: 9, labelText: 'new label text' });
+segment.update({ startTime: 7, endTime: 9, labelText: 'new label text' });
 // etc.
 ```
 
