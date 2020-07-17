@@ -1,0 +1,8 @@
+* text eol=lf
+
+*.dat binary
+*.ico binary
+*.ogg binary
+*.mp3 binary
+*.png binary
+*.wav binary
