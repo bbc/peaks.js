@@ -34,13 +34,13 @@
   "scripts": {
     "prebuild": "npm run lint",
     "build": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
-    "postbuild": "cp peaks.js demo && cp peaks.js.map demo",
+    "postbuild": "copyfiles peaks.js peaks.js.map demo",
     "doc": "jsdoc --private --destination docs --recurse src",
     "lint": "eslint src/*.js test/**/*.js test/*.js karma.conf.js",
     "pretest": "npm run build",
     "test": "karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
-    "copy-demo-files": "cp test_data/sample.mp3 demo && cp test_data/07023003.mp3 demo && cp test_data/07023003-2channel.dat demo",
+    "copy-demo-files": "copyfiles test_data/sample.mp3 test_data/07023003.mp3 test_data/07023003-2channel.dat demo",
     "prestart": "npm run build && npm run copy-demo-files",
     "start": "serve --listen 8080 --no-clipboard demo",
     "prepack": "npm run build"
@@ -49,6 +49,7 @@
     "browserify": "~16.5.1",
     "browserify-istanbul": "~3.0.1",
     "chai": "~4.2.0",
+    "copyfiles": "~2.3.0",
     "deamdify": "~0.3.0",
     "derequire": "~2.1.1",
     "eslint": "~7.2.0",
