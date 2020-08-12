@@ -53,7 +53,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [instance.player.getCurrentTime()](#instanceplayergetcurrenttime)
     - [instance.player.getDuration()](#instanceplayergetduration)
     - [instance.player.seek()](#instanceplayerseektime)
-    - [instance.player.playSegment()](#instanceplayerplaysegmentsegment)
+    - [instance.player.playSegment()](#instanceplayerplaysegmentsegment-loop)
   - [Views API](#views-api)
     - [instance.views.getView()](#instanceviewsgetviewname)
     - [instance.views.createZoomview()](#instanceviewscreatezoomviewcontainer)
@@ -578,9 +578,9 @@ instance.player.seek(5.85);
 const time = instance.player.getCurrentTime();
 ```
 
-### `instance.player.playSegment(segment)`
+### `instance.player.playSegment(segment[, loop])`
 
-Plays a given segment of the media.
+Plays a given segment of the media, with optional looped playback.
 
 ```js
 const segment = instance.segments.add({
@@ -589,8 +589,11 @@ const segment = instance.segments.add({
   editable: true
 });
 
-// Plays from 5.0 to 15.0, then stops.
+// Plays from 5.0 to 15.0 then stops.
 instance.player.playSegment(segment);
+
+// Plays from 5.0 to 15.0 and loops.
+instance.player.playSegment(segment, true);
 ```
 
 ## Views API

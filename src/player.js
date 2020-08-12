@@ -160,9 +160,10 @@ define([
      * Plays the given segment.
      *
      * @param {Segment} segment The segment denoting the time region to play.
+     * @param {Boolean} loop If true, playback is looped.
      */
 
-    Player.prototype.playSegment = function(segment) {
+    Player.prototype.playSegment = function(segment, loop) {
       var self = this;
 
       if (!segment ||
@@ -185,9 +186,14 @@ define([
       // often enough.
       self._interval = setInterval(function() {
         if (self.getCurrentTime() >= segment.endTime || !self.isPlaying()) {
-          clearTimeout(self._interval);
-          self._interval = null;
-          self.pause();
+          if (loop) {
+            self.seek(segment.startTime);
+          }
+          else {
+            clearTimeout(self._interval);
+            self._interval = null;
+            self.pause();
+          }
         }
       }, 30);
     };

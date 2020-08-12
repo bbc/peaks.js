@@ -196,6 +196,7 @@
               '<td><input data-action="update-segment-start-time" type="number" value="' + segment.startTime + '" data-id="' + segment.id + '"/></td>' +
               '<td><input data-action="update-segment-end-time" type="number" value="' + segment.endTime + '" data-id="' + segment.id + '"/></td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
+              '<td>' + '<a href="#' + segment.id + '" data-action="loop-segment" data-id="' + segment.id + '">Loop</a>' + '</td>' +
               '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
               '</tr>';
 
@@ -408,6 +409,10 @@
             if (action === 'play-segment') {
               var segment = peaksInstance.segments.getSegment(id);
               peaksInstance.player.playSegment(segment);
+            }
+            else if (action === 'loop-segment') {
+              var segment = peaksInstance.segments.getSegment(id);
+              peaksInstance.player.playSegment(segment, true);
             }
             else if (action === 'remove-point') {
               peaksInstance.points.removeById(id);
