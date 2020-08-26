@@ -22,7 +22,7 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 * Please follow the existing coding conventions, and ensure that there are no linting errors (`npm run lint`). The eslint config doesn't specify all our coding conventions, so please try to be consistent. (We realise there are some inconsistencies in the codebase already, we're slowly working to resolve them.)
 
-* For commit messages, please follow [these guidelines](https://chris.beams.io/posts/git-commit/), although we're not fussy about use of imperative mood vs past tense. In particular, avoid commit messages that include [Angular-style metadata](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
+* For commit messages, please follow [these guidelines](https://chris.beams.io/posts/git-commit/), although we're not fussy about use of imperative mood vs past tense. In particular, avoid commit messages that include [Angular-style metadata](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit-message-header).
 
 * Please add test cases for your feature, and ensure all tests are passing (`npm run test`).
 
