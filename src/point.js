@@ -75,10 +75,6 @@ define([
       enumerable: true,
       get: function() {
         return this._time;
-      },
-
-      set: function(time) {
-        this._time = time;
       }
     },
     labelText: {
