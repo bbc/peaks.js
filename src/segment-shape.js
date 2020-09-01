@@ -190,7 +190,7 @@ define([
                               startMarkerX +
                               this._startMarker.getWidth();
 
-      this._segment.startTime = this._view.pixelsToTime(startMarkerOffset);
+      this._segment._setStartTime(this._view.pixelsToTime(startMarkerOffset));
 
       segmentMarker.timeUpdated(this._segment.startTime);
     }
@@ -198,7 +198,7 @@ define([
     if (!startMarker && endMarkerX < width) {
       var endMarkerOffset = frameOffset + endMarkerX;
 
-      this._segment.endTime = this._view.pixelsToTime(endMarkerOffset);
+      this._segment._setEndTime(this._view.pixelsToTime(endMarkerOffset));
 
       segmentMarker.timeUpdated(this._segment.endTime);
     }

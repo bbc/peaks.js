@@ -11,6 +11,8 @@ define([
 ], function(Utils) {
   'use strict';
 
+  var pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
+
   function validatePoint(options, context) {
     if (!Utils.isValidTime(options.time)) {
       // eslint-disable-next-line max-len
@@ -19,7 +21,7 @@ define([
 
     if (options.time < 0) {
       // eslint-disable-next-line max-len
-      throw new TypeError('peaks.points.' + context + ': time should not be negative');
+      throw new RangeError('peaks.points.' + context + ': time should not be negative');
     }
 
     if (Utils.isNullOrUndefined(options.labelText)) {
@@ -28,6 +30,10 @@ define([
     }
     else if (!Utils.isString(options.labelText)) {
       throw new TypeError('peaks.points.' + context + ': labelText must be a string');
+    }
+
+    if (!Utils.isBoolean(options.editable)) {
+      throw new TypeError('peaks.points.' + context + ': editable must be true or false');
     }
   }
 
@@ -44,25 +50,29 @@ define([
    * @param {String} color Point marker color.
    * @param {Boolean} editable If <code>true</code> the segment start and
    *   end times can be adjusted via the user interface.
+   * @param {*} data Optional application specific data.
    */
 
-  function Point(peaks, id, time, labelText, color, editable) {
-    var opts = {
-      time:      time,
-      labelText: labelText,
-      color:     color,
-      editable:  editable
-    };
+  function Point(options) {
+    validatePoint(options, 'add()');
 
-    validatePoint(opts, 'add()');
+    this._peaks     = options.peaks;
+    this._id        = options.id;
+    this._time      = options.time;
+    this._labelText = options.labelText;
+    this._color     = options.color;
+    this._editable  = options.editable;
 
-    this._peaks     = peaks;
-    this._id        = id;
-    this._time      = opts.time;
-    this._labelText = opts.labelText;
-    this._color     = opts.color;
-    this._editable  = opts.editable;
+    this._setUserData(options);
   }
+
+  Point.prototype._setUserData = function(options) {
+    for (var key in options) {
+      if (Utils.objectHasProperty(options, key) && pointOptions.indexOf(key) === -1) {
+        this[key] = options[key];
+      }
+    }
+  };
 
   Object.defineProperties(Point.prototype, {
     id: {
@@ -75,10 +85,6 @@ define([
       enumerable: true,
       get: function() {
         return this._time;
-      },
-
-      set: function(time) {
-        this._time = time;
       }
     },
     labelText: {
@@ -117,6 +123,8 @@ define([
     this._color     = opts.color;
     this._editable  = opts.editable;
 
+    this._setUserData(options);
+
     this._peaks.emit('points.update', this);
   };
 
@@ -130,6 +138,10 @@ define([
 
   Point.prototype.isVisible = function(startTime, endTime) {
     return this.time >= startTime && this.time < endTime;
+  };
+
+  Point.prototype._setTime = function(time) {
+    this._time = time;
   };
 
   return Point;

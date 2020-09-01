@@ -78,16 +78,25 @@ define([
    */
 
   WaveformPoints.prototype._createPoint = function(options) {
-    var point = new Point(
-      this._peaks,
-      Utils.isNullOrUndefined(options.id) ? this._getNextPointId() : options.id,
-      options.time,
-      options.labelText,
-      options.color,
-      Boolean(options.editable)
-    );
+    var pointOptions = {
+      peaks: this._peaks
+    };
 
-    return point;
+    Utils.extend(pointOptions, options);
+
+    if (Utils.isNullOrUndefined(pointOptions.id)) {
+      pointOptions.id = this._getNextPointId();
+    }
+
+    if (Utils.isNullOrUndefined(pointOptions.labelText)) {
+      pointOptions.labelText = '';
+    }
+
+    if (Utils.isNullOrUndefined(pointOptions.editable)) {
+      pointOptions.editable = false;
+    }
+
+    return new Point(pointOptions);
   };
 
   /**

@@ -126,17 +126,29 @@ define([
       throw new TypeError('peaks.segments.add(): expected a Segment object parameter');
     }
 
-    var segment = new Segment(
-      this._peaks,
-      Utils.isNullOrUndefined(options.id) ? this._getNextSegmentId() : options.id,
-      options.startTime,
-      options.endTime,
-      options.labelText,
-      options.color || this._getSegmentColor(),
-      options.editable || false
-    );
+    var segmentOptions = {
+      peaks: this._peaks
+    };
 
-    return segment;
+    Utils.extend(segmentOptions, options);
+
+    if (Utils.isNullOrUndefined(segmentOptions.id)) {
+      segmentOptions.id = this._getNextSegmentId();
+    }
+
+    if (Utils.isNullOrUndefined(segmentOptions.color)) {
+      segmentOptions.color = this._getSegmentColor();
+    }
+
+    if (Utils.isNullOrUndefined(segmentOptions.labelText)) {
+      segmentOptions.labelText = '';
+    }
+
+    if (Utils.isNullOrUndefined(segmentOptions.editable)) {
+      segmentOptions.editable = false;
+    }
+
+    return new Segment(segmentOptions);
   };
 
   /**

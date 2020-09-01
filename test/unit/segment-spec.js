@@ -6,7 +6,7 @@ var Peaks = require('../../src/main');
 var Segment = require('../../src/segment');
 
 describe('Segment', function() {
-  describe('update()', function() {
+  describe('update', function() {
     var p;
 
     beforeEach(function(done) {
@@ -72,9 +72,9 @@ describe('Segment', function() {
     it('should not update any attributes if invalid', function() {
       p.segments.add({
         startTime: 0,
-        endTime:   10,
-        editable:  true,
-        color:     '#ff0000',
+        endTime: 10,
+        editable: true,
+        color: '#ff0000',
         labelText: 'A segment'
       });
 
@@ -83,9 +83,9 @@ describe('Segment', function() {
       expect(function() {
         segment.update({
           startTime: 10,
-          endTime:   0,
-          editable:  false,
-          color:     '#000000',
+          endTime: 0,
+          editable: false,
+          color: '#000000',
           labelText: 'Updated'
         });
       }).to.throw(RangeError);
@@ -96,59 +96,155 @@ describe('Segment', function() {
       expect(segment.color).to.equal('#ff0000');
       expect(segment.labelText).to.equal('A segment');
     });
+
+    it('should allow a user data attribute to be created', function() {
+      var peaks = { emit: function() {} };
+      var segment = new Segment({
+        peaks: peaks,
+        id: 'segment.1',
+        startTime: 0.0,
+        endTime: 10.0,
+        labelText: '',
+        editable: true
+      });
+
+      segment.update({ data: 'test' });
+
+      expect(segment.data).to.equal('test');
+    });
+
+    it('should allow a user data attribute to be updated', function() {
+      var peaks = { emit: function() {} };
+      var segment = new Segment({
+        peaks: peaks,
+        id: 'segment.1',
+        startTime: 0.0,
+        endTime: 10.0,
+        labelText: '',
+        editable: true,
+        data: 'test'
+      });
+
+      segment.update({ data: 'updated' });
+
+      expect(segment.data).to.equal('updated');
+    });
   });
 
   describe('isVisible', function() {
     it('should return false if segment is before visible range', function() {
-      var segment = new Segment({}, 'segment.1', 0.0, 10.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 0.0,
+        endTime: 10.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(false);
     });
 
     it('should return false if segment is after visible range', function() {
-      var segment = new Segment({}, 'segment.1', 20.0, 30.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 20.0,
+        endTime: 30.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(false);
     });
 
     it('should return true if segment is within visible range', function() {
-      var segment = new Segment({}, 'segment.1', 12.0, 18.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 12.0,
+        endTime: 18.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
 
     it('should return true if segment starts before and ends within visible range', function() {
-      var segment = new Segment({}, 'segment.1', 9.0, 19.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 9.0,
+        endTime: 19.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
 
     it('should return true if segment starts before and ends at end of visible range', function() {
-      var segment = new Segment({}, 'segment.1', 9.0, 20.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 9.0,
+        endTime: 20.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
 
     it('should return true if segment starts after and ends after visible range', function() {
-      var segment = new Segment({}, 'segment.1', 11.0, 21.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 11.0,
+        endTime: 21.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
 
     it('should return true if segment starts after and ends at the end of visible range', function() {
-      var segment = new Segment({}, 'segment.1', 11.0, 20.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 11.0,
+        endTime: 20.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
 
     it('should return true if segment is same as visible range', function() {
-      var segment = new Segment({}, 'segment.1', 10.0, 20.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 10.0,
+        endTime: 20.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
 
     it('should return true if segment contains visible range', function() {
-      var segment = new Segment({}, 'segment.1', 9.0, 21.0);
+      var segment = new Segment({
+        peaks: null,
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 9.0,
+        endTime: 21.0
+      });
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });

@@ -201,7 +201,7 @@ define([
                    markerX +
                    pointMarker.getWidth();
 
-      point.time = this._view.pixelsToTime(offset);
+      point._setTime(this._view.pixelsToTime(offset));
 
       pointMarker.timeUpdated(point.time);
     }

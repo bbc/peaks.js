@@ -155,6 +155,12 @@ describe('Peaks.segments', function() {
       expect(p.segments.getSegments()[0].labelText).to.equal('');
     });
 
+    it('should accept optional user data', function() {
+      p.segments.add({ startTime: 0, endTime: 10, data: 'test' });
+
+      expect(p.segments.getSegments()[0].data).to.equal('test');
+    });
+
     it('should accept an array of segment objects', function() {
       var segments = [{ startTime: 0, endTime: 10 }, { startTime: 5, endTime: 10 }];
 
@@ -220,6 +226,33 @@ describe('Peaks.segments', function() {
       expect(function() {
         p.segments.add({ startTime: 1.0, endTime: NaN });
       }).to.throw(TypeError);
+    });
+
+    it('should throw an exception if the startTime is negative', function() {
+      expect(function() {
+        p.segments.add({ startTime: -1.0, endTime: 1.0 });
+      }).to.throw(RangeError);
+    });
+
+    it('should throw an exception if the endTime is negative', function() {
+      expect(function() {
+        p.segments.add({ startTime: 1.0, endTime: -1.0 });
+      }).to.throw(RangeError);
+    });
+
+    it('should throw an exception if the startTime is greater than the endTime', function() {
+      expect(function() {
+        p.segments.add({ startTime: 1.1, endTime: 1.0 });
+      }).to.throw(RangeError);
+    });
+
+    it('should allow the startTime to equal the endTime', function() {
+      p.segments.add({ startTime: 1.0, endTime: 1.0 });
+
+      var segments = p.segments.getSegments();
+
+      expect(segments[0].startTime).to.equal(1.0);
+      expect(segments[0].endTime).to.equal(1.0);
     });
 
     it('should throw an exception if given a duplicate id', function() {

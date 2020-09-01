@@ -6,7 +6,7 @@ var Peaks = require('../../src/main');
 var Point = require('../../src/point');
 
 describe('Point', function() {
-  describe('update()', function() {
+  describe('update', function() {
     var p;
 
     beforeEach(function(done) {
@@ -50,9 +50,9 @@ describe('Point', function() {
 
     it('should not allow invalid updates', function() {
       p.points.add({
-        time:      10,
-        editable:  true,
-        color:     '#ff0000',
+        time: 10,
+        editable: true,
+        color: '#ff0000',
         labelText: 'A point'
       });
 
@@ -72,9 +72,9 @@ describe('Point', function() {
 
     it('should not update any attributes if invalid', function() {
       p.points.add({
-        time:      10,
-        editable:  true,
-        color:     '#ff0000',
+        time: 10,
+        editable: true,
+        color: '#ff0000',
         labelText: 'A point'
       });
 
@@ -82,9 +82,9 @@ describe('Point', function() {
 
       expect(function() {
         point.update({
-          time:      NaN,
-          editable:  false,
-          color:     '#000000',
+          time: NaN,
+          editable: false,
+          color: '#000000',
           labelText: 'Updated'
         });
       }).to.throw(TypeError);
@@ -94,23 +94,74 @@ describe('Point', function() {
       expect(point.color).to.equal('#ff0000');
       expect(point.labelText).to.equal('A point');
     });
+
+    it('should allow a user data attribute to be created', function() {
+      var peaks = { emit: function() {} };
+      var point = new Point({
+        peaks: peaks,
+        id: 'point.1',
+        time: 0.0,
+        editable: false,
+        color: '#000000',
+        labelText: ''
+      });
+
+      point.update({ data: 'test' });
+
+      expect(point.data).to.equal('test');
+    });
+
+    it('should allow a user data attribute to be updated', function() {
+      var peaks = { emit: function() {} };
+      var point = new Point({
+        peaks: peaks,
+        id: 'point.1',
+        time: 0.0,
+        editable: false,
+        color: '#000000',
+        labelText: '',
+        data: 'test'
+      });
+
+      point.update({ data: 'updated' });
+
+      expect(point.data).to.equal('updated');
+    });
   });
 
   describe('isVisible', function() {
     it('should return false if point is before visible range', function() {
-      var point = new Point({}, 'point.1', 9.0);
+      var point = new Point({
+        peaks: null,
+        id: 'point.1',
+        labelText: '',
+        editable: true,
+        time: 9.0
+      });
 
       expect(point.isVisible(10.0, 20.0)).to.equal(false);
     });
 
     it('should return false if point is after visible range', function() {
-      var point = new Point({}, 'point.1', 20.0);
+      var point = new Point({
+        peaks: null,
+        id: 'point.1',
+        labelText: '',
+        editable: true,
+        time: 20.0
+      });
 
       expect(point.isVisible(10.0, 20.0)).to.equal(false);
     });
 
     it('should return true if point is within visible range', function() {
-      var point = new Point({}, 'point.1', 10.0);
+      var point = new Point({
+        peaks: null,
+        id: 'point.1',
+        labelText: '',
+        editable: true,
+        time: 10.0
+      });
 
       expect(point.isVisible(10.0, 20.0)).to.equal(true);
     });

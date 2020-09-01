@@ -228,6 +228,17 @@ define(function() {
     },
 
     /**
+     * Checks whether the given value is a boolean.
+     *
+     * @param {Function} value The value to test
+     * @returns {Boolean}
+     */
+
+    isBoolean: function(value) {
+      return value === true || value === false;
+    },
+
+    /**
      * Checks whether the given value is a valid HTML element.
      *
      * @param {HTMLElement} value The value to test

@@ -837,7 +837,7 @@ console.log(instance.zoom.getZoom()); // -> 1
 **Segments** give the ability to visually tag timed portions of the audio media.
 This is a great way to provide visual cues to your users.
 
-### `instance.segments.add({ startTime, endTime, editable, color, labelText, id })`
+### `instance.segments.add({ startTime, endTime, editable, color, labelText, id[, other user-defined options] })`
 ### `instance.segments.add(segment[])`
 
 Adds a segment to the waveform timeline. Accepts an object containing the following parameters:
@@ -870,6 +870,17 @@ instance.segments.add([
     color: '#666'
   }
 ]);
+```
+
+You may also provide other user-defined data attributes, which are associated with the segment.
+These can be strings, numbers, or any other JavaScript object.
+
+```js
+instance.segments.add({ id: 'segment1', startTime: 0, endTime: 10.5, customAttribute: 'value' });
+
+const segment = instance.segments.getSegment('segment1');
+
+console.log(segment.customAttribute); // -> 'value'
 ```
 
 ### `instance.segments.getSegments()`
@@ -927,15 +938,17 @@ instance.segments.removeAll();
 
 A **segment**'s properties can be updated programatically.
 
-### `segment.update({startTime, endTime, labelText, color, editable})`
+### `segment.update({ startTime, endTime, labelText, color, editable[, other user-defined options] })`
 
-Updates an existing segment. Accepts a single parameter - `options` - with the following keys:
+Updates an existing segment. Accepts a single `options` parameter, with the following keys:
 
 * `startTime`: (optional) the segment start time (seconds, defaults to current value)
 * `endTime`: (optional)  the segment end time (seconds, defaults to current value)
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to current value)
 * `color`: (optional) the segment color (defaults to current value)
 * `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the segment (defaults to current value)
+
+You may also update other user-defined data attributes, which are associated with the segment.
 
 ```js
 const instance = Peaks.init({ ... });
@@ -946,6 +959,9 @@ const segment = instance.segments.getSegments()[0]
 segment.update({ startTime: 7 });
 segment.update({ startTime: 7, labelText: "new label text" });
 segment.update({ startTime: 7, endTime: 9, labelText: 'new label text' });
+
+// Update a user-defined custom attribute
+segment.update({ customAttribute: 'value' });
 // etc.
 ```
 
@@ -953,7 +969,7 @@ segment.update({ startTime: 7, endTime: 9, labelText: 'new label text' });
 
 **Points** give the ability to visually tag points in time of the audio media.
 
-### `instance.points.add({ time, editable, color, labelText, id })`
+### `instance.points.add({ time, editable, color, labelText, id[, other user-defined options] })`
 ### `instance.points.add(point[])`
 
 Adds one or more points to the waveform timeline. Accepts an object containing the following parameters:
@@ -984,6 +1000,17 @@ instance.points.add([
     color: '#666'
   }
 ]);
+```
+
+You may also provide other user-defined data attributes, which are associated with the point.
+These can be strings, numbers, or any other JavaScript object.
+
+```js
+instance.points.add({ id: 'point1', time: 3.5, customAttribute: 'value' });
+
+const point = instance.points.getSegment('point1');
+
+console.log(point.customAttribute); // -> 'value'
 ```
 
 ### `instance.points.getPoints()`
@@ -1030,14 +1057,16 @@ instance.points.removeAll();
 
 A **point**'s properties can be updated programatically.
 
-### `point.update({time, labelText, color, editable})`
+### `point.update({ time, labelText, color, editable[, other user-defined options] })`
 
-Updates an existing point. Accepts a single parameter - `options` - with the following keys:
+Updates an existing point. Accepts a single `options` parameter with the following keys:
 
 * `time`: (optional) the point's time (seconds, defaults to current value)
 * `editable`: (optional) sets whether the point is user editable (boolean, defaults to current value)
 * `color`: (optional) the point color (defaults to current value)
 * `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the point (defaults to current value)
+
+You may also update other user-defined data attributes, which are associated with the segment.
 
 ```js
 const instance = Peaks.init({ ... });
@@ -1047,6 +1076,9 @@ const point = instance.points.getPoints()[0]
 
 point.update({ time: 7 });
 point.update({ time: 7, labelText: "new label text" });
+
+// Update a user-defined custom attribute
+point.update({ customAttribute: 'value' });
 // etc.
 ```
 

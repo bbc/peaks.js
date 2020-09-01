@@ -144,6 +144,12 @@ describe('Peaks.points', function() {
       expect(p.points.getPoints()[0].labelText).to.equal('');
     });
 
+    it('should accept optional user data', function() {
+      p.points.add({ time: 10, data: 'test' });
+
+      expect(p.points.getPoints()[0].data).to.equal('test');
+    });
+
     it('should emit an event with an array containing a single point object', function(done) {
       p.on('points.add', function(points) {
         expect(points).to.have.lengthOf(1);
@@ -197,6 +203,12 @@ describe('Peaks.points', function() {
       expect(function() {
         p.points.add({ time: NaN });
       }).to.throw(TypeError);
+    });
+
+    it('should throw an exception if the time is negative', function() {
+      expect(function() {
+        p.points.add({ time: -1.0 });
+      }).to.throw(RangeError);
     });
 
     it('should throw an exception if given a duplicate id', function() {

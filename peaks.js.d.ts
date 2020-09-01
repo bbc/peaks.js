@@ -11,6 +11,7 @@ declare module 'peaks.js' {
     color?: string;
     labelText?: string;
     id?: string;
+    [userAttributes: string]: unknown;
   }
 
   interface SegmentUpdateOptions {
@@ -19,6 +20,7 @@ declare module 'peaks.js' {
     editable?: boolean;
     color?: string;
     labelText?: string;
+    [userAttributes: string]: unknown;
   }
 
   interface Segment extends SegmentAddOptions {
@@ -31,6 +33,7 @@ declare module 'peaks.js' {
     color?: string;
     labelText?: string;
     id?: string;
+    [userAttributes: string]: unknown;
   }
 
   interface PointUpdateOptions {
@@ -38,6 +41,7 @@ declare module 'peaks.js' {
     editable?: boolean;
     color?: string;
     labelText?: string;
+    [userAttributes: string]: unknown;
   }
 
   interface Point extends PointAddOptions {
