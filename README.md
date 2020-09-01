@@ -837,7 +837,7 @@ console.log(instance.zoom.getZoom()); // -> 1
 **Segments** give the ability to visually tag timed portions of the audio media.
 This is a great way to provide visual cues to your users.
 
-### `instance.segments.add({ startTime, endTime, editable, color, labelText, id[, other user-defined options] })`
+### `instance.segments.add({ startTime, endTime, editable, color, labelText, id[, ...] })`
 ### `instance.segments.add(segment[])`
 
 Adds a segment to the waveform timeline. Accepts an object containing the following parameters:
@@ -938,7 +938,7 @@ instance.segments.removeAll();
 
 A **segment**'s properties can be updated programatically.
 
-### `segment.update({ startTime, endTime, labelText, color, editable[, other user-defined options] })`
+### `segment.update({ startTime, endTime, labelText, color, editable[, ...] })`
 
 Updates an existing segment. Accepts a single `options` parameter, with the following keys:
 
@@ -969,7 +969,7 @@ segment.update({ customAttribute: 'value' });
 
 **Points** give the ability to visually tag points in time of the audio media.
 
-### `instance.points.add({ time, editable, color, labelText, id[, other user-defined options] })`
+### `instance.points.add({ time, editable, color, labelText, id[, ...] })`
 ### `instance.points.add(point[])`
 
 Adds one or more points to the waveform timeline. Accepts an object containing the following parameters:
@@ -1057,7 +1057,7 @@ instance.points.removeAll();
 
 A **point**'s properties can be updated programatically.
 
-### `point.update({ time, labelText, color, editable[, other user-defined options] })`
+### `point.update({ time, labelText, color, editable[, ...] })`
 
 Updates an existing point. Accepts a single `options` parameter with the following keys:
 
@@ -1066,7 +1066,7 @@ Updates an existing point. Accepts a single `options` parameter with the followi
 * `color`: (optional) the point color (defaults to current value)
 * `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the point (defaults to current value)
 
-You may also update other user-defined data attributes, which are associated with the segment.
+You may also update other user-defined data attributes, which are associated with the point.
 
 ```js
 const instance = Peaks.init({ ... });
