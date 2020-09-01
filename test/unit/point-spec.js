@@ -64,7 +64,7 @@ describe('Point', function() {
 
       expect(function() {
         point.update({ time: -10 });
-      }).to.throw(TypeError);
+      }).to.throw(RangeError);
 
       point.update({ labelText: undefined });
       expect(point.labelText).to.equal('');
