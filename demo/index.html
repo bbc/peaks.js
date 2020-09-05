@@ -551,6 +551,18 @@
           peaksInstance.on('overview.dblclick', function(time) {
             console.log('overview.dblclick:', time);
           });
+
+          peaksInstance.on('player.seeked', function(time) {
+            console.log('player.seeked:', time);
+          });
+
+          peaksInstance.on('player.play', function(time) {
+            console.log('player.play:', time);
+          });
+
+          peaksInstance.on('player.pause', function(time) {
+            console.log('player.pause:', time);
+          });
         });
       })(peaks);
     </script>
