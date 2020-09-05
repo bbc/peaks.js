@@ -1,5 +1,16 @@
 # Peaks.js
 
+## 0.22.0 (2020/09/05)
+
+ * (#329) Added looped playback option to `segments.playSegment()` (@chrisn)
+
+ * (#336) Allow users to set custom point and segment attributes (@chrisn)
+
+ * (#332) Adjust playhead time label position when the playhead is at the right
+   edge of the waveform display (@Karoid)
+
+ * (#328) Fixed package.json to work on Windows (@chrisn)
+
 ## 0.21.0 (2020/04/27)
 
  * (#314) Added `player` option to allow use of external media player libraries.
