@@ -185,7 +185,12 @@ define([
       // We need to use setInterval here as the timeupdate event doesn't fire
       // often enough.
       self._interval = setInterval(function() {
-        if (self.getCurrentTime() >= segment.endTime || !self.isPlaying()) {
+        if (!self.isPlaying()) {
+          clearTimeout(self._interval);
+          self._interval = null;
+          self.pause();
+        }
+        else if (self.getCurrentTime() >= segment.endTime) {
           if (loop) {
             self.seek(segment.startTime);
           }
