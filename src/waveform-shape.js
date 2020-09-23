@@ -10,24 +10,6 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   'use strict';
 
   /**
-   * Scales the waveform data for drawing on a canvas context.
-   *
-   * @param {Number} amplitude The waveform data point amplitude.
-   * @param {Number} height The height of the waveform, in pixels.
-   * @param {Number} scale Amplitude scaling factor.
-   * @returns {Number} The scaled waveform data point.
-   */
-
-  function scaleY(amplitude, height, scale) {
-    var range = 256;
-    var offset = 128;
-
-    var scaledAmplitude = (amplitude * scale + offset) * height / range;
-
-    return height - Utils.clamp(height - scaledAmplitude, 0, height);
-  }
-
-  /**
    * Waveform shape options.
    *
    * @typedef {Object} WaveformShapeOptions
@@ -139,24 +121,47 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     }
   };
 
+  /**
+   * Draws a single waveform channel on a canvas context.
+   *
+   * @param {Konva.Context} context The canvas context to draw on.
+   * @param {WaveformDataChannel} channel The waveform data to draw.
+   * @param {Number} frameOffset The start position of the waveform shown
+   *   in the view, in pixels.
+   * @param {Number} startPixels The start position of the waveform to draw,
+   *   in pixels.
+   * @param {Number} endPixels The end position of the waveform to draw,
+   *   in pixels.
+   * @param {Number} top The top of the waveform channel area, in pixels.
+   * @param {Number} height The height of the waveform channel area, in pixels.
+   */
+
   WaveformShape.prototype._drawChannel = function(context, channel,
       frameOffset, startPixels, endPixels, top, height) {
-    var x, val;
+    var x, amplitude;
 
     var amplitudeScale = this._view.getAmplitudeScale();
+
+    var lineX, lineY;
 
     context.beginPath();
 
     for (x = startPixels; x < endPixels; x++) {
-      val = channel.min_sample(x);
+      amplitude = channel.min_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, amplitudeScale) + 0.5);
+      lineX = x - frameOffset + 0.5;
+      lineY = top + WaveformShape.scaleY(amplitude, height, amplitudeScale) + 0.5;
+
+      context.lineTo(lineX, lineY);
     }
 
     for (x = endPixels - 1; x >= startPixels; x--) {
-      val = channel.max_sample(x);
+      amplitude = channel.max_sample(x);
 
-      context.lineTo(x - frameOffset + 0.5, top + scaleY(val, height, amplitudeScale) + 0.5);
+      lineX = x - frameOffset + 0.5;
+      lineY = top + WaveformShape.scaleY(amplitude, height, amplitudeScale) + 0.5;
+
+      context.lineTo(lineX, lineY);
     }
 
     context.closePath();
@@ -199,6 +204,25 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     context.rect(hitRectLeft, offsetY, hitRectWidth, hitRectHeight);
     context.closePath();
     context.fillStrokeShape(this);
+  };
+
+  /**
+   * Scales the waveform data for drawing on a canvas context.
+   *
+   * @see {@link https://stats.stackexchange.com/questions/281162}
+   *
+   * @todo Assumes 8-bit waveform data (-128 to 127 range)
+   *
+   * @param {Number} amplitude The waveform data point amplitude.
+   * @param {Number} height The height of the waveform, in pixels.
+   * @param {Number} scale Amplitude scaling factor.
+   * @returns {Number} The scaled waveform data point.
+   */
+
+  WaveformShape.scaleY = function(amplitude, height, scale) {
+    var y = -(height - 1) * (amplitude * scale + 128) / 255 + (height - 1);
+
+    return Utils.clamp(Math.floor(y), 0, height - 1);
   };
 
   return WaveformShape;
