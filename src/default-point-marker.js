@@ -39,8 +39,9 @@ define([
         y:          0,
         text:       this._options.point.labelText,
         textAlign:  'left',
-        fontSize:   10,
-        fontFamily: 'sans-serif',
+        fontFamily: this._options.fontFamily || 'sans-serif',
+        fontSize:   this._options.fontSize || 10,
+        fontStyle:  this._options.fontStyle || 'normal',
         fill:       '#000'
       });
     }
@@ -74,8 +75,9 @@ define([
         x:          -24,
         y:          0,
         text:       this._options.layer.formatTime(this._options.point.time),
-        fontSize:   10,
-        fontFamily: 'sans-serif',
+        fontFamily: this._options.fontFamily,
+        fontSize:   this._options.fontSize,
+        fontStyle:  this._options.fontStyle,
         fill:       '#000',
         textAlign:  'center'
       });

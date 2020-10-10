@@ -25,6 +25,9 @@ define([
    * @property {Boolean} draggable If true, marker is draggable.
    * @property {Boolean} startMarker
    * @property {String} color
+   * @property {String} fontFamily
+   * @property {Number} fontSize
+   * @property {String} fontStyle
    * @property {Layer} layer
    * @property {String} view
    */
@@ -54,6 +57,9 @@ define([
    * @property {String} view The name of the view that the label is being
    *   created in, either <code>zoomview</code> or <code>overview</code>.
    * @property {SegmentsLayer} layer
+   * @property {String} fontFamily
+   * @property {Number} fontSize
+   * @property {String} fontStyle
    */
 
   /**
@@ -70,8 +76,9 @@ define([
       y:          12,
       text:       options.segment.labelText,
       textAlign:  'center',
-      fontSize:   12,
-      fontFamily: 'Arial, sans-serif',
+      fontFamily: options.fontFamily || 'sans-serif',
+      fontSize:   options.fontSize || 12,
+      fontStyle:  options.fontStyle || 'normal',
       fill:       '#000'
     });
   }
@@ -86,6 +93,9 @@ define([
    * @property {String} color
    * @property {Layer} layer
    * @property {String} view
+   * @property {String} fontFamily
+   * @property {Number} fontSize
+   * @property {String} fontStyle
    */
 
   /**

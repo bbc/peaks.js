@@ -198,6 +198,12 @@ declare module 'peaks.js' {
     axisLabelColor?: string;
     /** Random color per segment (overrides segmentColor) */
     randomizeSegmentColor?: boolean;
+    /** Font family, for axis labels, playhead, and point and segment markers */
+    fontFamily?: string;
+    /** Font size, in px */
+    fontSize?: number;
+    /** Font style, either 'bold', 'normal', 'italic' */
+    fontStyle?: string;
     /**
      * Zoom view adapter to use.
      * - Valid adapters are: `'animated'` (default) and `'static'`

@@ -22,6 +22,9 @@ define([
    * @param {Object} options
    * @param {String} options.axisGridlineColor
    * @param {String} options.axisLabelColor
+   * @param {String} options.axisLabelFontFamily
+   * @param {Number} options.axisLabelFontSize
+   * @param {String} options.axisLabelFontStyle
    */
 
   function WaveformAxis(view, options) {
@@ -30,12 +33,34 @@ define([
     self._axisGridlineColor = options.axisGridlineColor;
     self._axisLabelColor    = options.axisLabelColor;
 
+    self._axisLabelFont = WaveformAxis._buildFontString(
+      options.axisLabelFontFamily,
+      options.axisLabelFontSize,
+      options.axisLabelFontStyle
+    );
+
     self._axisShape = new Konva.Shape({
       sceneFunc: function(context) {
         self.drawAxis(context, view);
       }
     });
   }
+
+  WaveformAxis._buildFontString = function(fontFamily, fontSize, fontStyle) {
+    if (!fontSize) {
+      fontSize = 11;
+    }
+
+    if (!fontFamily) {
+      fontFamily = 'sans-serif';
+    }
+
+    if (!fontStyle) {
+      fontStyle = 'normal';
+    }
+
+    return fontStyle + ' ' + fontSize + 'px ' + fontFamily;
+  };
 
   WaveformAxis.prototype.addToLayer = function(layer) {
     layer.add(this._axisShape);
@@ -107,7 +132,7 @@ define([
     context.setAttr('lineWidth', 1);
 
     // Set text style
-    context.setAttr('font', '11px sans-serif');
+    context.setAttr('font', this._axisLabelFont);
     context.setAttr('fillStyle', this._axisLabelColor);
     context.setAttr('textAlign', 'left');
     context.setAttr('textBaseline', 'bottom');

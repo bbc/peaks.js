@@ -109,11 +109,16 @@ define([
 
     self._createAxisLabels();
 
-    self._playheadLayer = new PlayheadLayer(
-      peaks,
-      self,
-      self._options.showPlayheadTime
-    );
+    self._playheadLayer = new PlayheadLayer({
+      player: self._peaks.player,
+      view: self,
+      showPlayheadTime: self._options.showPlayheadTime,
+      playheadColor: self._options.playheadColor,
+      playheadTextColor: self._options.playheadTextColor,
+      playheadFontFamily: self._options.fontFamily,
+      playheadFontSize: self._options.fontSize,
+      playheadFontStyle: self._options.fontStyle
+    });
 
     self._playheadLayer.addToStage(self._stage);
 
@@ -522,8 +527,11 @@ define([
     this._axisLayer = new Konva.FastLayer();
 
     this._axis = new WaveformAxis(this, {
-      axisGridlineColor: this._options.axisGridlineColor,
-      axisLabelColor:    this._options.axisLabelColor
+      axisGridlineColor:   this._options.axisGridlineColor,
+      axisLabelColor:      this._options.axisLabelColor,
+      axisLabelFontFamily: this._options.fontFamily,
+      axisLabelFontSize:   this._options.fontSize,
+      axisLabelFontStyle:  this._options.fontStyle
     });
 
     this._axis.addToLayer(this._axisLayer);

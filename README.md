@@ -408,6 +408,16 @@ var options = {
   // Random color per segment (overrides segmentColor)
   randomizeSegmentColor: true,
 
+  // Font family for axis labels, playhead, and point and segment markers
+  fontFamily: 'sans-serif'
+
+  // Font size for axis labels, playhead, and point and segment markers
+  fontSize: 11,
+
+  // Font style for axis labels, playhead, and point and segment markers
+  // (either 'normal', 'bold', or 'italic')
+  fontStyle: 'normal',
+
   // Array of initial segment objects with startTime and
   // endTime in seconds and a boolean for editable.
   // See below.

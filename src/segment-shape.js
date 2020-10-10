@@ -14,6 +14,10 @@ define([
     WaveformShape) {
   'use strict';
 
+  var defaultFontFamily = 'sans-serif';
+  var defaultFontSize = 10;
+  var defaultFontShape = 'normal';
+
   /**
    * Creates a waveform segment shape with optional start and end markers.
    *
@@ -58,9 +62,12 @@ define([
     this._onSegmentHandleDragEnd   = this._onSegmentHandleDragEnd.bind(this);
 
     this._label = this._peaks.options.createSegmentLabel({
-      segment: segment,
-      view:    this._view.getName(),
-      layer:   this._layer
+      segment:    segment,
+      view:       this._view.getName(),
+      layer:      this._layer,
+      fontFamily: this._peaks.options.fontFamily,
+      fontSize:   this._peaks.options.fontSize,
+      fontStyle:  this._peaks.options.fontStyle
     });
 
     if (this._label) {
@@ -110,6 +117,9 @@ define([
       draggable:    editable,
       startMarker:  true,
       color:        this._peaks.options.segmentStartMarkerColor,
+      fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
+      fontSize:     this._peaks.options.fontSize || defaultFontSize,
+      fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
       layer:        this._layer,
       view:         this._view.getName()
     });
@@ -132,6 +142,9 @@ define([
       draggable:    editable,
       startMarker:  false,
       color:        this._peaks.options.segmentEndMarkerColor,
+      fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
+      fontSize:     this._peaks.options.fontSize || defaultFontSize,
+      fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
       layer:        this._layer,
       view:         this._view.getName()
     });

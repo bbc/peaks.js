@@ -17,26 +17,36 @@ define([
    * @class
    * @alias PlayheadLayer
    *
-   * @param {Peaks} peaks
-   * @param {WaveformOverview|WaveformZoomView} view
-   * @param {Boolean} showTime If <code>true</code> The playback time position
+   * @param {Object} options
+   * @param {Player} options.player
+   * @param {WaveformOverview|WaveformZoomView} options.view
+   * @param {Boolean} options.showPlayheadTime If <code>true</code> The playback time position
    *   is shown next to the playhead.
+   * @param {String} options.playheadColor
+   * @param {String} options.playheadTextColor
+   * @param {String} options.playheadFontFamily
+   * @param {Number} options.playheadFontSize
+   * @param {String} options.playheadFontStyle
    */
 
-  function PlayheadLayer(peaks, view, showTime) {
-    this._peaks = peaks;
-    this._view = view;
+  function PlayheadLayer(options) {
+    this._player = options.player;
+    this._view = options.view;
     this._playheadPixel = 0;
     this._playheadLineAnimation = null;
     this._playheadVisible = false;
-    this._playheadColor = peaks.options.playheadColor;
-    this._playheadTextColor = peaks.options.playheadTextColor;
+    this._playheadColor = options.playheadColor;
+    this._playheadTextColor = options.playheadTextColor;
+
+    this._playheadFontFamily = options.playheadFontFamily || 'sans-serif';
+    this._playheadFontSize = options.playheadFontSize || 11;
+    this._playheadFontStyle = options.playheadFontStyle || 'normal';
 
     this._playheadLayer = new Konva.Layer();
 
     this._createPlayhead(this._playheadColor);
 
-    if (showTime) {
+    if (options.showPlayheadTime) {
       this._createPlayheadText(this._playheadTextColor);
     }
 
@@ -72,7 +82,7 @@ define([
     this._useAnimation = pixelsPerSecond >= 5;
 
     if (this._useAnimation) {
-      if (this._peaks.player.isPlaying() && !this._playheadLineAnimation) {
+      if (this._player.isPlaying() && !this._playheadLineAnimation) {
         // Start the animation
         this._start();
       }
@@ -80,7 +90,7 @@ define([
     else {
       if (this._playheadLineAnimation) {
         // Stop the animation
-        time = this._peaks.player.getCurrentTime();
+        time = this._player.getCurrentTime();
 
         this.stop(time);
       }
@@ -126,7 +136,7 @@ define([
   };
 
   PlayheadLayer.prototype._createPlayheadText = function(color) {
-    var time = this._peaks.player.getCurrentTime();
+    var time = this._player.getCurrentTime();
     var text = this._view.formatTime(time);
 
     // Create with default y, the real value is set in fitToView().
@@ -134,8 +144,9 @@ define([
       x: 2,
       y: 0,
       text: text,
-      fontSize: 11,
-      fontFamily: 'sans-serif',
+      fontSize: this._playheadFontSize,
+      fontFamily: this._playheadFontFamily,
+      fontStyle: this._playheadFontStyle,
       fill: color,
       align: 'right'
     });
@@ -152,7 +163,7 @@ define([
   PlayheadLayer.prototype.updatePlayheadTime = function(time) {
     this._syncPlayhead(time);
 
-    if (this._peaks.player.isPlaying()) {
+    if (this._player.isPlaying()) {
       this._start();
     }
   };
@@ -232,7 +243,7 @@ define([
     var lastPlayheadPosition = null;
 
     self._playheadLineAnimation = new Konva.Animation(function() {
-      var time = self._peaks.player.getCurrentTime();
+      var time = self._player.getCurrentTime();
       var playheadPosition = self._view.timeToPixels(time);
 
       if (playheadPosition !== lastPlayheadPosition) {
@@ -296,7 +307,7 @@ define([
   PlayheadLayer.prototype.updatePlayheadText = function() {
     // Update current play head
     if (this._playheadText) {
-      var time = this._peaks.player.getCurrentTime();
+      var time = this._player.getCurrentTime();
       var text = this._view.formatTime(time);
 
       this._playheadText.setText(text);

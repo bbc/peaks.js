@@ -16,6 +16,10 @@ define([
     Konva) {
   'use strict';
 
+  var defaultFontFamily = 'sans-serif';
+  var defaultFontSize = 10;
+  var defaultFontShape = 'normal';
+
   /**
    * Creates a Konva.Layer that displays point markers against the audio
    * waveform.
@@ -145,11 +149,14 @@ define([
     var editable = this._allowEditing && point.editable;
 
     var marker = this._peaks.options.createPointMarker({
-      point:     point,
-      draggable: editable,
-      color:     point.color ? point.color : this._peaks.options.pointMarkerColor,
-      layer:     this,
-      view:      this._view.getName()
+      point:      point,
+      draggable:  editable,
+      color:      point.color ? point.color : this._peaks.options.pointMarkerColor,
+      fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
+      fontSize:     this._peaks.options.fontSize || defaultFontSize,
+      fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
+      layer:      this,
+      view:       this._view.getName()
     });
 
     return new PointMarker({

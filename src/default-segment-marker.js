@@ -40,8 +40,9 @@ define([
       x:          xPosition,
       y:          0,
       text:       this._options.layer.formatTime(time),
-      fontSize:   10,
-      fontFamily: 'sans-serif',
+      fontFamily: this._options.fontFamily,
+      fontSize:   this._options.fontSize,
+      fontStyle:  this._options.fontStyle,
       fill:       '#000',
       textAlign:  'center'
     });
