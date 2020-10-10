@@ -126,7 +126,18 @@ declare module 'peaks.js' {
     draggable: boolean;
     color: string;
     layer: Layer;
+    fontFamily: string;
+    fontSize: number;
+    fontStyle: string;
   }
+
+  /**
+   * Parameters for the {@link createSegmentMarker} function.
+   *
+   * @typedef {Object} CreateSegmentMarkerOptions
+   * @global
+   * @property {Boolean} draggable If true, marker is draggable.
+   */
 
   interface CreateSegmentMarkerOptions {
     segment: Segment;
@@ -135,7 +146,10 @@ declare module 'peaks.js' {
     color: string;
     layer: Layer;
     startMarker: boolean;
-  }
+    fontFamily: string;
+    fontSize: number;
+    fontStyle: string;
+   }
 
   interface CreateSegmentLabelOptions {
     segment: Segment;
