@@ -162,7 +162,6 @@ define([
             time = duration;
           }
 
-          self._updateWaveform(pixelIndex - mouseDownX);
           self._playheadLayer.updatePlayheadTime(time);
 
           self._peaks.player.seek(time);
