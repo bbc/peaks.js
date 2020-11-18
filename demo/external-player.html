@@ -140,7 +140,7 @@
         const audioContext = Tone.context;
 
         // Load audio file into audio buffer
-        await fetch("TOL_6min_720p_download.mp3")
+        fetch("TOL_6min_720p_download.mp3")
           .then(function(response) {
             return response.arrayBuffer();
           })
