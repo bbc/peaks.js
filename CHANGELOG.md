@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.23.1 (2020/11/27)
+
+ * Version bump to update npm release (@chrisn)
+
 ## 0.23.0 (2020/11/27)
 
  * (#325) Added fontFamily, fontStyle, fontSize config options (@chrisn)
