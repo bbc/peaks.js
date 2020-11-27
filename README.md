@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bbc/peaks.js.svg?branch=master)](https://travis-ci.org/bbc/peaks.js)
+![Build Status](https://github.com/bbc/peaks.js/workflows/Node.js%20CI/badge.svg?branch=master)
 
 <p align="center">
   <a href="https://github.com/bbc/peaks.js"><img src="peaks-logo.svg" alt="Peaks.js" height="120" /></a>
