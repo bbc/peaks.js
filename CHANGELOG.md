@@ -1,5 +1,15 @@
 # Peaks.js
 
+## 0.23.0 (2020/11/27)
+
+ * (#325) Added fontFamily, fontStyle, fontSize config options (@chrisn)
+
+ * (#321) Fixed waveform rendering so that waveforms are no longer inverted
+   (@chrisn)
+
+ * Removed unnecessary waveform re-render after dragging to scroll the
+   zoomable waveform view (@chrisn)
+
 ## 0.22.0 (2020/09/05)
 
  * (#329) Added looped playback option to `segments.playSegment()` (@chrisn)
