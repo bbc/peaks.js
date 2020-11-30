@@ -32,8 +32,13 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 When it's time to publish a new release version, e.g,. to npm, create a single commit on `master` with the following changes only:
 
-* Increment the `version` field in [package.json](https://github.com/bbc/peaks.js/blob/master/package.json)
+* Increment the `version` field in [package.json](https://github.com/bbc/peaks.js/blob/master/package.json).
 
-* Describe the new features in this release in [CHANGELOG.md](https://github.com/bbc/peaks.js/blob/master/CHANGELOG.md)
+* Describe the new features in this release in [CHANGELOG.md](https://github.com/bbc/peaks.js/blob/master/CHANGELOG.md).
 
-Tag this commit using the form `vX.Y.Z` and push the commit using `git push origin master --tags`.
+* Tag this commit using the form `vX.Y.Z` and push the commit using `git push origin master --tags`.
+
+* In GitHub, [create a Release](https://github.com/bbc/peaks.js/releases/new) from this tag, with the tag name as Release title, i.e., vX.Y.Z.
+
+* Creating a Release triggers a [GitHub Action workflow](https://github.com/bbc/peaks.js/blob/master/.github/workflows/npm-publish.yml) that publishes to NPM.
+
