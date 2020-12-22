@@ -562,6 +562,11 @@ define([
   Peaks.prototype.setSource = function(options, callback) {
     var self = this;
 
+    if (!options.mediaUrl) {
+      callback(new Error('peaks.setSource(): options must contain a mediaUrl'));
+      return;
+    }
+
     function reset() {
       self.removeAllListeners('player.canplay');
       self.removeAllListeners('player.error');
@@ -608,12 +613,7 @@ define([
     self.once('player.canplay', playerCanPlayHandler);
     self.once('player.error', playerErrorHandler);
 
-    if (options.mediaUrl) {
-      self.options.mediaElement.setAttribute('src', options.mediaUrl);
-    }
-    else {
-      playerCanPlayHandler();
-    }
+    self.options.mediaElement.setAttribute('src', options.mediaUrl);
   };
 
   Peaks.prototype.getWaveformData = function() {
