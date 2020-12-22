@@ -38,8 +38,8 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       shapeOptions.fill = options.color;
     }
     else if (typeof options.color === 'object') {
-      shapeOptions.fillLinearGradientStartPointY = options.color.linearGradientStartPoint;
-      shapeOptions.fillLinearGradientEndPointY = options.color.linearGradientEndPoint;
+      shapeOptions.fillLinearGradientStartPointY = options.color.linearGradientStartPixel;
+      shapeOptions.fillLinearGradientEndPointY = options.color.linearGradientEndPixel;
       shapeOptions.fillLinearGradientColorStops = options.color.linearGradientColorStops;
     }
     else {
@@ -63,8 +63,8 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       this.fill(color);
     }
     else if (typeof color === 'object') {
-      this.fillLinearGradientStartPointY(color.linearGradientStartPoint);
-      this.fillLinearGradientEndPointY(color.linearGradientEndPoint);
+      this.fillLinearGradientStartPointY(color.linearGradientStartPixel);
+      this.fillLinearGradientEndPointY(color.linearGradientEndPixel);
       this.fillLinearGradientColorStops(color.linearGradientColorStops);
     }
     else {
