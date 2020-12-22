@@ -34,10 +34,10 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   function WaveformShape(options) {
     var shapeOptions = {};
 
-    if (typeof options.color === 'string') {
+    if (Utils.isString(options.color)) {
       shapeOptions.fill = options.color;
     }
-    else if (typeof options.color === 'object') {
+    else if (Utils.isObject(options.color)) {
       shapeOptions.fillLinearGradientStartPointY = options.color.linearGradientStartPixel;
       shapeOptions.fillLinearGradientEndPointY = options.color.linearGradientEndPixel;
       shapeOptions.fillLinearGradientColorStops = options.color.linearGradientColorStops;
@@ -59,10 +59,10 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
 
   WaveformShape.prototype.setWaveformColor = function(color) {
-    if (typeof color === 'string') {
+    if (Utils.isString(color)) {
       this.fill(color);
     }
-    else if (typeof color === 'object') {
+    else if (Utils.isObject(color)) {
       this.fillLinearGradientStartPointY(color.linearGradientStartPixel);
       this.fillLinearGradientEndPointY(color.linearGradientEndPixel);
       this.fillLinearGradientColorStops(color.linearGradientColorStops);
