@@ -117,7 +117,8 @@ define([
       playheadTextColor: self._options.playheadTextColor,
       playheadFontFamily: self._options.fontFamily,
       playheadFontSize: self._options.fontSize,
-      playheadFontStyle: self._options.fontStyle
+      playheadFontStyle: self._options.fontStyle,
+      playheadFixedCenter: self._options.playheadFixedCenter
     });
 
     self._playheadLayer.addToStage(self._stage);
@@ -147,8 +148,14 @@ define([
       },
 
       onMouseUp: function(/* mousePosX */) {
-        // Set playhead position only on click release, when not dragging.
-        if (!self._mouseDragHandler.isDragging()) {
+        if (self._options.playheadFixedCenter) {
+          var centerTime = self.pixelsToTime(self._frameOffset);
+
+          self._playheadLayer.updatePlayheadTime(centerTime);
+          self._peaks.player.seek(centerTime);
+        }
+        else if (!self._mouseDragHandler.isDragging()) {
+          // Set playhead position only on click release, when not dragging.
           var mouseDownX = Math.floor(this.mouseDownX);
 
           var pixelIndex = self._frameOffset + mouseDownX;
@@ -279,7 +286,10 @@ define([
       // the keyboard)
       var endThreshold = this._frameOffset + this._width - 100;
 
-      if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
+      if (this._options.playheadFixedCenter) {
+        this._updateWaveform(pixelIndex);
+      }
+      else if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
         // Put the playhead at 100 pixels from the left edge
         this._frameOffset = pixelIndex - 100;
 
@@ -453,7 +463,12 @@ define([
    */
 
   WaveformZoomView.prototype.getFrameOffset = function() {
-    return this._frameOffset;
+    if (this._options.playheadFixedCenter) {
+      return Math.max(0, this._frameOffset - this.getWidth() / 2);
+    }
+    else {
+      return this._frameOffset;
+    }
   };
 
   /**
@@ -570,6 +585,11 @@ define([
 
     var frameStartTime = this.pixelsToTime(this._frameOffset);
     var frameEndTime   = this.pixelsToTime(this._frameOffset + this._width);
+
+    if (this._options.playheadFixedCenter) {
+      frameStartTime -= (frameEndTime - frameStartTime) / 2;
+      frameEndTime -= (frameEndTime - frameStartTime) / 2;
+    }
 
     this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);

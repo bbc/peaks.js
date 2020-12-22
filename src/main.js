@@ -258,6 +258,11 @@ define([
       emitCueEvents: false,
 
       /**
+       * Fixes the zoom waveform playhead marker at the center of the container.
+       */
+      playheadFixedCenter: false,
+
+      /**
        * Point/Segment marker customisation.
        *
        * @todo This part of the API is not stable.

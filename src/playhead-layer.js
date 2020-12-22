@@ -27,6 +27,7 @@ define([
    * @param {String} options.playheadFontFamily
    * @param {Number} options.playheadFontSize
    * @param {String} options.playheadFontStyle
+   * @param {Boolean} options.playheadFixedCenter
    */
 
   function PlayheadLayer(options) {
@@ -37,6 +38,7 @@ define([
     this._playheadVisible = false;
     this._playheadColor = options.playheadColor;
     this._playheadTextColor = options.playheadTextColor;
+    this._playheadFixedCenter = options.playheadFixedCenter;
 
     this._playheadFontFamily = options.playheadFontFamily || 'sans-serif';
     this._playheadFontSize = options.playheadFontSize || 11;
@@ -181,8 +183,11 @@ define([
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
-    var isVisible = (pixelIndex >= frameOffset) &&
-                    (pixelIndex <  frameOffset + width);
+    var isVisible = this._playheadFixedCenter ||
+                    (
+                      (pixelIndex >= frameOffset) &&
+                      (pixelIndex <  frameOffset + width)
+                    );
 
     this._playheadPixel = pixelIndex;
 
@@ -192,6 +197,11 @@ define([
       if (!this._playheadVisible) {
         this._playheadVisible = true;
         this._playheadGroup.show();
+      }
+
+      if (this._playheadFixedCenter) {
+        // TODO: use highlight width instead of view width
+        playheadX = width / 2;
       }
 
       this._playheadGroup.setAttr('x', playheadX);

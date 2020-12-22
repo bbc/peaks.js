@@ -119,7 +119,8 @@ define([
       playheadTextColor: self._options.playheadTextColor,
       playheadFontFamily: self._options.fontFamily,
       playheadFontSize: self._options.fontSize,
-      playheadFontStyle: self._options.fontStyle
+      playheadFontStyle: self._options.fontStyle,
+      playheadFixedCenter: self._options.playheadFixedCenter
     });
 
     self._playheadLayer.addToStage(self._stage);

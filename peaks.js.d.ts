@@ -229,6 +229,8 @@ declare module 'peaks.js' {
     points?: Point[];
     /** Emit cue events when playing */
     emitCueEvents?: boolean;
+    /** Fixes the zoom waveform playhead marker at the center of the container. */
+    playheadFixedCenter?: boolean
     /** Custom segment marker factory function */
     createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
     /** Custom segment label factory function */
