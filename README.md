@@ -689,7 +689,7 @@ You can also use a 2 stop linear gradient here:
 view.setWaveformColor({
   linearGradientStartPixel: 15,
   linearGradientEndPixel: 30,
-  linearGradientColorStops: [0, 'hsl(120, 78%, 26%)', 1, 'hsl(120, 78%, 10%)']
+  linearGradientColorStops: ['hsl(120, 78%, 26%)', 'hsl(120, 78%, 10%)']
 })
 ```
 

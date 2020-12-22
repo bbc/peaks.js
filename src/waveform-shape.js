@@ -14,7 +14,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    *
    * @typedef {Object} WaveformShapeOptions
    * @global
-   * @property {String} color Waveform color.
+   * @property {String | LinearGradientColor} color Waveform color.
    * @property {WaveformOverview|WaveformZoomView} view The view object
    *   that contains the waveform shape.
    * @property {Segment?} segment If given, render a waveform image
@@ -38,12 +38,19 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       shapeOptions.fill = options.color;
     }
     else if (Utils.isObject(options.color)) {
+      if (!Utils.isLinearGradientColor(options.color)) {
+        throw new TypeError('Not a valid linear gradient color object');
+      }
+
       shapeOptions.fillLinearGradientStartPointY = options.color.linearGradientStartPixel;
       shapeOptions.fillLinearGradientEndPointY = options.color.linearGradientEndPixel;
-      shapeOptions.fillLinearGradientColorStops = options.color.linearGradientColorStops;
+      shapeOptions.fillLinearGradientColorStops = [
+        0, options.color.linearGradientColorStops[0],
+        1, options.color.linearGradientColorStops[1]
+      ];
     }
     else {
-      throw new Error('Unknown type for color property');
+      throw new TypeError('Unknown type for color property');
     }
 
     Konva.Shape.call(this, shapeOptions);
@@ -65,10 +72,13 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     else if (Utils.isObject(color)) {
       this.fillLinearGradientStartPointY(color.linearGradientStartPixel);
       this.fillLinearGradientEndPointY(color.linearGradientEndPixel);
-      this.fillLinearGradientColorStops(color.linearGradientColorStops);
+      this.fillLinearGradientColorStops([
+        0, color.linearGradientColorStops[0],
+        1, color.linearGradientColorStops[1]
+      ]);
     }
     else {
-      throw new Error('Unknown type for color property');
+      throw new TypeError('Unknown type for color property');
     }
   };
 
