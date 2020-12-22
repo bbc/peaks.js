@@ -557,6 +557,13 @@ define([
   Peaks.prototype.setSource = function(options, callback) {
     var self = this;
 
+    if (Utils.objectHasProperty(options, 'mediaElement') &&
+        !Utils.objectHasProperty(options, 'mediaUrl')) {
+      // eslint-disable-next-line max-len
+      callback(new Error('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
+      return;
+    }
+
     function reset() {
       self.removeAllListeners('player.canplay');
       self.removeAllListeners('player.error');
