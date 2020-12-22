@@ -32,9 +32,21 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    */
 
   function WaveformShape(options) {
-    Konva.Shape.call(this, {
-      fill: options.color
-    });
+    var shapeOptions = {};
+
+    if (typeof options.color === 'string') {
+      shapeOptions.fill = options.color;
+    }
+    else if (typeof options.color === 'object') {
+      shapeOptions.fillLinearGradientStartPointY = options.color.linearGradientStartPoint;
+      shapeOptions.fillLinearGradientEndPointY = options.color.linearGradientEndPoint;
+      shapeOptions.fillLinearGradientColorStops = options.color.linearGradientColorStops;
+    }
+    else {
+      throw new Error('Unknown type for color property');
+    }
+
+    Konva.Shape.call(this, shapeOptions);
 
     this._view = options.view;
     this._segment = options.segment;
@@ -47,7 +59,17 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
 
   WaveformShape.prototype.setWaveformColor = function(color) {
-    this.fill(color);
+    if (typeof color === 'string') {
+      this.fill(color);
+    }
+    else if (typeof color === 'object') {
+      this.fillLinearGradientStartPointY(color.linearGradientStartPoint);
+      this.fillLinearGradientEndPointY(color.linearGradientEndPoint);
+      this.fillLinearGradientColorStops(color.linearGradientColorStops);
+    }
+    else {
+      throw new Error('Unknown type for color property');
+    }
   };
 
   WaveformShape.prototype._sceneFunc = function(context) {
