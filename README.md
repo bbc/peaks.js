@@ -687,8 +687,8 @@ view.setWaveformColor('#800080'); // Purple
 You can also use a 2 stop linear gradient here:
 ```js
 view.setWaveformColor({
-  linearGradientStartPixel: 15,
-  linearGradientEndPixel: 30,
+  linearGradientStartPercentage: 15,
+  linearGradientEndPercentage: 30,
   linearGradientColorStops: ['hsl(120, 78%, 26%)', 'hsl(120, 78%, 10%)']
 })
 ```

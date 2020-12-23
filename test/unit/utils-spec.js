@@ -221,32 +221,32 @@ describe('Utils', function() {
   describe('isLinearGradientColor', function() {
     it ('should accept valid linear gradient object', function() {
       expect(Utils.isLinearGradientColor({
-        linearGradientStartPixel: 0,
-        linearGradientEndPixel: 100,
+        linearGradientStartPercentage: 0,
+        linearGradientEndPercentage: 100,
         linearGradientColorStops: ['red', 'blue']
       })).to.equal(true);
     });
 
     it ('should reject invalid gradient values', function() {
       expect(Utils.isLinearGradientColor({
-        linearGradientStartPixel: 0,
-        linearGradientEndPixel: 100,
+        linearGradientStartPercentage: 0,
+        linearGradientEndPercentage: 100,
         linearGradientColorStops: ['red']
       })).to.equal(false);
 
       expect(Utils.isLinearGradientColor({
-        linearGradientStartPixel: '0',
-        linearGradientEndPixel: '100',
+        linearGradientStartPercentage: '0',
+        linearGradientEndPercentage: '100',
         linearGradientColorStops: ['red']
       })).to.equal(false);
 
       expect(Utils.isLinearGradientColor({
-        linearGradientStartPixel: 0,
+        linearGradientStartPercentage: 0,
         linearGradientColorStops: ['red', 'blue']
       })).to.equal(false);
 
       expect(Utils.isLinearGradientColor({
-        linearGradientEndPixel: 100,
+        linearGradientEndPercentage: 100,
         linearGradientColorStops: ['red', 'blue']
       })).to.equal(false);
     });

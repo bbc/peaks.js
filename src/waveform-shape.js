@@ -42,8 +42,11 @@ define(['./utils', 'konva'], function(Utils, Konva) {
         throw new TypeError('Not a valid linear gradient color object');
       }
 
-      shapeOptions.fillLinearGradientStartPointY = options.color.linearGradientStartPixel;
-      shapeOptions.fillLinearGradientEndPointY = options.color.linearGradientEndPixel;
+      var startY = options.view._height * (options.color.linearGradientStartPercentage / 100);
+      var endY = options.view._height * (options.color.linearGradientEndPercentage / 100);
+
+      shapeOptions.fillLinearGradientStartPointY = startY;
+      shapeOptions.fillLinearGradientEndPointY = endY;
       shapeOptions.fillLinearGradientColorStops = [
         0, options.color.linearGradientColorStops[0],
         1, options.color.linearGradientColorStops[1]
@@ -69,9 +72,12 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     if (Utils.isString(color)) {
       this.fill(color);
     }
-    else if (Utils.isObject(color)) {
-      this.fillLinearGradientStartPointY(color.linearGradientStartPixel);
-      this.fillLinearGradientEndPointY(color.linearGradientEndPixel);
+    else if (Utils.isLinearGradientColor(color)) {
+      var startY = this._view._height * (color.linearGradientStartPercentage / 100);
+      var endY = this._view._height * (color.linearGradientEndPercentage / 100);
+
+      this.fillLinearGradientStartPointY(startY);
+      this.fillLinearGradientEndPointY(endY);
       this.fillLinearGradientColorStops([
         0, color.linearGradientColorStops[0],
         1, color.linearGradientColorStops[1]

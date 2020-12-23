@@ -132,8 +132,8 @@ declare module 'peaks.js' {
   }
 
   interface LinearGradientColor {
-    linearGradientStartPixel: number
-    linearGradientEndPixel: number
+    linearGradientStartPercentage: number
+    linearGradientEndPercentage: number
     linearGradientColorStops: (string | number)[]
   }
 

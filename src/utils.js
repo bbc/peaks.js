@@ -267,11 +267,11 @@ define(function() {
 
     isLinearGradientColor: function(value) {
       return this.isObject(value) &&
-              this.objectHasProperty(value, 'linearGradientStartPixel') &&
-              this.objectHasProperty(value, 'linearGradientEndPixel') &&
+              this.objectHasProperty(value, 'linearGradientStartPercentage') &&
+              this.objectHasProperty(value, 'linearGradientEndPercentage') &&
               this.objectHasProperty(value, 'linearGradientColorStops') &&
-              this.isNumber(value.linearGradientStartPixel) &&
-              this.isNumber(value.linearGradientEndPixel) &&
+              this.isNumber(value.linearGradientStartPercentage) &&
+              this.isNumber(value.linearGradientEndPercentage) &&
               this.isArray(value.linearGradientColorStops) &&
               value.linearGradientColorStops.length === 2;
     },
