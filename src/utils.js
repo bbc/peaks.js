@@ -270,6 +270,8 @@ define(function() {
               this.objectHasProperty(value, 'linearGradientStartPixel') &&
               this.objectHasProperty(value, 'linearGradientEndPixel') &&
               this.objectHasProperty(value, 'linearGradientColorStops') &&
+              this.isNumber(value.linearGradientStartPixel) &&
+              this.isNumber(value.linearGradientEndPixel) &&
               this.isArray(value.linearGradientColorStops) &&
               value.linearGradientColorStops.length === 2;
     },

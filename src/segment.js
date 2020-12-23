@@ -51,9 +51,11 @@ define([
       throw new TypeError('peaks.segments.' + context + ': editable must be true or false');
     }
 
-    if (Utils.objectHasProperty(options, 'color') &&
-        !Utils.isString(options.color) &&
-        !Utils.isLinearGradientColor(options.color)) {
+    if (
+      options.color &&
+      !Utils.isString(options.color) &&
+      !Utils.isLinearGradientColor(options.color)
+    ) {
       // eslint-disable-next-line max-len
       throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
     }
