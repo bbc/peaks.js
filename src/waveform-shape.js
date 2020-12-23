@@ -32,6 +32,8 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    */
 
   function WaveformShape(options) {
+    this._color         = options.color;
+
     var shapeOptions = {};
 
     if (Utils.isString(options.color)) {
@@ -86,6 +88,10 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     else {
       throw new TypeError('Unknown type for color property');
     }
+  };
+
+  WaveformShape.prototype.redrawColor = function() {
+    this.setWaveformColor(this._color);
   };
 
   WaveformShape.prototype._sceneFunc = function(context) {

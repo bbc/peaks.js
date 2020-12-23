@@ -420,6 +420,8 @@ define([
     this._height = this._container.clientHeight;
     this._stage.setHeight(this._height);
 
+    this._waveformShape.redrawColor();
+
     this._playheadLayer.fitToView();
     this._segmentsLayer.fitToView();
     this._pointsLayer.fitToView();

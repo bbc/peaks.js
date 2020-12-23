@@ -39,6 +39,7 @@ define([
     this._label         = null;
     this._startMarker   = null;
     this._endMarker     = null;
+    this._color         = segment.color;
 
     this._waveformShape = new WaveformShape({
       color:   segment.color,
@@ -239,6 +240,10 @@ define([
     this._peaks.emit('segments.dragend', this._segment, startMarker);
   };
 
+  SegmentShape.prototype.redrawColor = function() {
+    this._waveformShape.setWaveformColor(this._color);
+  };
+
   SegmentShape.prototype.fitToView = function() {
     if (this._startMarker) {
       this._startMarker.fitToView();
@@ -247,6 +252,8 @@ define([
     if (this._endMarker) {
       this._endMarker.fitToView();
     }
+
+    this.redrawColor();
   };
 
   SegmentShape.prototype.destroy = function() {
