@@ -44,7 +44,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Marker customization](#marker-customization)
   - [Player customization](#player-customization)
 - [API](#api)
-  - [Initialisation](#initialisation)
+  - [Initialization](#initialization)
     - [Peaks.init()](#peaksinitoptions-callback)
     - [instance.setSource()](#instancesetsourceoptions-callback)
   - [Player API](#player-api)
@@ -475,7 +475,7 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 ### `Peaks.init(options, callback)`
 
 Returns a new `Peaks` instance with the [assigned options](#Configuration).
-The callback is invoked after the instance has been created and initialised, or if any errors occur during initialization.
+The callback is invoked after the instance has been created and initialized, or if any errors occur during initialization.
 You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
 ```js
