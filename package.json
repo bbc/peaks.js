@@ -49,14 +49,14 @@
     "browserify": "~17.0.0",
     "browserify-istanbul": "~3.0.1",
     "chai": "~4.2.0",
-    "copyfiles": "~2.4.0",
+    "copyfiles": "~2.4.1",
     "deamdify": "~0.3.0",
     "derequire": "~2.1.1",
     "eslint": "~7.11.0",
     "exorcist": "~1.0.1",
     "jsdoc": "~3.6.6",
-    "karma": "~5.2.3",
-    "karma-browserify": "~7.0.0",
+    "karma": "~6.0.0",
+    "karma-browserify": "~8.0.0",
     "karma-browserstack-launcher": "~1.6.0",
     "karma-chai-sinon": "~0.1.5",
     "karma-chrome-launcher": "~3.1.0",
@@ -68,14 +68,14 @@
     "karma-spec-reporter": "~0.0.32",
     "mocha": "~8.2.0",
     "serve": "~11.3.2",
-    "sinon": "~9.2.0",
+    "sinon": "~9.2.3",
     "sinon-chai": "~3.5.0",
     "watchify": "~3.11.1"
   },
   "dependencies": {
     "colors.css": "~3.0.0",
     "eventemitter3": "~4.0.7",
-    "konva": "~7.1.4",
+    "konva": "~7.2.2",
     "waveform-data": "^3.3.4"
   }
 }
