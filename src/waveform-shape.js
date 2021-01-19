@@ -32,7 +32,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    */
 
   function WaveformShape(options) {
-    this._color         = options.color;
+    this._color = options.color;
 
     var shapeOptions = {};
 
@@ -90,7 +90,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     }
   };
 
-  WaveformShape.prototype.redrawColor = function() {
+  WaveformShape.prototype.fitToView = function() {
     this.setWaveformColor(this._color);
   };
 

@@ -240,10 +240,6 @@ define([
     this._peaks.emit('segments.dragend', this._segment, startMarker);
   };
 
-  SegmentShape.prototype.redrawColor = function() {
-    this._waveformShape.setWaveformColor(this._color);
-  };
-
   SegmentShape.prototype.fitToView = function() {
     if (this._startMarker) {
       this._startMarker.fitToView();
@@ -253,7 +249,7 @@ define([
       this._endMarker.fitToView();
     }
 
-    this.redrawColor();
+    this._waveformShape.setWaveformColor(this._color);
   };
 
   SegmentShape.prototype.destroy = function() {
