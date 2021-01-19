@@ -291,7 +291,7 @@ declare module 'peaks.js' {
   interface PlayerAdapter {
     init: (eventEmitter: EventEmitterForPlayerEvents) => void;
     destroy: () => void;
-    play: () => void;
+    play: () => Promise<void>;
     pause: () => void;
     isPlaying: () => boolean;
     isSeeking: () => boolean;
@@ -340,7 +340,7 @@ declare module 'peaks.js' {
       getCurrentTime: () => number;
       getDuration: () => number;
       seek: (time: number) => void;
-      playSegment: (segment: Segment) => void;
+      playSegment: (segment: Segment, loop?: boolean) => void;
     };
     /** Views API */
     views: {
