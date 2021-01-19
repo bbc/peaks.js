@@ -684,11 +684,11 @@ const view = instance.views.getView('zoomview');
 view.setWaveformColor('#800080'); // Purple
 ```
 
-You can also use a 2 stop linear gradient here:
+You can also use a 2 stop linear gradient here. Units are percentages starting at the top of the waveform.
 ```js
 view.setWaveformColor({
-  linearGradientStartPercentage: 15,
-  linearGradientEndPercentage: 30,
+  linearGradientStart: 15,
+  linearGradientEnd: 30,
   linearGradientColorStops: ['hsl(120, 78%, 26%)', 'hsl(120, 78%, 10%)']
 })
 ```
