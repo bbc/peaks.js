@@ -50,6 +50,13 @@ define([
     if (!Utils.isBoolean(options.editable)) {
       throw new TypeError('peaks.segments.' + context + ': editable must be true or false');
     }
+
+    if (options.color &&
+      !Utils.isString(options.color) &&
+      !Utils.isLinearGradientColor(options.color)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
+    }
   }
 
   /**
@@ -63,7 +70,7 @@ define([
    * @param {Number} startTime Segment start time, in seconds.
    * @param {Number} endTime Segment end time, in seconds.
    * @param {String} labelText Segment label text.
-   * @param {String} color Segment waveform color.
+   * @param {String | LinearGradientColor} color Segment waveform color.
    * @param {Boolean} editable If <code>true</code> the segment start and
    *   end times can be adjusted via the user interface.
    * @param {*} data Optional application specific data.

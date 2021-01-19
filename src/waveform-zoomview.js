@@ -641,6 +641,7 @@ define([
     this._height = this._container.clientHeight;
     this._stage.height(this._height);
 
+    this._waveformShape.fitToView();
     this._playheadLayer.fitToView();
     this._segmentsLayer.fitToView();
     this._pointsLayer.fitToView();

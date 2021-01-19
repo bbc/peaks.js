@@ -109,7 +109,7 @@
       <h2>Demo: Custom Point and Segment Markers</h2>
       <p>
         This demo shows how to customise the appearance and behavior of point
-        and segment markers.
+        and segment markers. The waveforms have a gradient applied to them.
       </p>
     </div>
 
@@ -591,7 +591,18 @@
           showPlayheadTime: false,
           createSegmentMarker: createSegmentMarker,
           createSegmentLabel: createSegmentLabel,
-          createPointMarker: createPointMarker
+          createPointMarker: createPointMarker,
+          overviewWaveformColor: {
+            linearGradientStart: 50,
+            linearGradientEnd: 58,
+            linearGradientColorStops: ['rgba(150, 0, 0, 0.2)', 'rgba(150, 0, 0, 0.5)']
+          },
+          overviewHighlightColor: '#888',
+          zoomWaveformColor: {
+            linearGradientStart: 20,
+            linearGradientEnd: 60,
+            linearGradientColorStops: ['hsl(180, 78%, 46%)', 'hsl(180, 78%, 16%)']
+          }
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -617,7 +628,12 @@
               startTime: peaksInstance.player.getCurrentTime(),
               endTime: peaksInstance.player.getCurrentTime() + 10,
               labelText: 'Segment ' + segmentCounter++,
-              editable: true
+              editable: true,
+              color: {
+                linearGradientStart: 20,
+                linearGradientEnd: 60,
+                linearGradientColorStops: ['hsl(40, 78%, 46%)', 'hsl(80, 78%, 16%)']
+              }
             });
           });
 

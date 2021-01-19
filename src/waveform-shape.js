@@ -14,7 +14,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    *
    * @typedef {Object} WaveformShapeOptions
    * @global
-   * @property {String} color Waveform color.
+   * @property {String | LinearGradientColor} color Waveform color.
    * @property {WaveformOverview|WaveformZoomView} view The view object
    *   that contains the waveform shape.
    * @property {Segment?} segment If given, render a waveform image
@@ -32,9 +32,33 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    */
 
   function WaveformShape(options) {
-    Konva.Shape.call(this, {
-      fill: options.color
-    });
+    this._color = options.color;
+
+    var shapeOptions = {};
+
+    if (Utils.isString(options.color)) {
+      shapeOptions.fill = options.color;
+    }
+    else if (Utils.isObject(options.color)) {
+      if (!Utils.isLinearGradientColor(options.color)) {
+        throw new TypeError('Not a valid linear gradient color object');
+      }
+
+      var startY = options.view._height * (options.color.linearGradientStart / 100);
+      var endY = options.view._height * (options.color.linearGradientEnd / 100);
+
+      shapeOptions.fillLinearGradientStartPointY = startY;
+      shapeOptions.fillLinearGradientEndPointY = endY;
+      shapeOptions.fillLinearGradientColorStops = [
+        0, options.color.linearGradientColorStops[0],
+        1, options.color.linearGradientColorStops[1]
+      ];
+    }
+    else {
+      throw new TypeError('Unknown type for color property');
+    }
+
+    Konva.Shape.call(this, shapeOptions);
 
     this._view = options.view;
     this._segment = options.segment;
@@ -47,7 +71,27 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
 
   WaveformShape.prototype.setWaveformColor = function(color) {
-    this.fill(color);
+    if (Utils.isString(color)) {
+      this.fill(color);
+    }
+    else if (Utils.isLinearGradientColor(color)) {
+      var startY = this._view._height * (color.linearGradientStart / 100);
+      var endY = this._view._height * (color.linearGradientEnd / 100);
+
+      this.fillLinearGradientStartPointY(startY);
+      this.fillLinearGradientEndPointY(endY);
+      this.fillLinearGradientColorStops([
+        0, color.linearGradientColorStops[0],
+        1, color.linearGradientColorStops[1]
+      ]);
+    }
+    else {
+      throw new TypeError('Unknown type for color property');
+    }
+  };
+
+  WaveformShape.prototype.fitToView = function() {
+    this.setWaveformColor(this._color);
   };
 
   WaveformShape.prototype._sceneFunc = function(context) {
