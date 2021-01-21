@@ -159,7 +159,7 @@ declare module 'peaks.js' {
   }
 
   interface OptionalOptions {
-    /** HTML5 Media element containing an audio track. Optional when using an ArrayBuffer */
+    /** HTML5 Media element containing an audio track. Optional when using an external player */
     mediaElement?: Element;
     /**
      * If true, peaks will send credentials with all network requests
