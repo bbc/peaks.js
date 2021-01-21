@@ -615,7 +615,7 @@ this.eventEmitter.emit('player.play', this.getCurrentTime());
 
 #### `player.pause` event
 
-Notifies Peaks.js that media playback has stopped or been paused.
+Notifies Peaks.js that media playback has stopped or paused.
 
 The event data should be the current playback position, in seconds.
 

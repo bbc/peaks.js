@@ -249,6 +249,33 @@ define(function() {
       return value instanceof HTMLElement;
     },
 
+    /**
+     * Checks whether the given value is an array
+     * @param {Function} value The value to test
+     * @returns {Boolean}
+     */
+
+    isArray: function(value) {
+      return Array.isArray(value);
+    },
+
+    /**
+     * Checks whether the given value is a valid linear gradient color
+     * @param {Function} value The value to test
+     * @returns {Boolean}
+     */
+
+    isLinearGradientColor: function(value) {
+      return this.isObject(value) &&
+              this.objectHasProperty(value, 'linearGradientStart') &&
+              this.objectHasProperty(value, 'linearGradientEnd') &&
+              this.objectHasProperty(value, 'linearGradientColorStops') &&
+              this.isNumber(value.linearGradientStart) &&
+              this.isNumber(value.linearGradientEnd) &&
+              this.isArray(value.linearGradientColorStops) &&
+              value.linearGradientColorStops.length === 2;
+    },
+
     objectHasProperty: function(object, field) {
       return Object.prototype.hasOwnProperty.call(object, field);
     }

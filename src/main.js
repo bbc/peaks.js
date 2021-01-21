@@ -559,7 +559,7 @@ define([
 
     if (this.options.mediaElement && !options.mediaUrl) {
       // eslint-disable-next-line max-len
-      callback(new TypeError('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
+      callback(new Error('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
       return;
     }
 

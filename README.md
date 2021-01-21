@@ -44,7 +44,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Marker customization](#marker-customization)
   - [Player customization](#player-customization)
 - [API](#api)
-  - [Initialisation](#initialisation)
+  - [Initialization](#initialization)
     - [Peaks.init()](#peaksinitoptions-callback)
     - [instance.setSource()](#instancesetsourceoptions-callback)
   - [Player API](#player-api)
@@ -366,10 +366,10 @@ var options = {
   // Color for segment end marker handles
   segmentEndMarkerColor: '#a0a0a0',
 
-  // Color for the zoomable waveform
+  // Color for the zoomable waveform. You can also use a 2 stop gradient here. See setWaveformColor().
   zoomWaveformColor: 'rgba(0, 225, 128, 1)',
 
-  // Color for the overview waveform
+  // Color for the overview waveform. You can also use a 2 stop gradient here. See setWaveformColor().
   overviewWaveformColor: 'rgba(0,0,0,0.2)',
 
   // Color for the overview waveform rectangle
@@ -475,7 +475,7 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 ### `Peaks.init(options, callback)`
 
 Returns a new `Peaks` instance with the [assigned options](#Configuration).
-The callback is invoked after the instance has been created and initialised, or if any errors occur during initialization.
+The callback is invoked after the instance has been created and initialized, or if any errors occur during initialization.
 You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
 ```js
@@ -682,6 +682,15 @@ The initial color is controlled by the `zoomWaveformColor` and `overviewWaveform
 ```js
 const view = instance.views.getView('zoomview');
 view.setWaveformColor('#800080'); // Purple
+```
+
+You can also use a 2 stop linear gradient here. Units are percentage of the view height, starting at the top of the waveform.
+```js
+view.setWaveformColor({
+  linearGradientStart: 15,
+  linearGradientEnd: 30,
+  linearGradientColorStops: ['hsl(120, 78%, 26%)', 'hsl(120, 78%, 10%)']
+});
 ```
 
 ### `view.showPlayheadTime(show)`

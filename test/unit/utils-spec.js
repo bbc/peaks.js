@@ -217,4 +217,45 @@ describe('Utils', function() {
       expect(Utils.isFunction([])).to.equal(false);
     });
   });
+
+  describe('isLinearGradientColor', function() {
+    it ('should accept valid linear gradient object', function() {
+      expect(Utils.isLinearGradientColor({
+        linearGradientStart: 0,
+        linearGradientEnd: 100,
+        linearGradientColorStops: ['red', 'blue']
+      })).to.equal(true);
+    });
+
+    it ('should reject invalid gradient values', function() {
+      expect(Utils.isLinearGradientColor({
+        linearGradientStart: 0,
+        linearGradientEnd: 100,
+        linearGradientColorStops: ['red']
+      })).to.equal(false);
+
+      expect(Utils.isLinearGradientColor({
+        linearGradientStart: '0',
+        linearGradientEnd: '100',
+        linearGradientColorStops: ['red']
+      })).to.equal(false);
+
+      expect(Utils.isLinearGradientColor({
+        linearGradientStart: 0,
+        linearGradientColorStops: ['red', 'blue']
+      })).to.equal(false);
+
+      expect(Utils.isLinearGradientColor({
+        linearGradientEnd: 100,
+        linearGradientColorStops: ['red', 'blue']
+      })).to.equal(false);
+    });
+
+    it ('should reject other values', function() {
+      expect(Utils.isLinearGradientColor('red')).to.equal(false);
+      expect(Utils.isLinearGradientColor('#fff')).to.equal(false);
+      expect(Utils.isLinearGradientColor(123)).to.equal(false);
+      expect(Utils.isLinearGradientColor(['red', 'blue'])).to.equal(false);
+    });
+  });
 });
