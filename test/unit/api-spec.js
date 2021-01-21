@@ -741,7 +741,7 @@ describe('Peaks', function() {
         };
 
         p.setSource(options, function(error) {
-          expect(error).to.be.an.instanceOf(TypeError);
+          expect(error).to.be.an.instanceOf(Error);
           expect(error.message).to.match(/options must contain a mediaUrl/);
           done();
         });
