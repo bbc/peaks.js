@@ -609,7 +609,7 @@ define([
     self.once('player.canplay', playerCanPlayHandler);
     self.once('player.error', playerErrorHandler);
 
-    if (options.mediaUrl) {
+    if (this.options.mediaElement) {
       self.options.mediaElement.setAttribute('src', options.mediaUrl);
     }
     else {
