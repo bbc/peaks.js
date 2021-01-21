@@ -48,11 +48,6 @@ declare module 'peaks.js' {
     update: (options: PointUpdateOptions) => void;
   }
 
-  interface RequiredOptions {
-    /** HTML5 Media element containing an audio track */
-    mediaElement: Element;
-  }
-
   interface SingleContainerOptions {
     /** Container element for the waveform views */
     container: HTMLElement;
@@ -164,6 +159,8 @@ declare module 'peaks.js' {
   }
 
   interface OptionalOptions {
+    /** HTML5 Media element containing an audio track. Optional when using an ArrayBuffer */
+    mediaElement?: Element;
     /**
      * If true, peaks will send credentials with all network requests
      * - i.e. when fetching waveform data.
@@ -381,7 +378,7 @@ declare module 'peaks.js' {
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
-  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions { }
+  interface PeaksOptionsWithoutAudioOptions extends OptionalOptions { }
 
   export interface JsonWaveformData {
     version: number;

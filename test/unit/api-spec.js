@@ -7,6 +7,18 @@ var WaveformData = require('waveform-data');
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
+var externalPlayer = {
+  init: function() {},
+  destroy: function() {},
+  play: function() {},
+  pause: function() {},
+  seek: function() {},
+  isPlaying: function() {},
+  isSeeking: function() {},
+  getCurrentTime: function() {},
+  getDuration: function() {}
+};
+
 describe('Peaks', function() {
   var p = null;
 
@@ -240,6 +252,29 @@ describe('Peaks', function() {
                 done();
               });
             });
+        });
+      });
+
+      context('with external player', function() {
+        it('should ignore mediaUrl if using an external player', function(done) {
+          var sampleJsonData = require('../../test_data/sample.json');
+
+          Peaks.init({
+            containers: {
+              overview: document.getElementById('overview-container'),
+              zoomview: document.getElementById('zoomview-container')
+            },
+            mediaUrl: 'invalid',
+            waveformData: {
+              json: sampleJsonData
+            },
+            player: externalPlayer
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceOf(Peaks);
+            instance.destroy();
+            done();
+          });
         });
       });
     });
@@ -692,6 +727,22 @@ describe('Peaks', function() {
           expect(error).to.be.undefined;
           expect(p.zoom.getZoomLevel()).to.equal(128);
           expect(waveformLayerDraw.callCount).to.equal(1);
+          done();
+        });
+      });
+    });
+
+    context('with missing mediaUrl', function() {
+      it('should return an error', function(done) {
+        var options = {
+          webAudio: {
+            audioContext: new TestAudioContext()
+          }
+        };
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.an.instanceOf(TypeError);
+          expect(error.message).to.match(/options must contain a mediaUrl/);
           done();
         });
       });

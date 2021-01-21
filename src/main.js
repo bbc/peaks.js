@@ -557,8 +557,9 @@ define([
   Peaks.prototype.setSource = function(options, callback) {
     var self = this;
 
-    if (!options.mediaUrl) {
-      callback(new Error('peaks.setSource(): options must contain a mediaUrl'));
+    if (this.options.mediaElement && !options.mediaUrl) {
+      // eslint-disable-next-line max-len
+      callback(new Error('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
       return;
     }
 
@@ -608,7 +609,12 @@ define([
     self.once('player.canplay', playerCanPlayHandler);
     self.once('player.error', playerErrorHandler);
 
-    self.options.mediaElement.setAttribute('src', options.mediaUrl);
+    if (this.options.mediaElement) {
+      self.options.mediaElement.setAttribute('src', options.mediaUrl);
+    }
+    else {
+      playerCanPlayHandler();
+    }
   };
 
   Peaks.prototype.getWaveformData = function() {
