@@ -48,8 +48,6 @@ declare module 'peaks.js' {
     update: (options: PointUpdateOptions) => void;
   }
 
-  interface RequiredOptions {  }
-
   interface SingleContainerOptions {
     /** Container element for the waveform views */
     container: HTMLElement;
@@ -374,7 +372,7 @@ declare module 'peaks.js' {
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
-  interface PeaksOptionsWithoutAudioOptions extends RequiredOptions, OptionalOptions { }
+  interface PeaksOptionsWithoutAudioOptions extends OptionalOptions { }
 
   export interface JsonWaveformData {
     version: number;
