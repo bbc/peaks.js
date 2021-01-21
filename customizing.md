@@ -410,7 +410,8 @@ to implement such a player, using [Tone.js](https://tonejs.github.io/).
 The `player` configuration option allows you to pass an object that will be
 invoked, either directly by the Peaks.js [Player API](README.md#player-api),
 or indirectly by interacting with the waveform view (e.g., seeking via mouse
-click or keyboard).
+click or keyboard). You do not need to pass a `mediaElement` configuration
+option if you are using `player`.
 
 The structure of the `player` interface is given below:
 
