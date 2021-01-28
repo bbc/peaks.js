@@ -173,34 +173,33 @@ define([
         return;
       }
 
-      clearTimeout(self._interval);
-      self._interval = null;
-
       // Set audio time to segment start time
       self.seek(segment.startTime);
 
       // Start playing audio
       self.play();
 
-      // We need to use setInterval here as the timeupdate event doesn't fire
-      // often enough.
-      self._interval = setInterval(function() {
+      // We need to use requestAnimationFrame here as the timeupdate event
+      // doesn't fire often enough.
+      function timeChecker() {
         if (!self.isPlaying()) {
-          clearTimeout(self._interval);
-          self._interval = null;
           self.pause();
+          return;
         }
         else if (self.getCurrentTime() >= segment.endTime) {
           if (loop) {
             self.seek(segment.startTime);
           }
           else {
-            clearTimeout(self._interval);
-            self._interval = null;
             self.pause();
+            return;
           }
         }
-      }, 30);
+
+        window.requestAnimationFrame(timeChecker);
+      }
+
+      window.requestAnimationFrame(timeChecker);
     };
   }
 
