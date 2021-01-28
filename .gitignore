@@ -9,3 +9,7 @@ docs
 node_modules
 peaks.js
 peaks.js.map
+
+# Editor/IDE config folders
+.vscode
+.idea
