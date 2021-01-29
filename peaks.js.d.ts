@@ -378,8 +378,6 @@ declare module 'peaks.js' {
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
-  interface PeaksOptionsWithoutAudioOptions extends OptionalOptions { }
-
   export interface JsonWaveformData {
     version: number;
     channels: number;
@@ -390,6 +388,6 @@ declare module 'peaks.js' {
     data: number[];
   }
 
-  export type PeaksOptions = PeaksOptionsWithoutAudioOptions & AudioOptions & ContainerOptions;
+  export type PeaksOptions = OptionalOptions & AudioOptions & ContainerOptions;
   export function init(options: PeaksOptions, callback?: PeaksInitCallback): PeaksInstance;
 }
