@@ -303,12 +303,13 @@ describe('Player', function() {
         p.player.playSegment({ startTime: expectedStart, endTime: expectedEnd });
 
         p.on('player.playing', function(currentTime) {
-          expect(currentTime).to.equal(expectedStart);
+          var diff = Math.abs(currentTime - expectedStart);
+          expect(diff).to.be.lessThan(0.05);
         });
 
         p.on('player.pause', function() {
           var diff = Math.abs(p.player.getCurrentTime() - expectedEnd);
-          expect(diff).to.be.lessThan(0.2);
+          expect(diff).to.be.lessThan(0.05);
           done();
         });
       });
