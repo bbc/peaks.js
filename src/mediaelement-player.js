@@ -77,6 +77,12 @@ define([
     });
 
     self._interval = null;
+
+    // If the media element has preload="none", clicking to seek in the
+    // waveform won't work, so here we force the media to load.
+    if (self._mediaElement.readyState === HTMLMediaElement.HAVE_NOTHING) {
+      self._mediaElement.load();
+    }
   };
 
   /**
