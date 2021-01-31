@@ -54,9 +54,9 @@ define([
       self._peaks.emit('player.timeupdate', self.getCurrentTime());
     });
 
-    self._addMediaListener('play', function() {
+    self._addMediaListener('playing', function() {
       self._isPlaying = true;
-      self._peaks.emit('player.play', self.getCurrentTime());
+      self._peaks.emit('player.playing', self.getCurrentTime());
     });
 
     self._addMediaListener('pause', function() {

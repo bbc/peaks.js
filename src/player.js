@@ -12,6 +12,21 @@ define([
 ], function(Utils) {
   'use strict';
 
+  function getAllPropertiesFrom(adapter) {
+    var allProperties = [];
+    var obj = adapter;
+
+    while (obj) {
+      Object.getOwnPropertyNames(obj).forEach(function(p) {
+        allProperties.push(p);
+      });
+
+      obj = Object.getPrototypeOf(obj);
+    }
+
+    return allProperties;
+  }
+
   function validateAdapter(adapter) {
     var publicAdapterMethods = [
       'init',
@@ -24,21 +39,6 @@ define([
       'getDuration',
       'seek'
     ];
-
-    function getAllPropertiesFrom(adapter) {
-      var allProperties = [];
-      var obj = adapter;
-
-      while (obj) {
-        Object.getOwnPropertyNames(obj).forEach(function(p) {
-          allProperties.push(p);
-        });
-
-        obj = Object.getPrototypeOf(obj);
-      }
-
-      return allProperties;
-    }
 
     var allProperties = getAllPropertiesFrom(adapter);
 
@@ -64,15 +64,17 @@ define([
    */
 
   function Player(peaks, adapter) {
-    var self = this;
+    this._peaks = peaks;
 
-    self._peaks = peaks;
-    self._interval = null;
+    this._playingSegment = false;
+    this._segment = null;
+    this._loop = false;
+    this._playSegmentTimerCallback = this._playSegmentTimerCallback.bind(this);
 
     validateAdapter(adapter);
-    self._adapter = adapter;
+    this._adapter = adapter;
 
-    self._adapter.init(peaks);
+    this._adapter.init(peaks);
   }
 
   /**
@@ -80,11 +82,6 @@ define([
    */
 
   Player.prototype.destroy = function() {
-    if (this._interval !== null) {
-      clearTimeout(this._interval);
-      this._interval = null;
-    }
-
     this._adapter.destroy();
   };
 
@@ -174,34 +171,44 @@ define([
       return;
     }
 
-    clearTimeout(self._interval);
-    self._interval = null;
+    self._segment = segment;
+    self._loop = loop;
 
     // Set audio time to segment start time
     self.seek(segment.startTime);
 
+    self._peaks.once('player.playing', function() {
+      if (!self._playingSegment) {
+        self._playingSegment = true;
+
+        // We need to use requestAnimationFrame here as the timeupdate event
+        // doesn't fire often enough.
+        window.requestAnimationFrame(self._playSegmentTimerCallback);
+      }
+    });
+
     // Start playing audio
     self.play();
+  };
 
-    // We need to use setInterval here as the timeupdate event doesn't fire
-    // often enough.
-    self._interval = setInterval(function() {
-      if (!self.isPlaying()) {
-        clearTimeout(self._interval);
-        self._interval = null;
-        self.pause();
+  Player.prototype._playSegmentTimerCallback = function() {
+    if (!this.isPlaying()) {
+      this.pause();
+      this._playingSegment = false;
+      return;
+    }
+    else if (this.getCurrentTime() >= this._segment.endTime) {
+      if (this._loop) {
+        this.seek(this._segment.startTime);
       }
-      else if (self.getCurrentTime() >= segment.endTime) {
-        if (loop) {
-          self.seek(segment.startTime);
-        }
-        else {
-          clearTimeout(self._interval);
-          self._interval = null;
-          self.pause();
-        }
+      else {
+        this.pause();
+        this._playingSegment = false;
+        return;
       }
-    }, 30);
+    }
+
+    window.requestAnimationFrame(this._playSegmentTimerCallback);
   };
 
   return Player;

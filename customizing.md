@@ -484,7 +484,7 @@ Starts playback from the current playback position.
 This function may return a `Promise` which resolves when playback actually
 starts.
 
-A [`player.play`](#playerplay-event) event should be emitted when playback starts.
+A [`player.playing`](#playerplaying-event) event should be emitted when playback starts.
 
 ```javascript
 play() {
@@ -604,14 +604,14 @@ The event data should be an `Error` object.
 this.eventEmitter.emit('player.error', new Error("Failed to start playback"));
 ```
 
-#### `player.play` event
+#### `player.playing` event
 
 Notifies Peaks.js that media playback has started.
 
 The event data should be the current playback position, in seconds.
 
 ```javascript
-this.eventEmitter.emit('player.play', this.getCurrentTime());
+this.eventEmitter.emit('player.playing', this.getCurrentTime());
 ```
 
 #### `player.pause` event

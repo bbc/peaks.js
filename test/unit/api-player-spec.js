@@ -218,8 +218,8 @@ describe('Player', function() {
     });
 
     describe('play', function() {
-      it('should trigger mediaelement play event', function(done) {
-        p.on('player.play', function(currentTime) {
+      it('should trigger mediaelement playing event', function(done) {
+        p.on('player.playing', function(currentTime) {
           expect(currentTime).to.equal(0);
           done();
         });
@@ -302,7 +302,7 @@ describe('Player', function() {
 
         p.player.playSegment({ startTime: expectedStart, endTime: expectedEnd });
 
-        p.on('player.play', function(currentTime) {
+        p.on('player.playing', function(currentTime) {
           expect(currentTime).to.equal(expectedStart);
         });
 

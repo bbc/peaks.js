@@ -1143,7 +1143,7 @@ The following sections describe the available events.
 | `player.canplay`    | (none)        |
 | `player.error`      | `Error error` |
 | `player.pause`      | `Number time` |
-| `player.play`       | `Number time` |
+| `player.playing`    | `Number time` |
 | `player.seeked`     | `Number time` |
 | `player.timeupdate` | `Number time` |
 
@@ -1269,4 +1269,4 @@ Thank you to all our [contributors](https://github.com/bbc/peaks.js/graphs/contr
 
 # Copyright
 
-Copyright 2020 British Broadcasting Corporation
+Copyright 2021 British Broadcasting Corporation
