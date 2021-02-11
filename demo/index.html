@@ -563,6 +563,10 @@
           peaksInstance.on('player.pause', function(time) {
             console.log('player.pause:', time);
           });
+
+          peaksInstance.on('player.ended', function() {
+            console.log('player.ended');
+          });
         });
       })(peaks);
     </script>
