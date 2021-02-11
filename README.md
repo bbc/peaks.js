@@ -1146,6 +1146,7 @@ The following sections describe the available events.
 | `player.playing`    | `Number time` |
 | `player.seeked`     | `Number time` |
 | `player.timeupdate` | `Number time` |
+| `player.ended`      | (none)        |
 
 #### Views
 
