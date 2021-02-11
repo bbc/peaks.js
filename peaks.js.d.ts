@@ -278,6 +278,7 @@ declare module 'peaks.js' {
     'zoomview.dblclick': (time: number) => void;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
     'player.canplay': () => void;
+    'player.ended': () => void;
     'player.error': (error: any) => void;
     'player.pause': (time: number) => void;
     'player.playing': (time: number) => void;
