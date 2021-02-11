@@ -203,6 +203,7 @@ define([
       }
       else {
         this.pause();
+        this._peaks.emit('player.ended');
         this._playingSegment = false;
         return;
       }

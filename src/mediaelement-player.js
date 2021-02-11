@@ -64,6 +64,10 @@ define([
       self._peaks.emit('player.pause', self.getCurrentTime());
     });
 
+    self._addMediaListener('ended', function() {
+      self._peaks.emit('player.ended');
+    });
+
     self._addMediaListener('seeked', function() {
       self._peaks.emit('player.seeked', self.getCurrentTime());
     });
