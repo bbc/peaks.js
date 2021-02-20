@@ -255,8 +255,8 @@ const audioContext = new AudioContext();
 
 const options = {
   containers: {
-    overview: document.getElementById('overview-waveform'),
-    zoomview: document.getElementById('zoomview-waveform')
+    overview: document.getElementById('overview-container'),
+    zoomview: document.getElementById('zoomview-container')
   },
   mediaElement: document.querySelector('audio'),
   webAudio: {
@@ -282,8 +282,8 @@ audioContext.decodeAudioData(arrayBuffer)
   .then(function(audioBuffer) {
     const options = {
       containers: {
-        overview: document.getElementById('overview-waveform'),
-        zoomview: document.getElementById('zoomview-waveform')
+        overview: document.getElementById('overview-container'),
+        zoomview: document.getElementById('zoomview-container')
       },
       mediaElement: document.querySelector('audio'),
       webAudio: {
