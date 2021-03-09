@@ -1,5 +1,28 @@
 # Peaks.js
 
+## 0.24.0 (2021/03/09)
+
+* (#353) Added color gradient support for waveforms (@Christilut)
+
+* (#359) Fixed setSource() so that the mediaUrl option is only required
+  if using a media element (@Christilut)
+
+* (#360) Fixed waveform initialisation where the media element has
+  preload="none" (@chrisn)
+
+* (#363) #Changed playSegment() to use requestAnimationFrame() (@ffxsam)
+
+* (#363) The player.play event has been renamed to player.playing, for
+  consistency with the corresponding HTMLMediaElement event (@chrisn)
+
+* (#367) Added player.ended event. This is emitted when the media element
+  itself emits an "ended" event, and when playSegment() reaches the end of
+  the segment (@ffxsam)
+
+* (#369) Fixed documentation (@OmarShehata)
+
+* Various fixes to the demo pages (@chrisn)
+
 ## 0.23.1 (2020/11/27)
 
  * Version bump to update npm release (@chrisn)
