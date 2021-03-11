@@ -287,7 +287,6 @@ audioContext.decodeAudioData(arrayBuffer)
       },
       mediaElement: document.querySelector('audio'),
       webAudio: {
-        audioContext: audioContext,
         audioBuffer: audioBuffer
       }
     };
