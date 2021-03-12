@@ -306,13 +306,8 @@ define([
 
     var containers = null;
 
-    if (typeof instance.options.template === 'string') {
-      opts.container.innerHTML = instance.options.template;
-
-      containers = buildUi(instance.options.container);
-    }
-    else if (Utils.isHTMLElement(instance.options.template)) {
-      this.container.appendChild(instance.options.template);
+    if (instance.options.template) {
+      instance.options.container.innerHTML = instance.options.template;
 
       containers = buildUi(instance.options.container);
     }
@@ -454,7 +449,7 @@ define([
       // eslint-disable-next-line max-len
       return new Error('Peaks.init(): Please specify either a container or containers option');
     }
-    else if (Boolean(opts.container) === Boolean(opts.containers)) {
+    else if (opts.container && opts.containers) {
       // eslint-disable-next-line max-len
       return new Error('Peaks.init(): Please specify either a container or containers option, but not both');
     }
@@ -501,8 +496,6 @@ define([
     if (opts.logger) {
       this.logger = opts.logger;
     }
-
-    return null;
   };
 
   /**
