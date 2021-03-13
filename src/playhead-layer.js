@@ -194,7 +194,7 @@ define([
         this._playheadGroup.show();
       }
 
-      this._playheadGroup.setAttr('x', playheadX);
+      this._playheadGroup.setX(playheadX);
 
       if (this._playheadText) {
         var text = this._view.formatTime(time);
@@ -203,10 +203,10 @@ define([
         this._playheadText.setText(text);
 
         if (playheadTextWidth + playheadX > width - 2) {
-          this._playheadText.setAttr('x', -playheadTextWidth - 2);
+          this._playheadText.setX(-playheadTextWidth - 2);
         }
         else if (playheadTextWidth + playheadX < width) {
-          this._playheadText.setAttr('x', 2);
+          this._playheadText.setX(2);
         }
       }
 
