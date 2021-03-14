@@ -424,7 +424,7 @@ describe('Peaks', function() {
         });
       });
 
-      it('should invoke callback with an error if the template is not a string or an HTMLElement', function(done) {
+      it('should invoke callback with an error if the template is not a string', function(done) {
         Peaks.init({
           container: document.getElementById('container'),
           mediaElement: document.getElementById('media'),
