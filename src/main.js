@@ -7,7 +7,6 @@
  */
 
 define([
-  'colors.css',
   'eventemitter3',
   './cue-emitter',
   './waveform-points',
@@ -21,7 +20,6 @@ define([
   './waveform-builder',
   './utils'
 ], function(
-    Colors,
     EventEmitter,
     CueEmitter,
     WaveformPoints,
@@ -150,12 +148,12 @@ define([
       /**
        * Colour for segment start marker handles
        */
-      segmentStartMarkerColor: Colors.gray,
+      segmentStartMarkerColor: '#aaaaaa',
 
       /**
        * Colour for segment end marker handles
        */
-      segmentEndMarkerColor: Colors.gray,
+      segmentEndMarkerColor: '#aaaaaa',
 
       /**
        * Colour for the zoomed in waveform
@@ -171,7 +169,7 @@ define([
        * Colour for the overview waveform highlight rectangle, which shows
        * you what you see in the zoom view.
        */
-      overviewHighlightColor: 'grey',
+      overviewHighlightColor: '#aaaaaa',
 
       /**
        * The default number of pixels from the top and bottom of the canvas
@@ -192,17 +190,17 @@ define([
       /**
        * Colour for segments on the waveform
        */
-      segmentColor:          Colors.orange,
+      segmentColor:          '#ff851b',
 
       /**
        * Colour of the play head
        */
-      playheadColor:         Colors.black,
+      playheadColor:         '#111111',
 
       /**
        * Colour of the play head text
        */
-      playheadTextColor:     Colors.gray,
+      playheadTextColor:     '#aaaaaa',
 
       /**
        * Precision of time label for play head and point/segment markers
@@ -218,12 +216,12 @@ define([
       /**
        * Colour of the axis gridlines
        */
-      axisGridlineColor:     '#ccc',
+      axisGridlineColor:     '#cccccc',
 
       /**
        * Colour of the axis labels
        */
-      axisLabelColor:        Colors.gray,
+      axisLabelColor:        '#aaaaaa',
 
       /**
        *
@@ -238,7 +236,7 @@ define([
       /**
        * Color for point markers
        */
-      pointMarkerColor:     Colors.teal,
+      pointMarkerColor:     '#39cccc',
 
       /**
        * An object containing an AudioContext, used when creating waveform data

@@ -7,10 +7,9 @@
  */
 
 define([
-  'colors.css',
   './segment',
   './utils'
-], function(Colors, Segment, Utils) {
+], function(Segment, Utils) {
   'use strict';
 
   /**
@@ -61,22 +60,16 @@ define([
   };
 
   var colors = [
-    Colors.navy,
-    Colors.blue,
-    Colors.aqua,
-    Colors.teal,
-    // Colors.olive,
-    // Colors.lime,
-    // Colors.green,
-    Colors.yellow,
-    Colors.orange,
-    Colors.red,
-    Colors.maroon,
-    Colors.fuchsia,
-    Colors.purple
-    // Colors.black,
-    // Colors.gray,
-    // Colors.silver
+    '#001f3f', // navy
+    '#0074d9', // blue
+    '#7fdbff', // aqua
+    '#39cccc', // teal
+    '#ffdc00', // yellow
+    '#ff851b', // orange
+    '#ff4136', // red
+    '#85144b', // maroon
+    '#f012be', // fuchsia
+    '#b10dc9'  // purple
   ];
 
   /**
