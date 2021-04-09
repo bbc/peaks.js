@@ -13,7 +13,7 @@
         width: 1000px;
       }
 
-      .zoom-container, .overview-container {
+      #zoomview-container, #overview-container {
         margin: 0 0 24px 0;
         line-height: 0;
         -moz-box-shadow: 3px 3px 20px #919191;
@@ -21,11 +21,11 @@
         box-shadow: 3px 3px 20px #919191;
       }
 
-      .zoom-container {
+      #zoomview-container {
         height: 200px;
       }
 
-      .overview-container {
+      #overview-container {
         height: 85px;
       }
 
@@ -114,7 +114,10 @@
       </p>
     </div>
 
-    <div id="waveform-container"></div>
+    <div id="waveform-container">
+      <div id="zoomview-container"></div>
+      <div id="overview-container"></div>
+    </div>
 
     <div id="demo-controls">
       <audio id="audio" controls="controls">
@@ -170,7 +173,7 @@
       </div>
     </div>
 
-    <script src="peaks.js?20"></script>
+    <script src="peaks.js"></script>
     <script>
       (function(Peaks) {
         var renderSegments = function(peaks) {
@@ -325,7 +328,10 @@
         };
 
         var options = {
-          container: document.getElementById('waveform-container'),
+          containers: {
+            zoomview: document.getElementById('zoomview-container'),
+            overview: document.getElementById('overview-container')
+          },
           mediaElement: document.getElementById('audio'),
           dataUri: {
             arraybuffer: 'TOL_6min_720p_download.dat',
