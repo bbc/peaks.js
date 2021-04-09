@@ -1,5 +1,20 @@
 # Peaks.js
 
+## 0.24.1 (2021/04/09)
+
+* (#380) Fixed cue events following renaming the player.play event
+  in 0.24.0 (@chrisn)
+
+* Minor code optimization in PlayheadLayer (@chrisn)
+
+* Removed colors.css dependency (@chrisn)
+
+* Simplified template and container option checks in Peaks.init()
+  (@chrisn)
+
+* Updated demo pages to use the containers option in Peaks.init()
+  (@chrisn)
+
 ## 0.24.0 (2021/03/09)
 
 * (#353) Added color gradient support for waveforms (@Christilut)
@@ -10,14 +25,14 @@
 * (#360) Fixed waveform initialisation where the media element has
   preload="none" (@chrisn)
 
-* (#363) #Changed playSegment() to use requestAnimationFrame() (@ffxsam)
+* (#363) Changed playSegment() to use requestAnimationFrame() (@ffxsam)
 
 * (#363) The player.play event has been renamed to player.playing, for
   consistency with the corresponding HTMLMediaElement event (@chrisn)
 
 * (#367) Added player.ended event. This is emitted when the media element
-  itself emits an "ended" event, and when playSegment() reaches the end of
-  the segment (@ffxsam)
+  emits an "ended" event, and when playSegment() reaches the end of the
+  segment (@ffxsam)
 
 * (#369) Fixed documentation (@OmarShehata)
 
