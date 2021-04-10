@@ -78,6 +78,28 @@ define([
     this._createMarkers();
   }
 
+  SegmentShape.prototype.updatePosition = function() {
+    var segmentStartOffset = this._view.timeToPixels(this._segment.startTime);
+    var segmentEndOffset   = this._view.timeToPixels(this._segment.endTime);
+
+    var frameStartOffset = this._view.getFrameOffset();
+
+    var startPixel = segmentStartOffset - frameStartOffset;
+    var endPixel   = segmentEndOffset   - frameStartOffset;
+
+    var marker = this.getStartMarker();
+
+    if (marker) {
+      marker.setX(startPixel - marker.getWidth());
+    }
+
+    marker = this.getEndMarker();
+
+    if (marker) {
+      marker.setX(endPixel);
+    }
+  };
+
   SegmentShape.prototype.getSegment = function() {
     return this._segment;
   };

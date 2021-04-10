@@ -196,25 +196,7 @@ define([
   SegmentsLayer.prototype._updateSegment = function(segment) {
     var segmentShape = this._findOrAddSegmentShape(segment);
 
-    var segmentStartOffset = this._view.timeToPixels(segment.startTime);
-    var segmentEndOffset   = this._view.timeToPixels(segment.endTime);
-
-    var frameStartOffset = this._view.getFrameOffset();
-
-    var startPixel = segmentStartOffset - frameStartOffset;
-    var endPixel   = segmentEndOffset   - frameStartOffset;
-
-    var marker = segmentShape.getStartMarker();
-
-    if (marker) {
-      marker.setX(startPixel - marker.getWidth());
-    }
-
-    marker = segmentShape.getEndMarker();
-
-    if (marker) {
-      marker.setX(endPixel);
-    }
+    segmentShape.updatePosition();
   };
 
   /**
