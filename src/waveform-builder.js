@@ -100,7 +100,7 @@ define([
 
     if (options.audioContext) {
       // eslint-disable-next-line max-len
-      this._peaks.options.deprecationLogger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
+      this._peaks.logger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
 
       options.webAudio = {
         audioContext: options.audioContext

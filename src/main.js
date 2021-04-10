@@ -127,15 +127,6 @@ define([
       logger:                null,
 
       /**
-       * Deprecation messages logger.
-       *
-       * @type {Function}
-       * @since 0.4.8
-       */
-      // eslint-disable-next-line no-console
-      deprecationLogger:     console.log.bind(console),
-
-      /**
        * Bind keyboard controls
        */
       keyboard:              false,
@@ -405,31 +396,28 @@ define([
   };
 
   Peaks.prototype._setOptions = function(opts) {
-    // eslint-disable-next-line no-console
-    opts.deprecationLogger = opts.deprecationLogger || console.log.bind(console);
-
     if (opts.audioElement) {
       opts.mediaElement = opts.audioElement;
       // eslint-disable-next-line max-len
-      opts.deprecationLogger('Peaks.init(): The audioElement option is deprecated, please use mediaElement instead');
+      this.logger('Peaks.init(): The audioElement option is deprecated, please use mediaElement instead');
     }
 
     if (opts.overviewHighlightRectangleColor) {
       opts.overviewHighlightColor = opts.overviewHighlightRectangleColor;
       // eslint-disable-next-line max-len
-      opts.deprecationLogger('Peaks.init(): The overviewHighlightRectangleColor option is deprecated, please use overviewHighlightColor instead');
+      this.logger('Peaks.init(): The overviewHighlightRectangleColor option is deprecated, please use overviewHighlightColor instead');
     }
 
     if (opts.inMarkerColor) {
       opts.segmentStartMarkerColor = opts.inMarkerColor;
       // eslint-disable-next-line max-len
-      opts.deprecationLogger('Peaks.init(): The inMarkerColor option is deprecated, please use segmentStartMarkerColor instead');
+      this.logger('Peaks.init(): The inMarkerColor option is deprecated, please use segmentStartMarkerColor instead');
     }
 
     if (opts.outMarkerColor) {
       opts.segmentEndMarkerColor = opts.outMarkerColor;
       // eslint-disable-next-line max-len
-      opts.deprecationLogger('Peaks.init(): The outMarkerColor option is deprecated, please use segmentEndMarkerColor instead');
+      this.logger('Peaks.init(): The outMarkerColor option is deprecated, please use segmentEndMarkerColor instead');
     }
 
     if (!opts.player) {

@@ -6,19 +6,16 @@ var Peaks = require('../../src/main');
 var Point = require('../../src/point');
 
 describe('Peaks.points', function() {
-  var p, deprecationLogger;
+  var p;
 
   beforeEach(function(done) {
-    deprecationLogger = sinon.spy();
-
     var options = {
       containers: {
         overview: document.getElementById('overview-container'),
         zoomview: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json',
-      deprecationLogger: deprecationLogger
+      dataUri: 'base/test_data/sample.json'
     };
 
     Peaks.init(options, function(err, instance) {

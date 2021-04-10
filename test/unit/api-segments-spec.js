@@ -6,10 +6,10 @@ var Peaks = require('../../src/main');
 var Segment = require('../../src/segment');
 
 describe('Peaks.segments', function() {
-  var p, deprecationLogger;
+  var p, logger;
 
   beforeEach(function(done) {
-    deprecationLogger = sinon.spy();
+    logger = sinon.spy();
 
     var options = {
       containers: {
@@ -20,7 +20,7 @@ describe('Peaks.segments', function() {
       dataUri: {
         json: 'base/test_data/sample.json'
       },
-      deprecationLogger: deprecationLogger
+      logger: logger
     };
 
     Peaks.init(options, function(err, instance) {
@@ -92,7 +92,7 @@ describe('Peaks.segments', function() {
       expect(segments[0].startTime).to.equal(0);
       expect(segments[0].endTime).to.equal(10);
 
-      expect(deprecationLogger).to.not.have.been.called;
+      expect(logger).to.not.have.been.called;
     });
 
     it('should should throw if the argument is not an object', function() {
