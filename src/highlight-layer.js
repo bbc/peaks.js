@@ -30,7 +30,7 @@ define([
     this._view          = view;
     this._offset        = offset;
     this._color         = color;
-    this._layer         = new Konva.FastLayer();
+    this._layer         = new Konva.Layer({ listening: false });
     this._highlightRect = null;
     this._startTime     = null;
     this._endTime       = null;

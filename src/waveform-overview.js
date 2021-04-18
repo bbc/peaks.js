@@ -92,7 +92,7 @@ define([
       height: self._height
     });
 
-    self._waveformLayer = new Konva.FastLayer();
+    self._waveformLayer = new Konva.Layer({ listening: false });
 
     self._createWaveform();
 
@@ -334,7 +334,7 @@ define([
   };
 
   WaveformOverview.prototype._createAxisLabels = function() {
-    this._axisLayer = new Konva.FastLayer();
+    this._axisLayer = new Konva.Layer({ listening: false });
 
     this._axis = new WaveformAxis(this, {
       axisGridlineColor:   this._options.axisGridlineColor,
