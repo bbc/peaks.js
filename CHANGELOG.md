@@ -1,5 +1,20 @@
 # Peaks.js
 
+## 0.25.0 (2021/04/18)
+
+* (#353) Fixed setWaveformColor() to allow switching between fixed and gradient
+  colors (@chrisn)
+
+* Changed `Peaks.init()` to return undefined. Instead of using the
+  `Peaks.init()` return value, you should now pass a callback parameter
+  (@chrisn)
+
+* Updated use of Konva.FastLayer, removes deprecation warnings (@chrisn)
+
+* Refactored SegmentsLayer and SegmentShape (@chrisn)
+
+* Removed undocumented `deprecationLogger` option (@chrisn)
+
 ## 0.24.1 (2021/04/09)
 
 * (#380) Fixed cue events following renaming the player.play event
@@ -219,7 +234,7 @@
 
  * The API for creating waveforms using the Web Audio API has changed.
    Instead of passing an `audioContext` option to `Peaks.init()` or
-   `peaksInstance.setSource()`, you shoud now pass a `webAudio` object,
+   `peaksInstance.setSource()`, you should now pass a `webAudio` object,
    for example:
 
     ```javascript
