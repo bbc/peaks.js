@@ -31,24 +31,6 @@ describe('Peaks', function() {
 
   describe('init', function() {
     context('with valid options', function() {
-      it('should emit a peaks.ready event when initialised', function(done) {
-        p = Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
-          },
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-        });
-
-        expect(p).to.be.an.instanceOf(Peaks);
-
-        p.on('peaks.ready', function() {
-          expect(p.getWaveformData()).to.be.an.instanceOf(WaveformData);
-          done();
-        });
-      });
-
       it('should invoke callback when initialised', function(done) {
         Peaks.init({
           containers: {
@@ -66,52 +48,84 @@ describe('Peaks', function() {
         });
       });
 
+      it('should not return a Peaks instance', function(done) {
+        var result = Peaks.init({
+          containers: {
+            overview: document.getElementById('overview-container'),
+            zoomview: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        },
+        function(err, instance) {
+          expect(err).to.equal(null);
+          expect(instance).to.be.an.instanceOf(Peaks);
+          expect(result).to.be.undefined;
+          instance.destroy();
+          done();
+        });
+      });
+
+      it('should emit a peaks.ready event when initialised', function(done) {
+        Peaks.init({
+          containers: {
+            overview: document.getElementById('overview-container'),
+            zoomview: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        },
+        function(err, instance) {
+          expect(err).to.equal(null);
+          expect(instance).to.be.an.instanceOf(Peaks);
+
+          instance.on('peaks.ready', function() {
+            expect(instance.getWaveformData()).to.be.an.instanceOf(WaveformData);
+            done();
+          });
+        });
+      });
+
       context('with containers option', function() {
         it('should construct a Peaks object with overview and zoomable waveforms', function(done) {
-          p = Peaks.init({
+          Peaks.init({
             containers: {
               overview: document.getElementById('overview-container'),
               zoomview: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          });
-
-          expect(p).to.be.an.instanceof(Peaks);
-
-          p.on('peaks.ready', function() {
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
             done();
           });
         });
 
         it('should construct a Peaks object with an overview waveform only', function(done) {
-          p = Peaks.init({
+          Peaks.init({
             containers: {
               overview: document.getElementById('overview-container')
             },
             mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          });
-
-          expect(p).to.be.an.instanceof(Peaks);
-
-          p.on('peaks.ready', function() {
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
             done();
           });
         });
 
         it('should construct a Peaks object with a zoomable waveform only', function(done) {
-          p = Peaks.init({
+          Peaks.init({
             containers: {
               zoomview: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          });
-
-          expect(p).to.be.an.instanceof(Peaks);
-
-          p.on('peaks.ready', function() {
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
             done();
           });
         });

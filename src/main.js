@@ -391,8 +391,6 @@ define([
         callback(null, instance);
       }
     });
-
-    return instance;
   };
 
   Peaks.prototype._setOptions = function(opts) {

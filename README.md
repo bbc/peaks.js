@@ -473,7 +473,7 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 
 ### `Peaks.init(options, callback)`
 
-Returns a new `Peaks` instance with the [assigned options](#Configuration).
+Creates a new `Peaks` instance with the [assigned options](#Configuration).
 The callback is invoked after the instance has been created and initialized, or if any errors occur during initialization.
 You can create and manage several `Peaks` instances within a single page with one or several configurations.
 
@@ -804,12 +804,15 @@ view.setStartTime(6.0); // seconds
 
 Zooms in the waveform zoom view by one level.
 
-Assuming the Peaks instance has been created with zoom levels: 512, 1024, 2048, 4096
-
 ```js
-const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
-
-instance.zoom.zoomOut(); // zoom level is now 1024
+Peaks.init({
+  // ...
+  zoomLevels: [512, 1024, 2048, 4096]
+},
+function(err, peaks) {
+  // Initial zoom level is 512
+  peaks.zoom.zoomOut(); // zoom level is now 1024
+});
 ```
 
 ### `instance.zoom.zoomIn()`
@@ -817,12 +820,17 @@ instance.zoom.zoomOut(); // zoom level is now 1024
 Zooms in the waveform zoom view by one level.
 
 ```js
-const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
+Peaks.init({
+  // ...
+  zoomLevels: [512, 1024, 2048, 4096]
+},
+function(err, peaks) {
+  // Initial zoom level is 512
+  peaks.zoom.zoomIn(); // zoom level is still 512
 
-instance.zoom.zoomIn(); // zoom level is still 512
-
-instance.zoom.zoomOut(); // zoom level is now 1024
-instance.zoom.zoomIn(); // zoom level is now 512 again
+  peaks.zoom.zoomOut(); // zoom level is now 1024
+  peaks.zoom.zoomIn(); // zoom level is now 512 again
+});
 ```
 
 ### `instance.zoom.setZoom(index)`
@@ -831,9 +839,13 @@ Changes the zoom level of the zoomable waveform view to the element in the
 `options.zoomLevels` array at index `index`.
 
 ```js
-const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
-
-instance.zoom.setZoom(3); // zoom level is now 4096
+Peaks.init({
+  // ...
+  zoomLevels: [512, 1024, 2048, 4096]
+},
+function(err, peaks) {
+  peaks.zoom.setZoom(3); // zoom level is now 4096
+});
 ```
 
 See also [view.setZoom()](#viewsetzoomoptions), which offers a more flexible
@@ -844,10 +856,14 @@ way of setting the zoom level.
 Returns the current zoom level, as an index into the `options.zoomLevels` array.
 
 ```js
-const instance = Peaks.init({ ..., zoomLevels: [512, 1024, 2048, 4096] });
-
-instance.zoom.zoomOut();
-console.log(instance.zoom.getZoom()); // -> 1
+Peaks.init({
+  // ...
+  zoomLevels: [512, 1024, 2048, 4096]
+},
+function(err, peaks) {
+  peaks.zoom.zoomOut();
+  console.log(peaks.zoom.getZoom()); // -> 1
+});
 ```
 
 ## Segments API
@@ -969,10 +985,10 @@ Updates an existing segment. Accepts a single `options` parameter, with the foll
 You may also update other user-defined data attributes, which are associated with the segment.
 
 ```js
-const instance = Peaks.init({ ... });
 instance.segments.add({ ... });
+
 const segment = instance.segments.getSegments()[0]
-// Or use instance.segments.getSegment(id)
+// Or use peaks.segments.getSegment(id)
 
 segment.update({ startTime: 7 });
 segment.update({ startTime: 7, labelText: "new label text" });
@@ -980,7 +996,6 @@ segment.update({ startTime: 7, endTime: 9, labelText: 'new label text' });
 
 // Update a user-defined custom attribute
 segment.update({ customAttribute: 'value' });
-// etc.
 ```
 
 ## Points API
@@ -1087,7 +1102,6 @@ Updates an existing point. Accepts a single `options` parameter with the followi
 You may also update other user-defined data attributes, which are associated with the point.
 
 ```js
-const instance = Peaks.init({ ... });
 instance.points.add({ ... });
 const point = instance.points.getPoints()[0]
 // Or use instance.points.getPoint(id)
@@ -1097,7 +1111,6 @@ point.update({ time: 7, labelText: "new label text" });
 
 // Update a user-defined custom attribute
 point.update({ customAttribute: 'value' });
-// etc.
 ```
 
 ## Cue events
@@ -1105,10 +1118,14 @@ point.update({ customAttribute: 'value' });
 Emit events when the playhead reaches a point or segment boundary.
 
 ```js
-const peaks = Peaks.init({ ..., emitCueEvents: true });
-peaks.on('points.enter', function(point) { ... });
-peaks.on('segments.enter', function(segment) { ... });
-peaks.on('segments.exit', function(segment) { ... });
+Peaks.init({
+  // ...
+  emitCueEvents: true
+}, function(err, instance) {
+  instance.on('points.enter', function(point) { ... });
+  instance.on('segments.enter', function(segment) { ... });
+  instance.on('segments.exit', function(segment) { ... });
+});
 ```
 
 ## Events
