@@ -39,11 +39,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     if (Utils.isString(options.color)) {
       shapeOptions.fill = options.color;
     }
-    else if (Utils.isObject(options.color)) {
-      if (!Utils.isLinearGradientColor(options.color)) {
-        throw new TypeError('Not a valid linear gradient color object');
-      }
-
+    else if (Utils.isLinearGradientColor(options.color)) {
       var startY = options.view._height * (options.color.linearGradientStart / 100);
       var endY = options.view._height * (options.color.linearGradientEnd / 100);
 
@@ -73,8 +69,14 @@ define(['./utils', 'konva'], function(Utils, Konva) {
   WaveformShape.prototype.setWaveformColor = function(color) {
     if (Utils.isString(color)) {
       this.fill(color);
+
+      this.fillLinearGradientStartPointY(null);
+      this.fillLinearGradientEndPointY(null);
+      this.fillLinearGradientColorStops(null);
     }
     else if (Utils.isLinearGradientColor(color)) {
+      this.fill(null);
+
       var startY = this._view._height * (color.linearGradientStart / 100);
       var endY = this._view._height * (color.linearGradientEnd / 100);
 
