@@ -1,9 +1,4 @@
 beforeEach(function(done) {
-  var container = document.createElement('div');
-  container.id = 'container';
-  container.width = '1000px';
-  document.body.appendChild(container);
-
   var overviewContainer = document.createElement('div');
   overviewContainer.id = 'overview-container';
   overviewContainer.style.width = '1000px';
@@ -34,7 +29,6 @@ function removeElement(id) {
 }
 
 afterEach(function() {
-  removeElement('container');
   removeElement('zoomview-container');
   removeElement('overview-container');
   removeElement('media');
