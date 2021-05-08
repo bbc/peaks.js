@@ -74,12 +74,9 @@ define([
       return;
     }
 
-    if (event.type === 'touchstart') {
-      this._mouseDownClientX = Math.floor(event.evt.touches[0].clientX);
-    }
-    else {
-      this._mouseDownClientX = event.evt.clientX;
-    }
+    this._mouseDownClientX = Math.floor(
+      event.type === 'touchstart' ? event.evt.touches[0].clientX : event.evt.clientX
+    );
 
     if (this._handlers.onMouseDown) {
       var mouseDownPosX = this._getMousePosX(this._mouseDownClientX);
@@ -104,14 +101,9 @@ define([
    */
 
   MouseDragHandler.prototype._mouseMove = function(event) {
-    var clientX = null;
-
-    if (event.type === 'touchmove') {
-      clientX = Math.floor(event.changedTouches[0].clientX);
-    }
-    else {
-      clientX = event.clientX;
-    }
+    var clientX = Math.floor(
+      event.type === 'touchmove' ? event.changedTouches[0].clientX : event.clientX
+    );
 
     // Don't update on vertical mouse movement.
     if (clientX === this._mouseDownClientX) {
@@ -134,16 +126,17 @@ define([
    */
 
   MouseDragHandler.prototype._mouseUp = function(event) {
-    var clientX = null;
+    var clientX;
 
     if (event.type === 'touchend') {
       clientX = Math.floor(event.changedTouches[0].clientX);
+
       if (event.cancelable) {
         event.preventDefault();
       }
     }
     else {
-      clientX = event.clientX;
+      clientX = Math.floor(event.clientX);
     }
 
     if (this._handlers.onMouseUp) {
