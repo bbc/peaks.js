@@ -207,16 +207,6 @@ define([
       axisLabelColor:        '#aaaaaa',
 
       /**
-       *
-       */
-      template:              [
-        '<div class="waveform">',
-        '<div class="zoom-container"></div>',
-        '<div class="overview-container"></div>',
-        '</div>'
-      ].join(''),
-
-      /**
        * Color for point markers
        */
       pointMarkerColor:     '#39cccc',
