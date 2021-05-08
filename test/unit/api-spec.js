@@ -419,34 +419,19 @@ describe('Peaks', function() {
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
-          expect(err.message).to.match(/container or containers option/);
+          expect(err.message).to.match(/Missing containers option/);
           expect(instance).to.equal(undefined);
           done();
         });
       });
 
-      it('should invoke callback with an error if the container has no layout', function(done) {
+      it('should invoke callback with an error if the container option is used', function(done) {
         Peaks.init({
           container: document.createElement('div'),
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         }, function(err, instance) {
-          expect(err).to.be.an.instanceOf(TypeError);
-          expect(err.message).to.match(/width/);
-          expect(instance).to.equal(undefined);
-          done();
-        });
-      });
-
-      it('should invoke callback with an error if the template is not a string', function(done) {
-        Peaks.init({
-          container: document.getElementById('container'),
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' },
-          template: null
-        }, function(err, instance) {
-          expect(err).to.be.an.instanceOf(TypeError);
-          expect(err.message).to.match(/template/);
+          expect(err).to.be.an.instanceOf(Error);
           expect(instance).to.equal(undefined);
           done();
         });

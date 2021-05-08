@@ -34,14 +34,6 @@ define([
     Utils) {
   'use strict';
 
-  function buildUi(container) {
-    return {
-      player:   container.querySelector('.waveform'),
-      zoomview: container.querySelector('.zoom-container'),
-      overview: container.querySelector('.overview-container')
-    };
-  }
-
   /**
    * Initialises a new Peaks instance with default option settings.
    *
@@ -293,21 +285,7 @@ define([
      Setup the layout
      */
 
-    var containers = null;
-
-    if (instance.options.template) {
-      instance.options.container.innerHTML = instance.options.template;
-
-      containers = buildUi(instance.options.container);
-    }
-    else if (instance.options.containers) {
-      containers = instance.options.containers;
-    }
-    else {
-      // eslint-disable-next-line max-len
-      callback(new TypeError('Peaks.init(): The template option must be a valid HTML string or a DOM object'));
-      return;
-    }
+    var containers = instance.options.containers;
 
     var zoomviewContainer = containers.zoomview || containers.zoom;
 
@@ -429,23 +407,14 @@ define([
       }
     }
 
-    if (!opts.container && !opts.containers) {
+    if (opts.container) {
       // eslint-disable-next-line max-len
-      return new Error('Peaks.init(): Please specify either a container or containers option');
-    }
-    else if (opts.container && opts.containers) {
-      // eslint-disable-next-line max-len
-      return new Error('Peaks.init(): Please specify either a container or containers option, but not both');
+      return new Error('Peaks.init(): The container option has been removed, please use containers instead');
     }
 
-    if (opts.template && opts.containers) {
+    if (!opts.containers) {
       // eslint-disable-next-line max-len
-      return new Error('Peaks.init(): Please specify either a template or a containers option, but not both');
-    }
-
-    // The 'containers' option overrides 'template'.
-    if (opts.containers) {
-      opts.template = null;
+      return new Error('Peaks.init(): Missing containers option');
     }
 
     if (opts.logger && !Utils.isFunction(opts.logger)) {

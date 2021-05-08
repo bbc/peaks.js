@@ -304,11 +304,8 @@ The available options for configuration of the viewer are as follows:
 ```javascript
 var options = {
   /** REQUIRED OPTIONS **/
-  // Containing element: either
-  container: document.getElementById('peaks-container'),
-
-  // or (preferred):
   containers: {
+    // Container elements for zoomview and overview waveforms
     zoomview: document.getElementById('zoomview-container'),
     overview: document.getElementById('overview-container')
   },

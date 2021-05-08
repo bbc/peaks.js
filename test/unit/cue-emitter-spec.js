@@ -54,7 +54,10 @@ describe('CueEmitter', function() {
 
   it('should initialise with already existing points', function(done) {
     var options = {
-      container: document.getElementById('container'),
+      containers: {
+        overview: document.getElementById('overview-container'),
+        zoomview: document.getElementById('zoomview-container')
+      },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
       emitCueEvents: true,
@@ -73,7 +76,10 @@ describe('CueEmitter', function() {
 
   it('should be destroyed when the Peaks instance is destroyed', function(done) {
     var options = {
-      container: document.getElementById('container'),
+      containers: {
+        overview: document.getElementById('overview-container'),
+        zoomview: document.getElementById('zoomview-container')
+      },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
       emitCueEvents: true
@@ -275,7 +281,10 @@ describe('CueEmitter', function() {
       var mediaElement = document.getElementById('media');
 
       var options = {
-        container: document.getElementById('container'),
+        containers: {
+          overview: document.getElementById('overview-container'),
+          zoomview: document.getElementById('zoomview-container')
+        },
         mediaElement: mediaElement,
         dataUri: 'base/test_data/sample.json',
         emitCueEvents: true
