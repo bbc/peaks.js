@@ -356,7 +356,7 @@ define([
     else {
       // Playhead is not visible. Change the zoom level while keeping the
       // centre of the window at the same position in the waveform.
-      playheadOffsetPixels = this._width / 2;
+      playheadOffsetPixels = Math.floor(this._width / 2);
       apexTime = this.pixelsToTime(this._frameOffset + playheadOffsetPixels);
     }
 
