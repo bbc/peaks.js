@@ -323,6 +323,7 @@ declare module 'peaks.js' {
     fitToContainer: () => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
     setStartTime: (time: number) => void;
+    setWheelMode: (mode: 'scroll' | 'none') => void;
   }
 
   type Without<T> = { [K in keyof T]?: undefined };

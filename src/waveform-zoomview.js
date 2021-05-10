@@ -172,7 +172,10 @@ define([
       }
     });
 
-    this._stage.on('dblclick', function(event) {
+    self._onWheel = self._onWheel.bind(self);
+    self.setWheelMode(self._viewOptions.wheelMode);
+
+    self._stage.on('dblclick', function(event) {
       var mousePosX = event.evt.layerX;
 
       var pixelIndex = self._frameOffset + mousePosX;
@@ -182,6 +185,42 @@ define([
       self._peaks.emit('zoomview.dblclick', time);
     });
   }
+
+  WaveformZoomView.prototype.setWheelMode = function(mode) {
+    if (mode !== this._wheelMode) {
+      this._wheelMode = mode;
+
+      switch (mode) {
+        case 'scroll':
+          this._stage.on('wheel', this._onWheel);
+          break;
+
+        case 'none':
+          this._stage.off('wheel');
+          break;
+      }
+    }
+  };
+
+  WaveformZoomView.prototype._onWheel = function(event) {
+    var wheelEvent = event.evt;
+    var delta = wheelEvent.shiftKey ? wheelEvent.deltaY : wheelEvent.deltaX;
+    var offAxisDelta = wheelEvent.shiftKey ? wheelEvent.deltaX : wheelEvent.deltaY;
+
+    // Ignore the event if it looks like the user is scrolling vertically
+    // down the page
+    if (Math.abs(delta) < Math.abs(offAxisDelta)) {
+      return;
+    }
+
+    event.evt.preventDefault();
+
+    var newFrameOffset = Utils.clamp(
+      this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
+    );
+
+    this._updateWaveform(newFrameOffset);
+  };
 
   WaveformZoomView.prototype.getName = function() {
     return 'zoomview';

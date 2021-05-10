@@ -70,6 +70,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.fitToContainer()](#viewfittocontainer)
     - [view.setZoom()](#viewsetzoomoptions)
     - [view.setStartTime()](#viewsetstarttimetime)
+    - [view.setWheelMode()](#viewsetwheelmodemode)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -790,6 +791,20 @@ Note that this method is not available on the overview waveform.
 ```js
 const view = instance.views.getView('zoomview');
 view.setStartTime(6.0); // seconds
+```
+
+### `view.setWheelMode(mode)`
+
+Controls how the waveform view responds to mousewheel input. On a laptop trackpad, this is often a horizontal swipe gesture. For users with a mouse with a scroll wheel, hold down the Shift key while using the scroll wheel. Possible values for `mode` are:
+
+* `'none'` to disable use of the mousewheel input (default)
+* `'scroll'` to scroll the waveform view
+
+Note that this method is not available on the overview waveform.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setWheelMode('scroll');
 ```
 
 ## Zoom API

@@ -93,7 +93,8 @@ define([
 
   var defaultZoomviewOptions = {
     // showPlayheadTime:    true,
-    waveformColor:       'rgba(0, 225, 128, 1)'
+    waveformColor:       'rgba(0, 225, 128, 1)',
+    wheelMode:           'none'
     // zoomAdapter:         'static'
   };
 
@@ -188,7 +189,8 @@ define([
       'axisLabelColor',
       'fontFamily',
       'fontSize',
-      'fontStyle'
+      'fontStyle',
+      'wheelMode'
     ];
 
     optNames.forEach(function(optName) {
