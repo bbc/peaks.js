@@ -362,12 +362,6 @@ define([
   };
 
   Peaks.prototype._setOptions = function(opts) {
-    if (opts.audioElement) {
-      opts.mediaElement = opts.audioElement;
-      // eslint-disable-next-line max-len
-      this.logger('Peaks.init(): The audioElement option is deprecated, please use mediaElement instead');
-    }
-
     if (opts.overviewHighlightRectangleColor) {
       opts.overviewHighlightColor = opts.overviewHighlightRectangleColor;
       // eslint-disable-next-line max-len
