@@ -362,24 +362,6 @@ define([
   };
 
   Peaks.prototype._setOptions = function(opts) {
-    if (opts.overviewHighlightRectangleColor) {
-      opts.overviewHighlightColor = opts.overviewHighlightRectangleColor;
-      // eslint-disable-next-line max-len
-      this.logger('Peaks.init(): The overviewHighlightRectangleColor option is deprecated, please use overviewHighlightColor instead');
-    }
-
-    if (opts.inMarkerColor) {
-      opts.segmentStartMarkerColor = opts.inMarkerColor;
-      // eslint-disable-next-line max-len
-      this.logger('Peaks.init(): The inMarkerColor option is deprecated, please use segmentStartMarkerColor instead');
-    }
-
-    if (opts.outMarkerColor) {
-      opts.segmentEndMarkerColor = opts.outMarkerColor;
-      // eslint-disable-next-line max-len
-      this.logger('Peaks.init(): The outMarkerColor option is deprecated, please use segmentEndMarkerColor instead');
-    }
-
     if (!opts.player) {
       if (!opts.mediaElement) {
         return new Error('Peaks.init(): Missing mediaElement option');
