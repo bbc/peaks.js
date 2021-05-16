@@ -504,6 +504,50 @@ describe('Peaks', function() {
           done();
         });
       });
+
+      it('should invoke callback with an error if the zoomview container element has zero width', function(done) {
+        var container = document.getElementById('zoomview-container');
+        container.style.width = '0px';
+
+        var options = {
+          containers: {
+            zoomview: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/width/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
+      });
+
+      it('should invoke callback with an error if the overview container element has zero width', function(done) {
+        var container = document.getElementById('overview-container');
+        container.style.width = '0px';
+
+        var options = {
+          containers: {
+            overview: document.getElementById('overview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/width/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
+      });
     });
   });
 
