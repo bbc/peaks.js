@@ -45,6 +45,7 @@ define([
     self._originalWaveformData = waveformData;
     self._container = container;
     self._peaks = peaks;
+    self._options = peaks.options;
 
     // Bind event handlers
     self._onTimeUpdate = self._onTimeUpdate.bind(this);
@@ -62,8 +63,6 @@ define([
 
     self._amplitudeScale = 1.0;
     self._timeLabelPrecision = peaks.options.timeLabelPrecision;
-
-    self._options = peaks.options;
 
     self._width = container.clientWidth;
     self._height = container.clientHeight || self._options.height;

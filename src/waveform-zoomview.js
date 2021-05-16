@@ -47,6 +47,7 @@ define([
     self._originalWaveformData = waveformData;
     self._container = container;
     self._peaks = peaks;
+    self._options = peaks.options;
 
     // Bind event handlers
     self._onTimeUpdate = self._onTimeUpdate.bind(self);
@@ -70,14 +71,12 @@ define([
 
     self._enableAutoScroll = true;
     self._amplitudeScale = 1.0;
-    self._timeLabelPrecision = peaks.options.timeLabelPrecision;
-
-    self._options = peaks.options;
+    self._timeLabelPrecision = self._options.timeLabelPrecision;
 
     self._data = null;
     self._pixelLength = 0;
 
-    var initialZoomLevel = self._options.zoomLevels[peaks.zoom.getZoom()];
+    var initialZoomLevel = peaks.zoom.getZoomLevel();
 
     self._zoomLevelAuto = false;
     self._zoomLevelSeconds = null;
