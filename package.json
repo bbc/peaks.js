@@ -40,7 +40,7 @@
     "pretest": "npm run build",
     "test": "karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
-    "copy-demo-files": "copyfiles test_data/sample.mp3 test_data/07023003.mp3 test_data/07023003-2channel.dat demo",
+    "copy-demo-files": "copyfiles --up 1 test_data/sample.mp3 test_data/07023003.mp3 test_data/07023003-2channel.dat demo",
     "prestart": "npm run build && npm run copy-demo-files",
     "start": "serve --listen 8080 --no-clipboard demo",
     "prepack": "npm run build"
