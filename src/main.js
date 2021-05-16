@@ -166,11 +166,6 @@ define([
       randomizeSegmentColor: true,
 
       /**
-       * Height of the waveform canvases in pixels
-       */
-      height:                200,
-
-      /**
        * Colour for segments on the waveform
        */
       segmentColor:          '#ff851b',

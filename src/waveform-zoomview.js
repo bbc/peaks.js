@@ -85,7 +85,7 @@ define([
     self._resampleData({ scale: initialZoomLevel });
 
     self._width = container.clientWidth;
-    self._height = container.clientHeight || self._options.height;
+    self._height = container.clientHeight;
 
     // The pixel offset of the current frame being displayed
     self._frameOffset = 0;

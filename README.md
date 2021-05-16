@@ -344,9 +344,6 @@ var options = {
   // if true, emit cue events on the Peaks instance (see Cue Events)
   emitCueEvents: false,
 
-  // default height of the waveform canvases in pixels
-  height: 200,
-
   // Array of zoom levels in samples per pixel (big >> small)
   zoomLevels: [512, 1024, 2048, 4096],
 

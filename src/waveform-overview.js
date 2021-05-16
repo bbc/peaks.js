@@ -65,7 +65,7 @@ define([
     self._timeLabelPrecision = peaks.options.timeLabelPrecision;
 
     self._width = container.clientWidth;
-    self._height = container.clientHeight || self._options.height;
+    self._height = container.clientHeight;
 
     self._data = waveformData;
 
