@@ -277,16 +277,14 @@ define([
 
     var containers = instance.options.containers;
 
-    var zoomviewContainer = containers.zoomview || containers.zoom;
-
-    if (!Utils.isHTMLElement(zoomviewContainer) &&
+    if (!Utils.isHTMLElement(containers.zoomview) &&
         !Utils.isHTMLElement(containers.overview)) {
       // eslint-disable-next-line max-len
       callback(new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements'));
       return;
     }
 
-    if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
+    if (containers.zoomview && containers.zoomview.clientWidth <= 0) {
       // eslint-disable-next-line max-len
       callback(new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width'));
       return;
@@ -330,8 +328,8 @@ define([
         instance.views.createOverview(containers.overview);
       }
 
-      if (zoomviewContainer) {
-        instance.views.createZoomview(zoomviewContainer);
+      if (containers.zoomview) {
+        instance.views.createZoomview(containers.zoomview);
       }
 
       instance._addWindowResizeHandler();
