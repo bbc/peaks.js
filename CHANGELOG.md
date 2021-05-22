@@ -1,5 +1,21 @@
 # Peaks.js
 
+## 0.26.0 (2021/05/22)
+
+* Removed the `container` and `template` options. Please use the `containers`
+  options instead (@chrisn)
+
+* Removed the `height` option, as waveforms are automatically sized to fit
+  the container element (@chrisn)
+
+* Removed `containers.zoom` as alternative for the `containers.zoomview`
+  option (@chrisn)
+
+* (#356) Use integer values for mouse positions and waveform frame offset
+  (@chrisn)
+
+* Updated waveform-data.js to v4.1.0 (@chrisn)
+
 ## 0.25.0 (2021/04/18)
 
 * (#353) Fixed setWaveformColor() to allow switching between fixed and gradient
