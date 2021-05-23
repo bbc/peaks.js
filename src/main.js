@@ -46,205 +46,177 @@ define([
   function Peaks() {
     EventEmitter.call(this);
 
+    // Set default options
     this.options = {
+      zoomLevels:              [512, 1024, 2048, 4096],
 
-      /**
-       * Array of scale factors (samples per pixel) for the zoom levels
-       * (big >> small)
-       */
-      zoomLevels:            [512, 1024, 2048, 4096],
+      mediaElement:            null,
 
-      /**
-       * Data URI where to get the waveform data.
-       *
-       * If a string, we assume that `this.dataUriDefaultFormat` is the default
-       * `xhr.responseType` value.
-       *
-       * @since 0.0.1
-       *
-       * ```js
-       * dataUri: 'url/to/data.json?waveformId=1337'
-       * ```
-       *
-       * If an object, each key is an `xhr.responseType` which will contain its
-       * associated source URI.
-       *
-       * @since 0.3.0
-       *
-       * ```js
-       * dataUri: {
-       *   arraybuffer: 'url/to/data.dat',
-       *   json: 'url/to/data.json'
-       * }
-       * ```
-       */
-      dataUri:               null,
+      dataUri:                 null,
+      dataUriDefaultFormat:    'json',
+      withCredentials:         false,
 
-      /**
-       * Will be used as a `xhr.responseType` if `dataUri` is a string, and not
-       * an object. Here for backward compatibility purpose only.
-       *
-       * @since 0.3.0
-       */
-      dataUriDefaultFormat:  'json',
+      waveformData:            null,
+      webAudio:                null,
 
-      /**
-       * If true, all ajax requests (e.g. to fetch waveform data) will be made
-       * with credentials (i.e. browser-controlled cookies).
-       *
-       * @type {Boolean}
-       */
-      withCredentials: false,
+      nudgeIncrement:          1.0,
 
-      /**
-       * Pre-fetched / local waveform data to build the waveforms with
-       *
-       * Only one source is required
-       *
-       * ```js
-       * waveformData: {
-       *   arraybuffer: ArrayBuffer,
-       *   json: Object
-       * }
-       * ```
-       */
-      waveformData:               null,
-
-      /**
-       * Will report errors to that function
-       *
-       * @type {Function=}
-       * @since 0.4.4
-       */
-      logger:                null,
-
-      /**
-       * Bind keyboard controls
-       */
-      keyboard:              false,
-
-      /**
-       * Keyboard nudge increment in seconds (left arrow/right arrow)
-       */
-      nudgeIncrement: 1.0,
-
-      /**
-       * Colour for segment start marker handles
-       */
       segmentStartMarkerColor: '#aaaaaa',
+      segmentEndMarkerColor:   '#aaaaaa',
+      randomizeSegmentColor:   true,
+      segmentColor:            '#ff851b',
+      pointMarkerColor:        '#39cccc',
 
-      /**
-       * Colour for segment end marker handles
-       */
-      segmentEndMarkerColor: '#aaaaaa',
+      createSegmentMarker:     MarkerFactories.createSegmentMarker,
+      createSegmentLabel:      MarkerFactories.createSegmentLabel,
+      createPointMarker:       MarkerFactories.createPointMarker,
 
-      /**
-       * Colour for the zoomed in waveform
-       */
-      zoomWaveformColor:     'rgba(0, 225, 128, 1)',
-
-      /**
-       * Colour for the overview waveform
-       */
-      overviewWaveformColor: 'rgba(0,0,0,0.2)',
-
-      /**
-       * Colour for the overview waveform highlight rectangle, which shows
-       * you what you see in the zoom view.
-       */
-      overviewHighlightColor: '#aaaaaa',
-
-      /**
-       * The default number of pixels from the top and bottom of the canvas
-       * that the overviewHighlight takes up
-       */
-      overviewHighlightOffset: 11,
-
-      /**
-       * Random colour per segment (overrides segmentColor)
-       */
-      randomizeSegmentColor: true,
-
-      /**
-       * Colour for segments on the waveform
-       */
-      segmentColor:          '#ff851b',
-
-      /**
-       * Colour of the play head
-       */
-      playheadColor:         '#111111',
-
-      /**
-       * Colour of the play head text
-       */
-      playheadTextColor:     '#aaaaaa',
-
-      /**
-       * Precision of time label for play head and point/segment markers
-       */
-      timeLabelPrecision: 2,
-
-      /**
-       * Show current time position by the play head marker
-       * (zoom view only)
-       */
-      showPlayheadTime:      false,
-
-      /**
-       * Colour of the axis gridlines
-       */
-      axisGridlineColor:     '#cccccc',
-
-      /**
-       * Colour of the axis labels
-       */
-      axisLabelColor:        '#aaaaaa',
-
-      /**
-       * Color for point markers
-       */
-      pointMarkerColor:     '#39cccc',
-
-      /**
-       * An object containing an AudioContext, used when creating waveform data
-       * using the Web Audio API
-       */
-
-      webAudio: null,
-
-      /**
-       * Use animation on zoom
-       */
-      zoomAdapter: 'static',
-
-      /**
-       * Emit cue events
-       */
-      emitCueEvents: false,
-
-      /**
-       * Point/Segment marker customisation.
-       *
-       * @todo This part of the API is not stable.
-       */
-      createSegmentMarker: MarkerFactories.createSegmentMarker,
-      createSegmentLabel:  MarkerFactories.createSegmentLabel,
-      createPointMarker:   MarkerFactories.createPointMarker
+      // eslint-disable-next-line no-console
+      logger:                  console.error.bind(console)
     };
-
-    /**
-     * Asynchronous errors logger.
-     *
-     * @type {Function}
-     */
-    // eslint-disable-next-line no-console
-    this.logger = console.error.bind(console);
 
     return this;
   }
 
   Peaks.prototype = Object.create(EventEmitter.prototype);
+
+  var defaultViewOptions = {
+    playheadColor:       '#111111',
+    playheadTextColor:   '#aaaaaa',
+    axisGridlineColor:   '#cccccc',
+    axisLabelColor:      '#aaaaaa',
+    fontFamily:          'sans-serif',
+    fontSize:            11,
+    fontStyle:           'normal',
+    timeLabelPrecision:  2
+  };
+
+  var defaultZoomviewOptions = {
+    // showPlayheadTime:    true,
+    waveformColor:       'rgba(0, 225, 128, 1)'
+    // zoomAdapter:         'static'
+  };
+
+  var defaultOverviewOptions = {
+    // showPlayheadTime:    false,
+    waveformColor:       'rgba(0, 0, 0, 0.2)',
+    highlightColor:      '#aaaaaa',
+    highlightOffset:     11
+  };
+
+  function getOverviewOptions(opts) {
+    var overviewOptions = {};
+
+    if (opts.containers && opts.containers.overview) {
+      overviewOptions.container = opts.containers.overview;
+    }
+
+    if (opts.overviewWaveformColor) {
+      overviewOptions.waveformColor = opts.overviewWaveformColor;
+    }
+
+    if (opts.overviewHighlightOffset) {
+      overviewOptions.highlightOffset = opts.overviewHighlightOffset;
+    }
+
+    if (opts.overviewHighlightColor) {
+      overviewOptions.highlightColor = opts.overviewHighlightColor;
+    }
+
+    if (opts.overview && opts.overview.showPlayheadTime) {
+      overviewOptions.showPlayheadTime = opts.overview.showPlayheadTime;
+    }
+
+    var optNames = [
+      'container',
+      'waveformColor',
+      'playheadColor',
+      'playheadTextColor',
+      'timeLabelPrecision',
+      'axisGridlineColor',
+      'axisLabelColor',
+      'fontFamily',
+      'fontSize',
+      'fontStyle'
+    ];
+
+    optNames.forEach(function(optName) {
+      if (opts.overview && Utils.objectHasProperty(opts.overview, optName)) {
+        overviewOptions[optName] = opts.overview[optName];
+      }
+      else if (Utils.objectHasProperty(opts, optName)) {
+        overviewOptions[optName] = opts[optName];
+      }
+      else if (Utils.objectHasProperty(defaultOverviewOptions, optName)) {
+        overviewOptions[optName] = defaultOverviewOptions[optName];
+      }
+      else if (Utils.objectHasProperty(defaultViewOptions, optName)) {
+        overviewOptions[optName] = defaultViewOptions[optName];
+      }
+    });
+
+    return overviewOptions;
+  }
+
+  function getZoomviewOptions(opts) {
+    var zoomviewOptions = {};
+
+    if (opts.containers && opts.containers.zoomview) {
+      zoomviewOptions.container = opts.containers.zoomview;
+    }
+
+    if (opts.zoomWaveformColor) {
+      zoomviewOptions.waveformColor = opts.zoomWaveformColor;
+    }
+
+    if (opts.showPlayheadTime) {
+      zoomviewOptions.showPlayheadTime = opts.showPlayheadTime;
+    }
+    else if (opts.zoomview && opts.zoomview.showPlayheadTime) {
+      zoomviewOptions.showPlayheadTime = opts.zoomview.showPlayheadTime;
+    }
+
+    var optNames = [
+      'container',
+      'waveformColor',
+      'playheadColor',
+      'playheadTextColor',
+      'timeLabelPrecision',
+      'axisGridlineColor',
+      'axisLabelColor',
+      'fontFamily',
+      'fontSize',
+      'fontStyle'
+    ];
+
+    optNames.forEach(function(optName) {
+      if (opts.zoomview && Utils.objectHasProperty(opts.zoomview, optName)) {
+        zoomviewOptions[optName] = opts.zoomview[optName];
+      }
+      else if (Utils.objectHasProperty(opts, optName)) {
+        zoomviewOptions[optName] = opts[optName];
+      }
+      else if (Utils.objectHasProperty(defaultZoomviewOptions, optName)) {
+        zoomviewOptions[optName] = defaultZoomviewOptions[optName];
+      }
+      else if (Utils.objectHasProperty(defaultViewOptions, optName)) {
+        zoomviewOptions[optName] = defaultViewOptions[optName];
+      }
+    });
+
+    return zoomviewOptions;
+  }
+
+  function extendOptions(to, from) {
+    for (var key in from) {
+      if (Utils.objectHasProperty(from, key) &&
+          Utils.objectHasProperty(to, key)) {
+        to[key] = from[key];
+      }
+    }
+
+    return to;
+  }
 
   /**
    * Creates and initialises a new Peaks instance with the given options.
@@ -257,8 +229,6 @@ define([
   Peaks.init = function(opts, callback) {
     var instance = new Peaks();
 
-    opts = opts || {};
-
     var err = instance._setOptions(opts);
 
     if (err) {
@@ -266,37 +236,34 @@ define([
       return;
     }
 
-    /*
-     Setup the layout
-     */
+    var zoomviewContainer = instance.options.zoomview.container;
+    var overviewContainer = instance.options.overview.container;
 
-    var containers = instance.options.containers;
-
-    if (!Utils.isHTMLElement(containers.zoomview) &&
-        !Utils.isHTMLElement(containers.overview)) {
+    if (!Utils.isHTMLElement(zoomviewContainer) &&
+        !Utils.isHTMLElement(overviewContainer)) {
       // eslint-disable-next-line max-len
-      callback(new TypeError('Peaks.init(): The containers.zoomview and/or containers.overview options must be valid HTML elements'));
+      callback(new TypeError('Peaks.init(): The zoomview and/or overview container options must be valid HTML elements'));
       return;
     }
 
-    if (containers.zoomview && containers.zoomview.clientWidth <= 0) {
+    if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
       // eslint-disable-next-line max-len
       callback(new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width'));
       return;
     }
 
-    if (containers.overview && containers.overview.clientWidth <= 0) {
+    if (overviewContainer && overviewContainer.clientWidth <= 0) {
       // eslint-disable-next-line max-len
       callback(new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width'));
       return;
     }
 
-    if (instance.options.keyboard) {
+    if (opts.keyboard) {
       instance._keyboardHandler = new KeyboardHandler(instance);
     }
 
-    var player = instance.options.player ?
-      instance.options.player :
+    var player = opts.player ?
+      opts.player :
       new MediaElementPlayer(instance, instance.options.mediaElement);
 
     instance.player = new Player(instance, player);
@@ -319,25 +286,25 @@ define([
 
       instance._waveformData = waveformData;
 
-      if (containers.overview) {
-        instance.views.createOverview(containers.overview);
+      if (overviewContainer) {
+        instance.views.createOverview(overviewContainer);
       }
 
-      if (containers.zoomview) {
-        instance.views.createZoomview(containers.zoomview);
+      if (zoomviewContainer) {
+        instance.views.createZoomview(zoomviewContainer);
       }
 
       instance._addWindowResizeHandler();
 
-      if (instance.options.segments) {
-        instance.segments.add(instance.options.segments);
+      if (opts.segments) {
+        instance.segments.add(opts.segments);
       }
 
-      if (instance.options.points) {
-        instance.points.add(instance.options.points);
+      if (opts.points) {
+        instance.points.add(opts.points);
       }
 
-      if (instance.options.emitCueEvents) {
+      if (opts.emitCueEvents) {
         instance._cueEmitter = new CueEmitter(instance);
       }
 
@@ -348,13 +315,15 @@ define([
         instance.emit('peaks.ready');
       }, 0);
 
-      if (callback) {
-        callback(null, instance);
-      }
+      callback(null, instance);
     });
   };
 
   Peaks.prototype._setOptions = function(opts) {
+    if (!Utils.isObject(opts)) {
+      return new TypeError('Peaks.init(): The options parameter should be an object');
+    }
+
     if (!opts.player) {
       if (!opts.mediaElement) {
         return new Error('Peaks.init(): Missing mediaElement option');
@@ -369,11 +338,6 @@ define([
     if (opts.container) {
       // eslint-disable-next-line max-len
       return new Error('Peaks.init(): The container option has been removed, please use containers instead');
-    }
-
-    if (!opts.containers) {
-      // eslint-disable-next-line max-len
-      return new Error('Peaks.init(): Missing containers option');
     }
 
     if (opts.logger && !Utils.isFunction(opts.logger)) {
@@ -391,7 +355,10 @@ define([
       return new TypeError('Peaks.init(): options.points must be an array of point objects');
     }
 
-    Utils.extend(this.options, opts);
+    extendOptions(this.options, opts);
+
+    this.options.overview = getOverviewOptions(opts);
+    this.options.zoomview = getZoomviewOptions(opts);
 
     if (!Array.isArray(this.options.zoomLevels)) {
       return new TypeError('Peaks.init(): The zoomLevels option should be an array');

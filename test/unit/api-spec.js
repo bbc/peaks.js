@@ -4,6 +4,7 @@ require('./setup');
 
 var Peaks = require('../../src/main');
 var WaveformData = require('waveform-data');
+var Konva = require('konva');
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
@@ -140,6 +141,177 @@ describe('Peaks', function() {
             expect(err).to.be.an.instanceOf(TypeError);
             expect(err.message).to.match(/must be valid HTML elements/);
             expect(instance).to.equal(undefined);
+            done();
+          });
+        });
+      });
+
+      context('with zoomview and overview options', function() {
+        it('should construct a Peaks object with overview and zoomable waveforms', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+            done();
+          });
+        });
+
+        it('should construct a Peaks object with an overview waveform only', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+            done();
+          });
+        });
+
+        it('should construct a Peaks object with a zoomable waveform only', function(done) {
+          Peaks.init({
+            zoomview: {
+              container: document.getElementById('zoomview-container')
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+            done();
+          });
+        });
+
+        it('should return an error if no containers are given', function(done) {
+          Peaks.init({
+            zoomview: {
+            },
+            overview: {
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.be.an.instanceOf(TypeError);
+            expect(err.message).to.match(/must be valid HTML elements/);
+            expect(instance).to.equal(undefined);
+            done();
+          });
+        });
+
+        it('should use view-specific options', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container'),
+              playheadColor: '#ff0000',
+              playheadTextColor: '#00ff00',
+              showPlayheadTime: true,
+              axisLabelColor: '#0000ff',
+              axisGridlineColor: '#000000'
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container'),
+              playheadColor: '#00ff00',
+              playheadTextColor: '#0000ff',
+              showPlayheadTime: false,
+              axisLabelColor: '#ff0000',
+              axisGridlineColor: '#808080'
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+
+            var overview = instance.views.getView('overview');
+            var zoomview = instance.views.getView('zoomview');
+
+            expect(overview._playheadLayer._playheadColor).to.equal('#ff0000');
+            expect(zoomview._playheadLayer._playheadColor).to.equal('#00ff00');
+            expect(overview._playheadLayer._playheadTextColor).to.equal('#00ff00');
+            expect(zoomview._playheadLayer._playheadTextColor).to.equal('#0000ff');
+            expect(overview._playheadLayer._playheadText).to.be.an.instanceOf(Konva.Text);
+            expect(zoomview._playheadLayer._playheadText).to.equal(undefined);
+            expect(overview._axis._axisLabelColor).to.equal('#0000ff');
+            expect(zoomview._axis._axisLabelColor).to.equal('#ff0000');
+            expect(overview._axis._axisGridlineColor).to.equal('#000000');
+            expect(zoomview._axis._axisGridlineColor).to.equal('#808080');
+            done();
+          });
+        });
+
+        it('should use global options', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+            playheadColor: '#ff0000',
+            playheadTextColor: '#00ff00',
+            showPlayheadTime: true,
+            axisLabelColor: '#0000ff',
+            axisGridlineColor: '#000000'
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+
+            var overview = instance.views.getView('overview');
+            var zoomview = instance.views.getView('zoomview');
+
+            expect(overview._playheadLayer._playheadColor).to.equal('#ff0000');
+            expect(zoomview._playheadLayer._playheadColor).to.equal('#ff0000');
+            expect(overview._playheadLayer._playheadTextColor).to.equal('#00ff00');
+            expect(zoomview._playheadLayer._playheadTextColor).to.equal('#00ff00');
+            expect(overview._playheadLayer._playheadText).to.equal(undefined);
+            expect(zoomview._playheadLayer._playheadText).to.be.an.instanceOf(Konva.Text);
+            expect(overview._axis._axisLabelColor).to.equal('#0000ff');
+            expect(zoomview._axis._axisLabelColor).to.equal('#0000ff');
+            expect(overview._axis._axisGridlineColor).to.equal('#000000');
+            expect(zoomview._axis._axisGridlineColor).to.equal('#000000');
+            done();
+          });
+        });
+
+        it('should use default options', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+
+            var overview = instance.views.getView('overview');
+            var zoomview = instance.views.getView('zoomview');
+
+            expect(overview._playheadLayer._playheadColor).to.equal('#111111');
+            expect(zoomview._playheadLayer._playheadColor).to.equal('#111111');
+            expect(overview._playheadLayer._playheadTextColor).to.equal('#aaaaaa');
+            expect(zoomview._playheadLayer._playheadTextColor).to.equal('#aaaaaa');
+            expect(overview._playheadLayer._playheadText).to.equal(undefined);
+            expect(overview._playheadLayer._playheadText).to.equal(undefined);
+            expect(overview._axis._axisLabelColor).to.equal('#aaaaaa');
+            expect(zoomview._axis._axisLabelColor).to.equal('#aaaaaa');
+            expect(overview._axis._axisGridlineColor).to.equal('#cccccc');
+            expect(zoomview._axis._axisGridlineColor).to.equal('#cccccc');
             done();
           });
         });
@@ -294,6 +466,15 @@ describe('Peaks', function() {
     });
 
     context('with invalid options', function() {
+      it('should invoke callback with an error if options is not an object', function(done) {
+        Peaks.init([], function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/should be an object/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
+      });
+
       it('should invoke callback with an error if no mediaElement is provided', function(done) {
         Peaks.init({
           containers: {
@@ -333,7 +514,9 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' },
-          audioContext: new TestAudioContext()
+          webAudio: {
+            audioContext: new TestAudioContext()
+          }
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(TypeError);
           expect(err.message).to.match(/only pass one/);
@@ -419,7 +602,7 @@ describe('Peaks', function() {
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
-          expect(err.message).to.match(/Missing containers option/);
+          expect(err.message).to.match(/must be valid HTML elements/);
           expect(instance).to.equal(undefined);
           done();
         });

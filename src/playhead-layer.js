@@ -38,9 +38,9 @@ define([
     this._playheadColor = options.playheadColor;
     this._playheadTextColor = options.playheadTextColor;
 
-    this._playheadFontFamily = options.playheadFontFamily || 'sans-serif';
-    this._playheadFontSize = options.playheadFontSize || 11;
-    this._playheadFontStyle = options.playheadFontStyle || 'normal';
+    this._playheadFontFamily = options.playheadFontFamily;
+    this._playheadFontSize = options.playheadFontSize;
+    this._playheadFontStyle = options.playheadFontStyle;
 
     this._playheadLayer = new Konva.Layer();
 

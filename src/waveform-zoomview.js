@@ -48,6 +48,7 @@ define([
     self._container = container;
     self._peaks = peaks;
     self._options = peaks.options;
+    self._viewOptions = peaks.options.zoomview;
 
     // Bind event handlers
     self._onTimeUpdate = self._onTimeUpdate.bind(self);
@@ -71,7 +72,7 @@ define([
 
     self._enableAutoScroll = true;
     self._amplitudeScale = 1.0;
-    self._timeLabelPrecision = self._options.timeLabelPrecision;
+    self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
 
     self._data = null;
     self._pixelLength = 0;
@@ -111,12 +112,12 @@ define([
     self._playheadLayer = new PlayheadLayer({
       player: self._peaks.player,
       view: self,
-      showPlayheadTime: self._options.showPlayheadTime,
-      playheadColor: self._options.playheadColor,
-      playheadTextColor: self._options.playheadTextColor,
-      playheadFontFamily: self._options.fontFamily,
-      playheadFontSize: self._options.fontSize,
-      playheadFontStyle: self._options.fontStyle
+      showPlayheadTime: self._viewOptions.showPlayheadTime,
+      playheadColor: self._viewOptions.playheadColor,
+      playheadTextColor: self._viewOptions.playheadTextColor,
+      playheadFontFamily: self._viewOptions.fontFamily,
+      playheadFontSize: self._viewOptions.fontSize,
+      playheadFontStyle: self._viewOptions.fontStyle
     });
 
     self._playheadLayer.addToStage(self._stage);
@@ -437,10 +438,10 @@ define([
   };
 
   WaveformZoomView.prototype.createZoomAdapter = function(currentScale, previousScale) {
-    var ZoomAdapter = zoomAdapterMap[this._peaks.options.zoomAdapter];
+    var ZoomAdapter = zoomAdapterMap[this._viewOptions.zoomAdapter];
 
     if (!ZoomAdapter) {
-      throw new Error('Invalid zoomAdapter: ' + this._peaks.options.zoomAdapter);
+      throw new Error('Invalid zoomAdapter: ' + this._viewOptions.zoomAdapter);
     }
 
     return ZoomAdapter.create(this, currentScale, previousScale);
@@ -511,7 +512,7 @@ define([
 
   WaveformZoomView.prototype._createWaveform = function() {
     this._waveformShape = new WaveformShape({
-      color: this._options.zoomWaveformColor,
+      color: this._viewOptions.waveformColor,
       view: this
     });
 
@@ -525,11 +526,11 @@ define([
     this._axisLayer = new Konva.Layer({ listening: false });
 
     this._axis = new WaveformAxis(this, {
-      axisGridlineColor:   this._options.axisGridlineColor,
-      axisLabelColor:      this._options.axisLabelColor,
-      axisLabelFontFamily: this._options.fontFamily,
-      axisLabelFontSize:   this._options.fontSize,
-      axisLabelFontStyle:  this._options.fontStyle
+      axisGridlineColor:   this._viewOptions.axisGridlineColor,
+      axisLabelColor:      this._viewOptions.axisLabelColor,
+      axisLabelFontFamily: this._viewOptions.fontFamily,
+      axisLabelFontSize:   this._viewOptions.fontSize,
+      axisLabelFontStyle:  this._viewOptions.fontStyle
     });
 
     this._axis.addToLayer(this._axisLayer);

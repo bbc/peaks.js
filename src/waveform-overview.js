@@ -46,6 +46,7 @@ define([
     self._container = container;
     self._peaks = peaks;
     self._options = peaks.options;
+    self._viewOptions = peaks.options.overview;
 
     // Bind event handlers
     self._onTimeUpdate = self._onTimeUpdate.bind(this);
@@ -62,7 +63,7 @@ define([
     peaks.on('window_resize', self._onWindowResize);
 
     self._amplitudeScale = 1.0;
-    self._timeLabelPrecision = peaks.options.timeLabelPrecision;
+    self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
 
     self._width = container.clientWidth;
     self._height = container.clientHeight;
@@ -103,8 +104,8 @@ define([
 
     self._highlightLayer = new HighlightLayer(
       self,
-      self._options.overviewHighlightOffset,
-      self._options.overviewHighlightColor
+      self._viewOptions.highlightOffset,
+      self._viewOptions.highlightColor
     );
     self._highlightLayer.addToStage(self._stage);
 
@@ -113,12 +114,12 @@ define([
     self._playheadLayer = new PlayheadLayer({
       player: self._peaks.player,
       view: self,
-      showPlayheadTime: false,
-      playheadColor: self._options.playheadColor,
-      playheadTextColor: self._options.playheadTextColor,
-      playheadFontFamily: self._options.fontFamily,
-      playheadFontSize: self._options.fontSize,
-      playheadFontStyle: self._options.fontStyle
+      showPlayheadTime: self._viewOptions.showPlayheadTime,
+      playheadColor: self._viewOptions.playheadColor,
+      playheadTextColor: self._viewOptions.playheadTextColor,
+      playheadFontFamily: self._viewOptions.fontFamily,
+      playheadFontSize: self._viewOptions.fontSize,
+      playheadFontStyle: self._viewOptions.fontStyle
     });
 
     self._playheadLayer.addToStage(self._stage);
@@ -324,7 +325,7 @@ define([
 
   WaveformOverview.prototype._createWaveform = function() {
     this._waveformShape = new WaveformShape({
-      color: this._options.overviewWaveformColor,
+      color: this._viewOptions.waveformColor,
       view: this
     });
 
@@ -336,11 +337,11 @@ define([
     this._axisLayer = new Konva.Layer({ listening: false });
 
     this._axis = new WaveformAxis(this, {
-      axisGridlineColor:   this._options.axisGridlineColor,
-      axisLabelColor:      this._options.axisLabelColor,
-      axisLabelFontFamily: this._options.fontFamily,
-      axisLabelFontSize:   this._options.fontSize,
-      axisLabelFontStyle:  this._options.fontStyle
+      axisGridlineColor:   this._viewOptions.axisGridlineColor,
+      axisLabelColor:      this._viewOptions.axisLabelColor,
+      axisLabelFontFamily: this._viewOptions.fontFamily,
+      axisLabelFontSize:   this._viewOptions.fontSize,
+      axisLabelFontStyle:  this._viewOptions.fontStyle
     });
 
     this._axis.addToLayer(this._axisLayer);
