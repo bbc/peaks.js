@@ -130,6 +130,7 @@ define([
     var optNames = [
       'container',
       'waveformColor',
+      'playedWaveformColor',
       'playheadColor',
       'playheadTextColor',
       'timeLabelPrecision',
@@ -179,6 +180,7 @@ define([
     var optNames = [
       'container',
       'waveformColor',
+      'playedWaveformColor',
       'playheadColor',
       'playheadTextColor',
       'timeLabelPrecision',

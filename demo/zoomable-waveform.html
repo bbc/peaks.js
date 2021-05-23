@@ -98,16 +98,22 @@
         </audio>
 
         <div id="controls">
-          <label for="zoom">Zoom:</label>
-          <select id="zoom"></select>
-          <input type="text" id="seek-time" value="0.0">
-          <button data-action="seek">Seek</button>
-          <label for="amplitude-scale">Amplitude scale</label>
-          <input type="range" id="amplitude-scale" min="0" max="10" step="1">
-          <label for="waveform-color">Waveform color</label>
-          <input type="color" id="waveform-color" value="#00e180">
-          <input type="text" id="start-time" value="0.0">
-          <button data-action="set-start-time">Set start time</button>
+          <div>
+            <label for="zoom">Zoom:</label>
+            <select id="zoom"></select>
+            <input type="text" id="seek-time" value="0.0">
+            <button data-action="seek">Seek</button>
+            <label for="amplitude-scale">Amplitude scale</label>
+            <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+            <input type="text" id="start-time" value="0.0">
+            <button data-action="set-start-time">Set start time</button>
+          </div>
+          <div>
+            <label for="waveform-color">Waveform color</label>
+            <input type="color" id="waveform-color" value="#00e180">
+            <label for="played-waveform-color">Played waveform color</label>
+            <input type="color" id="played-waveform-color" value="#bc6dfd">
+          </div>
         </div>
       </div>
     </div>
@@ -120,8 +126,11 @@
         var audioContext = new AudioContext();
 
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container'),
+            waveformColor: '#00e180',
+            playedWaveformColor: '#bc6dfd',
+            showPlayheadTime: true
           },
           mediaElement: document.getElementById('audio'),
           webAudio: {
@@ -132,8 +141,6 @@
           zoomLevels: [128],
           keyboard: true,
           pointMarkerColor: '#006eb0',
-          zoomWaveformColor: '#00e180',
-          showPlayheadTime: true
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -197,6 +204,12 @@
             var view = peaksInstance.views.getView();
 
             view.setWaveformColor(event.target.value);
+          });
+
+          document.getElementById('played-waveform-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView();
+
+            view.setPlayedWaveformColor(event.target.value);
           });
 
           document.querySelector('button[data-action="set-start-time"]').addEventListener('click', function(event) {

@@ -139,8 +139,8 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       endPixels = limit;
     }
 
-    if (endPixels > waveformData.length) {
-      endPixels = waveformData.length;
+    if (endPixels > waveformData.length - 1) {
+      endPixels = waveformData.length - 1;
     }
 
     var channels = waveformData.channels;
@@ -192,7 +192,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
 
     context.beginPath();
 
-    for (x = startPixels; x < endPixels; x++) {
+    for (x = startPixels; x <= endPixels; x++) {
       amplitude = channel.min_sample(x);
 
       lineX = x - frameOffset + 0.5;
@@ -201,7 +201,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       context.lineTo(lineX, lineY);
     }
 
-    for (x = endPixels - 1; x >= startPixels; x--) {
+    for (x = endPixels; x >= startPixels; x--) {
       amplitude = channel.max_sample(x);
 
       lineX = x - frameOffset + 0.5;

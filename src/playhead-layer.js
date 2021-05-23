@@ -182,7 +182,7 @@ define([
     var width = this._view.getWidth();
 
     var isVisible = (pixelIndex >= frameOffset) &&
-                    (pixelIndex <  frameOffset + width);
+                    (pixelIndex <= frameOffset + width);
 
     this._playheadPixel = pixelIndex;
 
@@ -219,6 +219,10 @@ define([
 
         this._playheadLayer.draw();
       }
+    }
+
+    if (this._view.playheadPosChanged) {
+      this._view.playheadPosChanged(time);
     }
   };
 

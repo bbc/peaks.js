@@ -94,6 +94,9 @@ define([
 
     self._waveformLayer = new Konva.Layer({ listening: false });
 
+    self._waveformColor = self._viewOptions.waveformColor;
+    self._playedWaveformColor = self._viewOptions.playedWaveformColor;
+
     self._createWaveform();
 
     self._segmentsLayer = new SegmentsLayer(peaks, self, false);
@@ -233,6 +236,15 @@ define([
     this._updateWaveform();
   };
 
+  WaveformOverview.prototype.playheadPosChanged = function(time) {
+    if (this._playedWaveformShape) {
+      this._playedSegment.endTime = time;
+      this._unplayedSegment.startTime = time;
+
+      this._waveformLayer.draw();
+    }
+  };
+
   /**
    * Returns the pixel index for a given time, for the current zoom level.
    *
@@ -324,12 +336,43 @@ define([
    */
 
   WaveformOverview.prototype._createWaveform = function() {
-    this._waveformShape = new WaveformShape({
-      color: this._viewOptions.waveformColor,
-      view: this
-    });
+    if (this._playedWaveformColor) {
+      this._playedSegment = {
+        startTime: 0,
+        endTime: 0
+      };
 
-    this._waveformLayer.add(this._waveformShape);
+      this._unplayedSegment = {
+        startTime: 0,
+        endTime: this._getDuration()
+      };
+
+      this._playedWaveformShape = new WaveformShape({
+        color: this._playedWaveformColor,
+        view: this,
+        segment: this._playedSegment
+      });
+
+      this._waveformShape = new WaveformShape({
+        color: this._waveformColor,
+        view: this,
+        segment: this._unplayedSegment
+      });
+
+      this._waveformLayer.add(this._playedWaveformShape);
+      this._waveformLayer.add(this._waveformShape);
+    }
+    else {
+      this._playedWaveformShape = null;
+
+      this._waveformShape = new WaveformShape({
+        color: this._waveformColor,
+        view: this
+      });
+
+      this._waveformLayer.add(this._waveformShape);
+    }
+
     this._stage.add(this._waveformLayer);
   };
 
@@ -370,8 +413,18 @@ define([
   };
 
   WaveformOverview.prototype.setWaveformColor = function(color) {
+    this._waveformColor = color;
     this._waveformShape.setWaveformColor(color);
     this._waveformLayer.draw();
+  };
+
+  WaveformOverview.prototype.setPlayedWaveformColor = function(color) {
+    this._playedWaveformColor = color;
+
+    if (this._playedWaveformShape) {
+      this._playedWaveformShape.setWaveformColor(color);
+      this._waveformLayer.draw();
+    }
   };
 
   WaveformOverview.prototype.showPlayheadTime = function(show) {
