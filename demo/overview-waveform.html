@@ -97,12 +97,18 @@
       </audio>
 
       <div id="controls">
-        <input type="text" id="seek-time" value="0.0">
-        <button data-action="seek">Seek</button>
-        <label for="amplitude-scale">Amplitude scale</label>
-        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
-        <label for="waveform-color">Waveform color</label>
-        <input type="color" id="waveform-color" value="#cccccc">
+        <div>
+          <input type="text" id="seek-time" value="0.0">
+          <button data-action="seek">Seek</button>
+          <label for="amplitude-scale">Amplitude scale</label>
+          <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+        </div>
+        <div>
+          <label for="waveform-color">Waveform color</label>
+          <input type="color" id="waveform-color" value="#cccccc">
+          <label for="played-waveform-color">Played waveform color</label>
+          <input type="color" id="played-waveform-color" value="#888888">
+        </div>
       </div>
     </div>
 
@@ -110,18 +116,18 @@
     <script>
       (function(Peaks) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container'),
+            waveformColor: '#cccccc',
+            playedWaveformColor: '#888888',
+            showPlayheadTime: true
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
             arraybuffer: 'TOL_6min_720p_download.dat',
             json: 'TOL_6min_720p_download.json'
           },
-          keyboard: true,
-          pointMarkerColor: '#006eb0',
-          overviewWaveformColor: '#cccccc',
-          showPlayheadTime: true
+          keyboard: true
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -166,6 +172,12 @@
             var view = peaksInstance.views.getView();
 
             view.setWaveformColor(event.target.value);
+          });
+
+          document.getElementById('played-waveform-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView();
+
+            view.setPlayedWaveformColor(event.target.value);
           });
         });
       })(peaks);

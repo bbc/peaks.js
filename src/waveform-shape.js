@@ -66,6 +66,10 @@ define(['./utils', 'konva'], function(Utils, Konva) {
 
   WaveformShape.prototype = Object.create(Konva.Shape.prototype);
 
+  WaveformShape.prototype.setSegment = function(segment) {
+    this._segment = segment;
+  };
+
   WaveformShape.prototype.setWaveformColor = function(color) {
     if (Utils.isString(color)) {
       this.fill(color);

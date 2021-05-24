@@ -330,41 +330,8 @@ define([
     return this._data;
   };
 
-  /**
-   * Creates a {WaveformShape} object that draws the waveform in the view,
-   * and adds it to the wav
-   */
-
-  WaveformOverview.prototype._createWaveform = function() {
-    if (this._playedWaveformColor) {
-      this._playedSegment = {
-        startTime: 0,
-        endTime: 0
-      };
-
-      this._unplayedSegment = {
-        startTime: 0,
-        endTime: this._getDuration()
-      };
-
-      this._playedWaveformShape = new WaveformShape({
-        color: this._playedWaveformColor,
-        view: this,
-        segment: this._playedSegment
-      });
-
-      this._waveformShape = new WaveformShape({
-        color: this._waveformColor,
-        view: this,
-        segment: this._unplayedSegment
-      });
-
-      this._waveformLayer.add(this._playedWaveformShape);
-      this._waveformLayer.add(this._waveformShape);
-    }
-    else {
-      this._playedWaveformShape = null;
-
+  WaveformOverview.prototype._createWaveformShapes = function() {
+    if (!this._waveformShape) {
       this._waveformShape = new WaveformShape({
         color: this._waveformColor,
         view: this
@@ -372,6 +339,45 @@ define([
 
       this._waveformLayer.add(this._waveformShape);
     }
+
+    if (this._playedWaveformColor && !this._playedWaveformShape) {
+      var time = this._peaks.player.getCurrentTime();
+
+      this._playedSegment = {
+        startTime: 0,
+        endTime: time
+      };
+
+      this._unplayedSegment = {
+        startTime: time,
+        endTime: this._getDuration()
+      };
+
+      this._waveformShape.setSegment(this._unplayedSegment);
+
+      this._playedWaveformShape = new WaveformShape({
+        color: this._playedWaveformColor,
+        view: this,
+        segment: this._playedSegment
+      });
+
+      this._waveformLayer.add(this._playedWaveformShape);
+    }
+  };
+
+  WaveformOverview.prototype._destroyPlayedWaveformShape = function() {
+    // this._waveformShape.setSegment(null);
+    this._waveformLayer.children[0].setSegment(null);
+
+    this._playedWaveformShape.destroy();
+    this._playedWaveformShape = null;
+
+    this._playedSegment = null;
+    this._unplayedSegment = null;
+  };
+
+  WaveformOverview.prototype._createWaveform = function() {
+    this._createWaveformShapes();
 
     this._stage.add(this._waveformLayer);
   };
@@ -421,9 +427,19 @@ define([
   WaveformOverview.prototype.setPlayedWaveformColor = function(color) {
     this._playedWaveformColor = color;
 
-    if (this._playedWaveformShape) {
+    if (color) {
+      if (!this._playedWaveformShape) {
+        this._createWaveformShapes();
+      }
+
       this._playedWaveformShape.setWaveformColor(color);
       this._waveformLayer.draw();
+    }
+    else {
+      if (this._playedWaveformShape) {
+        this._destroyPlayedWaveformShape();
+        this._waveformLayer.draw();
+      }
     }
   };
 

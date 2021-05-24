@@ -70,4 +70,32 @@ describe('WaveformView', function() {
       });
     });
   });
+
+  describe('setWaveformColor', function() {
+    ['zoomview', 'overview'].forEach(function(viewName) {
+      describe(viewName, function() {
+        it('should set the waveform color', function() {
+          var view = p.views.getView(viewName);
+
+          view.setWaveformColor('#ff0000');
+
+          expect(view._waveformShape.fill()).to.equal('#ff0000');
+        });
+      });
+    });
+  });
+
+  describe('setPlayedWaveformColor', function() {
+    ['zoomview', 'overview'].forEach(function(viewName) {
+      describe(viewName, function() {
+        it('should set the color of the waveform behind the playhead', function() {
+          var view = p.views.getView(viewName);
+
+          view.setPlayedWaveformColor('#ff0000');
+
+          expect(view._playedWaveformShape.fill()).to.equal('#ff0000');
+        });
+      });
+    });
+  });
 });
