@@ -366,8 +366,7 @@ define([
   };
 
   WaveformOverview.prototype._destroyPlayedWaveformShape = function() {
-    // this._waveformShape.setSegment(null);
-    this._waveformLayer.children[0].setSegment(null);
+    this._waveformShape.setSegment(null);
 
     this._playedWaveformShape.destroy();
     this._playedWaveformShape = null;
