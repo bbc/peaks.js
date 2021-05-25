@@ -74,7 +74,7 @@
   },
   "dependencies": {
     "eventemitter3": "~4.0.7",
-    "konva": "~7.2.5",
+    "konva": "~8.0.1",
     "waveform-data": "~4.1.0"
   }
 }
