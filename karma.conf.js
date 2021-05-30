@@ -5,7 +5,6 @@ var commonjs = require('rollup-plugin-commonjs');
 var resolve = require('rollup-plugin-node-resolve');
 var babel = require('@rollup/plugin-babel');
 var json = require('@rollup/plugin-json');
-var istanbul = require('rollup-plugin-istanbul');
 
 function filterBrowsers(browsers, re) {
   return Object.keys(browsers).filter(function(key) {
@@ -54,14 +53,8 @@ module.exports = function(config) {
         resolve({ browser: true }),
         babel.babel({
           babelHelpers: 'bundled',
-          exclude: 'node_modules/**'
-        }),
-        istanbul({
-          exclude: [
-            'test/unit/*.js',
-            'test_data/**',
-            'node_modules/**/*.js'
-          ]
+          exclude: 'node_modules/**',
+          plugins: ['istanbul']
         })
       ],
       output: {
