@@ -9,22 +9,6 @@
 define(function() {
   'use strict';
 
-  if (typeof Number.isFinite !== 'function') {
-    Number.isFinite = function isFinite(value) {
-      if (typeof value !== 'number') {
-        return false;
-      }
-
-      // Check for NaN and infinity
-      // eslint-disable-next-line no-self-compare
-      if (value !== value || value === Infinity || value === -Infinity) {
-        return false;
-      }
-
-      return true;
-    };
-  }
-
   function zeroPad(number, precision) {
     number = number.toString();
 
@@ -158,6 +142,27 @@ define(function() {
 
     isNumber: function(value) {
       return typeof value === 'number';
+    },
+
+    /**
+     * Checks whether the given value is a finite number.
+     *
+     * @param {Number} value The value to test
+     * @returns {Boolean}
+     */
+
+    isFinite: function(value) {
+      if (typeof value !== 'number') {
+        return false;
+      }
+
+      // Check for NaN and infinity
+      // eslint-disable-next-line no-self-compare
+      if (value !== value || value === Infinity || value === -Infinity) {
+        return false;
+      }
+
+      return true;
     },
 
     /**

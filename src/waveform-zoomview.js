@@ -500,7 +500,7 @@ define([
    */
 
   WaveformZoomView.prototype.setAmplitudeScale = function(scale) {
-    if (!Utils.isNumber(scale) || !Number.isFinite(scale)) {
+    if (!Utils.isNumber(scale) || !Utils.isFinite(scale)) {
       throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
     }
 
