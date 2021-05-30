@@ -1,8 +1,4 @@
-'use strict';
-
-require('./setup');
-
-var Peaks = require('../../src/main');
+import Peaks from '../../src/main';
 
 describe('WaveformView', function() {
   var p;
@@ -79,7 +75,7 @@ describe('WaveformView', function() {
 
           view.setWaveformColor('#ff0000');
 
-          expect(view._waveformShape.fill()).to.equal('#ff0000');
+          expect(view._waveformShape._shape.fill()).to.equal('#ff0000');
         });
       });
     });
@@ -93,7 +89,7 @@ describe('WaveformView', function() {
 
           view.setPlayedWaveformColor('#ff0000');
 
-          expect(view._playedWaveformShape.fill()).to.equal('#ff0000');
+          expect(view._playedWaveformShape._shape.fill()).to.equal('#ff0000');
         });
       });
     });

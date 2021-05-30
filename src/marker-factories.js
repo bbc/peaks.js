@@ -6,112 +6,99 @@
  * @module marker-factories
  */
 
-define([
-  './default-point-marker',
-  './default-segment-marker',
-  'konva'
-], function(
-    DefaultPointMarker,
-    DefaultSegmentMarker,
-    Konva) {
-  'use strict';
+import DefaultPointMarker from './default-point-marker';
+import DefaultSegmentMarker from './default-segment-marker';
+import Konva from 'konva';
 
-  /**
-   * Parameters for the {@link createSegmentMarker} function.
-   *
-   * @typedef {Object} CreateSegmentMarkerOptions
-   * @global
-   * @property {Segment} segment
-   * @property {Boolean} draggable If true, marker is draggable.
-   * @property {Boolean} startMarker
-   * @property {String} color
-   * @property {String} fontFamily
-   * @property {Number} fontSize
-   * @property {String} fontStyle
-   * @property {Layer} layer
-   * @property {String} view
-   */
+/**
+ * Parameters for the {@link createSegmentMarker} function.
+ *
+ * @typedef {Object} CreateSegmentMarkerOptions
+ * @global
+ * @property {Segment} segment
+ * @property {Boolean} draggable If true, marker is draggable.
+ * @property {Boolean} startMarker
+ * @property {String} color
+ * @property {String} fontFamily
+ * @property {Number} fontSize
+ * @property {String} fontStyle
+ * @property {Layer} layer
+ * @property {String} view
+ */
 
-  /**
-   * Creates a left or right side segment marker handle.
-   *
-   * @param {CreateSegmentMarkerOptions} options
-   * @returns {Marker}
-   */
+/**
+ * Creates a left or right side segment marker handle.
+ *
+ * @param {CreateSegmentMarkerOptions} options
+ * @returns {Marker}
+ */
 
-  function createSegmentMarker(options) {
-    if (options.view === 'zoomview') {
-      return new DefaultSegmentMarker(options);
-    }
-
-    return null;
+export function createSegmentMarker(options) {
+  if (options.view === 'zoomview') {
+    return new DefaultSegmentMarker(options);
   }
 
-  /**
-   * Parameters for the {@link createSegmentLabel} function.
-   *
-   * @typedef {Object} SegmentLabelOptions
-   * @global
-   * @property {Segment} segment The {@link Segment} object associated with this
-   *   label.
-   * @property {String} view The name of the view that the label is being
-   *   created in, either <code>zoomview</code> or <code>overview</code>.
-   * @property {SegmentsLayer} layer
-   * @property {String} fontFamily
-   * @property {Number} fontSize
-   * @property {String} fontStyle
-   */
+  return null;
+}
 
-  /**
-   * Creates a Konva object that renders information about a segment, such as
-   * its label text.
-   *
-   * @param {SegmentLabelOptions} options
-   * @returns {Konva.Text}
-   */
+/**
+ * Parameters for the {@link createSegmentLabel} function.
+ *
+ * @typedef {Object} SegmentLabelOptions
+ * @global
+ * @property {Segment} segment The {@link Segment} object associated with this
+ *   label.
+ * @property {String} view The name of the view that the label is being
+ *   created in, either <code>zoomview</code> or <code>overview</code>.
+ * @property {SegmentsLayer} layer
+ * @property {String} fontFamily
+ * @property {Number} fontSize
+ * @property {String} fontStyle
+ */
 
-  function createSegmentLabel(options) {
-    return new Konva.Text({
-      x:          12,
-      y:          12,
-      text:       options.segment.labelText,
-      textAlign:  'center',
-      fontFamily: options.fontFamily || 'sans-serif',
-      fontSize:   options.fontSize || 12,
-      fontStyle:  options.fontStyle || 'normal',
-      fill:       '#000'
-    });
-  }
+/**
+ * Creates a Konva object that renders information about a segment, such as
+ * its label text.
+ *
+ * @param {SegmentLabelOptions} options
+ * @returns {Konva.Text}
+ */
 
-  /**
-   * Parameters for the {@link createPointMarker} function.
-   *
-   * @typedef {Object} CreatePointMarkerOptions
-   * @global
-   * @property {Point} point
-   * @property {Boolean} draggable If true, marker is draggable.
-   * @property {String} color
-   * @property {Layer} layer
-   * @property {String} view
-   * @property {String} fontFamily
-   * @property {Number} fontSize
-   * @property {String} fontStyle
-   */
+export function createSegmentLabel(options) {
+  return new Konva.Text({
+    x:          12,
+    y:          12,
+    text:       options.segment.labelText,
+    textAlign:  'center',
+    fontFamily: options.fontFamily || 'sans-serif',
+    fontSize:   options.fontSize || 12,
+    fontStyle:  options.fontStyle || 'normal',
+    fill:       '#000'
+  });
+}
 
-  /**
-   * Creates a point marker handle.
-   *
-   * @param {CreatePointMarkerOptions} options
-   * @returns {Marker}
-   */
+/**
+ * Parameters for the {@link createPointMarker} function.
+ *
+ * @typedef {Object} CreatePointMarkerOptions
+ * @global
+ * @property {Point} point
+ * @property {Boolean} draggable If true, marker is draggable.
+ * @property {String} color
+ * @property {Layer} layer
+ * @property {String} view
+ * @property {String} fontFamily
+ * @property {Number} fontSize
+ * @property {String} fontStyle
+ */
 
-  function createPointMarker(options) {
-    return new DefaultPointMarker(options);
-  }
+/**
+ * Creates a point marker handle.
+ *
+ * @param {CreatePointMarkerOptions} options
+ * @returns {Marker}
+ */
 
-  return {
-    createSegmentMarker: createSegmentMarker,
-    createSegmentLabel: createSegmentLabel,
-    createPointMarker: createPointMarker
-  };
-});
+export function createPointMarker(options) {
+  return new DefaultPointMarker(options);
+}

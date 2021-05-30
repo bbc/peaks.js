@@ -1,9 +1,6 @@
-'use strict';
-
-require('./setup');
-
-var WaveformBuilder = require('../../src/waveform-builder');
-var WaveformData = require('waveform-data');
+import WaveformBuilder from '../../src/waveform-builder';
+import WaveformData from 'waveform-data';
+import sampleJsonData from '../../test_data/sample.json';
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
@@ -216,7 +213,6 @@ describe('WaveformBuilder', function() {
     });
 
     it('should use the waveformData json data connector', function(done) {
-      var sampleJsonData = require('../../test_data/sample.json');
       var peaks = {
         options: {
           mediaElement: document.getElementById('media'),

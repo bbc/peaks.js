@@ -1,10 +1,9 @@
-'use strict';
+import Peaks from '../../src/main';
+import WaveformData from 'waveform-data';
+import Konva from 'konva';
 
-require('./setup');
-
-var Peaks = require('../../src/main');
-var WaveformData = require('waveform-data');
-var Konva = require('konva');
+import sampleJsonData from '../../test_data/sample.json';
+// import { getSampleJsonData } from '../../test_data/sample-json.js';
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
@@ -19,6 +18,16 @@ var externalPlayer = {
   getCurrentTime: function() {},
   getDuration: function() {}
 };
+
+function getWaveformLayerDrawSpy(instance) {
+  var zoomview = instance.views.getView('zoomview');
+  expect(zoomview).to.be.ok;
+
+  var waveformLayerDraw = sinon.spy(zoomview._waveformLayer, 'draw');
+  waveformLayerDraw.resetHistory();
+
+  return waveformLayerDraw;
+}
 
 describe('Peaks', function() {
   var p = null;
@@ -344,7 +353,6 @@ describe('Peaks', function() {
 
       context('with valid json waveform data', function() {
         it('should initialise correctly', function(done) {
-          var sampleJsonData = require('../../test_data/sample.json');
           Peaks.init({
             containers: {
               overview: document.getElementById('overview-container'),
@@ -449,8 +457,6 @@ describe('Peaks', function() {
 
       context('with external player', function() {
         it('should ignore mediaUrl if using an external player', function(done) {
-          var sampleJsonData = require('../../test_data/sample.json');
-
           Peaks.init({
             containers: {
               overview: document.getElementById('overview-container'),
@@ -741,8 +747,6 @@ describe('Peaks', function() {
   });
 
   describe('setSource', function() {
-    var waveformLayerDraw;
-
     beforeEach(function(done) {
       var options = {
         containers: {
@@ -758,11 +762,6 @@ describe('Peaks', function() {
         expect(err).to.equal(null);
 
         p = instance;
-
-        var zoomview = p.views.getView('zoomview');
-        expect(zoomview).to.be.ok;
-
-        waveformLayerDraw = sinon.spy(zoomview._waveformLayer, 'draw');
 
         done();
       });
@@ -802,7 +801,8 @@ describe('Peaks', function() {
 
     context('with valid json waveform data', function() {
       it('should update the waveform', function(done) {
-        var sampleJsonData = require('../../test_data/sample.json');
+        var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
         var options = {
           mediaUrl: '/base/test_data/sample.mp3',
           waveformData: {
@@ -820,6 +820,8 @@ describe('Peaks', function() {
 
     context('with waveform data url', function() {
       it('should update the waveform', function(done) {
+        var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
         var options = {
           mediaUrl: '/base/test_data/sample.mp3',
           dataUri: {
@@ -837,6 +839,8 @@ describe('Peaks', function() {
 
     context('with audioContext', function() {
       it('should update the waveform', function(done) {
+        var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
         var options = {
           mediaUrl: '/base/test_data/sample.mp3',
           webAudio: {
@@ -864,6 +868,8 @@ describe('Peaks', function() {
             return audioContext.decodeAudioData(buffer);
           })
           .then(function(audioBuffer) {
+            var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
             var options = {
               mediaUrl: '/base/test_data/sample.mp3',
               webAudio: {
@@ -888,6 +894,8 @@ describe('Peaks', function() {
             return response.arrayBuffer();
           })
           .then(function(buffer) {
+            var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
             var options = {
               mediaUrl: '/base/test_data/sample.mp3',
               waveformData: {
@@ -928,6 +936,8 @@ describe('Peaks', function() {
 
     context('with zoom levels', function() {
       it('should update the instance zoom levels', function(done) {
+        var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
         var options = {
           mediaUrl: '/base/test_data/sample.mp3',
           webAudio: {
@@ -947,6 +957,8 @@ describe('Peaks', function() {
 
     context('with stereo waveform', function() {
       it('should update the waveform', function(done) {
+        var waveformLayerDraw = getWaveformLayerDrawSpy(p);
+
         var options = {
           mediaUrl: '/base/test_data/07023003.mp3',
           dataUri: {

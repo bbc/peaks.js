@@ -1,10 +1,6 @@
-'use strict';
-
-require('./setup');
-
-var Peaks = require('../../src/main');
-var WaveformOverview = require('../../src/waveform-overview');
-var WaveformZoomView = require('../../src/waveform-zoomview');
+import Peaks from '../../src/main';
+import WaveformOverview from '../../src/waveform-overview';
+import WaveformZoomView from '../../src/waveform-zoomview';
 
 describe('Peaks.views', function() {
   var p;

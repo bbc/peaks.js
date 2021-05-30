@@ -6,138 +6,131 @@
  * @module view-controller
  */
 
-define([
-  './waveform-overview',
-  './waveform-zoomview',
-  './utils'
-], function(
-    WaveformOverview,
-    WaveformZoomView,
-    Utils) {
-  'use strict';
+import WaveformOverview from './waveform-overview';
+import WaveformZoomView from './waveform-zoomview';
+import { isNullOrUndefined } from './utils';
 
-  /**
-   * Creates an object that allows users to create and manage waveform views.
-   *
-   * @class
-   * @alias ViewController
-   *
-   * @param {Peaks} peaks
-   */
+/**
+ * Creates an object that allows users to create and manage waveform views.
+ *
+ * @class
+ * @alias ViewController
+ *
+ * @param {Peaks} peaks
+ */
 
-  function ViewController(peaks) {
-    this._peaks = peaks;
-    this._overview = null;
-    this._zoomview = null;
+function ViewController(peaks) {
+  this._peaks = peaks;
+  this._overview = null;
+  this._zoomview = null;
+}
+
+ViewController.prototype.createOverview = function(container) {
+  if (this._overview) {
+    return this._overview;
   }
 
-  ViewController.prototype.createOverview = function(container) {
-    if (this._overview) {
-      return this._overview;
-    }
+  var waveformData = this._peaks.getWaveformData();
 
-    var waveformData = this._peaks.getWaveformData();
+  this._overview = new WaveformOverview(
+    waveformData,
+    container,
+    this._peaks
+  );
 
-    this._overview = new WaveformOverview(
-      waveformData,
-      container,
-      this._peaks
+  if (this._zoomview) {
+    this._overview.showHighlight(
+      this._zoomview.getStartTime(),
+      this._zoomview.getEndTime()
     );
+  }
 
-    if (this._zoomview) {
-      this._overview.showHighlight(
-        this._zoomview.getStartTime(),
-        this._zoomview.getEndTime()
-      );
-    }
+  return this._overview;
+};
 
-    return this._overview;
-  };
-
-  ViewController.prototype.createZoomview = function(container) {
-    if (this._zoomview) {
-      return this._zoomview;
-    }
-
-    var waveformData = this._peaks.getWaveformData();
-
-    this._zoomview = new WaveformZoomView(
-      waveformData,
-      container,
-      this._peaks
-    );
-
+ViewController.prototype.createZoomview = function(container) {
+  if (this._zoomview) {
     return this._zoomview;
-  };
+  }
 
-  ViewController.prototype.destroyOverview = function() {
-    if (!this._overview) {
-      return;
-    }
+  var waveformData = this._peaks.getWaveformData();
 
-    if (!this._zoomview) {
-      return;
-    }
+  this._zoomview = new WaveformZoomView(
+    waveformData,
+    container,
+    this._peaks
+  );
 
+  return this._zoomview;
+};
+
+ViewController.prototype.destroyOverview = function() {
+  if (!this._overview) {
+    return;
+  }
+
+  if (!this._zoomview) {
+    return;
+  }
+
+  this._overview.destroy();
+  this._overview = null;
+};
+
+ViewController.prototype.destroyZoomview = function() {
+  if (!this._zoomview) {
+    return;
+  }
+
+  if (!this._overview) {
+    return;
+  }
+
+  this._zoomview.destroy();
+  this._zoomview = null;
+
+  this._overview.removeHighlightRect();
+};
+
+ViewController.prototype.destroy = function() {
+  if (this._overview) {
     this._overview.destroy();
     this._overview = null;
-  };
+  }
 
-  ViewController.prototype.destroyZoomview = function() {
-    if (!this._zoomview) {
-      return;
-    }
-
-    if (!this._overview) {
-      return;
-    }
-
+  if (this._zoomview) {
     this._zoomview.destroy();
     this._zoomview = null;
+  }
+};
 
-    this._overview.removeHighlightRect();
-  };
-
-  ViewController.prototype.destroy = function() {
-    if (this._overview) {
-      this._overview.destroy();
-      this._overview = null;
+ViewController.prototype.getView = function(name) {
+  if (isNullOrUndefined(name)) {
+    if (this._overview && this._zoomview) {
+      return null;
     }
-
-    if (this._zoomview) {
-      this._zoomview.destroy();
-      this._zoomview = null;
+    else if (this._overview) {
+      return this._overview;
     }
-  };
-
-  ViewController.prototype.getView = function(name) {
-    if (Utils.isNullOrUndefined(name)) {
-      if (this._overview && this._zoomview) {
-        return null;
-      }
-      else if (this._overview) {
-        return this._overview;
-      }
-      else if (this._zoomview) {
-        return this._zoomview;
-      }
-      else {
-        return null;
-      }
+    else if (this._zoomview) {
+      return this._zoomview;
     }
     else {
-      switch (name) {
-        case 'overview':
-          return this._overview;
-
-        case 'zoomview':
-          return this._zoomview;
-
-        default:
-          return null;
-      }
+      return null;
     }
-  };
+  }
+  else {
+    switch (name) {
+      case 'overview':
+        return this._overview;
 
-  return ViewController;
-});
+      case 'zoomview':
+        return this._zoomview;
+
+      default:
+        return null;
+    }
+  }
+};
+
+export default ViewController;

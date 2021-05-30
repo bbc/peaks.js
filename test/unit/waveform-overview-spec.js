@@ -1,8 +1,4 @@
-'use strict';
-
-require('./setup');
-
-var Peaks = require('../../src/main');
+import Peaks from '../../src/main';
 
 describe('WaveformOverview', function() {
   var p = null;

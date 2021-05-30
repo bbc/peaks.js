@@ -1,0 +1,17 @@
+import './setup';
+import './api-spec';
+import './api-points-spec';
+import './api-segments-spec';
+import './api-player-spec';
+import './api-view-spec';
+import './api-views-spec';
+import './api-zoom-spec';
+import './cue-emitter-spec';
+import './point-spec';
+import './segment-spec';
+import './segment-shape-spec';
+import './segments-layer-spec';
+import './waveform-builder-spec';
+import './waveform-overview-spec';
+import './waveform-shape-spec';
+import './utils-spec';

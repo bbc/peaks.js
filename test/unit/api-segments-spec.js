@@ -1,9 +1,5 @@
-'use strict';
-
-require('./setup');
-
-var Peaks = require('../../src/main');
-var Segment = require('../../src/segment');
+import Peaks from '../../src/main';
+import Segment from '../../src/segment';
 
 describe('Peaks.segments', function() {
   var p, logger;

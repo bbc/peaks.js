@@ -1,9 +1,5 @@
-'use strict';
-
-require('./setup');
-
-var Peaks = require('../../src/main');
-var Point = require('../../src/point');
+import Peaks from '../../src/main';
+import Point from '../../src/point';
 
 describe('Peaks.points', function() {
   var p;

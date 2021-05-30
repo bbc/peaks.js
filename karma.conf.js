@@ -1,7 +1,11 @@
 'use strict';
 /* eslint-env node */
 
-var istanbul = require('browserify-istanbul');
+var commonjs = require('rollup-plugin-commonjs');
+var resolve = require('rollup-plugin-node-resolve');
+var babel = require('@rollup/plugin-babel');
+var json = require('@rollup/plugin-json');
+var istanbul = require('rollup-plugin-istanbul');
 
 function filterBrowsers(browsers, re) {
   return Object.keys(browsers).filter(function(key) {
@@ -11,7 +15,6 @@ function filterBrowsers(browsers, re) {
 
 module.exports = function(config) {
   var isCI = Boolean(process.env.CI) && Boolean(process.env.BROWSER_STACK_ACCESS_KEY);
-  var glob = config.glob || '**/*.js';
 
   // Karma configuration
   config.set({
@@ -19,7 +22,7 @@ module.exports = function(config) {
     // defined in 'files' and 'exclude'.
     basePath: '',
 
-    frameworks: ['browserify', 'mocha', 'chai-sinon'],
+    frameworks: ['mocha', 'chai-sinon'],
 
     client: {
       chai: {
@@ -30,23 +33,10 @@ module.exports = function(config) {
       }
     },
 
-    browserify: {
-      debug: true,
-      transform: [
-        istanbul({
-          ignore: [
-            'test/unit/*.js'
-          ]
-        }),
-        'deamdify'
-      ]
-    },
-
     // list of files / patterns to load in the browser
     files: [
-      { pattern: 'test/test_img/*', included: false },
       { pattern: 'test_data/*', included: false },
-      { pattern: 'test/unit/' + glob, included: true }
+      { pattern: 'test/unit/tests.js', type: 'module', included: true }
     ],
 
     mime: {
@@ -54,7 +44,31 @@ module.exports = function(config) {
     },
 
     preprocessors: {
-      'test/unit/*.js': ['browserify']
+      'test/unit/tests.js': ['rollup']
+    },
+
+    rollupPreprocessor: {
+      plugins: [
+        commonjs(),
+        json(),
+        resolve({ browser: true }),
+        babel.babel({
+          babelHelpers: 'bundled',
+          exclude: 'node_modules/**'
+        }),
+        istanbul({
+          exclude: [
+            'test/unit/*.js',
+            'test_data/**',
+            'node_modules/**/*.js'
+          ]
+        })
+      ],
+      output: {
+        format: 'iife',
+        name: 'peaks',
+        sourcemap: 'inline'
+      }
     },
 
     // test results reporter to use

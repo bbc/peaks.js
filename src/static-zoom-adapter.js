@@ -6,25 +6,21 @@
  * @module static-zoom-adapter
  */
 
-define([], function() {
-  'use strict';
+export default {
+  create: function(view /* , currentScale, previousScale */) {
+    return {
+      start: function(relativePosition) {
+        // This function is called after data is rescaled to currentScale
+        // from previousScale.
 
-  return {
-    create: function(view /* , currentScale, previousScale */) {
-      return {
-        start: function(relativePosition) {
-          // This function is called after data is rescaled to currentScale
-          // from previousScale.
+        view.segmentLayer.draw();
+        view.pointLayer.draw();
 
-          view.segmentLayer.draw();
-          view.pointLayer.draw();
+        var time = view.peaks.player.getCurrentTime();
+        var index = view.timeToPixels(time);
 
-          var time = view.peaks.player.getCurrentTime();
-          var index = view.timeToPixels(time);
-
-          view.seekFrame(index, relativePosition);
-        }
-      };
-    }
-  };
-});
+        view.seekFrame(index, relativePosition);
+      }
+    };
+  }
+};

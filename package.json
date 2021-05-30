@@ -31,13 +31,18 @@
   "engines": {
     "node": ">= 8.11.2"
   },
+  "browserslist": [
+    "last 2 versions",
+    "> 0.2%",
+    "IE 10"
+  ],
   "scripts": {
     "prebuild": "npm run lint",
-    "build": "browserify -d -e ./src/main.js -t deamdify -s peaks | exorcist peaks.js.map | derequire - > peaks.js",
-    "postbuild": "copyfiles peaks.js peaks.js.map demo",
+    "build": "rollup -c",
+    "postbuild": "copyfiles peaks.js peaks.js.map peaks.min.js peaks.min.js.map demo",
     "doc": "jsdoc --private --destination docs --recurse src",
     "lint": "eslint src/*.js test/**/*.js test/*.js karma.conf.js",
-    "pretest": "npm run build",
+    "pretest": "npm run lint",
     "test": "karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
     "copy-demo-files": "copyfiles --up 1 test_data/sample.mp3 test_data/07023003.mp3 test_data/07023003-2channel.dat demo",
@@ -46,17 +51,14 @@
     "prepack": "npm run build"
   },
   "devDependencies": {
-    "browserify": "~17.0.0",
-    "browserify-istanbul": "~3.0.1",
+    "@babel/preset-env": "~7.14.4",
+    "@rollup/plugin-babel": "~5.3.0",
+    "@rollup/plugin-json": "~4.1.0",
     "chai": "~4.3.4",
     "copyfiles": "~2.4.1",
-    "deamdify": "~0.3.0",
-    "derequire": "~2.1.1",
     "eslint": "~7.28.0",
-    "exorcist": "~2.0.0",
     "jsdoc": "~3.6.7",
     "karma": "~6.3.3",
-    "karma-browserify": "~8.0.0",
     "karma-browserstack-launcher": "~1.6.0",
     "karma-chai-sinon": "~0.1.5",
     "karma-chrome-launcher": "~3.1.0",
@@ -64,9 +66,15 @@
     "karma-firefox-launcher": "~2.1.1",
     "karma-html2js-preprocessor": "~1.1.0",
     "karma-mocha": "~2.0.1",
+    "karma-rollup-preprocessor": "~7.0.7",
     "karma-safari-launcher": "~1.0.0",
     "karma-spec-reporter": "~0.0.32",
     "mocha": "~9.0.0",
+    "rollup": "~2.50.5",
+    "rollup-plugin-commonjs": "~10.1.0",
+    "rollup-plugin-istanbul": "~3.0.0",
+    "rollup-plugin-node-resolve": "~5.2.0",
+    "rollup-plugin-terser": "^7.0.2",
     "serve": "~12.0.0",
     "sinon": "~11.1.1",
     "sinon-chai": "~3.7.0",
@@ -74,7 +82,7 @@
   },
   "dependencies": {
     "eventemitter3": "~4.0.7",
-    "konva": "~8.0.1",
+    "konva": "~8.0.2",
     "waveform-data": "~4.1.0"
   }
 }

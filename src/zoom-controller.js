@@ -6,97 +6,93 @@
  * @module zoom-controller
  */
 
-define([], function() {
-  'use strict';
+/**
+ * Creates an object to control zoom levels in a {@link WaveformZoomView}.
+ *
+ * @class
+ * @alias ZoomController
+ *
+ * @param {Peaks} peaks
+ * @param {Array<Integer>} zoomLevels
+ */
 
-  /**
-   * Creates an object to control zoom levels in a {@link WaveformZoomView}.
-   *
-   * @class
-   * @alias ZoomController
-   *
-   * @param {Peaks} peaks
-   * @param {Array<Integer>} zoomLevels
-   */
+function ZoomController(peaks, zoomLevels) {
+  this._peaks = peaks;
+  this._zoomLevels = zoomLevels;
+  this._zoomLevelIndex = 0;
+}
 
-  function ZoomController(peaks, zoomLevels) {
-    this._peaks = peaks;
-    this._zoomLevels = zoomLevels;
-    this._zoomLevelIndex = 0;
+ZoomController.prototype.setZoomLevels = function(zoomLevels) {
+  this._zoomLevels = zoomLevels;
+  this.setZoom(0, true);
+};
+
+/**
+ * Zoom in one level.
+ */
+
+ZoomController.prototype.zoomIn = function() {
+  this.setZoom(this._zoomLevelIndex - 1);
+};
+
+/**
+ * Zoom out one level.
+ */
+
+ZoomController.prototype.zoomOut = function() {
+  this.setZoom(this._zoomLevelIndex + 1);
+};
+
+/**
+ * Given a particular zoom level, triggers a resampling of the data in the
+ * zoomed view.
+ *
+ * @param {number} zoomLevelIndex An index into the options.zoomLevels array.
+ */
+
+ZoomController.prototype.setZoom = function(zoomLevelIndex, forceUpdate) {
+  if (zoomLevelIndex >= this._zoomLevels.length) {
+    zoomLevelIndex = this._zoomLevels.length - 1;
   }
 
-  ZoomController.prototype.setZoomLevels = function(zoomLevels) {
-    this._zoomLevels = zoomLevels;
-    this.setZoom(0, true);
-  };
+  if (zoomLevelIndex < 0) {
+    zoomLevelIndex = 0;
+  }
 
-  /**
-   * Zoom in one level.
-   */
+  if (!forceUpdate && (zoomLevelIndex === this._zoomLevelIndex)) {
+    // Nothing to do.
+    return;
+  }
 
-  ZoomController.prototype.zoomIn = function() {
-    this.setZoom(this._zoomLevelIndex - 1);
-  };
+  this._zoomLevelIndex = zoomLevelIndex;
 
-  /**
-   * Zoom out one level.
-   */
+  var zoomview = this._peaks.views.getView('zoomview');
 
-  ZoomController.prototype.zoomOut = function() {
-    this.setZoom(this._zoomLevelIndex + 1);
-  };
+  if (!zoomview) {
+    return;
+  }
 
-  /**
-   * Given a particular zoom level, triggers a resampling of the data in the
-   * zoomed view.
-   *
-   * @param {number} zoomLevelIndex An index into the options.zoomLevels array.
-   */
+  zoomview.setZoom({ scale: this._zoomLevels[zoomLevelIndex] });
+};
 
-  ZoomController.prototype.setZoom = function(zoomLevelIndex, forceUpdate) {
-    if (zoomLevelIndex >= this._zoomLevels.length) {
-      zoomLevelIndex = this._zoomLevels.length - 1;
-    }
+/**
+ * Returns the current zoom level index.
+ *
+ * @returns {Number}
+ */
 
-    if (zoomLevelIndex < 0) {
-      zoomLevelIndex = 0;
-    }
+ZoomController.prototype.getZoom = function() {
+  return this._zoomLevelIndex;
+};
 
-    if (!forceUpdate && (zoomLevelIndex === this._zoomLevelIndex)) {
-      // Nothing to do.
-      return;
-    }
+/**
+ * Returns the current zoom level, in samples per pixel.
+ *
+ * @returns {Number}
+ */
 
-    this._zoomLevelIndex = zoomLevelIndex;
+ZoomController.prototype.getZoomLevel = function() {
+  return this._zoomLevels[this._zoomLevelIndex];
+};
 
-    var zoomview = this._peaks.views.getView('zoomview');
-
-    if (!zoomview) {
-      return;
-    }
-
-    zoomview.setZoom({ scale: this._zoomLevels[zoomLevelIndex] });
-  };
-
-  /**
-   * Returns the current zoom level index.
-   *
-   * @returns {Number}
-   */
-
-  ZoomController.prototype.getZoom = function() {
-    return this._zoomLevelIndex;
-  };
-
-  /**
-   * Returns the current zoom level, in samples per pixel.
-   *
-   * @returns {Number}
-   */
-
-  ZoomController.prototype.getZoomLevel = function() {
-    return this._zoomLevels[this._zoomLevelIndex];
-  };
-
-  return ZoomController;
-});
+export default ZoomController;
