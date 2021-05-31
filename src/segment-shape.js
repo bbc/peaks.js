@@ -188,6 +188,7 @@ define([
 
   SegmentShape.prototype._onMouseEnter = function() {
     if (this._label) {
+      this._label.moveToTop();
       this._label.show();
       this._layer.draw();
     }
