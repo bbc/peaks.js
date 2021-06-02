@@ -57,13 +57,13 @@ define([
     this._stage.on('mousedown', this._mouseDown);
     this._stage.on('touchstart', this._mouseDown);
 
-    this._mouseDownClientX = null;
+    this._lastMouseClientX = null;
   }
 
   /**
    * Mouse down event handler.
    *
-   * @param {MouseEvent} event
+   * @param {KonvaEventObject} event
    */
 
   MouseDragHandler.prototype._mouseDown = function(event) {
@@ -74,12 +74,12 @@ define([
       return;
     }
 
-    this._mouseDownClientX = Math.floor(
+    this._lastMouseClientX = Math.floor(
       event.type === 'touchstart' ? event.evt.touches[0].clientX : event.evt.clientX
     );
 
     if (this._handlers.onMouseDown) {
-      var mouseDownPosX = this._getMousePosX(this._mouseDownClientX);
+      var mouseDownPosX = this._getMousePosX(this._lastMouseClientX);
 
       this._handlers.onMouseDown(mouseDownPosX);
     }
@@ -106,9 +106,10 @@ define([
     );
 
     // Don't update on vertical mouse movement.
-    if (clientX === this._mouseDownClientX) {
+    if (clientX === this._lastMouseClientX) {
       return;
     }
+    this._lastMouseClientX = clientX;
 
     this._dragging = true;
 
