@@ -74,12 +74,15 @@ define([
       return;
     }
 
-    this._lastMouseClientX = Math.floor(
+    var clientX = Math.floor(
       event.type === 'touchstart' ? event.evt.touches[0].clientX : event.evt.clientX
     );
 
+    this._mouseDownClientX = clientX;
+    this._lastMouseClientX = clientX;
+
     if (this._handlers.onMouseDown) {
-      var mouseDownPosX = this._getMousePosX(this._lastMouseClientX);
+      var mouseDownPosX = this._getMousePosX(clientX);
 
       this._handlers.onMouseDown(mouseDownPosX);
     }
@@ -116,7 +119,7 @@ define([
     if (this._handlers.onMouseMove) {
       var mousePosX = this._getMousePosX(clientX);
 
-      this._handlers.onMouseMove(mousePosX);
+      this._handlers.onMouseMove(mousePosX, clientX - this._mouseDownClientX);
     }
   };
 
@@ -143,7 +146,7 @@ define([
     if (this._handlers.onMouseUp) {
       var mousePosX = this._getMousePosX(clientX);
 
-      this._handlers.onMouseUp(mousePosX);
+      this._handlers.onMouseUp(mousePosX, clientX - this._mouseDownClientX);
     }
 
     window.removeEventListener('mousemove', this._mouseMove, false);

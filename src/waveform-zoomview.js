@@ -126,15 +126,15 @@ define([
     self._syncPlayhead(time);
 
     self._mouseDragHandler = new MouseDragHandler(self._stage, {
-      onMouseDown: function(mousePosX) {
+      onMouseDown: function(/* mousePosX */) {
         this.initialFrameOffset = self._frameOffset;
-        this.mouseDownX = mousePosX;
       },
 
-      onMouseMove: function(mousePosX) {
+      // eslint-disable-next-line no-unused-vars
+      onMouseMove: function(mousePosX, offset) {
         // Moving the mouse to the left increases the time position of the
         // left-hand edge of the visible waveform.
-        var diff = this.mouseDownX - mousePosX;
+        var diff = -offset;
 
         var newFrameOffset = Utils.clamp(
           this.initialFrameOffset + diff, 0, self._pixelLength - self._width
@@ -145,13 +145,10 @@ define([
         }
       },
 
-      onMouseUp: function(/* mousePosX */) {
+      onMouseUp: function(mousePosX) {
         // Set playhead position only on click release, when not dragging.
         if (!self._mouseDragHandler.isDragging()) {
-          var mouseDownX = Math.floor(this.mouseDownX);
-
-          var pixelIndex = self._frameOffset + mouseDownX;
-
+          var pixelIndex = self._frameOffset + Math.floor(mousePosX);
           var time = self.pixelsToTime(pixelIndex);
           var duration = self._getDuration();
 
