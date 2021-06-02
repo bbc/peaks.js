@@ -156,6 +156,10 @@ define([
 
           self._peaks.player.seek(time);
         }
+      },
+
+      onMouseWheel: function(deltaX) {
+        self.scrollWaveform(deltaX);
       }
     });
 

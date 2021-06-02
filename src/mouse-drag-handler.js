@@ -53,9 +53,11 @@ define([
     this._mouseDown = this._mouseDown.bind(this);
     this._mouseUp   = this._mouseUp.bind(this);
     this._mouseMove = this._mouseMove.bind(this);
+    this._mouseWheel = this._mouseWheel.bind(this);
 
     this._stage.on('mousedown', this._mouseDown);
     this._stage.on('touchstart', this._mouseDown);
+    this._stage.on('wheel', this._mouseWheel);
 
     this._lastMouseClientX = null;
   }
@@ -156,6 +158,28 @@ define([
     window.removeEventListener('blur', this._mouseUp, false);
 
     this._dragging = false;
+  };
+
+  /**
+   * Mouse wheel event handler.
+   *
+   * @param {KonvaEventObject} event
+   */
+
+  MouseDragHandler.prototype._mouseWheel = function(eventObject) {
+    var event = eventObject.evt;
+    var delta = event.shiftKey ? event.deltaY : event.deltaX;
+    var offAxisDelta = event.shiftKey ? event.deltaX : event.deltaY;
+
+    // Ignore the event if it looks like the user is scrolling vertically down the page
+    if (Math.abs(delta) < Math.abs(offAxisDelta)) {
+      return;
+    }
+
+    if (delta && this._handlers.onMouseWheel) {
+      this._handlers.onMouseWheel(delta);
+      event.preventDefault();
+    }
   };
 
   /**
