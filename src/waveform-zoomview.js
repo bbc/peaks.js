@@ -136,13 +136,7 @@ define([
         // left-hand edge of the visible waveform.
         var diff = -offset;
 
-        var newFrameOffset = Utils.clamp(
-          this.initialFrameOffset + diff, 0, self._pixelLength - self._width
-        );
-
-        if (newFrameOffset !== this.initialFrameOffset) {
-          self._updateWaveform(newFrameOffset);
-        }
+        self._updateWaveform(this.initialFrameOffset + diff);
       },
 
       onMouseUp: function(mousePosX) {
