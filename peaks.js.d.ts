@@ -375,6 +375,7 @@ declare module 'peaks.js' {
     };
     /** Events */
     on: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
+    off: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
   }
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
