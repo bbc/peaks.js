@@ -6,7 +6,7 @@
  * @module segment-marker
  */
 
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 /**
  * Parameters for the {@link SegmentMarker} constructor.

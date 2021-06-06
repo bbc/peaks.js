@@ -6,7 +6,9 @@
  * @module default-segment-marker
  */
 
-import Konva from 'konva';
+import { Line } from 'konva/lib/shapes/Line';
+import { Rect } from 'konva/lib/shapes/Rect';
+import { Text } from 'konva/lib/shapes/Text';
 
 /**
  * Creates a segment marker handle.
@@ -32,7 +34,7 @@ DefaultSegmentMarker.prototype.init = function(group) {
                                           this._options.segment.endTime;
 
   // Label - create with default y, the real value is set in fitToView().
-  this._label = new Konva.Text({
+  this._label = new Text({
     x:          xPosition,
     y:          0,
     text:       this._options.layer.formatTime(time),
@@ -46,7 +48,7 @@ DefaultSegmentMarker.prototype.init = function(group) {
   this._label.hide();
 
   // Handle - create with default y, the real value is set in fitToView().
-  this._handle = new Konva.Rect({
+  this._handle = new Rect({
     x:           handleX,
     y:           0,
     width:       handleWidth,
@@ -58,7 +60,7 @@ DefaultSegmentMarker.prototype.init = function(group) {
 
   // Vertical Line - create with default y and points, the real values
   // are set in fitToView().
-  this._line = new Konva.Line({
+  this._line = new Line({
     x:           0,
     y:           0,
     stroke:      this._options.color,

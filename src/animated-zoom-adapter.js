@@ -6,7 +6,7 @@
  * @module animated-zoom-adapter
  */
 
-import Konva from 'konva';
+import { Animation } from 'konva/lib/Animation';
 
 export default {
 
@@ -86,7 +86,7 @@ export default {
     var animationFrameFunction =
       this.createAnimationFrameFunction(view, frameData);
 
-    return new Konva.Animation(animationFrameFunction, view);
+    return new Animation(animationFrameFunction, view);
   },
 
   createAnimationFrameFunction: function(view, frameData) {

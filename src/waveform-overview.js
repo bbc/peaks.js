@@ -14,7 +14,7 @@ import SegmentsLayer from './segments-layer';
 import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
 import { clamp, formatTime, isFinite, isNumber } from './utils';
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 /**
  * Creates the overview waveform view.

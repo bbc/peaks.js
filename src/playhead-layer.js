@@ -6,7 +6,10 @@
  * @module playhead-layer
  */
 
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
+import { Animation } from 'konva/lib/Animation';
+import { Line } from 'konva/lib/shapes/Line';
+import { Text } from 'konva/lib/shapes/Text';
 
 /**
  * Creates a Konva.Layer that displays a playhead marker.
@@ -118,7 +121,7 @@ PlayheadLayer.prototype.fitToView = function() {
 
 PlayheadLayer.prototype._createPlayhead = function(color) {
   // Create with default points, the real values are set in fitToView().
-  this._playheadLine = new Konva.Line({
+  this._playheadLine = new Line({
     stroke:      color,
     strokeWidth: 1
   });
@@ -137,7 +140,7 @@ PlayheadLayer.prototype._createPlayheadText = function(color) {
   var text = this._view.formatTime(time);
 
   // Create with default y, the real value is set in fitToView().
-  this._playheadText = new Konva.Text({
+  this._playheadText = new Text({
     x: 2,
     y: 0,
     text: text,
@@ -243,7 +246,7 @@ PlayheadLayer.prototype._start = function() {
 
   var lastPlayheadPosition = null;
 
-  self._playheadLineAnimation = new Konva.Animation(function() {
+  self._playheadLineAnimation = new Animation(function() {
     var time = self._player.getCurrentTime();
     var playheadPosition = self._view.timeToPixels(time);
 

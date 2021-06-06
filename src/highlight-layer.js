@@ -7,7 +7,8 @@
  */
 
 import { clamp } from  './utils';
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
+import { Rect } from 'konva/lib/shapes/Rect';
 
 /**
  * Creates the highlight region that shows the position of the zoomable
@@ -73,7 +74,7 @@ HighlightLayer.prototype._createHighlightRect = function(startTime, endTime) {
   var endOffset   = this._view.timeToPixels(endTime);
 
   // Create with default y and height, the real values are set in fitToView().
-  this._highlightRect = new Konva.Rect({
+  this._highlightRect = new Rect({
     startOffset:  0,
     y:            0,
     width:        endOffset - startOffset,

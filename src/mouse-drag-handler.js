@@ -6,7 +6,7 @@
  * @module mouse-drag-handler
  */
 
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 function getMarkerObject(obj) {
   while (obj.parent !== null) {

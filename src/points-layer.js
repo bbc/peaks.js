@@ -8,7 +8,7 @@
 
 import PointMarker from './point-marker';
 import { objectHasProperty } from './utils';
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 var defaultFontFamily = 'sans-serif';
 var defaultFontSize = 10;

@@ -8,7 +8,7 @@
 
 import DefaultPointMarker from './default-point-marker';
 import DefaultSegmentMarker from './default-segment-marker';
-import Konva from 'konva';
+import { Text } from 'konva/lib/shapes/Text';
 
 /**
  * Parameters for the {@link createSegmentMarker} function.
@@ -65,7 +65,7 @@ export function createSegmentMarker(options) {
  */
 
 export function createSegmentLabel(options) {
-  return new Konva.Text({
+  return new Text({
     x:          12,
     y:          12,
     text:       options.segment.labelText,

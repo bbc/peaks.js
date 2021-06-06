@@ -8,7 +8,7 @@
 
 import SegmentShape from './segment-shape';
 import { objectHasProperty } from './utils';
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 /**
  * Creates a Konva.Layer that displays segment markers against the audio

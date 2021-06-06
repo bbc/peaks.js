@@ -7,7 +7,7 @@
  */
 
 import { formatTime, roundUpToNearest } from './utils';
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 /**
  * Creates the waveform axis shapes and adds them to the given view layer.

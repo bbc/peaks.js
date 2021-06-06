@@ -6,7 +6,7 @@
  * @module point-marker
  */
 
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 /**
  * Parameters for the {@link PointMarker} constructor.

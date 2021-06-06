@@ -7,7 +7,7 @@
  */
 
 import { clamp, isLinearGradientColor, isString } from './utils';
-import Konva from 'konva';
+import Konva from 'konva/lib/Core';
 
 /**
  * Waveform shape options.

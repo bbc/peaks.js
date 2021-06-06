@@ -6,7 +6,9 @@
  * @module default-point-marker
  */
 
-import Konva from 'konva';
+import { Line } from 'konva/lib/shapes/Line';
+import { Rect } from 'konva/lib/shapes/Rect';
+import { Text } from 'konva/lib/shapes/Text';
 
 /**
  * Creates a point marker handle.
@@ -30,7 +32,7 @@ DefaultPointMarker.prototype.init = function(group) {
 
   if (this._options.view === 'zoomview') {
     // Label - create with default y, the real value is set in fitToView().
-    this._label = new Konva.Text({
+    this._label = new Text({
       x:          2,
       y:          0,
       text:       this._options.point.labelText,
@@ -45,7 +47,7 @@ DefaultPointMarker.prototype.init = function(group) {
   // Handle - create with default y, the real value is set in fitToView().
 
   if (this._options.draggable) {
-    this._handle = new Konva.Rect({
+    this._handle = new Rect({
       x:      handleX,
       y:      0,
       width:  handleWidth,
@@ -56,7 +58,7 @@ DefaultPointMarker.prototype.init = function(group) {
 
   // Line - create with default y and points, the real values
   // are set in fitToView().
-  this._line = new Konva.Line({
+  this._line = new Line({
     x:           0,
     y:           0,
     stroke:      this._options.color,
@@ -67,7 +69,7 @@ DefaultPointMarker.prototype.init = function(group) {
 
   if (this._handle) {
     // Time - create with default y, the real value is set in fitToView().
-    this._time = new Konva.Text({
+    this._time = new Text({
       x:          -24,
       y:          0,
       text:       this._options.layer.formatTime(this._options.point.time),
