@@ -109,6 +109,7 @@ define([
     if (clientX === this._lastMouseClientX) {
       return;
     }
+
     this._lastMouseClientX = clientX;
 
     this._dragging = true;

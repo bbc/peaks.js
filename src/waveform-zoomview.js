@@ -144,9 +144,7 @@ define([
           this.initialFrameOffset + diff, 0, self._pixelLength - self._width
         );
 
-        if (newFrameOffset !== this.initialFrameOffset) {
-          self._updateWaveform(newFrameOffset);
-        }
+        self._updateWaveform(newFrameOffset);
       },
 
       onMouseUp: function(/* mousePosX */) {
