@@ -203,10 +203,24 @@ describe('Peaks.segments', function() {
       ]);
     });
 
-    it('should return undefined', function() {
+    it('should return the new segment', function() {
       var result = p.segments.add({ startTime: 0, endTime: 10 });
 
-      expect(result).to.be.undefined;
+      expect(result).to.be.an.instanceOf(Segment);
+      expect(result.startTime).to.equal(0);
+      expect(result.endTime).to.equal(10);
+      expect(result.id).to.be.a('string');
+    });
+
+    it('should return multiple segments when passing an array', function() {
+      var result = p.segments.add([
+        { startTime: 0, endTime: 10 },
+        { startTime: 30, endTime: 40 }
+      ]);
+
+      expect(result).to.be.an.instanceOf(Array);
+      expect(result[0].startTime).to.equal(0);
+      expect(result[1].startTime).to.equal(30);
     });
 
     it('should throw an exception if arguments do not match any previous accepted signature form', function() {

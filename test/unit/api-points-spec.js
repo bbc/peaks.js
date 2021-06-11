@@ -174,10 +174,20 @@ describe('Peaks.points', function() {
       ]);
     });
 
-    it('should return undefined', function() {
+    it('should return the new point', function() {
       var result = p.points.add({ time: 0 });
 
-      expect(result).to.be.undefined;
+      expect(result).to.be.an.instanceOf(Point);
+      expect(result.time).to.equal(0);
+      expect(result.id).to.be.a('string');
+    });
+
+    it('should return multiple points when passing an array', function() {
+      var result = p.points.add([{ time: 0 }, { time: 10 }]);
+
+      expect(result).to.be.an.instanceOf(Array);
+      expect(result[0].time).to.equal(0);
+      expect(result[1].time).to.equal(10);
     });
 
     it('should throw an exception if the time is undefined', function() {
