@@ -302,7 +302,7 @@ define([
       increment = direction * this.timeToPixels(this._options.nudgeIncrement);
     }
 
-    this._updateWaveform(this._frameOffset + increment);
+    this.scrollWaveform(increment);
   };
 
   WaveformZoomView.prototype.setWaveformData = function(waveformData) {
@@ -643,6 +643,16 @@ define([
 
     this._axis.addToLayer(this._axisLayer);
     this._stage.add(this._axisLayer);
+  };
+
+  /**
+   * Scrolls the region of waveform shown in the view.
+   *
+   * @param {Number} scrollAmount How far to scroll, in pixels
+   */
+
+  WaveformZoomView.prototype.scrollWaveform = function(scrollAmount) {
+    this._updateWaveform(this._frameOffset + scrollAmount);
   };
 
   /**
