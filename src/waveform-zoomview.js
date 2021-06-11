@@ -139,10 +139,7 @@ define([
         // Moving the mouse to the left increases the time position of the
         // left-hand edge of the visible waveform.
         var diff = this.mouseDownX - mousePosX;
-
-        var newFrameOffset = Utils.clamp(
-          this.initialFrameOffset + diff, 0, self._pixelLength - self._width
-        );
+        var newFrameOffset = this.initialFrameOffset + diff;
 
         self._updateWaveform(newFrameOffset);
       },
