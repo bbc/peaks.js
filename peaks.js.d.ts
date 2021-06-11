@@ -385,7 +385,8 @@ declare module 'peaks.js' {
     };
     /** Segments API */
     segments: {
-      add: (segments: SegmentAddOptions | SegmentAddOptions[]) => void;
+      add(segment: SegmentAddOptions): Segment;
+      add(segments: SegmentAddOptions[]): Segment[];
       getSegments: () => Segment[];
       getSegment: (id: string) => Segment | null;
       removeByTime: (startTime: number, endTime?: number) => Segment[];
@@ -394,7 +395,8 @@ declare module 'peaks.js' {
     };
     /** Points API */
     points: {
-      add: (points: PointAddOptions | PointAddOptions[]) => void;
+      add(point: PointAddOptions): Point;
+      add(points: PointAddOptions[]): Point[];
       getPoints: () => Point[];
       getPoint: (id: string) => Point | null;
       removeByTime: (time: number) => Point[];

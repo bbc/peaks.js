@@ -197,12 +197,14 @@ define([
    * Adds one or more segments to the timeline.
    *
    * @param {SegmentOptions|Array<SegmentOptions>} segmentOrSegments
+   *
+   * @returns Segment|Array<Segment>
    */
 
   WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
     var self = this;
-
-    var segments = Array.isArray(arguments[0]) ?
+    var arrayArgs = Array.isArray(arguments[0]);
+    var segments = arrayArgs ?
                    arguments[0] :
                    Array.prototype.slice.call(arguments);
 
@@ -221,6 +223,8 @@ define([
     });
 
     this._peaks.emit('segments.add', segments);
+
+    return arrayArgs ? segments : segments[0];
   };
 
   /**

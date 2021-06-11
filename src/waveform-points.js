@@ -138,12 +138,15 @@ define([
    * Adds one or more points to the timeline.
    *
    * @param {PointOptions|Array<PointOptions>} pointOrPoints
+   *
+   * @returns Point|Array<Point>
    */
 
   WaveformPoints.prototype.add = function(/* pointOrPoints */) {
     var self = this;
 
-    var points = Array.isArray(arguments[0]) ?
+    var arrayArgs = Array.isArray(arguments[0]);
+    var points = arrayArgs ?
                  arguments[0] :
                  Array.prototype.slice.call(arguments);
 
@@ -162,6 +165,8 @@ define([
     });
 
     this._peaks.emit('points.add', points);
+
+    return arrayArgs ? points : points[0];
   };
 
   /**
