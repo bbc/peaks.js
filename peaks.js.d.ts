@@ -62,7 +62,30 @@ declare module 'peaks.js' {
     }
   }
 
-  type ContainerOptions = SingleContainerOptions | ViewContainerOptions;
+  interface SharedViewOptions {
+    axisGridlineColor?: string;
+    axisLabelColor?: string;
+    container?: HTMLElement | null;
+    fontFamily?: string;
+    fontSize?: number;
+    fontStyle?: string;
+    playedWaveformColor?: string;
+    playheadColor?: string;
+    playheadTextColor?: string;
+    timeLabelPrecision?: number;
+    waveformColor?: string;
+  }
+  interface SeparateViewOptions {
+    zoomview?: SharedViewOptions & {
+      wheelMode?: "none" | "scroll";
+    };
+    overview?: SharedViewOptions & {
+      highlightColor?: string;
+      highlightOffset?: number;
+    };
+  }
+
+  type ContainerOptions = SingleContainerOptions | ViewContainerOptions | SeparateViewOptions;
 
   interface PreGeneratedWaveformOptions {
     /** URI to waveform data file in binary or JSON */
