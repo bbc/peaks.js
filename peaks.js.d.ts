@@ -48,11 +48,6 @@ declare module 'peaks.js' {
     update: (options: PointUpdateOptions) => void;
   }
 
-  interface SingleContainerOptions {
-    /** Container element for the waveform views */
-    container: HTMLElement;
-  }
-
   interface ViewContainerOptions {
     containers: {
       /** Container element for the overview (non-zoomable) waveform view */
@@ -85,7 +80,7 @@ declare module 'peaks.js' {
     };
   }
 
-  type ContainerOptions = SingleContainerOptions | ViewContainerOptions | SeparateViewOptions;
+  type ContainerOptions = ViewContainerOptions | SeparateViewOptions;
 
   interface PreGeneratedWaveformOptions {
     /** URI to waveform data file in binary or JSON */
