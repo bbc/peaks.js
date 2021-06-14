@@ -344,9 +344,13 @@ declare module 'peaks.js' {
     enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;
-    setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
+  }
+  interface WaveformOverView extends WaveformView {}
+  interface WaveformZoomView extends WaveformView {
+    scrollWaveform: (offset: number) => void;
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none') => void;
+    setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
   }
 
   type Without<T> = { [K in keyof T]?: undefined };
@@ -366,11 +370,13 @@ declare module 'peaks.js' {
     };
     /** Views API */
     views: {
-      createOverview: (container: HTMLElement) => WaveformView;
-      createZoomview: (container: HTMLElement) => WaveformView;
+      createOverview: (container: HTMLElement) => WaveformOverView;
+      createZoomview: (container: HTMLElement) => WaveformZoomView;
       destroyOverview: () => void;
       destroyZoomview: () => void;
-      getView: (name?: 'overview' | 'zoomview') => WaveformView | null;
+      getView(name?: null): WaveformView | null;
+      getView(name: 'overview'): WaveformOverView | null;
+      getView(name: 'zoomview'): WaveformZoomView | null;
     };
     /** Zoom API */
     zoom: {
