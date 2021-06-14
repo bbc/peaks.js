@@ -6,27 +6,22 @@
  * @module player-medialement
  */
 
-define([
-], function() {
-  'use strict';
+/**
+ * A wrapper for interfacing with the HTML5 media element API.
+ * Initializes the player for a given media element.
+ *
+ * @class
+ * @alias MediaElementPlayer
+ * @param {HTMLMediaElement} mediaElement The HTML <code>&lt;audio&gt;</code>
+ *   or <code>&lt;video&gt;</code> element to associate with the
+ *   {@link Peaks} instance.
+ */
 
-  /**
-   * A wrapper for interfacing with the HTML5 media element API.
-   * Initializes the player for a given media element.
-   *
-   * @class
-   * @alias MediaElementPlayer
-   * @param {HTMLMediaElement} mediaElement The HTML <code>&lt;audio&gt;</code>
-   *   or <code>&lt;video&gt;</code> element to associate with the
-   *   {@link Peaks} instance.
-   */
-
-  function MediaElementPlayer(peaks, mediaElement) {
-    var self = this;
-
-    self._peaks = peaks;
-    self._listeners = [];
-    self._mediaElement = mediaElement;
+export default class MediaElementPlayer {
+  constructor(peaks, mediaElement) {
+    this._peaks = peaks;
+    this._listeners = [];
+    this._mediaElement = mediaElement;
   }
 
   /**
@@ -36,13 +31,12 @@ define([
    * @param {String} type The event type to listen for.
    * @param {Function} callback An event handler function.
    */
-
-  MediaElementPlayer.prototype._addMediaListener = function(type, callback) {
+  _addMediaListener(type, callback) {
     this._listeners.push({ type: type, callback: callback });
     this._mediaElement.addEventListener(type, callback);
-  };
+  }
 
-  MediaElementPlayer.prototype.init = function(player) {
+  init(player) {
     var self = this;
 
     self._player = player;
@@ -87,14 +81,14 @@ define([
     if (self._mediaElement.readyState === HTMLMediaElement.HAVE_NOTHING) {
       self._mediaElement.load();
     }
-  };
+  }
 
   /**
    * Cleans up the player object, removing all event listeners from the
    * associated media element.
    */
 
-  MediaElementPlayer.prototype.destroy = function() {
+  destroy() {
     for (var i = 0; i < this._listeners.length; i++) {
       var listener = this._listeners[i];
 
@@ -107,35 +101,33 @@ define([
     this._listeners.length = 0;
 
     this._mediaElement = null;
-  };
+  }
 
-  MediaElementPlayer.prototype.play = function() {
+  play() {
     return this._mediaElement.play();
-  };
+  }
 
-  MediaElementPlayer.prototype.pause = function() {
+  pause() {
     this._mediaElement.pause();
-  };
+  }
 
-  MediaElementPlayer.prototype.isPlaying = function() {
+  isPlaying() {
     return this._isPlaying;
-  };
+  }
 
-  MediaElementPlayer.prototype.isSeeking = function() {
+  isSeeking() {
     return this._mediaElement.seeking;
-  };
+  }
 
-  MediaElementPlayer.prototype.getCurrentTime = function() {
+  getCurrentTime() {
     return this._mediaElement.currentTime;
-  };
+  }
 
-  MediaElementPlayer.prototype.getDuration = function() {
+  getDuration() {
     return this._mediaElement.duration;
-  };
+  }
 
-  MediaElementPlayer.prototype.seek = function(time) {
+  seek(time) {
     this._mediaElement.currentTime = time;
-  };
-
-  return MediaElementPlayer;
-});
+  }
+}

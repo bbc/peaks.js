@@ -6,30 +6,32 @@
  * @module playhead-layer
  */
 
-define([
-  'konva'
-], function(Konva) {
-  'use strict';
+import { Animation } from 'konva/lib/Animation';
+import { Group } from 'konva/lib/Group';
+import { Layer } from 'konva/lib/Layer';
+import { Line } from 'konva/lib/shapes/Line';
+import { Text } from 'konva/lib/shapes/Text';
 
-  /**
-   * Creates a Konva.Layer that displays a playhead marker.
-   *
-   * @class
-   * @alias PlayheadLayer
-   *
-   * @param {Object} options
-   * @param {Player} options.player
-   * @param {WaveformOverview|WaveformZoomView} options.view
-   * @param {Boolean} options.showPlayheadTime If <code>true</code> The playback time position
-   *   is shown next to the playhead.
-   * @param {String} options.playheadColor
-   * @param {String} options.playheadTextColor
-   * @param {String} options.playheadFontFamily
-   * @param {Number} options.playheadFontSize
-   * @param {String} options.playheadFontStyle
-   */
+/**
+ * Creates a Konva.Layer that displays a playhead marker.
+ *
+ * @class
+ * @alias PlayheadLayer
+ *
+ * @param {Object} options
+ * @param {Player} options.player
+ * @param {WaveformOverview|WaveformZoomView} options.view
+ * @param {Boolean} options.showPlayheadTime If <code>true</code> The playback time position
+ *   is shown next to the playhead.
+ * @param {String} options.playheadColor
+ * @param {String} options.playheadTextColor
+ * @param {String} options.playheadFontFamily
+ * @param {Number} options.playheadFontSize
+ * @param {String} options.playheadFontStyle
+ */
 
-  function PlayheadLayer(options) {
+export default class PlayheadLayer {
+  constructor(options) {
     this._player = options.player;
     this._view = options.view;
     this._playheadPixel = 0;
@@ -42,7 +44,7 @@ define([
     this._playheadFontSize = options.playheadFontSize;
     this._playheadFontStyle = options.playheadFontStyle;
 
-    this._playheadLayer = new Konva.Layer();
+    this._playheadLayer = new Layer();
 
     this._createPlayhead(this._playheadColor);
 
@@ -61,9 +63,9 @@ define([
    * @param {Konva.Stage} stage
    */
 
-  PlayheadLayer.prototype.addToStage = function(stage) {
+  addToStage(stage) {
     stage.add(this._playheadLayer);
-  };
+  }
 
   /**
    * Decides whether to use an animation to update the playhead position.
@@ -75,7 +77,7 @@ define([
    * avoid using it where possible.
    */
 
-  PlayheadLayer.prototype.zoomLevelChanged = function() {
+  zoomLevelChanged() {
     var pixelsPerSecond = this._view.timeToPixels(1.0);
     var time;
 
@@ -95,14 +97,14 @@ define([
         this.stop(time);
       }
     }
-  };
+  }
 
   /**
    * Resizes the playhead UI objects to fit the available space in the
    * view.
    */
 
-  PlayheadLayer.prototype.fitToView = function() {
+  fitToView() {
     var height = this._view.getHeight();
 
     this._playheadLine.points([0.5, 0, 0.5, height]);
@@ -110,7 +112,7 @@ define([
     if (this._playheadText) {
       this._playheadText.y(12);
     }
-  };
+  }
 
   /**
    * Creates the playhead UI objects.
@@ -119,28 +121,28 @@ define([
    * @param {String} color
    */
 
-  PlayheadLayer.prototype._createPlayhead = function(color) {
+  _createPlayhead(color) {
     // Create with default points, the real values are set in fitToView().
-    this._playheadLine = new Konva.Line({
+    this._playheadLine = new Line({
       stroke:      color,
       strokeWidth: 1
     });
 
-    this._playheadGroup = new Konva.Group({
+    this._playheadGroup = new Group({
       x: 0,
       y: 0
     });
 
     this._playheadGroup.add(this._playheadLine);
     this._playheadLayer.add(this._playheadGroup);
-  };
+  }
 
-  PlayheadLayer.prototype._createPlayheadText = function(color) {
+  _createPlayheadText(color) {
     var time = this._player.getCurrentTime();
     var text = this._view.formatTime(time);
 
     // Create with default y, the real value is set in fitToView().
-    this._playheadText = new Konva.Text({
+    this._playheadText = new Text({
       x: 2,
       y: 0,
       text: text,
@@ -152,7 +154,7 @@ define([
     });
 
     this._playheadGroup.add(this._playheadText);
-  };
+  }
 
   /**
    * Updates the playhead position.
@@ -160,13 +162,13 @@ define([
    * @param {Number} time Current playhead position, in seconds.
    */
 
-  PlayheadLayer.prototype.updatePlayheadTime = function(time) {
+  updatePlayheadTime(time) {
     this._syncPlayhead(time);
 
     if (this._player.isPlaying()) {
       this._start();
     }
-  };
+  }
 
   /**
    * Updates the playhead position.
@@ -175,7 +177,7 @@ define([
    * @param {Number} time Current playhead position, in seconds.
    */
 
-  PlayheadLayer.prototype._syncPlayhead = function(time) {
+  _syncPlayhead(time) {
     var pixelIndex = this._view.timeToPixels(time);
 
     var frameOffset = this._view.getFrameOffset();
@@ -224,7 +226,7 @@ define([
     if (this._view.playheadPosChanged) {
       this._view.playheadPosChanged(time);
     }
-  };
+  }
 
   /**
    * Starts a playhead animation in sync with the media playback.
@@ -232,7 +234,7 @@ define([
    * @private
    */
 
-  PlayheadLayer.prototype._start = function() {
+  _start() {
     var self = this;
 
     if (self._playheadLineAnimation) {
@@ -246,7 +248,7 @@ define([
 
     var lastPlayheadPosition = null;
 
-    self._playheadLineAnimation = new Konva.Animation(function() {
+    self._playheadLineAnimation = new Animation(function() {
       var time = self._player.getCurrentTime();
       var playheadPosition = self._view.timeToPixels(time);
 
@@ -257,16 +259,16 @@ define([
     }, self._playheadLayer);
 
     self._playheadLineAnimation.start();
-  };
+  }
 
-  PlayheadLayer.prototype.stop = function(time) {
+  stop(time) {
     if (this._playheadLineAnimation) {
       this._playheadLineAnimation.stop();
       this._playheadLineAnimation = null;
     }
 
     this._syncPlayhead(time);
-  };
+  }
 
   /**
    * Returns the position of the playhead marker, in pixels relative to the
@@ -275,15 +277,15 @@ define([
    * @return {Number}
    */
 
-  PlayheadLayer.prototype.getPlayheadOffset = function() {
+  getPlayheadOffset() {
     return this._playheadPixel - this._view.getFrameOffset();
-  };
+  }
 
-  PlayheadLayer.prototype.getPlayheadPixel = function() {
+  getPlayheadPixel() {
     return this._playheadPixel;
-  };
+  }
 
-  PlayheadLayer.prototype.showPlayheadTime = function(show) {
+  showPlayheadTime(show) {
     var updated = false;
 
     if (show) {
@@ -306,9 +308,9 @@ define([
     if (updated) {
       this._playheadLayer.draw();
     }
-  };
+  }
 
-  PlayheadLayer.prototype.updatePlayheadText = function() {
+  updatePlayheadText() {
     // Update current play head
     if (this._playheadText) {
       var time = this._player.getCurrentTime();
@@ -318,14 +320,12 @@ define([
     }
 
     this._playheadLayer.draw();
-  };
+  }
 
-  PlayheadLayer.prototype.destroy = function() {
+  destroy() {
     if (this._playheadLineAnimation) {
       this._playheadLineAnimation.stop();
       this._playheadLineAnimation = null;
     }
-  };
-
-  return PlayheadLayer;
-});
+  }
+}

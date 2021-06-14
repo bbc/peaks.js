@@ -5,41 +5,58 @@
  *
  * @module waveform-shape
  */
+import { Shape } from 'konva/lib/Shape';
+import { clamp, isString, isLinearGradientColor } from './utils.js';
 
-define(['./utils', 'konva'], function(Utils, Konva) {
-  'use strict';
+/**
+ * Scales the waveform data for drawing on a canvas context.
+ *
+ * @see {@link https://stats.stackexchange.com/questions/281162}
+ *
+ * @todo Assumes 8-bit waveform data (-128 to 127 range)
+ *
+ * @param {Number} amplitude The waveform data point amplitude.
+ * @param {Number} height The height of the waveform, in pixels.
+ * @param {Number} scale Amplitude scaling factor.
+ * @returns {Number} The scaled waveform data point.
+ */
 
-  /**
-   * Waveform shape options.
-   *
-   * @typedef {Object} WaveformShapeOptions
-   * @global
-   * @property {String | LinearGradientColor} color Waveform color.
-   * @property {WaveformOverview|WaveformZoomView} view The view object
-   *   that contains the waveform shape.
-   * @property {Segment?} segment If given, render a waveform image
-   *   covering the segment's time range. Otherwise, render the entire
-   *   waveform duration.
-   */
+function scaleY(amplitude, height, scale) {
+  var y = -(height - 1) * (amplitude * scale + 128) / 255 + (height - 1);
 
-  /**
-   * Creates a Konva.Shape object that renders a waveform image.
-   *
-   * @class
-   * @alias WaveformShape
-   *
-   * @param {WaveformShapeOptions} options
-   */
+  return clamp(Math.floor(y), 0, height - 1);
+}
 
-  function WaveformShape(options) {
-    this._color = options.color;
+/**
+ * Waveform shape options.
+ *
+ * @typedef {Object} WaveformShapeOptions
+ * @global
+ * @property {String | LinearGradientColor} color Waveform color.
+ * @property {WaveformOverview|WaveformZoomView} view The view object
+ *   that contains the waveform shape.
+ * @property {Segment?} segment If given, render a waveform image
+ *   covering the segment's time range. Otherwise, render the entire
+ *   waveform duration.
+ */
 
+/**
+ * Creates a Konva.Shape object that renders a waveform image.
+ *
+ * @class
+ * @alias WaveformShape
+ *
+ * @param {WaveformShapeOptions} options
+ */
+
+export default class WaveformShape extends Shape {
+  constructor(options) {
     var shapeOptions = {};
 
-    if (Utils.isString(options.color)) {
+    if (isString(options.color)) {
       shapeOptions.fill = options.color;
     }
-    else if (Utils.isLinearGradientColor(options.color)) {
+    else if (isLinearGradientColor(options.color)) {
       var startY = options.view._height * (options.color.linearGradientStart / 100);
       var endY = options.view._height * (options.color.linearGradientEnd / 100);
 
@@ -54,7 +71,10 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       throw new TypeError('Unknown type for color property');
     }
 
-    Konva.Shape.call(this, shapeOptions);
+    // calls Konva.Shape constructor
+    super(shapeOptions);
+
+    this._color = options.color;
 
     this._view = options.view;
     this._segment = options.segment;
@@ -64,21 +84,19 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     this.hitFunc(this._waveformShapeHitFunc);
   }
 
-  WaveformShape.prototype = Object.create(Konva.Shape.prototype);
-
-  WaveformShape.prototype.setSegment = function(segment) {
+  setSegment(segment) {
     this._segment = segment;
-  };
+  }
 
-  WaveformShape.prototype.setWaveformColor = function(color) {
-    if (Utils.isString(color)) {
+  setWaveformColor(color) {
+    if (isString(color)) {
       this.fill(color);
 
       this.fillLinearGradientStartPointY(null);
       this.fillLinearGradientEndPointY(null);
       this.fillLinearGradientColorStops(null);
     }
-    else if (Utils.isLinearGradientColor(color)) {
+    else if (isLinearGradientColor(color)) {
       this.fill(null);
 
       var startY = this._view._height * (color.linearGradientStart / 100);
@@ -94,13 +112,13 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     else {
       throw new TypeError('Unknown type for color property');
     }
-  };
+  }
 
-  WaveformShape.prototype.fitToView = function() {
+  fitToView() {
     this.setWaveformColor(this._color);
-  };
+  }
 
-  WaveformShape.prototype._sceneFunc = function(context) {
+  _sceneFunc(context) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
     var height = this._view.getHeight();
@@ -114,7 +132,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       width,
       height
     );
-  };
+  }
 
   /**
    * Draws a waveform on a canvas context.
@@ -131,7 +149,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    * @param {Number} height The height of the waveform area, in pixels.
    */
 
-  WaveformShape.prototype._drawWaveform = function(context, waveformData,
+  _drawWaveform(context, waveformData,
       frameOffset, startPixels, endPixels, width, height) {
     if (startPixels < frameOffset) {
       startPixels = frameOffset;
@@ -169,7 +187,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
 
       waveformTop += waveformHeight;
     }
-  };
+  }
 
   /**
    * Draws a single waveform channel on a canvas context.
@@ -186,7 +204,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
    * @param {Number} height The height of the waveform channel area, in pixels.
    */
 
-  WaveformShape.prototype._drawChannel = function(context, channel,
+  _drawChannel(context, channel,
       frameOffset, startPixels, endPixels, top, height) {
     var x, amplitude;
 
@@ -200,7 +218,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       amplitude = channel.min_sample(x);
 
       lineX = x - frameOffset + 0.5;
-      lineY = top + WaveformShape.scaleY(amplitude, height, amplitudeScale) + 0.5;
+      lineY = top + scaleY(amplitude, height, amplitudeScale) + 0.5;
 
       context.lineTo(lineX, lineY);
     }
@@ -209,7 +227,7 @@ define(['./utils', 'konva'], function(Utils, Konva) {
       amplitude = channel.max_sample(x);
 
       lineX = x - frameOffset + 0.5;
-      lineY = top + WaveformShape.scaleY(amplitude, height, amplitudeScale) + 0.5;
+      lineY = top + scaleY(amplitude, height, amplitudeScale) + 0.5;
 
       context.lineTo(lineX, lineY);
     }
@@ -217,9 +235,9 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     context.closePath();
 
     context.fillShape(this);
-  };
+  }
 
-  WaveformShape.prototype._waveformShapeHitFunc = function(context) {
+  _waveformShapeHitFunc(context) {
     if (!this._segment) {
       return;
     }
@@ -254,26 +272,5 @@ define(['./utils', 'konva'], function(Utils, Konva) {
     context.rect(hitRectLeft, offsetY, hitRectWidth, hitRectHeight);
     context.closePath();
     context.fillStrokeShape(this);
-  };
-
-  /**
-   * Scales the waveform data for drawing on a canvas context.
-   *
-   * @see {@link https://stats.stackexchange.com/questions/281162}
-   *
-   * @todo Assumes 8-bit waveform data (-128 to 127 range)
-   *
-   * @param {Number} amplitude The waveform data point amplitude.
-   * @param {Number} height The height of the waveform, in pixels.
-   * @param {Number} scale Amplitude scaling factor.
-   * @returns {Number} The scaled waveform data point.
-   */
-
-  WaveformShape.scaleY = function(amplitude, height, scale) {
-    var y = -(height - 1) * (amplitude * scale + 128) / 255 + (height - 1);
-
-    return Utils.clamp(Math.floor(y), 0, height - 1);
-  };
-
-  return WaveformShape;
-});
+  }
+}

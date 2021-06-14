@@ -6,37 +6,35 @@
  * @module point-marker
  */
 
-define([
-  'konva'
-], function(Konva) {
-  'use strict';
+import { Group } from 'konva/lib/Group';
 
-  /**
-   * Parameters for the {@link PointMarker} constructor.
-   *
-   * @typedef {Object} PointMarkerOptions
-   * @global
-   * @property {Point} point Point object with timestamp.
-   * @property {Boolean} draggable If true, marker is draggable.
-   * @property {Marker} marker
-   * @property {Function} onDblClick
-   * @property {Function} onDragStart
-   * @property {Function} onDragMove Callback during mouse drag operations.
-   * @property {Function} onDragEnd
-   * @property {Function} onMouseEnter
-   * @property {Function} onMouseLeave
-   */
+/**
+ * Parameters for the {@link PointMarker} constructor.
+ *
+ * @typedef {Object} PointMarkerOptions
+ * @global
+ * @property {Point} point Point object with timestamp.
+ * @property {Boolean} draggable If true, marker is draggable.
+ * @property {Marker} marker
+ * @property {Function} onDblClick
+ * @property {Function} onDragStart
+ * @property {Function} onDragMove Callback during mouse drag operations.
+ * @property {Function} onDragEnd
+ * @property {Function} onMouseEnter
+ * @property {Function} onMouseLeave
+ */
 
-  /**
-   * Creates a point marker handle.
-   *
-   * @class
-   * @alias PointMarker
-   *
-   * @param {PointMarkerOptions} options
-   */
+/**
+ * Creates a point marker handle.
+ *
+ * @class
+ * @alias PointMarker
+ *
+ * @param {PointMarkerOptions} options
+ */
 
-  function PointMarker(options) {
+export default class PointMarker {
+  constructor(options) {
     this._point     = options.point;
     this._marker    = options.marker;
     this._draggable = options.draggable;
@@ -50,7 +48,7 @@ define([
 
     this._dragBoundFunc = this._dragBoundFunc.bind(this);
 
-    this._group = new Konva.Group({
+    this._group = new Group({
       draggable:     this._draggable,
       dragBoundFunc: this._dragBoundFunc
     });
@@ -60,84 +58,63 @@ define([
     this._marker.init(this._group);
   }
 
-  PointMarker.prototype._bindDefaultEventHandlers = function() {
-    var self = this;
+  _bindDefaultEventHandlers() {
+    this._group.on('dragstart', () => self._onDragStart(self._point));
+    this._group.on('dragmove', () => self._onDragMove(self._point));
+    this._group.on('dragend', () => self._onDragEnd(self._point));
+    this._group.on('dblclick', () => self._onDblClick(self._point));
+    this._group.on('mouseenter', () => self._onMouseEnter(self._point));
+    this._group.on('mouseleave', () => self._onMouseLeave(self._point));
+  }
 
-    self._group.on('dragstart', function() {
-      self._onDragStart(self._point);
-    });
-
-    self._group.on('dragmove', function() {
-      self._onDragMove(self._point);
-    });
-
-    self._group.on('dragend', function() {
-      self._onDragEnd(self._point);
-    });
-
-    self._group.on('dblclick', function() {
-      self._onDblClick(self._point);
-    });
-
-    self._group.on('mouseenter', function() {
-      self._onMouseEnter(self._point);
-    });
-
-    self._group.on('mouseleave', function() {
-      self._onMouseLeave(self._point);
-    });
-  };
-
-  PointMarker.prototype._dragBoundFunc = function(pos) {
+  _dragBoundFunc(pos) {
     // Allow the marker to be moved horizontally but not vertically.
     return {
       x: pos.x,
       y: this._group.getAbsolutePosition().y
     };
-  };
+  }
 
   /**
    * @param {Konva.Layer} layer
    */
 
-  PointMarker.prototype.addToLayer = function(layer) {
+  addToLayer(layer) {
     layer.add(this._group);
-  };
+  }
 
-  PointMarker.prototype.fitToView = function() {
+  fitToView() {
     this._marker.fitToView();
-  };
+  }
 
-  PointMarker.prototype.getPoint = function() {
+  getPoint() {
     return this._point;
-  };
+  }
 
-  PointMarker.prototype.getX = function() {
+  getX() {
     return this._group.getX();
-  };
+  }
 
-  PointMarker.prototype.getWidth = function() {
+  getWidth() {
     return this._group.getWidth();
-  };
+  }
 
-  PointMarker.prototype.setX = function(x) {
+  setX(x) {
     this._group.setX(x);
-  };
+  }
 
-  PointMarker.prototype.timeUpdated = function(time) {
+  timeUpdated(time) {
     if (this._marker.timeUpdated) {
       this._marker.timeUpdated(time);
     }
-  };
+  }
 
-  PointMarker.prototype.destroy = function() {
+  destroy() {
     if (this._marker.destroy) {
       this._marker.destroy();
     }
 
     this._group.destroyChildren();
     this._group.destroy();
-  };
-
-  return PointMarker;
-});
+  }
+}

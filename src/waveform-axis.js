@@ -6,65 +6,59 @@
  * @module waveform-axis
  */
 
-define([
-  './utils',
-  'konva'
-], function(Utils, Konva) {
-  'use strict';
+import { Shape } from 'konva/lib/Shape';
+import { formatTime, roundUpToNearest } from './utils.js';
 
-  /**
-   * Creates the waveform axis shapes and adds them to the given view layer.
-   *
-   * @class
-   * @alias WaveformAxis
-   *
-   * @param {WaveformOverview|WaveformZoomView} view
-   * @param {Object} options
-   * @param {String} options.axisGridlineColor
-   * @param {String} options.axisLabelColor
-   * @param {String} options.axisLabelFontFamily
-   * @param {Number} options.axisLabelFontSize
-   * @param {String} options.axisLabelFontStyle
-   */
+function buildFontString(fontFamily, fontSize, fontStyle) {
+  if (!fontSize) {
+    fontSize = 11;
+  }
 
-  function WaveformAxis(view, options) {
-    var self = this;
+  if (!fontFamily) {
+    fontFamily = 'sans-serif';
+  }
 
-    self._axisGridlineColor = options.axisGridlineColor;
-    self._axisLabelColor    = options.axisLabelColor;
+  if (!fontStyle) {
+    fontStyle = 'normal';
+  }
 
-    self._axisLabelFont = WaveformAxis._buildFontString(
+  return fontStyle + ' ' + fontSize + 'px ' + fontFamily;
+}
+
+/**
+ * Creates the waveform axis shapes and adds them to the given view layer.
+ *
+ * @class
+ * @alias WaveformAxis
+ *
+ * @param {WaveformOverview|WaveformZoomView} view
+ * @param {Object} options
+ * @param {String} options.axisGridlineColor
+ * @param {String} options.axisLabelColor
+ * @param {String} options.axisLabelFontFamily
+ * @param {Number} options.axisLabelFontSize
+ * @param {String} options.axisLabelFontStyle
+ */
+
+export default class WaveformAxis {
+  constructor(view, options) {
+    this._axisGridlineColor = options.axisGridlineColor;
+    this._axisLabelColor    = options.axisLabelColor;
+
+    this._axisLabelFont = buildFontString(
       options.axisLabelFontFamily,
       options.axisLabelFontSize,
       options.axisLabelFontStyle
     );
 
-    self._axisShape = new Konva.Shape({
-      sceneFunc: function(context) {
-        self.drawAxis(context, view);
-      }
+    this._axisShape = new Shape({
+      sceneFunc: (context) => this.drawAxis(context, view)
     });
   }
 
-  WaveformAxis._buildFontString = function(fontFamily, fontSize, fontStyle) {
-    if (!fontSize) {
-      fontSize = 11;
-    }
-
-    if (!fontFamily) {
-      fontFamily = 'sans-serif';
-    }
-
-    if (!fontStyle) {
-      fontStyle = 'normal';
-    }
-
-    return fontStyle + ' ' + fontSize + 'px ' + fontFamily;
-  };
-
-  WaveformAxis.prototype.addToLayer = function(layer) {
+  addToLayer(layer) {
     layer.add(this._axisShape);
-  };
+  }
 
   /**
    * Returns number of seconds for each x-axis marker, appropriate for the
@@ -77,7 +71,7 @@ define([
    * @returns {Number}
    */
 
-  WaveformAxis.prototype.getAxisLabelScale = function(view) {
+  getAxisLabelScale(view) {
     var baseSecs   = 1; // seconds
     var steps      = [1, 2, 5, 10, 20, 30];
     var minSpacing = 60;
@@ -101,7 +95,7 @@ define([
     }
 
     return secs;
-  };
+  }
 
   /**
    * Draws the time axis and labels onto a view.
@@ -110,7 +104,7 @@ define([
    * @param {WaveformOverview|WaveformZoomView} view
    */
 
-  WaveformAxis.prototype.drawAxis = function(context, view) {
+  drawAxis(context, view) {
     var currentFrameStartTime = view.pixelsToTime(view.getFrameOffset());
 
     // Draw axis markers
@@ -120,7 +114,7 @@ define([
     var axisLabelIntervalSecs = this.getAxisLabelScale(view);
 
     // Time of first axis marker (seconds)
-    var firstAxisLabelSecs = Utils.roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
+    var firstAxisLabelSecs = roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
 
     // Distance between waveform start time and first axis marker (seconds)
     var axisLabelOffsetSecs = firstAxisLabelSecs - currentFrameStartTime;
@@ -158,7 +152,7 @@ define([
       context.stroke();
 
       // precision = 0, drops the fractional seconds
-      var label      = Utils.formatTime(secs, 0);
+      var label      = formatTime(secs, 0);
       var labelWidth = context.measureText(label).width;
       var labelX     = x - labelWidth / 2;
       var labelY     = height - 1 - markerHeight;
@@ -169,7 +163,5 @@ define([
 
       secs += axisLabelIntervalSecs;
     }
-  };
-
-  return WaveformAxis;
-});
+  }
+}

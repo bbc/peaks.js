@@ -6,37 +6,35 @@
  * @module segment-marker
  */
 
-define([
-  'konva'
-], function(Konva) {
-  'use strict';
+import { Group } from 'konva/lib/Group';
 
-  /**
-   * Parameters for the {@link SegmentMarker} constructor.
-   *
-   * @typedef {Object} SegmentMarkerOptions
-   * @global
-   * @property {Segment} segment
-   * @property {SegmentShape} segmentShape
-   * @property {Boolean} draggable If true, marker is draggable.
-   * @property {Boolean} startMarker If <code>true</code>, the marker indicates
-   *   the start time of the segment. If <code>false</code>, the marker
-   *   indicates the end time of the segment.
-   * @property {Function} onDrag
-   * @property {Function} onDragStart
-   * @property {Function} onDragEnd
-   */
+/**
+ * Parameters for the {@link SegmentMarker} constructor.
+ *
+ * @typedef {Object} SegmentMarkerOptions
+ * @global
+ * @property {Segment} segment
+ * @property {SegmentShape} segmentShape
+ * @property {Boolean} draggable If true, marker is draggable.
+ * @property {Boolean} startMarker If <code>true</code>, the marker indicates
+ *   the start time of the segment. If <code>false</code>, the marker
+ *   indicates the end time of the segment.
+ * @property {Function} onDrag
+ * @property {Function} onDragStart
+ * @property {Function} onDragEnd
+ */
 
-  /**
-   * Creates a Left or Right side segment handle marker.
-   *
-   * @class
-   * @alias SegmentMarker
-   *
-   * @param {SegmentMarkerOptions} options
-   */
+/**
+ * Creates a Left or Right side segment handle marker.
+ *
+ * @class
+ * @alias SegmentMarker
+ *
+ * @param {SegmentMarkerOptions} options
+ */
 
-  function SegmentMarker(options) {
+export default class SegmentMarker {
+  constructor(options) {
     this._segment       = options.segment;
     this._marker        = options.marker;
     this._segmentShape  = options.segmentShape;
@@ -50,7 +48,7 @@ define([
 
     this._dragBoundFunc = this._dragBoundFunc.bind(this);
 
-    this._group = new Konva.Group({
+    this._group = new Group({
       draggable:     this._draggable,
       dragBoundFunc: this._dragBoundFunc
     });
@@ -60,7 +58,7 @@ define([
     this._marker.init(this._group);
   }
 
-  SegmentMarker.prototype._bindDefaultEventHandlers = function() {
+  _bindDefaultEventHandlers() {
     var self = this;
 
     if (self._draggable) {
@@ -76,9 +74,9 @@ define([
         self._onDragEnd(self);
       });
     }
-  };
+  }
 
-  SegmentMarker.prototype._dragBoundFunc = function(pos) {
+  _dragBoundFunc(pos) {
     var marker;
     var limit;
 
@@ -103,50 +101,48 @@ define([
       x: pos.x,
       y: this._group.getAbsolutePosition().y
     };
-  };
+  }
 
-  SegmentMarker.prototype.addToLayer = function(layer) {
+  addToLayer(layer) {
     layer.add(this._group);
-  };
+  }
 
-  SegmentMarker.prototype.fitToView = function() {
+  fitToView() {
     this._marker.fitToView();
-  };
+  }
 
-  SegmentMarker.prototype.getSegment = function() {
+  getSegment() {
     return this._segment;
-  };
+  }
 
-  SegmentMarker.prototype.getX = function() {
+  getX() {
     return this._group.getX();
-  };
+  }
 
-  SegmentMarker.prototype.getWidth = function() {
+  getWidth() {
     return this._group.getWidth();
-  };
+  }
 
-  SegmentMarker.prototype.isStartMarker = function() {
+  isStartMarker() {
     return this._startMarker;
-  };
+  }
 
-  SegmentMarker.prototype.setX = function(x) {
+  setX(x) {
     this._group.setX(x);
-  };
+  }
 
-  SegmentMarker.prototype.timeUpdated = function(time) {
+  timeUpdated(time) {
     if (this._marker.timeUpdated) {
       this._marker.timeUpdated(time);
     }
-  };
+  }
 
-  SegmentMarker.prototype.destroy = function() {
+  destroy() {
     if (this._marker.destroy) {
       this._marker.destroy();
     }
 
     this._group.destroyChildren();
     this._group.destroy();
-  };
-
-  return SegmentMarker;
-});
+  }
+}

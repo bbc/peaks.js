@@ -6,77 +6,82 @@
  * @module segment
  */
 
-define([
-  './utils'
-], function(Utils) {
-  'use strict';
+import {
+  isBoolean,
+  isLinearGradientColor,
+  isNullOrUndefined,
+  isString,
+  isValidTime,
+  objectHasProperty
+} from './utils.js';
 
-  var segmentOptions = ['peaks', 'id', 'startTime', 'endTime', 'labelText', 'color', 'editable'];
+const segmentOptions = ['peaks', 'id', 'startTime', 'endTime', 'labelText', 'color', 'editable'];
 
-  function validateSegment(options, context) {
-    if (!Utils.isValidTime(options.startTime)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.' + context + ': startTime should be a valid number');
-    }
-
-    if (!Utils.isValidTime(options.endTime)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.' + context + ': endTime should be a valid number');
-    }
-
-    if (options.startTime < 0) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.' + context + ': startTime should not be negative');
-    }
-
-    if (options.endTime < 0) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.' + context + ': endTime should not be negative');
-    }
-
-    if (options.endTime < options.startTime) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.segments.' + context + ': endTime should not be less than startTime');
-    }
-
-    if (Utils.isNullOrUndefined(options.labelText)) {
-      // Set default label text
-      options.labelText = '';
-    }
-    else if (!Utils.isString(options.labelText)) {
-      throw new TypeError('peaks.segments.' + context + ': labelText must be a string');
-    }
-
-    if (!Utils.isBoolean(options.editable)) {
-      throw new TypeError('peaks.segments.' + context + ': editable must be true or false');
-    }
-
-    if (options.color &&
-      !Utils.isString(options.color) &&
-      !Utils.isLinearGradientColor(options.color)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
-    }
+function validateSegment(options, context) {
+  if (!isValidTime(options.startTime)) {
+    // eslint-disable-next-line max-len
+    throw new TypeError('peaks.segments.' + context + ': startTime should be a valid number');
   }
 
-  /**
-   * A segment is a region of time, with associated label and color.
-   *
-   * @class
-   * @alias Segment
-   *
-   * @param {Peaks} peaks A reference to the Peaks instance.
-   * @param {String} id A unique identifier for the segment.
-   * @param {Number} startTime Segment start time, in seconds.
-   * @param {Number} endTime Segment end time, in seconds.
-   * @param {String} labelText Segment label text.
-   * @param {String | LinearGradientColor} color Segment waveform color.
-   * @param {Boolean} editable If <code>true</code> the segment start and
-   *   end times can be adjusted via the user interface.
-   * @param {*} data Optional application specific data.
-   */
+  if (!isValidTime(options.endTime)) {
+    // eslint-disable-next-line max-len
+    throw new TypeError('peaks.segments.' + context + ': endTime should be a valid number');
+  }
 
-  function Segment(options) {
+  if (options.startTime < 0) {
+    // eslint-disable-next-line max-len
+    throw new RangeError('peaks.segments.' + context + ': startTime should not be negative');
+  }
+
+  if (options.endTime < 0) {
+    // eslint-disable-next-line max-len
+    throw new RangeError('peaks.segments.' + context + ': endTime should not be negative');
+  }
+
+  if (options.endTime < options.startTime) {
+    // eslint-disable-next-line max-len
+    throw new RangeError('peaks.segments.' + context + ': endTime should not be less than startTime');
+  }
+
+  if (isNullOrUndefined(options.labelText)) {
+    // Set default label text
+    options.labelText = '';
+  }
+  else if (!isString(options.labelText)) {
+    throw new TypeError('peaks.segments.' + context + ': labelText must be a string');
+  }
+
+  if (!isBoolean(options.editable)) {
+    throw new TypeError('peaks.segments.' + context + ': editable must be true or false');
+  }
+
+  if (options.color &&
+    !isString(options.color) &&
+    !isLinearGradientColor(options.color)) {
+    // eslint-disable-next-line max-len
+    throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
+  }
+}
+
+/**
+ * A segment is a region of time, with associated label and color.
+ *
+ * @class
+ * @alias Segment
+ *
+ * @param {Peaks} peaks A reference to the Peaks instance.
+ * @param {String} id A unique identifier for the segment.
+ * @param {Number} startTime Segment start time, in seconds.
+ * @param {Number} endTime Segment end time, in seconds.
+ * @param {String} labelText Segment label text.
+ * @param {String | LinearGradientColor} color Segment waveform color.
+ * @param {Boolean} editable If <code>true</code> the segment start and
+ *   end times can be adjusted via the user interface.
+ * @param {*} data Optional application specific data.
+ */
+
+export default class Segment {
+  constructor(options) {
     validateSegment(options, 'add()');
 
     this._peaks     = options.peaks;
@@ -90,55 +95,41 @@ define([
     this._setUserData(options);
   }
 
-  Segment.prototype._setUserData = function(options) {
+  _setUserData(options) {
     for (var key in options) {
-      if (Utils.objectHasProperty(options, key) && segmentOptions.indexOf(key) === -1) {
+      if (objectHasProperty(options, key) && segmentOptions.indexOf(key) === -1) {
         this[key] = options[key];
       }
     }
-  };
+  }
 
-  Object.defineProperties(Segment.prototype, {
-    id: {
-      enumerable: true,
-      get: function() {
-        return this._id;
-      }
-    },
-    startTime: {
-      enumerable: true,
-      get: function() {
-        return this._startTime;
-      }
-    },
-    endTime: {
-      enumerable: true,
-      get: function() {
-        return this._endTime;
-      }
-    },
-    labelText: {
-      enumerable: true,
-      get: function() {
-        return this._labelText;
-      }
-    },
-    color: {
-      enumerable: true,
-      get: function() {
-        return this._color;
-      }
-    },
-    editable: {
-      enumerable: true,
-      get: function() {
-        return this._editable;
-      }
-    }
-  });
+  get id() {
+    return this._id;
+  }
 
-  Segment.prototype.update = function(options) {
-    var opts = {
+  get startTime() {
+    return this._startTime;
+  }
+
+  get endTime() {
+    return this._endTime;
+  }
+
+  get labelText() {
+    return this._labelText;
+  }
+
+  get color() {
+    return this._color;
+  }
+
+  get editable() {
+    return this._editable;
+  }
+
+  update(options) {
+    let opts = {};
+    const defaultOptions = {
       startTime: this.startTime,
       endTime:   this.endTime,
       labelText: this.labelText,
@@ -146,7 +137,7 @@ define([
       editable:  this.editable
     };
 
-    Utils.extend(opts, options);
+    opts = Object.assign({}, defaultOptions, options);
 
     validateSegment(opts, 'update()');
 
@@ -159,7 +150,7 @@ define([
     this._setUserData(options);
 
     this._peaks.emit('segments.update', this);
-  };
+  }
 
   /**
    * Returns <code>true</code> if the segment overlaps a given time region.
@@ -171,17 +162,15 @@ define([
    * @see http://wiki.c2.com/?TestIfDateRangesOverlap
    */
 
-  Segment.prototype.isVisible = function(startTime, endTime) {
+  isVisible(startTime, endTime) {
     return this.startTime < endTime && startTime < this.endTime;
-  };
+  }
 
-  Segment.prototype._setStartTime = function(time) {
+  _setStartTime(time) {
     this._startTime = time;
-  };
+  }
 
-  Segment.prototype._setEndTime = function(time) {
+  _setEndTime(time) {
     this._endTime = time;
-  };
-
-  return Segment;
-});
+  }
+}

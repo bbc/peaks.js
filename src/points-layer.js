@@ -6,38 +6,33 @@
  * @module points-layer
  */
 
-define([
-  './point-marker',
-  './utils',
-  'konva'
-], function(
-    PointMarker,
-    Utils,
-    Konva) {
-  'use strict';
+import PointMarker from './point-marker.js';
+import { objectHasProperty } from './utils.js';
+import { Layer } from 'konva/lib/Layer';
 
-  var defaultFontFamily = 'sans-serif';
-  var defaultFontSize = 10;
-  var defaultFontShape = 'normal';
+const defaultFontFamily = 'sans-serif';
+const defaultFontSize = 10;
+const defaultFontShape = 'normal';
 
-  /**
-   * Creates a Konva.Layer that displays point markers against the audio
-   * waveform.
-   *
-   * @class
-   * @alias PointsLayer
-   *
-   * @param {Peaks} peaks
-   * @param {WaveformOverview|WaveformZoomView} view
-   * @param {Boolean} allowEditing
-   */
+/**
+ * Creates a Konva.Layer that displays point markers against the audio
+ * waveform.
+ *
+ * @class
+ * @alias PointsLayer
+ *
+ * @param {Peaks} peaks
+ * @param {WaveformOverview|WaveformZoomView} view
+ * @param {Boolean} allowEditing
+ */
 
-  function PointsLayer(peaks, view, allowEditing) {
+export default class PointsLayer {
+  constructor(peaks, view, allowEditing) {
     this._peaks        = peaks;
     this._view         = view;
     this._allowEditing = allowEditing;
     this._pointMarkers = {};
-    this._layer        = new Konva.Layer();
+    this._layer        = new Layer();
 
     this._onPointsDrag = this._onPointsDrag.bind(this);
 
@@ -69,19 +64,19 @@ define([
    * @param {Konva.Stage} stage
    */
 
-  PointsLayer.prototype.addToStage = function(stage) {
+  addToStage(stage) {
     stage.add(this._layer);
-  };
+  }
 
-  PointsLayer.prototype.enableEditing = function(enable) {
+  enableEditing(enable) {
     this._allowEditing = enable;
-  };
+  }
 
-  PointsLayer.prototype.formatTime = function(time) {
+  formatTime(time) {
     return this._view.formatTime(time);
-  };
+  }
 
-  PointsLayer.prototype._onPointsUpdate = function(point) {
+  _onPointsUpdate(point) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
@@ -95,9 +90,9 @@ define([
     }
 
     this.updatePoints(frameStartTime, frameEndTime);
-  };
+  }
 
-  PointsLayer.prototype._onPointsAdd = function(points) {
+  _onPointsAdd(points) {
     var self = this;
 
     var frameOffset = self._view.getFrameOffset();
@@ -113,9 +108,9 @@ define([
     });
 
     self.updatePoints(frameStartTime, frameEndTime);
-  };
+  }
 
-  PointsLayer.prototype._onPointsRemove = function(points) {
+  _onPointsRemove(points) {
     var self = this;
 
     points.forEach(function(point) {
@@ -123,19 +118,19 @@ define([
     });
 
     self._layer.draw();
-  };
+  }
 
-  PointsLayer.prototype._onPointsRemoveAll = function() {
+  _onPointsRemoveAll() {
     this._layer.removeChildren();
     this._pointMarkers = {};
 
     this._layer.draw();
-  };
+  }
 
-  PointsLayer.prototype._onPointsDrag = function(point) {
+  _onPointsDrag(point) {
     this._updatePoint(point);
     this._layer.draw();
-  };
+  }
 
   /**
    * Creates the Konva UI objects for a given point.
@@ -145,7 +140,7 @@ define([
    * @returns {PointMarker}
    */
 
-  PointsLayer.prototype._createPointMarker = function(point) {
+  _createPointMarker(point) {
     var editable = this._allowEditing && point.editable;
 
     var marker = this._peaks.options.createPointMarker({
@@ -170,11 +165,11 @@ define([
       onMouseEnter: this._onPointHandleMouseEnter,
       onMouseLeave: this._onPointHandleMouseLeave
     });
-  };
+  }
 
-  PointsLayer.prototype.getHeight = function() {
+  getHeight() {
     return this._view.getHeight();
-  };
+  }
 
   /**
    * Adds a Konva UI object to the layer for a given point.
@@ -184,7 +179,7 @@ define([
    * @returns {PointMarker}
    */
 
-  PointsLayer.prototype._addPointMarker = function(point) {
+  _addPointMarker(point) {
     var pointMarker = this._createPointMarker(point);
 
     this._pointMarkers[point.id] = pointMarker;
@@ -192,13 +187,13 @@ define([
     pointMarker.addToLayer(this._layer);
 
     return pointMarker;
-  };
+  }
 
   /**
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleDragMove = function(point) {
+  _onPointHandleDragMove(point) {
     var pointMarker = this._pointMarkers[point.id];
 
     var markerX = pointMarker.getX();
@@ -214,47 +209,47 @@ define([
     }
 
     this._peaks.emit('points.dragmove', point);
-  };
+  }
 
   /**
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleMouseEnter = function(point) {
+  _onPointHandleMouseEnter(point) {
     this._peaks.emit('points.mouseenter', point);
-  };
+  }
 
   /**
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleMouseLeave = function(point) {
+  _onPointHandleMouseLeave(point) {
     this._peaks.emit('points.mouseleave', point);
-  };
+  }
 
   /**
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleDblClick = function(point) {
+  _onPointHandleDblClick(point) {
     this._peaks.emit('points.dblclick', point);
-  };
+  }
 
   /**
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleDragStart = function(point) {
+  _onPointHandleDragStart(point) {
     this._peaks.emit('points.dragstart', point);
-  };
+  }
 
   /**
    * @param {Point} point
    */
 
-  PointsLayer.prototype._onPointHandleDragEnd = function(point) {
+  _onPointHandleDragEnd(point) {
     this._peaks.emit('points.dragend', point);
-  };
+  }
 
   /**
    * Updates the positions of all displayed points in the view.
@@ -265,7 +260,7 @@ define([
    *   in seconds.
    */
 
-  PointsLayer.prototype.updatePoints = function(startTime, endTime) {
+  updatePoints(startTime, endTime) {
     // Update all points in the visible time range.
     var points = this._peaks.points.find(startTime, endTime);
 
@@ -279,14 +274,14 @@ define([
     if (count > 0) {
       this._layer.draw();
     }
-  };
+  }
 
   /**
    * @private
    * @param {Point} point
    */
 
-  PointsLayer.prototype._updatePoint = function(point) {
+  _updatePoint(point) {
     var pointMarker = this._findOrAddPointMarker(point);
 
     var pointMarkerOffset = this._view.timeToPixels(point.time);
@@ -294,7 +289,7 @@ define([
     var pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
     pointMarker.setX(pointMarkerX);
-  };
+  }
 
   /**
    * @private
@@ -302,7 +297,7 @@ define([
    * @return {PointMarker}
    */
 
-  PointsLayer.prototype._findOrAddPointMarker = function(point) {
+  _findOrAddPointMarker(point) {
     var pointMarker = this._pointMarkers[point.id];
 
     if (!pointMarker) {
@@ -310,7 +305,7 @@ define([
     }
 
     return pointMarker;
-  };
+  }
 
   /**
    * Remove any points that are not visible, i.e., are outside the given time
@@ -322,11 +317,11 @@ define([
    * @returns {Number} The number of points removed.
    */
 
-  PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
+  _removeInvisiblePoints(startTime, endTime) {
     var count = 0;
 
     for (var pointId in this._pointMarkers) {
-      if (Utils.objectHasProperty(this._pointMarkers, pointId)) {
+      if (objectHasProperty(this._pointMarkers, pointId)) {
         var point = this._pointMarkers[pointId].getPoint();
 
         if (!point.isVisible(startTime, endTime)) {
@@ -337,7 +332,7 @@ define([
     }
 
     return count;
-  };
+  }
 
   /**
    * Removes the UI object for a given point.
@@ -346,14 +341,14 @@ define([
    * @param {Point} point
    */
 
-  PointsLayer.prototype._removePoint = function(point) {
+  _removePoint(point) {
     var pointMarker = this._pointMarkers[point.id];
 
     if (pointMarker) {
       pointMarker.destroy();
       delete this._pointMarkers[point.id];
     }
-  };
+  }
 
   /**
    * Toggles visibility of the points layer.
@@ -361,11 +356,11 @@ define([
    * @param {Boolean} visible
    */
 
-  PointsLayer.prototype.setVisible = function(visible) {
+  setVisible(visible) {
     this._layer.setVisible(visible);
-  };
+  }
 
-  PointsLayer.prototype.destroy = function() {
+  destroy() {
     this._peaks.off('points.update', this._onPointsUpdate);
     this._peaks.off('points.add', this._onPointsAdd);
     this._peaks.off('points.remove', this._onPointsRemove);
@@ -373,21 +368,19 @@ define([
     this._peaks.off('points.dragstart', this._onPointsDrag);
     this._peaks.off('points.dragmove', this._onPointsDrag);
     this._peaks.off('points.dragend', this._onPointsDrag);
-  };
+  }
 
-  PointsLayer.prototype.fitToView = function() {
+  fitToView() {
     for (var pointId in this._pointMarkers) {
-      if (Utils.objectHasProperty(this._pointMarkers, pointId)) {
+      if (objectHasProperty(this._pointMarkers, pointId)) {
         var pointMarker = this._pointMarkers[pointId];
 
         pointMarker.fitToView();
       }
     }
-  };
+  }
 
-  PointsLayer.prototype.draw = function() {
+  draw() {
     this._layer.draw();
-  };
-
-  return PointsLayer;
-});
+  }
+}

@@ -6,40 +6,31 @@
  * @module waveform-overview
  */
 
-define([
-  './highlight-layer',
-  './mouse-drag-handler',
-  './playhead-layer',
-  './points-layer',
-  './segments-layer',
-  './waveform-axis',
-  './waveform-shape',
-  './utils',
-  'konva'
-], function(
-    HighlightLayer,
-    MouseDragHandler,
-    PlayheadLayer,
-    PointsLayer,
-    SegmentsLayer,
-    WaveformAxis,
-    WaveformShape,
-    Utils,
-    Konva) {
-  'use strict';
+import HighlightLayer from './highlight-layer';
+import MouseDragHandler from './mouse-drag-handler';
+import PlayheadLayer from './playhead-layer';
+import PointsLayer from './points-layer';
+import SegmentsLayer from './segments-layer';
+import WaveformAxis from './waveform-axis';
+import WaveformShape from './waveform-shape';
+import { clamp, formatTime, isFinite, isNumber } from './utils';
+import Konva from 'konva/lib/Core';
+import { Layer } from 'konva/lib/Layer';
+import { Stage } from 'konva/lib/Stage';
 
-  /**
-   * Creates the overview waveform view.
-   *
-   * @class
-   * @alias WaveformOverview
-   *
-   * @param {WaveformData} waveformData
-   * @param {HTMLElement} container
-   * @param {Peaks} peaks
-   */
+/**
+ * Creates the overview waveform view.
+ *
+ * @class
+ * @alias WaveformOverview
+ *
+ * @param {WaveformData} waveformData
+ * @param {HTMLElement} container
+ * @param {Peaks} peaks
+ */
 
-  function WaveformOverview(waveformData, container, peaks) {
+export default class WaveformOverview {
+  constructor(waveformData, container, peaks) {
     var self = this;
 
     self._originalWaveformData = waveformData;
@@ -86,13 +77,13 @@ define([
 
     self._resizeTimeoutId = null;
 
-    self._stage = new Konva.Stage({
+    self._stage = new Stage({
       container: container,
       width: self._width,
       height: self._height
     });
 
-    self._waveformLayer = new Konva.Layer({ listening: false });
+    self._waveformLayer = new Layer({ listening: false });
 
     self._waveformColor = self._viewOptions.waveformColor;
     self._playedWaveformColor = self._viewOptions.playedWaveformColor;
@@ -132,8 +123,8 @@ define([
     this._playheadLayer.updatePlayheadTime(time);
 
     self._mouseDragHandler = new MouseDragHandler(self._stage, {
-      onMouseDown: function(mousePosX) {
-        mousePosX = Utils.clamp(mousePosX, 0, self._width);
+      onMouseDown(mousePosX) {
+        mousePosX = clamp(mousePosX, 0, self._width);
 
         var time = self.pixelsToTime(mousePosX);
         var duration = self._getDuration();
@@ -149,8 +140,8 @@ define([
         peaks.player.seek(time);
       },
 
-      onMouseMove: function(mousePosX) {
-        mousePosX = Utils.clamp(mousePosX, 0, self._width);
+      onMouseMove(mousePosX) {
+        mousePosX = clamp(mousePosX, 0, self._width);
 
         var time = self.pixelsToTime(mousePosX);
         var duration = self._getDuration();
@@ -176,31 +167,31 @@ define([
     });
   }
 
-  WaveformOverview.prototype.getName = function() {
+  getName() {
     return 'overview';
-  };
+  }
 
-  WaveformOverview.prototype._onTimeUpdate = function(time) {
+  _onTimeUpdate(time) {
     this._playheadLayer.updatePlayheadTime(time);
-  };
+  }
 
-  WaveformOverview.prototype._onPlay = function(time) {
+  _onPlay(time) {
     this._playheadLayer.updatePlayheadTime(time);
-  };
+  }
 
-  WaveformOverview.prototype._onPause = function(time) {
+  _onPause(time) {
     this._playheadLayer.stop(time);
-  };
+  }
 
-  WaveformOverview.prototype._onZoomviewDisplaying = function(startTime, endTime) {
+  _onZoomviewDisplaying(startTime, endTime) {
     this.showHighlight(startTime, endTime);
-  };
+  }
 
-  WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
+  showHighlight(startTime, endTime) {
     this._highlightLayer.showHighlight(startTime, endTime);
-  };
+  }
 
-  WaveformOverview.prototype._onWindowResize = function() {
+  _onWindowResize() {
     var self = this;
 
     if (self._resizeTimeoutId) {
@@ -221,9 +212,9 @@ define([
         self._updateWaveform();
       }, 500);
     }
-  };
+  }
 
-  WaveformOverview.prototype.setWaveformData = function(waveformData) {
+  setWaveformData(waveformData) {
     this._originalWaveformData = waveformData;
 
     if (this._width !== 0) {
@@ -234,16 +225,16 @@ define([
     }
 
     this._updateWaveform();
-  };
+  }
 
-  WaveformOverview.prototype.playheadPosChanged = function(time) {
+  playheadPosChanged(time) {
     if (this._playedWaveformShape) {
       this._playedSegment.endTime = time;
       this._unplayedSegment.startTime = time;
 
       this._waveformLayer.draw();
     }
-  };
+  }
 
   /**
    * Returns the pixel index for a given time, for the current zoom level.
@@ -252,9 +243,9 @@ define([
    * @returns {Number} Pixel index.
    */
 
-  WaveformOverview.prototype.timeToPixels = function(time) {
+  timeToPixels(time) {
     return Math.floor(time * this._data.sample_rate / this._data.scale);
-  };
+  }
 
   /**
    * Returns the time for a given pixel index, for the current zoom level.
@@ -263,42 +254,42 @@ define([
    * @returns {Number} Time, in seconds.
    */
 
-  WaveformOverview.prototype.pixelsToTime = function(pixels) {
+  pixelsToTime(pixels) {
     return pixels * this._data.scale / this._data.sample_rate;
-  };
+  }
 
   /**
    * @returns {Number} The start position of the waveform shown in the view,
    *   in pixels.
    */
 
-  WaveformOverview.prototype.getFrameOffset = function() {
+  getFrameOffset() {
     return 0;
-  };
+  }
 
   /**
    * @returns {Number} The width of the view, in pixels.
    */
 
-  WaveformOverview.prototype.getWidth = function() {
+  getWidth() {
     return this._width;
-  };
+  }
 
   /**
    * @returns {Number} The height of the view, in pixels.
    */
 
-  WaveformOverview.prototype.getHeight = function() {
+  getHeight() {
     return this._height;
-  };
+  }
 
   /**
    * @returns {Number} The media duration, in seconds.
    */
 
-  WaveformOverview.prototype._getDuration = function() {
+  _getDuration() {
     return this._peaks.player.getDuration();
-  };
+  }
 
   /**
    * Adjusts the amplitude scale of waveform shown in the view, which allows
@@ -307,8 +298,8 @@ define([
    * @param {Number} scale The new amplitude scale factor
    */
 
-  WaveformOverview.prototype.setAmplitudeScale = function(scale) {
-    if (!Utils.isNumber(scale) || !Utils.isFinite(scale)) {
+  setAmplitudeScale(scale) {
+    if (!isNumber(scale) || !isFinite(scale)) {
       throw new Error('view.setAmplitudeScale(): Scale must be a valid number');
     }
 
@@ -316,21 +307,21 @@ define([
 
     this._waveformLayer.draw();
     this._segmentsLayer.draw();
-  };
+  }
 
-  WaveformOverview.prototype.getAmplitudeScale = function() {
+  getAmplitudeScale() {
     return this._amplitudeScale;
-  };
+  }
 
   /**
    * @returns {WaveformData} The view's waveform data.
    */
 
-  WaveformOverview.prototype.getWaveformData = function() {
+  getWaveformData() {
     return this._data;
-  };
+  }
 
-  WaveformOverview.prototype._createWaveformShapes = function() {
+  _createWaveformShapes() {
     if (!this._waveformShape) {
       this._waveformShape = new WaveformShape({
         color: this._waveformColor,
@@ -363,9 +354,9 @@ define([
 
       this._waveformLayer.add(this._playedWaveformShape);
     }
-  };
+  }
 
-  WaveformOverview.prototype._destroyPlayedWaveformShape = function() {
+  _destroyPlayedWaveformShape() {
     this._waveformShape.setSegment(null);
 
     this._playedWaveformShape.destroy();
@@ -373,16 +364,16 @@ define([
 
     this._playedSegment = null;
     this._unplayedSegment = null;
-  };
+  }
 
-  WaveformOverview.prototype._createWaveform = function() {
+  _createWaveform() {
     this._createWaveformShapes();
 
     this._stage.add(this._waveformLayer);
-  };
+  }
 
-  WaveformOverview.prototype._createAxisLabels = function() {
-    this._axisLayer = new Konva.Layer({ listening: false });
+  _createAxisLabels() {
+    this._axisLayer = new Layer({ listening: false });
 
     this._axis = new WaveformAxis(this, {
       axisGridlineColor:   this._viewOptions.axisGridlineColor,
@@ -394,13 +385,13 @@ define([
 
     this._axis.addToLayer(this._axisLayer);
     this._stage.add(this._axisLayer);
-  };
+  }
 
-  WaveformOverview.prototype.removeHighlightRect = function() {
+  removeHighlightRect() {
     this._highlightLayer.removeHighlight();
-  };
+  }
 
-  WaveformOverview.prototype._updateWaveform = function() {
+  _updateWaveform() {
     this._waveformLayer.draw();
     this._axisLayer.draw();
 
@@ -415,15 +406,15 @@ define([
 
     this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
-  };
+  }
 
-  WaveformOverview.prototype.setWaveformColor = function(color) {
+  setWaveformColor(color) {
     this._waveformColor = color;
     this._waveformShape.setWaveformColor(color);
     this._waveformLayer.draw();
-  };
+  }
 
-  WaveformOverview.prototype.setPlayedWaveformColor = function(color) {
+  setPlayedWaveformColor(color) {
     this._playedWaveformColor = color;
 
     if (color) {
@@ -440,32 +431,32 @@ define([
         this._waveformLayer.draw();
       }
     }
-  };
+  }
 
-  WaveformOverview.prototype.showPlayheadTime = function(show) {
+  showPlayheadTime(show) {
     this._playheadLayer.showPlayheadTime(show);
-  };
+  }
 
-  WaveformOverview.prototype.setTimeLabelPrecision = function(precision) {
+  setTimeLabelPrecision(precision) {
     this._timeLabelPrecision = precision;
     this._playheadLayer.updatePlayheadText();
-  };
+  }
 
-  WaveformOverview.prototype.formatTime = function(time) {
-    return Utils.formatTime(time, this._timeLabelPrecision);
-  };
+  formatTime(time) {
+    return formatTime(time, this._timeLabelPrecision);
+  }
 
-  WaveformOverview.prototype.enableAutoScroll = function() {
+  enableAutoScroll() {
     // The overview waveform doesn't support scrolling,
     // so nothing to do here.
-  };
+  }
 
-  WaveformOverview.prototype.enableMarkerEditing = function(enable) {
+  enableMarkerEditing(enable) {
     this._segmentsLayer.enableEditing(enable);
     this._pointsLayer.enableEditing(enable);
-  };
+  }
 
-  WaveformOverview.prototype.fitToContainer = function() {
+  fitToContainer() {
     if (this._container.clientWidth === 0 && this._container.clientHeight === 0) {
       return;
     }
@@ -499,9 +490,9 @@ define([
     }
 
     this._stage.draw();
-  };
+  }
 
-  WaveformOverview.prototype.destroy = function() {
+  destroy() {
     if (this._resizeTimeoutId) {
       clearTimeout(this._resizeTimeoutId);
       this._resizeTimeoutId = null;
@@ -521,7 +512,5 @@ define([
       this._stage.destroy();
       this._stage = null;
     }
-  };
-
-  return WaveformOverview;
-});
+  }
+}
