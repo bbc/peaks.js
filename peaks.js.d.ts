@@ -340,7 +340,10 @@ declare module 'peaks.js' {
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;
   }
-  interface WaveformOverView extends WaveformView {}
+
+  interface WaveformOverview extends WaveformView {
+  }
+
   interface WaveformZoomView extends WaveformView {
     scrollWaveform: (offset: number) => void;
     setStartTime: (time: number) => void;
@@ -370,7 +373,7 @@ declare module 'peaks.js' {
       destroyOverview: () => void;
       destroyZoomview: () => void;
       getView(name?: null): WaveformView | null;
-      getView(name: 'overview'): WaveformOverView | null;
+      getView(name: 'overview'): WaveformOverview | null;
       getView(name: 'zoomview'): WaveformZoomView | null;
     };
     /** Zoom API */
