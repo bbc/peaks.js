@@ -691,7 +691,7 @@ view.setWaveformColor({
 
 Shows or hides the current playback time, shown next to the playhead.
 
-The initial setting is `false`, for the overview waveform view, or controlled by the `showPlayheadTime` configuration option for the zoomable waveform view.
+The initial setting is `false` for the overview waveform view, or controlled by the `showPlayheadTime` configuration option for the zoomable waveform view.
 
 ```js
 const view = instance.views.getView('zoomview');
