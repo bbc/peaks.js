@@ -6,31 +6,27 @@
  * @module segment-shape
  */
 
-define([
-  './segment-marker',
-  './waveform-shape'
-], function(
-    SegmentMarker,
-    WaveformShape) {
-  'use strict';
+import SegmentMarker from './segment-marker.js';
+import WaveformShape from './waveform-shape.js';
 
-  var defaultFontFamily = 'sans-serif';
-  var defaultFontSize = 10;
-  var defaultFontShape = 'normal';
+const defaultFontFamily = 'sans-serif';
+const defaultFontSize = 10;
+const defaultFontShape = 'normal';
 
-  /**
-   * Creates a waveform segment shape with optional start and end markers.
-   *
-   * @class
-   * @alias SegmentShape
-   *
-   * @param {Segment} segment
-   * @param {Peaks} peaks
-   * @param {SegmentsLayer} layer
-   * @param {WaveformOverview|WaveformZoomView} view
-   */
+/**
+ * Creates a waveform segment shape with optional start and end markers.
+ *
+ * @class
+ * @alias SegmentShape
+ *
+ * @param {Segment} segment
+ * @param {Peaks} peaks
+ * @param {SegmentsLayer} layer
+ * @param {WaveformOverview|WaveformZoomView} view
+ */
 
-  function SegmentShape(segment, peaks, layer, view) {
+export default class SegmentShape {
+  constructor(segment, peaks, layer, view) {
     this._segment       = segment;
     this._peaks         = peaks;
     this._layer         = layer;
@@ -78,7 +74,7 @@ define([
     this._createMarkers();
   }
 
-  SegmentShape.prototype.updatePosition = function() {
+  updatePosition() {
     var segmentStartOffset = this._view.timeToPixels(this._segment.startTime);
     var segmentEndOffset   = this._view.timeToPixels(this._segment.endTime);
 
@@ -98,21 +94,21 @@ define([
     if (marker) {
       marker.setX(endPixel);
     }
-  };
+  }
 
-  SegmentShape.prototype.getSegment = function() {
+  getSegment() {
     return this._segment;
-  };
+  }
 
-  SegmentShape.prototype.getStartMarker = function() {
+  getStartMarker() {
     return this._startMarker;
-  };
+  }
 
-  SegmentShape.prototype.getEndMarker = function() {
+  getEndMarker() {
     return this._endMarker;
-  };
+  }
 
-  SegmentShape.prototype.addToLayer = function(layer) {
+  addToLayer(layer) {
     layer.add(this._waveformShape);
 
     if (this._label) {
@@ -126,9 +122,9 @@ define([
     if (this._endMarker) {
       this._endMarker.addToLayer(layer);
     }
-  };
+  }
 
-  SegmentShape.prototype._createMarkers = function() {
+  _createMarkers() {
     var editable = this._layer.isEditingEnabled() && this._segment.editable;
 
     if (!editable) {
@@ -184,9 +180,9 @@ define([
         onDragEnd:    this._onSegmentHandleDragEnd
       });
     }
-  };
+  }
 
-  SegmentShape.prototype._onMouseEnter = function() {
+  _onMouseEnter() {
     if (this._label) {
       this._label.moveToTop();
       this._label.show();
@@ -194,26 +190,26 @@ define([
     }
 
     this._peaks.emit('segments.mouseenter', this._segment);
-  };
+  }
 
-  SegmentShape.prototype._onMouseLeave = function() {
+  _onMouseLeave() {
     if (this._label) {
       this._label.hide();
       this._layer.draw();
     }
 
     this._peaks.emit('segments.mouseleave', this._segment);
-  };
+  }
 
-  SegmentShape.prototype._onClick = function() {
+  _onClick() {
     this._peaks.emit('segments.click', this._segment);
-  };
+  }
 
   /**
    * @param {SegmentMarker} segmentMarker
    */
 
-  SegmentShape.prototype._onSegmentHandleDrag = function(segmentMarker) {
+  _onSegmentHandleDrag(segmentMarker) {
     var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
@@ -241,29 +237,29 @@ define([
     }
 
     this._peaks.emit('segments.dragged', this._segment, startMarker);
-  };
+  }
 
   /**
    * @param {SegmentMarker} segmentMarker
    */
 
-  SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker) {
+  _onSegmentHandleDragStart(segmentMarker) {
     var startMarker = segmentMarker.isStartMarker();
 
     this._peaks.emit('segments.dragstart', this._segment, startMarker);
-  };
+  }
 
   /**
    * @param {SegmentMarker} segmentMarker
    */
 
-  SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker) {
+  _onSegmentHandleDragEnd(segmentMarker) {
     var startMarker = segmentMarker.isStartMarker();
 
     this._peaks.emit('segments.dragend', this._segment, startMarker);
-  };
+  }
 
-  SegmentShape.prototype.fitToView = function() {
+  fitToView() {
     if (this._startMarker) {
       this._startMarker.fitToView();
     }
@@ -273,9 +269,9 @@ define([
     }
 
     this._waveformShape.setWaveformColor(this._color);
-  };
+  }
 
-  SegmentShape.prototype.destroy = function() {
+  destroy() {
     this._waveformShape.destroy();
 
     if (this._label) {
@@ -289,7 +285,5 @@ define([
     if (this._endMarker) {
       this._endMarker.destroy();
     }
-  };
-
-  return SegmentShape;
-});
+  }
+}

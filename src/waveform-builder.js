@@ -6,28 +6,28 @@
  * @module waveform-builder
  */
 
-define([
-  'waveform-data',
-  './utils'
-], function(
-    WaveformData,
-    Utils) {
-  'use strict';
+import { create as createWaveformData } from 'waveform-data';
+import createFromAudio from 'waveform-data/webaudio';
+import { isArrayBuffer, isObject, isString } from './utils.js';
 
-  var isXhr2 = ('withCredentials' in new XMLHttpRequest());
+const isXhr2 = ('withCredentials' in new XMLHttpRequest());
 
+/**
+ * Creates and returns a WaveformData object, either by requesting the
+ * waveform data from the server, or by creating the waveform data using the
+ * Web Audio API.
+ *
+ * @class
+ * @alias WaveformBuilder
+ *
+ * @param {Peaks} peaks
+ */
+
+export default class WaveformBuilder {
   /**
-   * Creates and returns a WaveformData object, either by requesting the
-   * waveform data from the server, or by creating the waveform data using the
-   * Web Audio API.
-   *
-   * @class
-   * @alias WaveformBuilder
-   *
    * @param {Peaks} peaks
    */
-
-  function WaveformBuilder(peaks) {
+  constructor(peaks) {
     this._peaks = peaks;
   }
 
@@ -89,7 +89,7 @@ define([
    * @param {WaveformBuilderInitCallback} callback
    */
 
-  WaveformBuilder.prototype.init = function(options, callback) {
+  init(options, callback) {
     if ((options.dataUri && (options.webAudio || options.audioContext)) ||
         (options.waveformData && (options.webAudio || options.audioContext)) ||
         (options.dataUri && options.waveformData)) {
@@ -125,7 +125,7 @@ define([
       // eslint-disable-next-line max-len
       callback(new Error('Peaks.init(): You must pass an audioContext, or dataUri, or waveformData to render waveform data'));
     }
-  };
+  }
 
   /* eslint-disable max-len */
 
@@ -148,16 +148,16 @@ define([
 
   /* eslint-enable max-len */
 
-  WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
+  _getRemoteWaveformData(options, callback) {
     var self = this;
     var dataUri = null;
     var requestType = null;
     var url;
 
-    if (Utils.isObject(options.dataUri)) {
+    if (isObject(options.dataUri)) {
       dataUri = options.dataUri;
     }
-    else if (Utils.isString(options.dataUri)) {
+    else if (isString(options.dataUri)) {
       // Backward compatibility
       dataUri = {};
       dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
@@ -195,7 +195,7 @@ define([
         return;
       }
 
-      var waveformData = WaveformData.create(event.target.response);
+      var waveformData = createWaveformData(event.target.response);
 
       if (waveformData.channels !== 1 && waveformData.channels !== 2) {
         callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
@@ -209,7 +209,7 @@ define([
     });
 
     xhr.send();
-  };
+  }
 
   /* eslint-disable max-len */
 
@@ -229,11 +229,11 @@ define([
 
   /* eslint-enable max-len */
 
-  WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callback) {
+  _buildWaveformFromLocalData(options, callback) {
     var waveformData = null;
     var data = null;
 
-    if (Utils.isObject(options.waveformData)) {
+    if (isObject(options.waveformData)) {
       waveformData = options.waveformData;
     }
     else {
@@ -241,10 +241,10 @@ define([
       return;
     }
 
-    if (Utils.isObject(waveformData.json)) {
+    if (isObject(waveformData.json)) {
       data = waveformData.json;
     }
-    else if (Utils.isArrayBuffer(waveformData.arraybuffer)) {
+    else if (isArrayBuffer(waveformData.arraybuffer)) {
       data = waveformData.arraybuffer;
     }
 
@@ -255,7 +255,7 @@ define([
     }
 
     try {
-      var createdWaveformData = WaveformData.create(data);
+      var createdWaveformData = createWaveformData(data);
 
       if (createdWaveformData.channels !== 1 && createdWaveformData.channels !== 2) {
         callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
@@ -267,7 +267,7 @@ define([
     catch (err) {
       callback(err);
     }
-  };
+  }
 
   /**
    * Creates waveform data using the Web Audio API.
@@ -279,7 +279,7 @@ define([
    * @param {WaveformBuilderInitCallback} callback
    */
 
-  WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, callback) {
+  _buildWaveformDataUsingWebAudio(options, callback) {
     var self = this;
 
     var audioContext = window.AudioContext || window.webkitAudioContext;
@@ -320,9 +320,9 @@ define([
         );
       });
     }
-  };
+  }
 
-  WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function(options, callback) {
+  _buildWaveformDataFromAudioBuffer(options, callback) {
     var webAudioOptions = options.webAudio;
 
     if (webAudioOptions.scale !== options.zoomLevels[0]) {
@@ -335,8 +335,8 @@ define([
       scale: webAudioOptions.scale
     };
 
-    WaveformData.createFromAudio(webAudioBuilderOptions, callback);
-  };
+    createFromAudio(webAudioBuilderOptions, callback);
+  }
 
   /**
    * Fetches the audio content, based on the given options, and creates waveform
@@ -349,8 +349,7 @@ define([
    * @param {WaveformBuilderInitCallback} callback
    */
 
-  WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
-      webAudio, withCredentials, callback) {
+  _requestAudioAndBuildWaveformData(url, webAudio, withCredentials, callback) {
     var self = this;
 
     if (!url) {
@@ -378,14 +377,14 @@ define([
         scale: webAudio.scale
       };
 
-      WaveformData.createFromAudio(webAudioBuilderOptions, callback);
+      createFromAudio(webAudioBuilderOptions, callback);
     },
     function() {
       callback(new Error('XHR Failed'));
     });
 
     xhr.send();
-  };
+  }
 
   /**
    * @private
@@ -398,7 +397,7 @@ define([
    * @returns {XMLHttpRequest}
    */
 
-  WaveformBuilder.prototype._createXHR = function(url, requestType,
+  _createXHR(url, requestType,
       withCredentials, onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
@@ -423,7 +422,6 @@ define([
     }
 
     return xhr;
-  };
+  }
+}
 
-  return WaveformBuilder;
-});

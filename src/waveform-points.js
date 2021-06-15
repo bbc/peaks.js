@@ -6,40 +6,38 @@
  * @module waveform-points
  */
 
-define([
-  './point',
-  './utils'
-], function(Point, Utils) {
-  'use strict';
+import Point from './point.js';
+import { isNullOrUndefined, objectHasProperty } from './utils.js';
 
-  /**
-   * Point parameters.
-   *
-   * @typedef {Object} PointOptions
-   * @global
-   * @property {Number} point Point time, in seconds.
-   * @property {Boolean=} editable If <code>true</code> the point time can be
-   *   adjusted via the user interface.
-   *   Default: <code>false</code>.
-   * @property {String=} color Point marker color.
-   *   Default: a random color.
-   * @property {String=} labelText Point label text.
-   *   Default: an empty string.
-   * @property {String=} id A unique point identifier.
-   *   Default: an automatically generated identifier.
-   */
+/**
+ * Point parameters.
+ *
+ * @typedef {Object} PointOptions
+ * @global
+ * @property {Number} point Point time, in seconds.
+ * @property {Boolean=} editable If <code>true</code> the point time can be
+ *   adjusted via the user interface.
+ *   Default: <code>false</code>.
+ * @property {String=} color Point marker color.
+ *   Default: a random color.
+ * @property {String=} labelText Point label text.
+ *   Default: an empty string.
+ * @property {String=} id A unique point identifier.
+ *   Default: an automatically generated identifier.
+ */
 
-  /**
-   * Handles all functionality related to the adding, removing and manipulation
-   * of points. A point is a single instant of time.
-   *
-   * @class
-   * @alias WaveformPoints
-   *
-   * @param {Peaks} peaks The parent Peaks object.
-   */
+/**
+ * Handles all functionality related to the adding, removing and manipulation
+ * of points. A point is a single instant of time.
+ *
+ * @class
+ * @alias WaveformPoints
+ *
+ * @param {Peaks} peaks The parent Peaks object.
+ */
 
-  function WaveformPoints(peaks) {
+export default class WaveformPoints {
+  constructor(peaks) {
     this._peaks = peaks;
     this._points = [];
     this._pointsById = {};
@@ -52,9 +50,9 @@ define([
    * @returns {String}
    */
 
-  WaveformPoints.prototype._getNextPointId = function() {
+  _getNextPointId() {
     return 'peaks.point.' + this._pointIdCounter++;
-  };
+  }
 
   /**
    * Adds a new point object.
@@ -63,11 +61,11 @@ define([
    * @param {Point} point
    */
 
-  WaveformPoints.prototype._addPoint = function(point) {
+  _addPoint(point) {
     this._points.push(point);
 
     this._pointsById[point.id] = point;
-  };
+  }
 
   /**
    * Creates a new point object.
@@ -77,27 +75,27 @@ define([
    * @returns {Point}
    */
 
-  WaveformPoints.prototype._createPoint = function(options) {
-    var pointOptions = {
+  _createPoint(options) {
+    const defaultPointOptions = {
       peaks: this._peaks
     };
 
-    Utils.extend(pointOptions, options);
+    const pointOptions = Object.assign({}, defaultPointOptions, options);
 
-    if (Utils.isNullOrUndefined(pointOptions.id)) {
+    if (isNullOrUndefined(pointOptions.id)) {
       pointOptions.id = this._getNextPointId();
     }
 
-    if (Utils.isNullOrUndefined(pointOptions.labelText)) {
+    if (isNullOrUndefined(pointOptions.labelText)) {
       pointOptions.labelText = '';
     }
 
-    if (Utils.isNullOrUndefined(pointOptions.editable)) {
+    if (isNullOrUndefined(pointOptions.editable)) {
       pointOptions.editable = false;
     }
 
     return new Point(pointOptions);
-  };
+  }
 
   /**
    * Returns all points.
@@ -105,9 +103,9 @@ define([
    * @returns {Array<Point>}
    */
 
-  WaveformPoints.prototype.getPoints = function() {
+  getPoints() {
     return this._points;
-  };
+  }
 
   /**
    * Returns the point with the given id, or <code>null</code> if not found.
@@ -116,9 +114,9 @@ define([
    * @returns {Point|null}
    */
 
-  WaveformPoints.prototype.getPoint = function(id) {
+  getPoint(id) {
     return this._pointsById[id] || null;
-  };
+  }
 
   /**
    * Returns all points within a given time region.
@@ -128,11 +126,11 @@ define([
    * @returns {Array<Point>}
    */
 
-  WaveformPoints.prototype.find = function(startTime, endTime) {
+  find(startTime, endTime) {
     return this._points.filter(function(point) {
       return point.isVisible(startTime, endTime);
     });
-  };
+  }
 
   /**
    * Adds one or more points to the timeline.
@@ -140,7 +138,7 @@ define([
    * @param {PointOptions|Array<PointOptions>} pointOrPoints
    */
 
-  WaveformPoints.prototype.add = function(/* pointOrPoints */) {
+  add(/* pointOrPoints */) {
     var self = this;
 
     var points = Array.isArray(arguments[0]) ?
@@ -150,7 +148,7 @@ define([
     points = points.map(function(pointOptions) {
       var point = self._createPoint(pointOptions);
 
-      if (Utils.objectHasProperty(self._pointsById, point.id)) {
+      if (objectHasProperty(self._pointsById, point.id)) {
         throw new Error('peaks.points.add(): duplicate id');
       }
 
@@ -162,7 +160,7 @@ define([
     });
 
     this._peaks.emit('points.add', points);
-  };
+  }
 
   /**
    * Returns the indexes of points that match the given predicate.
@@ -173,7 +171,7 @@ define([
    *   the matching elements.
    */
 
-  WaveformPoints.prototype._findPoint = function(predicate) {
+  _findPoint(predicate) {
     var indexes = [];
 
     for (var i = 0, length = this._points.length; i < length; i++) {
@@ -183,7 +181,7 @@ define([
     }
 
     return indexes;
-  };
+  }
 
   /**
    * Removes the points at the given array indexes.
@@ -193,7 +191,7 @@ define([
    * @returns {Array<Point>} The removed {@link Point} objects.
    */
 
-  WaveformPoints.prototype._removeIndexes = function(indexes) {
+  _removeIndexes(indexes) {
     var removed = [];
 
     for (var i = 0; i < indexes.length; i++) {
@@ -207,7 +205,7 @@ define([
     }
 
     return removed;
-  };
+  }
 
   /**
    * Removes all points that match a given predicate function.
@@ -222,7 +220,7 @@ define([
    * @returns {Array<Point>} The removed {@link Points} objects.
    */
 
-  WaveformPoints.prototype._removePoints = function(predicate) {
+  _removePoints(predicate) {
     var indexes = this._findPoint(predicate);
 
     var removed = this._removeIndexes(indexes);
@@ -230,7 +228,7 @@ define([
     this._peaks.emit('points.remove', removed);
 
     return removed;
-  };
+  }
 
   /**
    * Removes the given point.
@@ -239,11 +237,11 @@ define([
    * @returns {Array<Point>} The removed points.
    */
 
-  WaveformPoints.prototype.remove = function(point) {
+  remove(point) {
     return this._removePoints(function(p) {
       return p === point;
     });
-  };
+  }
 
   /**
    * Removes any points with the given id.
@@ -252,11 +250,11 @@ define([
    * @returns {Array<Point>} The removed {@link Point} objects.
    */
 
-  WaveformPoints.prototype.removeById = function(pointId) {
+  removeById(pointId) {
     return this._removePoints(function(point) {
       return point.id === pointId;
     });
-  };
+  }
 
   /**
    * Removes any points at the given time.
@@ -265,11 +263,11 @@ define([
    * @returns {Array<Point>} The removed {@link Point} objects.
    */
 
-  WaveformPoints.prototype.removeByTime = function(time) {
+  removeByTime(time) {
     return this._removePoints(function(point) {
       return point.time === time;
     });
-  };
+  }
 
   /**
    * Removes all points.
@@ -278,11 +276,9 @@ define([
    * <code>points.remove_all</code> event.
    */
 
-  WaveformPoints.prototype.removeAll = function() {
+  removeAll() {
     this._points = [];
     this._pointsById = {};
     this._peaks.emit('points.remove_all');
-  };
-
-  return WaveformPoints;
-});
+  }
+}

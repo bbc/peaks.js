@@ -6,54 +6,52 @@
  * @module point
  */
 
-define([
-  './utils'
-], function(Utils) {
-  'use strict';
+import { isBoolean, isNullOrUndefined, isString, isValidTime, objectHasProperty } from './utils.js';
 
-  var pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
+const pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
 
-  function validatePoint(options, context) {
-    if (!Utils.isValidTime(options.time)) {
-      // eslint-disable-next-line max-len
-      throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
-    }
-
-    if (options.time < 0) {
-      // eslint-disable-next-line max-len
-      throw new RangeError('peaks.points.' + context + ': time should not be negative');
-    }
-
-    if (Utils.isNullOrUndefined(options.labelText)) {
-      // Set default label text
-      options.labelText = '';
-    }
-    else if (!Utils.isString(options.labelText)) {
-      throw new TypeError('peaks.points.' + context + ': labelText must be a string');
-    }
-
-    if (!Utils.isBoolean(options.editable)) {
-      throw new TypeError('peaks.points.' + context + ': editable must be true or false');
-    }
+function validatePoint(options, context) {
+  if (!isValidTime(options.time)) {
+    // eslint-disable-next-line max-len
+    throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
   }
 
-  /**
-   * A point is a single instant of time, with associated label and color.
-   *
-   * @class
-   * @alias Point
-   *
-   * @param {Peaks} peaks A reference to the Peaks instance.
-   * @param {String} id A unique identifier for the point.
-   * @param {Number} time Point time, in seconds.
-   * @param {String} labelText Point label text.
-   * @param {String} color Point marker color.
-   * @param {Boolean} editable If <code>true</code> the segment start and
-   *   end times can be adjusted via the user interface.
-   * @param {*} data Optional application specific data.
-   */
+  if (options.time < 0) {
+    // eslint-disable-next-line max-len
+    throw new RangeError('peaks.points.' + context + ': time should not be negative');
+  }
 
-  function Point(options) {
+  if (isNullOrUndefined(options.labelText)) {
+    // Set default label text
+    options.labelText = '';
+  }
+  else if (!isString(options.labelText)) {
+    throw new TypeError('peaks.points.' + context + ': labelText must be a string');
+  }
+
+  if (!isBoolean(options.editable)) {
+    throw new TypeError('peaks.points.' + context + ': editable must be true or false');
+  }
+}
+
+/**
+ * A point is a single instant of time, with associated label and color.
+ *
+ * @class
+ * @alias Point
+ *
+ * @param {Peaks} peaks A reference to the Peaks instance.
+ * @param {String} id A unique identifier for the point.
+ * @param {Number} time Point time, in seconds.
+ * @param {String} labelText Point label text.
+ * @param {String} color Point marker color.
+ * @param {Boolean} editable If <code>true</code> the segment start and
+ *   end times can be adjusted via the user interface.
+ * @param {*} data Optional application specific data.
+ */
+
+export default class Point {
+  constructor(options) {
     validatePoint(options, 'add()');
 
     this._peaks     = options.peaks;
@@ -66,55 +64,45 @@ define([
     this._setUserData(options);
   }
 
-  Point.prototype._setUserData = function(options) {
+  _setUserData(options) {
     for (var key in options) {
-      if (Utils.objectHasProperty(options, key) && pointOptions.indexOf(key) === -1) {
+      if (objectHasProperty(options, key) && pointOptions.indexOf(key) === -1) {
         this[key] = options[key];
       }
     }
-  };
+  }
 
-  Object.defineProperties(Point.prototype, {
-    id: {
-      enumerable: true,
-      get: function() {
-        return this._id;
-      }
-    },
-    time: {
-      enumerable: true,
-      get: function() {
-        return this._time;
-      }
-    },
-    labelText: {
-      get: function() {
-        return this._labelText;
-      }
-    },
-    color: {
-      enumerable: true,
-      get: function() {
-        return this._color;
-      }
-    },
-    editable: {
-      enumerable: true,
-      get: function() {
-        return this._editable;
-      }
-    }
-  });
+  get id() {
+    return this._id;
+  }
 
-  Point.prototype.update = function(options) {
-    var opts = {
+  get time() {
+    return this._time;
+  }
+
+  get labelText() {
+    return this._labelText;
+  }
+
+  get color() {
+    return this._color;
+  }
+
+  get editable() {
+    return this._editable;
+  }
+
+  update(options) {
+    let opts = {};
+
+    const defaultOptions = {
       time:      this.time,
       labelText: this.labelText,
       color:     this.color,
       editable:  this.editable
     };
 
-    Utils.extend(opts, options);
+    opts = Object.assign({}, defaultOptions, options);
 
     validatePoint(opts, 'update()');
 
@@ -126,7 +114,7 @@ define([
     this._setUserData(options);
 
     this._peaks.emit('points.update', this);
-  };
+  }
 
   /**
    * Returns <code>true</code> if the point lies with in a given time range.
@@ -136,13 +124,11 @@ define([
    * @returns {Boolean}
    */
 
-  Point.prototype.isVisible = function(startTime, endTime) {
+  isVisible(startTime, endTime) {
     return this.time >= startTime && this.time < endTime;
-  };
+  }
 
-  Point.prototype._setTime = function(time) {
+  _setTime(time) {
     this._time = time;
-  };
-
-  return Point;
-});
+  }
+}

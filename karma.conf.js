@@ -1,7 +1,15 @@
 'use strict';
 /* eslint-env node */
 
-var istanbul = require('browserify-istanbul');
+const istanbul = require('rollup-plugin-istanbul');
+var rollupPreprocessor = require('./rollup.config.js');
+
+rollupPreprocessor.plugins = [
+  istanbul({
+    exclude: ['test/**/*', 'test_data/**/*', 'node_modules/**/*']
+  }),
+  ...rollupPreprocessor.plugins
+];
 
 function filterBrowsers(browsers, re) {
   return Object.keys(browsers).filter(function(key) {
@@ -19,7 +27,7 @@ module.exports = function(config) {
     // defined in 'files' and 'exclude'.
     basePath: '',
 
-    frameworks: ['browserify', 'mocha', 'chai-sinon'],
+    frameworks: ['mocha', 'chai-sinon'],
 
     client: {
       chai: {
@@ -30,16 +38,9 @@ module.exports = function(config) {
       }
     },
 
-    browserify: {
-      debug: true,
-      transform: [
-        istanbul({
-          ignore: [
-            'test/unit/*.js'
-          ]
-        }),
-        'deamdify'
-      ]
+    rollupPreprocessor,
+    preprocessors: {
+      [`test/unit/${glob}`]: ['rollup']
     },
 
     // list of files / patterns to load in the browser
@@ -51,10 +52,6 @@ module.exports = function(config) {
 
     mime: {
       'application/octet-stream': ['dat']
-    },
-
-    preprocessors: {
-      'test/unit/*.js': ['browserify']
     },
 
     // test results reporter to use

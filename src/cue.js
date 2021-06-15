@@ -6,36 +6,25 @@
  * @module cue
  */
 
-define(function() {
-  'use strict';
+/**
+ * A cue represents an event to be triggered at some point on the media
+ * timeline.
+ *
+ * @class
+ * @alias Cue
+ *
+ * @param {Number} time Cue time, in seconds.
+ * @param {Number} type Cue mark type, either <code>Cue.POINT</code>,
+ *   <code>Cue.SEGMENT_START</code>, or <code>Cue.SEGMENT_END</code>.
+ * @param {String} id The id of the {@link Point} or {@link Segment}.
+ */
 
-  /**
-   * A cue represents an event to be triggered at some point on the media
-   * timeline.
-   *
-   * @class
-   * @alias Cue
-   *
-   * @param {Number} time Cue time, in seconds.
-   * @param {Number} type Cue mark type, either <code>Cue.POINT</code>,
-   *   <code>Cue.SEGMENT_START</code>, or <code>Cue.SEGMENT_END</code>.
-   * @param {String} id The id of the {@link Point} or {@link Segment}.
-   */
-
-  function Cue(time, type, id) {
+export default class Cue {
+  constructor(time, type, id) {
     this.time = time;
     this.type = type;
     this.id = id;
   }
-
-  /**
-    * @constant
-    * @type {Number}
-    */
-
-  Cue.POINT = 0;
-  Cue.SEGMENT_START = 1;
-  Cue.SEGMENT_END = 2;
 
   /**
    * Callback function for use with Array.prototype.sort().
@@ -45,10 +34,15 @@ define(function() {
    * @param {Cue} b
    * @return {Number}
    */
-
-  Cue.sorter = function(a, b) {
+  static sorter(a, b) {
     return a.time - b.time;
-  };
+  }
+}
 
-  return Cue;
-});
+/**
+ * @constant
+ * @type {Number}
+ */
+export const CUE_POINT = 0;
+export const CUE_SEGMENT_START = 1;
+export const CUE_SEGMENT_END = 2;

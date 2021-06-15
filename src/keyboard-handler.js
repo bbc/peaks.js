@@ -6,28 +6,26 @@
  * @module keyboard-handler
  */
 
-define([], function() {
-  'use strict';
+const nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
 
-  var nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
+const SPACE = 32;
+const TAB = 9;
+const LEFT_ARROW = 37;
+const RIGHT_ARROW = 39;
 
-  var SPACE = 32,
-      TAB = 9,
-      LEFT_ARROW = 37,
-      RIGHT_ARROW = 39;
+const keys = [SPACE, TAB, LEFT_ARROW, RIGHT_ARROW];
 
-  var keys = [SPACE, TAB, LEFT_ARROW, RIGHT_ARROW];
+/**
+ * Configures keyboard event handling.
+ *
+ * @class
+ * @alias KeyboardHandler
+ *
+ * @param {EventEmitter} eventEmitter
+ */
 
-  /**
-   * Configures keyboard event handling.
-   *
-   * @class
-   * @alias KeyboardHandler
-   *
-   * @param {EventEmitter} eventEmitter
-   */
-
-  function KeyboardHandler(eventEmitter) {
+export default class KeyboardHandler {
+  constructor(eventEmitter) {
     this.eventEmitter = eventEmitter;
 
     this._handleKeyEvent = this._handleKeyEvent.bind(this);
@@ -45,8 +43,7 @@ define([], function() {
    * @param {KeyboardEvent} event
    * @private
    */
-
-  KeyboardHandler.prototype._handleKeyEvent = function handleKeyEvent(event) {
+  _handleKeyEvent(event) {
     if (nodes.indexOf(event.target.nodeName) === -1) {
       if (keys.indexOf(event.type) > -1) {
         event.preventDefault();
@@ -85,13 +82,11 @@ define([], function() {
         }
       }
     }
-  };
+  }
 
-  KeyboardHandler.prototype.destroy = function() {
+  destroy() {
     document.removeEventListener('keydown', this._handleKeyEvent);
     document.removeEventListener('keypress', this._handleKeyEvent);
     document.removeEventListener('keyup', this._handleKeyEvent);
-  };
-
-  return KeyboardHandler;
-});
+  }
+}

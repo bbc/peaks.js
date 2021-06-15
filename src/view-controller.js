@@ -6,32 +6,27 @@
  * @module view-controller
  */
 
-define([
-  './waveform-overview',
-  './waveform-zoomview',
-  './utils'
-], function(
-    WaveformOverview,
-    WaveformZoomView,
-    Utils) {
-  'use strict';
+import WaveformOverview from './waveform-overview.js';
+import WaveformZoomView from './waveform-zoomview.js';
+import { isNullOrUndefined } from './utils.js';
 
-  /**
-   * Creates an object that allows users to create and manage waveform views.
-   *
-   * @class
-   * @alias ViewController
-   *
-   * @param {Peaks} peaks
-   */
+/**
+ * Creates an object that allows users to create and manage waveform views.
+ *
+ * @class
+ * @alias ViewController
+ *
+ * @param {Peaks} peaks
+ */
 
-  function ViewController(peaks) {
+export default class ViewController {
+  constructor(peaks) {
     this._peaks = peaks;
     this._overview = null;
     this._zoomview = null;
   }
 
-  ViewController.prototype.createOverview = function(container) {
+  createOverview(container) {
     if (this._overview) {
       return this._overview;
     }
@@ -52,9 +47,9 @@ define([
     }
 
     return this._overview;
-  };
+  }
 
-  ViewController.prototype.createZoomview = function(container) {
+  createZoomview(container) {
     if (this._zoomview) {
       return this._zoomview;
     }
@@ -68,9 +63,9 @@ define([
     );
 
     return this._zoomview;
-  };
+  }
 
-  ViewController.prototype.destroyOverview = function() {
+  destroyOverview() {
     if (!this._overview) {
       return;
     }
@@ -81,9 +76,9 @@ define([
 
     this._overview.destroy();
     this._overview = null;
-  };
+  }
 
-  ViewController.prototype.destroyZoomview = function() {
+  destroyZoomview() {
     if (!this._zoomview) {
       return;
     }
@@ -96,9 +91,9 @@ define([
     this._zoomview = null;
 
     this._overview.removeHighlightRect();
-  };
+  }
 
-  ViewController.prototype.destroy = function() {
+  destroy() {
     if (this._overview) {
       this._overview.destroy();
       this._overview = null;
@@ -108,10 +103,10 @@ define([
       this._zoomview.destroy();
       this._zoomview = null;
     }
-  };
+  }
 
-  ViewController.prototype.getView = function(name) {
-    if (Utils.isNullOrUndefined(name)) {
+  getView(name) {
+    if (isNullOrUndefined(name)) {
       if (this._overview && this._zoomview) {
         return null;
       }
@@ -137,7 +132,5 @@ define([
           return null;
       }
     }
-  };
-
-  return ViewController;
-});
+  }
+}

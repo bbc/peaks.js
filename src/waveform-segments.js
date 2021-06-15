@@ -6,41 +6,51 @@
  * @module waveform-segments
  */
 
-define([
-  './segment',
-  './utils'
-], function(Segment, Utils) {
-  'use strict';
+import Segment from './segment.js';
+import { isNullOrUndefined, isObject, objectHasProperty } from './utils.js';
 
-  /**
-   * Segment parameters.
-   *
-   * @typedef {Object} SegmentOptions
-   * @global
-   * @property {Number} startTime Segment start time, in seconds.
-   * @property {Number} endTime Segment end time, in seconds.
-   * @property {Boolean=} editable If <code>true</code> the segment start and
-   *   end times can be adjusted via the user interface.
-   *   Default: <code>false</code>.
-   * @property {String=} color Segment waveform color.
-   *   Default: a random color.
-   * @property {String=} labelText Segment label text.
-   *   Default: an empty string.
-   * @property {String=} id A unique segment identifier.
-   *   Default: an automatically generated identifier.
-   */
+/**
+ * Segment parameters.
+ *
+ * @typedef {Object} SegmentOptions
+ * @global
+ * @property {Number} startTime Segment start time, in seconds.
+ * @property {Number} endTime Segment end time, in seconds.
+ * @property {Boolean=} editable If <code>true</code> the segment start and
+ *   end times can be adjusted via the user interface.
+ *   Default: <code>false</code>.
+ * @property {String=} color Segment waveform color.
+ *   Default: a random color.
+ * @property {String=} labelText Segment label text.
+ *   Default: an empty string.
+ * @property {String=} id A unique segment identifier.
+ *   Default: an automatically generated identifier.
+ */
 
-  /**
-   * Handles all functionality related to the adding, removing and manipulation
-   * of segments.
-   *
-   * @class
-   * @alias WaveformSegments
-   *
-   * @param {Peaks} peaks The parent Peaks object.
-   */
+const colors = [
+  '#001f3f', // navy
+  '#0074d9', // blue
+  '#7fdbff', // aqua
+  '#39cccc', // teal
+  '#ffdc00', // yellow
+  '#ff851b', // orange
+  '#ff4136', // red
+  '#85144b', // maroon
+  '#f012be', // fuchsia
+  '#b10dc9'  // purple
+];
 
-  function WaveformSegments(peaks) {
+/**
+ * Handles all functionality related to the adding, removing and manipulation
+ * of segments.
+ *
+ * @class
+ * @alias WaveformSegments
+ *
+ * @param {Peaks} peaks The parent Peaks object.
+ */
+export default class WaveformSegments {
+  constructor(peaks) {
     this._peaks = peaks;
     this._segments = [];
     this._segmentsById = {};
@@ -55,29 +65,16 @@ define([
    * @returns {String}
    */
 
-  WaveformSegments.prototype._getNextSegmentId = function() {
+  _getNextSegmentId() {
     return 'peaks.segment.' + this._segmentIdCounter++;
-  };
-
-  var colors = [
-    '#001f3f', // navy
-    '#0074d9', // blue
-    '#7fdbff', // aqua
-    '#39cccc', // teal
-    '#ffdc00', // yellow
-    '#ff851b', // orange
-    '#ff4136', // red
-    '#85144b', // maroon
-    '#f012be', // fuchsia
-    '#b10dc9'  // purple
-  ];
+  }
 
   /**
    * @private
    * @returns {String}
    */
 
-  WaveformSegments.prototype._getSegmentColor = function() {
+  _getSegmentColor() {
     if (this._peaks.options.randomizeSegmentColor) {
       if (++this._colorIndex === colors.length) {
         this._colorIndex = 0;
@@ -88,7 +85,7 @@ define([
     else {
       return this._peaks.options.segmentColor;
     }
-  };
+  }
 
   /**
    * Adds a new segment object.
@@ -97,11 +94,11 @@ define([
    * @param {Segment} segment
    */
 
-  WaveformSegments.prototype._addSegment = function(segment) {
+  _addSegment(segment) {
     this._segments.push(segment);
 
     this._segmentsById[segment.id] = segment;
-  };
+  }
 
   /**
    * Creates a new segment object.
@@ -111,38 +108,38 @@ define([
    * @return {Segment}
    */
 
-  WaveformSegments.prototype._createSegment = function(options) {
+  _createSegment(options) {
     // Watch for anyone still trying to use the old
     // createSegment(startTime, endTime, ...) API
-    if (!Utils.isObject(options)) {
+    if (!isObject(options)) {
       // eslint-disable-next-line max-len
       throw new TypeError('peaks.segments.add(): expected a Segment object parameter');
     }
 
-    var segmentOptions = {
+    const defaultSegmentOptions = {
       peaks: this._peaks
     };
 
-    Utils.extend(segmentOptions, options);
+    const segmentOptions = Object.assign({}, defaultSegmentOptions, options);
 
-    if (Utils.isNullOrUndefined(segmentOptions.id)) {
+    if (isNullOrUndefined(segmentOptions.id)) {
       segmentOptions.id = this._getNextSegmentId();
     }
 
-    if (Utils.isNullOrUndefined(segmentOptions.color)) {
+    if (isNullOrUndefined(segmentOptions.color)) {
       segmentOptions.color = this._getSegmentColor();
     }
 
-    if (Utils.isNullOrUndefined(segmentOptions.labelText)) {
+    if (isNullOrUndefined(segmentOptions.labelText)) {
       segmentOptions.labelText = '';
     }
 
-    if (Utils.isNullOrUndefined(segmentOptions.editable)) {
+    if (isNullOrUndefined(segmentOptions.editable)) {
       segmentOptions.editable = false;
     }
 
     return new Segment(segmentOptions);
-  };
+  }
 
   /**
    * Returns all segments.
@@ -150,9 +147,9 @@ define([
    * @returns {Array<Segment>}
    */
 
-  WaveformSegments.prototype.getSegments = function() {
+  getSegments() {
     return this._segments;
-  };
+  }
 
   /**
    * Returns the segment with the given id, or <code>null</code> if not found.
@@ -161,9 +158,9 @@ define([
    * @returns {Segment|null}
    */
 
-  WaveformSegments.prototype.getSegment = function(id) {
+  getSegment(id) {
     return this._segmentsById[id] || null;
-  };
+  }
 
   /**
    * Returns all segments that overlap a given point in time.
@@ -172,11 +169,11 @@ define([
    * @returns {Array<Segment>}
    */
 
-  WaveformSegments.prototype.getSegmentsAtTime = function(time) {
+  getSegmentsAtTime(time) {
     return this._segments.filter(function(segment) {
       return time >= segment.startTime && time < segment.endTime;
     });
-  };
+  }
 
   /**
    * Returns all segments that overlap a given time region.
@@ -187,11 +184,11 @@ define([
    * @returns {Array<Segment>}
    */
 
-  WaveformSegments.prototype.find = function(startTime, endTime) {
+  find(startTime, endTime) {
     return this._segments.filter(function(segment) {
       return segment.isVisible(startTime, endTime);
     });
-  };
+  }
 
   /**
    * Adds one or more segments to the timeline.
@@ -199,7 +196,7 @@ define([
    * @param {SegmentOptions|Array<SegmentOptions>} segmentOrSegments
    */
 
-  WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
+  add(/* segmentOrSegments */) {
     var self = this;
 
     var segments = Array.isArray(arguments[0]) ?
@@ -209,7 +206,7 @@ define([
     segments = segments.map(function(segmentOptions) {
       var segment = self._createSegment(segmentOptions);
 
-      if (Utils.objectHasProperty(self._segmentsById, segment.id)) {
+      if (objectHasProperty(self._segmentsById, segment.id)) {
         throw new Error('peaks.segments.add(): duplicate id');
       }
 
@@ -221,7 +218,7 @@ define([
     });
 
     this._peaks.emit('segments.add', segments);
-  };
+  }
 
   /**
    * Returns the indexes of segments that match the given predicate.
@@ -232,7 +229,7 @@ define([
    *   the matching elements.
    */
 
-  WaveformSegments.prototype._findSegment = function(predicate) {
+  _findSegment(predicate) {
     var indexes = [];
 
     for (var i = 0, length = this._segments.length; i < length; i++) {
@@ -242,7 +239,7 @@ define([
     }
 
     return indexes;
-  };
+  }
 
   /**
    * Removes the segments at the given array indexes.
@@ -252,7 +249,7 @@ define([
    * @returns {Array<Segment>} The removed {@link Segment} objects.
    */
 
-  WaveformSegments.prototype._removeIndexes = function(indexes) {
+  _removeIndexes(indexes) {
     var removed = [];
 
     for (var i = 0; i < indexes.length; i++) {
@@ -266,7 +263,7 @@ define([
     }
 
     return removed;
-  };
+  }
 
   /**
    * Removes all segments that match a given predicate function.
@@ -281,7 +278,7 @@ define([
    * @returns {Array<Segment>} The removed {@link Segment} objects.
    */
 
-  WaveformSegments.prototype._removeSegments = function(predicate) {
+  _removeSegments(predicate) {
     var indexes = this._findSegment(predicate);
 
     var removed = this._removeIndexes(indexes);
@@ -289,7 +286,7 @@ define([
     this._peaks.emit('segments.remove', removed);
 
     return removed;
-  };
+  }
 
   /**
    * Removes the given segment.
@@ -298,11 +295,11 @@ define([
    * @returns {Array<Segment>} The removed segment.
    */
 
-  WaveformSegments.prototype.remove = function(segment) {
+  remove(segment) {
     return this._removeSegments(function(s) {
       return s === segment;
     });
-  };
+  }
 
   /**
    * Removes any segments with the given id.
@@ -311,11 +308,11 @@ define([
    * @returns {Array<Segment>} The removed {@link Segment} objects.
    */
 
-  WaveformSegments.prototype.removeById = function(segmentId) {
+  removeById(segmentId) {
     return this._removeSegments(function(segment) {
       return segment.id === segmentId;
     });
-  };
+  }
 
   /**
    * Removes any segments with the given start time, and optional end time.
@@ -326,7 +323,7 @@ define([
    * @returns {Array<Segment>} The removed {@link Segment} objects.
    */
 
-  WaveformSegments.prototype.removeByTime = function(startTime, endTime) {
+  removeByTime(startTime, endTime) {
     endTime = (typeof endTime === 'number') ? endTime : 0;
 
     var fnFilter;
@@ -343,7 +340,7 @@ define([
     }
 
     return this._removeSegments(fnFilter);
-  };
+  }
 
   /**
    * Removes all segments.
@@ -352,11 +349,9 @@ define([
    * <code>segments.remove_all</code> event.
    */
 
-  WaveformSegments.prototype.removeAll = function() {
+  removeAll() {
     this._segments = [];
     this._segmentsById = {};
     this._peaks.emit('segments.remove_all');
-  };
-
-  return WaveformSegments;
-});
+  }
+}

@@ -6,47 +6,45 @@
  * @module mouse-drag-handler
  */
 
-define([
-  'konva'
-], function(Konva) {
-  'use strict';
+import { Layer } from 'konva/lib/Layer';
 
-  function getMarkerObject(obj) {
-    while (obj.parent !== null) {
-      if (obj.parent instanceof Konva.Layer) {
-        return obj;
-      }
-
-      obj = obj.parent;
+function getMarkerObject(obj) {
+  while (obj.parent !== null) {
+    if (obj.parent instanceof Layer) {
+      return obj;
     }
 
-    return null;
+    obj = obj.parent;
   }
 
-  /**
-   * An object to receive callbacks on mouse drag events. Each function is
-   * called with the current mouse X position, relative to the stage's
-   * container HTML element.
-   *
-   * @typedef {Object} MouseDragHandlers
-   * @global
-   * @property {Function} onMouseDown Mouse down event handler.
-   * @property {Function} onMouseMove Mouse move event handler.
-   * @property {Function} onMouseUp Mouse up event handler.
-   */
+  return null;
+}
 
-  /**
-   * Creates a handler for mouse events to allow interaction with the waveform
-   * views by clicking and dragging the mouse.
-   *
-   * @class
-   * @alias MouseDragHandler
-   *
-   * @param {Konva.Stage} stage
-   * @param {MouseDragHandlers} handlers
-   */
+/**
+ * An object to receive callbacks on mouse drag events. Each function is
+ * called with the current mouse X position, relative to the stage's
+ * container HTML element.
+ *
+ * @typedef {Object} MouseDragHandlers
+ * @global
+ * @property {Function} onMouseDown Mouse down event handler.
+ * @property {Function} onMouseMove Mouse move event handler.
+ * @property {Function} onMouseUp Mouse up event handler.
+ */
 
-  function MouseDragHandler(stage, handlers) {
+/**
+ * Creates a handler for mouse events to allow interaction with the waveform
+ * views by clicking and dragging the mouse.
+ *
+ * @class
+ * @alias MouseDragHandler
+ *
+ * @param {Konva.Stage} stage
+ * @param {MouseDragHandlers} handlers
+ */
+
+export default class MouseDragHandler {
+  constructor(stage, handlers) {
     this._stage     = stage;
     this._handlers  = handlers;
     this._dragging  = false;
@@ -66,7 +64,7 @@ define([
    * @param {KonvaEventObject} event
    */
 
-  MouseDragHandler.prototype._mouseDown = function(event) {
+  _mouseDown(event) {
     var marker = getMarkerObject(event.target);
 
     // Avoid interfering with drag/drop of point and segment markers.
@@ -92,7 +90,7 @@ define([
     window.addEventListener('mouseup', this._mouseUp, false);
     window.addEventListener('touchend', this._mouseUp, false);
     window.addEventListener('blur', this._mouseUp, false);
-  };
+  }
 
   /**
    * Mouse move event handler.
@@ -100,7 +98,7 @@ define([
    * @param {MouseEvent} event
    */
 
-  MouseDragHandler.prototype._mouseMove = function(event) {
+  _mouseMove(event) {
     var clientX = Math.floor(
       event.type === 'touchmove' ? event.changedTouches[0].clientX : event.clientX
     );
@@ -119,7 +117,7 @@ define([
 
       this._handlers.onMouseMove(mousePosX);
     }
-  };
+  }
 
   /**
    * Mouse up event handler.
@@ -127,7 +125,7 @@ define([
    * @param {MouseEvent} event
    */
 
-  MouseDragHandler.prototype._mouseUp = function(event) {
+  _mouseUp(event) {
     var clientX;
 
     if (event.type === 'touchend') {
@@ -154,7 +152,7 @@ define([
     window.removeEventListener('blur', this._mouseUp, false);
 
     this._dragging = false;
-  };
+  }
 
   /**
    * @returns {Number} The mouse X position, relative to the container that
@@ -164,11 +162,11 @@ define([
    * @param {Number} clientX Mouse client X position.
    */
 
-  MouseDragHandler.prototype._getMousePosX = function(clientX) {
+  _getMousePosX(clientX) {
     var containerPos = this._stage.getContainer().getBoundingClientRect();
 
     return clientX - containerPos.left;
-  };
+  }
 
   /**
    * Returns <code>true</code> if the mouse is being dragged, i.e., moved with
@@ -177,9 +175,7 @@ define([
    * @returns {Boolean}
    */
 
-  MouseDragHandler.prototype.isDragging = function() {
+  isDragging() {
     return this._dragging;
-  };
-
-  return MouseDragHandler;
-});
+  }
+}

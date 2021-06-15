@@ -31,13 +31,12 @@ You can read more about the project and see a demo [here](https://waveform.proto
 
 # Contents
 
+- [Contents](#contents)
 - [Installation](#installation)
 - [Demos](#demos)
 - [Using Peaks.js in your own project](#using-peaksjs-in-your-own-project)
-  - [Start using AMD and require.js](#start-using-amd-and-requirejs)
-  - [Start using ES2015 module loader](#start-using-es2015-module-loader)
-  - [Start using CommonJS module loader](#start-using-commonjs-module-loader)
   - [Start using vanilla JavaScript](#start-using-vanilla-javascript)
+  - [Start using ES2015 module loader](#start-using-es2015-module-loader)
   - [Generate waveform data](#generate-waveform-data)
   - [Web Audio based waveforms](#web-audio-based-waveforms)
 - [Configuration](#configuration)
@@ -45,71 +44,83 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Player customization](#player-customization)
 - [API](#api)
   - [Initialization](#initialization)
-    - [Peaks.init()](#peaksinitoptions-callback)
-    - [instance.setSource()](#instancesetsourceoptions-callback)
+    - [`Peaks.init(options, callback)`](#peaksinitoptions-callback)
+    - [`instance.setSource(options, callback)`](#instancesetsourceoptions-callback)
   - [Player API](#player-api)
-    - [instance.player.play()](#instanceplayerplay)
-    - [instance.player.pause()](#instanceplayerpause)
-    - [instance.player.getCurrentTime()](#instanceplayergetcurrenttime)
-    - [instance.player.getDuration()](#instanceplayergetduration)
-    - [instance.player.seek()](#instanceplayerseektime)
-    - [instance.player.playSegment()](#instanceplayerplaysegmentsegment-loop)
+    - [`instance.player.play()`](#instanceplayerplay)
+    - [`instance.player.pause()`](#instanceplayerpause)
+    - [`instance.player.getCurrentTime()`](#instanceplayergetcurrenttime)
+    - [`instance.player.getDuration()`](#instanceplayergetduration)
+    - [`instance.player.seek(time)`](#instanceplayerseektime)
+    - [`instance.player.playSegment(segment[, loop])`](#instanceplayerplaysegmentsegment-loop)
   - [Views API](#views-api)
-    - [instance.views.getView()](#instanceviewsgetviewname)
-    - [instance.views.createZoomview()](#instanceviewscreatezoomviewcontainer)
-    - [instance.views.createOverview()](#instanceviewscreateoverviewcontainer)
-    - [instance.views.destroyZoomview()](#instanceviewsdestroyzoomview)
-    - [instance.views.destroyOverview()](#instanceviewsdestroyoverview)
+    - [`instance.views.getView(name)`](#instanceviewsgetviewname)
+    - [`instance.views.createZoomview(container)`](#instanceviewscreatezoomviewcontainer)
+    - [`instance.views.createOverview(container)`](#instanceviewscreateoverviewcontainer)
+    - [`instance.views.destroyZoomview()`](#instanceviewsdestroyzoomview)
+    - [`instance.views.destroyOverview()`](#instanceviewsdestroyoverview)
   - [View API](#view-api)
-    - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
-    - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
-    - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
-    - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
-    - [view.enableAutoScroll()](#viewenableautoscrollenable)
-    - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
-    - [view.fitToContainer()](#viewfittocontainer)
-    - [view.setZoom()](#viewsetzoomoptions)
-    - [view.setStartTime()](#viewsetstarttimetime)
-    - [view.setWheelMode()](#viewsetwheelmodemode)
+    - [`view.setAmplitudeScale(scale)`](#viewsetamplitudescalescale)
+    - [`view.setWaveformColor(color)`](#viewsetwaveformcolorcolor)
+    - [`view.showPlayheadTime(show)`](#viewshowplayheadtimeshow)
+    - [`view.setTimeLabelPrecision(precision)`](#viewsettimelabelprecisionprecision)
+    - [`view.enableAutoScroll(enable)`](#viewenableautoscrollenable)
+    - [`view.enableMarkerEditing(enable)`](#viewenablemarkereditingenable)
+    - [`view.fitToContainer()`](#viewfittocontainer)
+    - [`view.setZoom(options)`](#viewsetzoomoptions)
+    - [`view.setStartTime(time)`](#viewsetstarttimetime)
+    - [`view.setWheelMode(mode)`](#viewsetwheelmodemode)
   - [Zoom API](#zoom-api)
-    - [instance.zoom.zoomIn()](#instancezoomzoomin)
-    - [instance.zoom.zoomOut()](#instancezoomzoomout)
-    - [instance.zoom.setZoom()](#instancezoomsetzoomindex)
-    - [instance.zoom.getZoom()](#instancezoomgetzoom)
+    - [`instance.zoom.zoomOut()`](#instancezoomzoomout)
+    - [`instance.zoom.zoomIn()`](#instancezoomzoomin)
+    - [`instance.zoom.setZoom(index)`](#instancezoomsetzoomindex)
+    - [`instance.zoom.getZoom()`](#instancezoomgetzoom)
   - [Segments API](#segments-api)
-    - [instance.segments.add()](#instancesegmentsaddsegment)
-    - [instance.segments.getSegments()](#instancesegmentsgetsegments)
-    - [instance.segments.getSegment()](#instancesegmentsgetsegmentid)
-    - [instance.segments.removeByTime()](#instancesegmentsremovebytimestarttime-endtime)
-    - [instance.segments.removeById()](#instancesegmentsremovebyidsegmentid)
-    - [instance.segments.removeAll()](#instancesegmentsremoveall)
+    - [`instance.segments.add({ startTime, endTime, editable, color, labelText, id[, ...] })`](#instancesegmentsadd-starttime-endtime-editable-color-labeltext-id--)
+    - [`instance.segments.add(segment[])`](#instancesegmentsaddsegment)
+    - [`instance.segments.getSegments()`](#instancesegmentsgetsegments)
+    - [`instance.segments.getSegment(id)`](#instancesegmentsgetsegmentid)
+    - [`instance.segments.removeByTime(startTime[, endTime])`](#instancesegmentsremovebytimestarttime-endtime)
+    - [`instance.segments.removeById(segmentId)`](#instancesegmentsremovebyidsegmentid)
+    - [`instance.segments.removeAll()`](#instancesegmentsremoveall)
   - [Segment API](#segment-api)
-    - [segment.update()](#segmentupdatestarttime-endtime-labeltext-color-editable)
+    - [`segment.update({ startTime, endTime, labelText, color, editable[, ...] })`](#segmentupdate-starttime-endtime-labeltext-color-editable--)
   - [Points API](#points-api)
-    - [instance.points.add()](#instancepointsaddpoint)
-    - [instance.points.getPoints()](#instancepointsgetpoints)
-    - [instance.points.getPoint()](#instancepointsgetpointid)
-    - [instance.points.removeByTime()](#instancepointsremovebytimetime)
-    - [instance.points.removeById()](#instancepointsremovebyidpointid)
-    - [instance.points.removeAll()](#instancepointsremoveall)
+    - [`instance.points.add({ time, editable, color, labelText, id[, ...] })`](#instancepointsadd-time-editable-color-labeltext-id--)
+    - [`instance.points.add(point[])`](#instancepointsaddpoint)
+    - [`instance.points.getPoints()`](#instancepointsgetpoints)
+    - [`instance.points.getPoint(id)`](#instancepointsgetpointid)
+    - [`instance.points.removeByTime(time)`](#instancepointsremovebytimetime)
+    - [`instance.points.removeById(pointId)`](#instancepointsremovebyidpointid)
+    - [`instance.points.removeAll()`](#instancepointsremoveall)
   - [Point API](#point-api)
-    - [point.update()](#pointupdatetime-labeltext-color-editable)
+    - [`point.update({ time, labelText, color, editable[, ...] })`](#pointupdate-time-labeltext-color-editable--)
+  - [Cue events](#cue-events)
   - [Events](#events)
-    - [instance.on()](#instanceonevent-callback)
-    - [instance.off()](#instanceoffevent-callback)
+    - [`instance.on(event, callback)`](#instanceonevent-callback)
+      - [Initialization](#initialization-1)
+      - [Player](#player)
+      - [Views](#views)
+      - [Waveforms](#waveforms)
+      - [Segments](#segments)
+      - [Points](#points)
+      - [Cue Events](#cue-events-1)
+    - [`instance.off(event, callback)`](#instanceoffevent-callback)
   - [Destruction](#destruction)
-    - [instance.destroy()](#instancedestroy)
+    - [`instance.destroy()`](#instancedestroy)
 - [Building Peaks.js](#building-peaksjs)
+  - [Prerequisites](#prerequisites)
+  - [Building](#building)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
 - [Credits](#credits)
+- [Copyright](#copyright)
 
 # Installation
 
 - **npm**: `npm install --save peaks.js`
-- **bower**: `bower install --save peaks.js`
-- [Browserify CDN](https://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
+- [unpkg](https://unpkg.com/): `http://unpkg.com/peaks.js`
 - [cdnjs](https://cdnjs.com/): `https://cdnjs.com/libraries/peaks.js`
 
 # Demos
@@ -133,53 +144,48 @@ Peaks.js can be included in any web page by following these steps:
 1. include a media element and its [waveform data file](https://github.com/bbc/audiowaveform)
 1. initialise Peaks.js
 
+Here is a classic HTML structure to use Peaks with:
+
 ```html
 <div id="peaks-container">
   <div id="zoomview-container"></div>
   <div id="overview-container"></div>
+
+  <audio data-uri="test_data/sample.json">
+    <source src="test_data/sample.mp3" type="audio/mpeg">
+    <source src="test_data/sample.ogg" type="audio/ogg">
+  </audio>
 </div>
-<audio>
-  <source src="test_data/sample.mp3" type="audio/mpeg">
-  <source src="test_data/sample.ogg" type="audio/ogg">
-</audio>
-<script src="bower_components/requirejs/require.js" data-main="app.js"></script>
 ```
 
-Note that the container `div`s should be left empty, as shown above, as their
-content will be replaced by the waveform view `canvas` elements.
+It contains:
 
-## Start using AMD and [require.js](http://requirejs.org/)
+- waveform element containers
+- a media element
 
-AMD modules work out of the box without any optimiser.
+## Start using vanilla JavaScript
 
-```javascript
-// in app.js
-// configure peaks path
-requirejs.config({
-  paths: {
-    peaks: 'bower_components/peaks.js/src/main',
-    EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
-    Konva: 'bower_components/konvajs/konva',
-    'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
+```html
+<div class="peaks-container"> … </div>
+
+<script type="module">
+import Peaks from 'https://unpkg.com/peaks.js'
+
+const options = {
+  containers: {
+    overview: document.getElementById('overview-container'),
+    zoomview: document.getElementById('zoomview-container')
   }
-});
+  mediaElement: document.querySelector('audio'),
+  dataUri: document.querySelector('audio').dataset.uri
+};
 
-// require it
-require(['peaks'], function(Peaks) {
-  const options = {
-    containers: {
-      overview: document.getElementById('overview-container'),
-      zoomview: document.getElementById('zoomview-container')
-    }
-    mediaElement: document.querySelector('audio'),
-    dataUri: 'test_data/sample.json'
-  };
-
-  Peaks.init(options, function(err, peaks) {
-    // Do something when the waveform is displayed and ready.
-  });
-});
+Peaks.init(options).then(peaks => {
+  // Do something when the waveform is displayed and ready.
+}
+</script>
 ```
+
 
 ## Start using ES2015 module loader
 
@@ -190,38 +196,9 @@ import Peaks from 'peaks.js';
 
 const options = { ... };
 
-Peaks.init(options, function(err, peaks) {
+Peaks.init(options).then(peaks => {
   // ...
-});
-```
-
-## Start using CommonJS module loader
-
-This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/).
-
-```js
-var Peaks = require('peaks.js');
-
-const options = { ... };
-
-Peaks.init(options, function(err, peaks) {
-  // ...
-});
-```
-
-## Start using vanilla JavaScript
-
-```html
-<script src="node_modules/peaks.js/peaks.js"></script>
-<script>
-(function(Peaks) {
-  const options = { ... };
-
-  Peaks.init(options, function(err, peaks) {
-    // ...
-  });
-})(peaks);
-</script>
+}
 ```
 
 ## Generate waveform data
@@ -251,7 +228,6 @@ Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generat
 To use Web Audio, omit the `dataUri` option and instead pass a `webAudio` object that contains an `AudioContext` instance. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
-const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
 const options = {
@@ -261,13 +237,15 @@ const options = {
   },
   mediaElement: document.querySelector('audio'),
   webAudio: {
-    audioContext: audioContext
+    audioContext
   }
 };
 
-Peaks.init(options, function(err, peaks) {
-  // Do something when the waveform is displayed and ready
-});
+const peaks = Peaks.init(options);
+
+peaks.then(() => {
+  // ...
+}
 ```
 
 Alternatively, if you have an `AudioBuffer` containing decoded audio samples, e.g., from
@@ -275,7 +253,6 @@ Alternatively, if you have an `AudioBuffer` containing decoded audio samples, e.
 then an `AudioContext` is not needed:
 
 ```js
-const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
 // arrayBuffer contains the encoded audio (e.g., MP3 format)
