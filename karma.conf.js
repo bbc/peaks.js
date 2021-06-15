@@ -1,8 +1,8 @@
 'use strict';
 /* eslint-env node */
 
-var commonjs = require('rollup-plugin-commonjs');
-var resolve = require('rollup-plugin-node-resolve');
+var commonjs = require('@rollup/plugin-commonjs');
+var resolve = require('@rollup/plugin-node-resolve').nodeResolve;
 var babel = require('@rollup/plugin-babel');
 var json = require('@rollup/plugin-json');
 
