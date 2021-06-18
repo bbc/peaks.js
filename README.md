@@ -403,7 +403,7 @@ var options = {
   randomizeSegmentColor: true,
 
   // Font family for axis labels, playhead, and point and segment markers
-  fontFamily: 'sans-serif'
+  fontFamily: 'sans-serif',
 
   // Font size for axis labels, playhead, and point and segment markers
   fontSize: 11,
