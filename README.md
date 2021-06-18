@@ -172,7 +172,9 @@ require(['peaks'], function(Peaks) {
       zoomview: document.getElementById('zoomview-container')
     }
     mediaElement: document.querySelector('audio'),
-    dataUri: 'test_data/sample.json'
+    dataUri: {
+      json: 'test_data/sample.json',
+    }
   };
 
   Peaks.init(options, function(err, peaks) {
