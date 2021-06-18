@@ -129,7 +129,11 @@ and then open your browser at http://localhost:8080.
 
 Peaks.js can be included in any web page by following these steps:
 
-1. include it your web page
+1. Include the following HTML in your web page
+2. Include a media element and its [waveform data file](https://github.com/bbc/audiowaveform)
+3. Install [Peaks.js](#installation)
+4. Initialise Peaks.js with [`Peaks.init()`](#initialization) and your own options
+
 ```html
 <div id="peaks-container">
   <div id="zoomview-container"></div>
@@ -142,13 +146,9 @@ Peaks.js can be included in any web page by following these steps:
 <!-- Using RequireJS -->
 <script src="bower_components/requirejs/require.js" data-main="app.js"></script>
 ```
-1. include a media element and its [waveform data file](https://github.com/bbc/audiowaveform)
-1. install [Peaks.js](#installation)
-1. initialise Peaks.js with `Peaks.init()` and your own options
 
-
-_Note that the container `div`s should be left empty, as shown above, as their
-content will be replaced by the waveform view `canvas` elements._
+Note that the container `div`s should be left empty, as shown above, as their
+content will be replaced by the waveform view `canvas` elements.
 
 ## Start using AMD and [require.js](http://requirejs.org/)
 
