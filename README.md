@@ -695,7 +695,7 @@ The initial setting is `false` for the overview waveform view, or controlled by 
 
 ```js
 const view = instance.views.getView('zoomview');
-view.showPlayeadTime(false); // Remove the time from the playhead marker.
+view.showPlayheadTime(false); // Remove the time from the playhead marker.
 ```
 
 ### `view.setTimeLabelPrecision(precision)`
