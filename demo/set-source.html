@@ -96,15 +96,15 @@
         The following pages demonstrate various configuration options:
       </p>
       <p>
-        <a href="index.html">Precomputed Waveform Data</a> |
-        <a href="webaudio.html">Web Audio API</a> |
-        <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
-        <a href="overview-waveform.html">Single Fixed Waveform</a> |
-        <a href="cue-events.html">Cue Events</a> |
+        <a href="/index.html">Precomputed Waveform Data</a> |
+        <a href="/webaudio.html">Web Audio API</a> |
+        <a href="/zoomable-waveform.html">Single Zoomable Waveform</a> |
+        <a href="/overview-waveform.html">Single Fixed Waveform</a> |
+        <a href="/cue-events.html">Cue Events</a> |
         Changing the Media URL |
-        <a href="multi-channel.html">Multi-Channel Waveform</a> |
-        <a href="custom-markers.html">Custom Point and Segment Markers</a> |
-        <a href="external-player.html">External Audio Player</a>
+        <a href="/multi-channel.html">Multi-Channel Waveform</a> |
+        <a href="/custom-markers">Custom Point and Segment Markers</a> |
+        <a href="/external-player.html">External Audio Player</a>
       </p>
       <h2>Demo: Changing the Media URL</h2>
       <p>
@@ -125,8 +125,8 @@
 
     <div id="demo-controls">
       <audio id="audio" controls="controls">
-        <source src="TOL_6min_720p_download.mp3" type="audio/mpeg">
-        <source src="TOL_6min_720p_download.ogg" type="audio/ogg">
+        <source src="/TOL_6min_720p_download.mp3" type="audio/mpeg">
+        <source src="/TOL_6min_720p_download.ogg" type="audio/ogg">
         Your browser does not support the audio element.
       </audio>
 
@@ -138,7 +138,7 @@
       </div>
     </div>
 
-    <script src="peaks.js"></script>
+    <script src="/peaks.js"></script>
     <script>
       (function(Peaks) {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -155,7 +155,7 @@
           return [
             {
               title: 'Tree of Life',
-              mediaUrl: 'TOL_6min_720p_download.mp3',
+              mediaUrl: '/TOL_6min_720p_download.mp3',
               dataUri: {
                 arraybuffer: 'TOL_6min_720p_download.dat',
                 json: 'TOL_6min_720p_download.json'
@@ -163,7 +163,7 @@
             },
             {
               title: 'Desert Island Discs',
-              mediaUrl: 'sample.mp3',
+              mediaUrl: '/sample.mp3',
               webAudio: {
                 audioContext: audioContext
               },
@@ -171,7 +171,7 @@
             },
             {
               title: 'BBC Sound Effect (Cars)',
-              mediaUrl: '07023003.mp3',
+              mediaUrl: '/07023003.mp3',
               waveformData: {
                 arraybuffer: waveformData
               }
@@ -231,8 +231,8 @@
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
-            arraybuffer: 'TOL_6min_720p_download.dat',
-            json: 'TOL_6min_720p_download.json'
+            arraybuffer: '/TOL_6min_720p_download.dat',
+            json: '/TOL_6min_720p_download.json'
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
@@ -242,7 +242,7 @@
 
         createPeaksInstance(options)
           .then(function(peaksInstance) {
-            requestWaveformData('07023003-2channel.dat')
+            requestWaveformData('/07023003-2channel.dat')
               .then(function(waveformData) {
                 return createSources(waveformData);
               })

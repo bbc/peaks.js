@@ -96,14 +96,14 @@
         The following pages demonstrate various configuration options:
       </p>
       <p>
-        <a href="index.html">Precomputed Waveform Data</a> |
-        <a href="webaudio.html">Web Audio API</a> |
-        <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
-        <a href="overview-waveform.html">Single Fixed Waveform</a> |
-        <a href="cue-events.html">Cue Events</a> |
-        <a href="set-source.html">Changing the Media URL</a> |
-        <a href="multi-channel.html">Multi-Channel Waveform</a> |
-        <a href="custom-markers.html">Custom Point and Segment Markers</a> |
+        <a href="/index.html">Precomputed Waveform Data</a> |
+        <a href="/webaudio.html">Web Audio API</a> |
+        <a href="/zoomable-waveform.html">Single Zoomable Waveform</a> |
+        <a href="/overview-waveform.html">Single Fixed Waveform</a> |
+        <a href="/cue-events.html">Cue Events</a> |
+        <a href="/set-source.html">Changing the Media URL</a> |
+        <a href="/multi-channel.html">Multi-Channel Waveform</a> |
+        <a href="/custom-markers">Custom Point and Segment Markers</a> |
         External Audio Player
       </p>
       <h2>Demo: External Player</h2>
@@ -132,7 +132,7 @@
       </div>
     </div>
 
-    <script src="peaks.js"></script>
+    <script src="/peaks.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script>
 
     <script>
@@ -140,7 +140,7 @@
         const audioContext = Tone.context;
 
         // Load audio file into audio buffer
-        fetch("TOL_6min_720p_download.mp3")
+        fetch("/TOL_6min_720p_download.mp3")
           .then(function(response) {
             return response.arrayBuffer();
           })

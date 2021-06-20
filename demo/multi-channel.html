@@ -100,15 +100,15 @@
         The following pages demonstrate various configuration options:
       </p>
       <p>
-        <a href="index.html">Precomputed Waveform Data</a> |
-        <a href="webaudio.html">Web Audio API</a> |
-        <a href="zoomable-waveform.html">Single Zoomable Waveform</a> |
-        <a href="overview-waveform.html">Single Fixed Waveform</a> |
-        <a href="cue-events.html">Cue Events</a> |
-        <a href="set-source.html">Changing the Media URL</a> |
+        <a href="/index.html">Precomputed Waveform Data</a> |
+        <a href="/webaudio.html">Web Audio API</a> |
+        <a href="/zoomable-waveform.html">Single Zoomable Waveform</a> |
+        <a href="/overview-waveform.html">Single Fixed Waveform</a> |
+        <a href="/cue-events.html">Cue Events</a> |
+        <a href="/set-source.html">Changing the Media URL</a> |
         Multi-Channel Waveform |
-        <a href="custom-markers.html">Custom Point and Segment Markers</a> |
-        <a href="external-player.html">External Audio Player</a>
+        <a href="/custom-markers">Custom Point and Segment Markers</a> |
+        <a href="/external-player.html">External Audio Player</a>
       </p>
       <h2>Demo: Multi-Channel Waveform</h2>
       <p>
@@ -139,7 +139,7 @@
 
     <div id="demo-controls">
       <audio id="audio" controls="controls">
-        <source src="07023003.mp3" type="audio/mpeg">
+        <source src="/07023003.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
       </audio>
 
@@ -159,7 +159,7 @@
       </div>
     </div>
 
-    <script src="peaks.js"></script>
+    <script src="/peaks.js"></script>
     <script>
       (function(Peaks) {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -168,14 +168,14 @@
         var sources = [
           {
             title: 'Remote',
-            mediaUrl: '07023003.mp3',
+            mediaUrl: '/07023003.mp3',
             dataUri: {
-              arraybuffer: '07023003-2channel.dat',
+              arraybuffer: '/07023003-2channel.dat',
             }
           },
           {
             title: 'Web Audio',
-            mediaUrl: '07023003.mp3',
+            mediaUrl: '/07023003.mp3',
             webAudio: {
               audioContext: audioContext,
               multiChannel: true
@@ -190,7 +190,7 @@
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
-            arraybuffer: '07023003-2channel.dat'
+            arraybuffer: '/07023003-2channel.dat'
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',

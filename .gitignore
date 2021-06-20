@@ -2,6 +2,8 @@ bower_components
 coverage
 demo/07023003.mp3
 demo/07023003-2channel.dat
+demo/custom-markers/custom-markers.js
+demo/custom-markers/custom-markers.js.map
 demo/peaks.js
 demo/sample.mp3
 docs
