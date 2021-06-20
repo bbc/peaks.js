@@ -3,8 +3,6 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 
-// import pkg from './package.json';
-
 export default {
   input: `src/main.js`,
   output: [
@@ -25,9 +23,7 @@ export default {
         terser()
       ]
     }
-    // { file: pkg.module, format: 'es', sourcemap: true }
   ],
-  // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [],
   watch: {
     include: 'src/**',
@@ -36,7 +32,5 @@ export default {
     commonjs(),
     resolve({ browser: true }),
     babel({ babelHelpers: 'bundled' })
-    // Resolve source maps to the original source
-    // sourceMaps()
   ]
 };
