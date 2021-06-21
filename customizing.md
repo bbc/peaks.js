@@ -230,7 +230,7 @@ Note that the `x` and `y` coordinates (0, 0) represent the centre of the marker
 and the top of the waveform view.
 
 ```javascript
-class CustomPointMarker
+class CustomPointMarker {
   constructor(options) {
     this._options = options;
   }
