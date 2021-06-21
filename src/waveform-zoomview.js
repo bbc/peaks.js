@@ -173,16 +173,28 @@ define([
     self._onWheel = self._onWheel.bind(self);
     self.setWheelMode(self._viewOptions.wheelMode);
 
-    self._stage.on('dblclick', function(event) {
-      var mousePosX = event.evt.layerX;
+    self._onClick = self._onClick.bind(this);
+    self._onDblClick = self._onDblClick.bind(this);
 
-      var pixelIndex = self._frameOffset + mousePosX;
-
-      var time = self.pixelsToTime(pixelIndex);
-
-      self._peaks.emit('zoomview.dblclick', time);
-    });
+    self._stage.on('click', self._onClick);
+    self._stage.on('dblclick', self._onDblClick);
   }
+
+  WaveformZoomView.prototype._onClick = function(event) {
+    this._clickHandler(event, 'zoomview.click');
+  };
+
+  WaveformZoomView.prototype._onDblClick = function(event) {
+    this._clickHandler(event, 'zoomview.dblclick');
+  };
+
+  WaveformZoomView.prototype._clickHandler = function(event, eventName) {
+    var mousePosX = event.evt.layerX;
+    var pixelIndex = this._frameOffset + mousePosX;
+    var time = this.pixelsToTime(pixelIndex);
+
+    this._peaks.emit(eventName, time);
+  };
 
   WaveformZoomView.prototype.setWheelMode = function(mode) {
     if (mode !== this._wheelMode) {

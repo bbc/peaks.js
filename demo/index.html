@@ -522,6 +522,10 @@
             console.log('points.mouseleave:', point);
           });
 
+          peaksInstance.on('points.click', function(point) {
+            console.log('points.click:', point);
+          });
+
           peaksInstance.on('points.dblclick', function(point) {
             console.log('points.dblclick:', point);
           });
@@ -564,8 +568,20 @@
             console.log('segments.click:', segment);
           });
 
+          peaksInstance.on('segments.dblclick', function(segment) {
+            console.log('segments.dblclick:', segment);
+          });
+
+          peaksInstance.on('zoomview.click', function(time) {
+            console.log('zoomview.click:', time);
+          });
+
           peaksInstance.on('zoomview.dblclick', function(time) {
             console.log('zoomview.dblclick:', time);
+          });
+
+          peaksInstance.on('overview.click', function(time) {
+            console.log('overview.click:', time);
           });
 
           peaksInstance.on('overview.dblclick', function(time) {

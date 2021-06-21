@@ -324,6 +324,10 @@
             console.log('points.mouseleave:', point);
           });
 
+          peaksInstance.on('points.click', function(point) {
+            console.log('points.click:', point);
+          });
+
           peaksInstance.on('points.dblclick', function(point) {
             console.log('points.dblclick:', point);
           });

@@ -167,14 +167,27 @@ define([
       }
     });
 
-    this._stage.on('dblclick', function(event) {
-      var pixelIndex = event.evt.layerX;
+    self._onClick = self._onClick.bind(this);
+    self._onDblClick = self._onDblClick.bind(this);
 
-      var time = self.pixelsToTime(pixelIndex);
-
-      self._peaks.emit('overview.dblclick', time);
-    });
+    self._stage.on('click', self._onClick);
+    self._stage.on('dblclick', self._onDblClick);
   }
+
+  WaveformOverview.prototype._onClick = function(event) {
+    this._clickHandler(event, 'overview.click');
+  };
+
+  WaveformOverview.prototype._onDblClick = function(event) {
+    this._clickHandler(event, 'overview.dblclick');
+  };
+
+  WaveformOverview.prototype._clickHandler = function(event, eventName) {
+    var pixelIndex = event.evt.layerX;
+    var time = this.pixelsToTime(pixelIndex);
+
+    this._peaks.emit(eventName, time);
+  };
 
   WaveformOverview.prototype.getName = function() {
     return 'overview';

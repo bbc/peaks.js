@@ -41,6 +41,7 @@ define([
 
     this._onPointsDrag = this._onPointsDrag.bind(this);
 
+    this._onPointHandleClick      = this._onPointHandleClick.bind(this);
     this._onPointHandleDblClick   = this._onPointHandleDblClick.bind(this);
     this._onPointHandleDragStart  = this._onPointHandleDragStart.bind(this);
     this._onPointHandleDragMove   = this._onPointHandleDragMove.bind(this);
@@ -163,6 +164,7 @@ define([
       point:        point,
       draggable:    editable,
       marker:       marker,
+      onClick:      this._onPointHandleClick,
       onDblClick:   this._onPointHandleDblClick,
       onDragStart:  this._onPointHandleDragStart,
       onDragMove:   this._onPointHandleDragMove,
@@ -230,6 +232,14 @@ define([
 
   PointsLayer.prototype._onPointHandleMouseLeave = function(point) {
     this._peaks.emit('points.mouseleave', point);
+  };
+
+  /**
+   * @param {Point} point
+   */
+
+  PointsLayer.prototype._onPointHandleClick = function(point) {
+    this._peaks.emit('points.click', point);
   };
 
   /**

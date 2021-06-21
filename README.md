@@ -1181,7 +1181,9 @@ The following sections describe the available events.
 
 | Event name          | Arguments     |
 | ------------------- | ------------- |
+| `overview.click`    | `Number time` |
 | `overview.dblclick` | `Number time` |
+| `zoomview.click`    | `Number time` |
 | `zoomview.dblclick` | `Number time` |
 
 #### Waveforms
@@ -1203,6 +1205,7 @@ The following sections describe the available events.
 | `segments.mouseenter`     | `Segment segment`                     |
 | `segments.mouseleave`     | `Segment segment`                     |
 | `segments.click`          | `Segment segment`                     |
+| `segments.dblclick`       | `Segment segment`                     |
 
 #### Points
 
@@ -1216,6 +1219,7 @@ The following sections describe the available events.
 | `points.dragend`          | `Point point`         |
 | `points.mouseenter`       | `Point point`         |
 | `points.mouseleave`       | `Point point`         |
+| `points.click`            | `Point point`         |
 | `points.dblclick`         | `Point point`         |
 
 #### Cue Events

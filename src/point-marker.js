@@ -19,6 +19,7 @@ define([
    * @property {Point} point Point object with timestamp.
    * @property {Boolean} draggable If true, marker is draggable.
    * @property {Marker} marker
+   * @property {Function} onClick
    * @property {Function} onDblClick
    * @property {Function} onDragStart
    * @property {Function} onDragMove Callback during mouse drag operations.
@@ -41,6 +42,7 @@ define([
     this._marker    = options.marker;
     this._draggable = options.draggable;
 
+    this._onClick      = options.onClick;
     this._onDblClick   = options.onDblClick;
     this._onDragStart  = options.onDragStart;
     this._onDragMove   = options.onDragMove;
@@ -73,6 +75,10 @@ define([
 
     self._group.on('dragend', function() {
       self._onDragEnd(self._point);
+    });
+
+    self._group.on('click', function() {
+      self._onClick(self._point);
     });
 
     self._group.on('dblclick', function() {
