@@ -4,7 +4,7 @@ module.exports = {
     'mocha': true,
     'node': true
   },
-  'extends': '../.eslintrc.js',
+  'extends': '../.eslintrc.cjs',
   'globals': {
     'expect': false,
     'sinon': false,
