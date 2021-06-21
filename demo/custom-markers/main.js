@@ -39,8 +39,13 @@ CustomSegmentMarker.prototype.init = function(group) {
 
   this._label.add(this._tag);
 
-  var labelText = this._options.segment.labelText +
-                  (this._options.startMarker ? ' start' : ' end');
+  var labelText = this._options.segment.labelText;
+
+  if (labelText) {
+    labelText += ' ';
+  }
+
+  labelText += this._options.startMarker ? 'Start' : 'End';
 
   this._text = new Text({
     text:       labelText,
