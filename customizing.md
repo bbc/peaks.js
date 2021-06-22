@@ -31,8 +31,6 @@ This document describes how to customize various aspects of the waveform renderi
     - [player.isSeeking()](#playerisseeking)
     - [player.getCurrentTime()](#playergetcurrenttime)
     - [player.getDuration()](#playergetduration)
-  - [Configuration](#configuration)
-  - [Initialization](#initialization)
   - [Events](#events)
     - [player.canplay](#playercanplay-event)
     - [player.error](#playererror-event)
