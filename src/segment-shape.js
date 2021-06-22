@@ -220,7 +220,6 @@ define([
    */
 
   SegmentShape.prototype._onSegmentHandleDrag = function(segmentMarker) {
-    var frameOffset = this._view.getFrameOffset();
     var width = this._view.getWidth();
 
     var startMarker = segmentMarker.isStartMarker();
@@ -229,19 +228,18 @@ define([
     var endMarkerX = this._endMarker.getX();
 
     if (startMarker && startMarkerX >= 0) {
-      var startMarkerOffset = frameOffset +
-                              startMarkerX +
+      var startMarkerOffset = startMarkerX +
                               this._startMarker.getWidth();
 
-      this._segment._setStartTime(this._view.pixelsToTime(startMarkerOffset));
+      this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerOffset));
 
       segmentMarker.timeUpdated(this._segment.startTime);
     }
 
     if (!startMarker && endMarkerX < width) {
-      var endMarkerOffset = frameOffset + endMarkerX;
+      var endMarkerOffset = endMarkerX;
 
-      this._segment._setEndTime(this._view.pixelsToTime(endMarkerOffset));
+      this._segment._setEndTime(this._view.pixelOffsetToTime(endMarkerOffset));
 
       segmentMarker.timeUpdated(this._segment.endTime);
     }

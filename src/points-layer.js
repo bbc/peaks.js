@@ -83,11 +83,8 @@ define([
   };
 
   PointsLayer.prototype._onPointsUpdate = function(point) {
-    var frameOffset = this._view.getFrameOffset();
-    var width = this._view.getWidth();
-
-    var frameStartTime = this._view.pixelsToTime(frameOffset);
-    var frameEndTime   = this._view.pixelsToTime(frameOffset + width);
+    var frameStartTime = this._view.getStartTime();
+    var frameEndTime   = this._view.getEndTime();
 
     this._removePoint(point);
 
@@ -101,11 +98,8 @@ define([
   PointsLayer.prototype._onPointsAdd = function(points) {
     var self = this;
 
-    var frameOffset = self._view.getFrameOffset();
-    var width = self._view.getWidth();
-
-    var frameStartTime = self._view.pixelsToTime(frameOffset);
-    var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+    var frameStartTime = self._view.getStartTime();
+    var frameEndTime   = self._view.getEndTime();
 
     points.forEach(function(point) {
       if (point.isVisible(frameStartTime, frameEndTime)) {
@@ -206,11 +200,9 @@ define([
     var markerX = pointMarker.getX();
 
     if (markerX >= 0 && markerX < this._view.getWidth()) {
-      var offset = this._view.getFrameOffset() +
-                   markerX +
-                   pointMarker.getWidth();
+      var offset = markerX + pointMarker.getWidth();
 
-      point._setTime(this._view.pixelsToTime(offset));
+      point._setTime(this._view.pixelOffsetToTime(offset));
 
       pointMarker.timeUpdated(point.time);
     }

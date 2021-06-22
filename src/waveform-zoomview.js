@@ -150,11 +150,7 @@ define([
       onMouseUp: function(/* mousePosX */) {
         // Set playhead position only on click release, when not dragging.
         if (!self._mouseDragHandler.isDragging()) {
-          var mouseDownX = Math.floor(this.mouseDownX);
-
-          var pixelIndex = self._frameOffset + mouseDownX;
-
-          var time = self.pixelsToTime(pixelIndex);
+          var time = self.pixelOffsetToTime(this.mouseDownX);
           var duration = self._getDuration();
 
           // Prevent the playhead position from jumping by limiting click
@@ -190,8 +186,7 @@ define([
 
   WaveformZoomView.prototype._clickHandler = function(event, eventName) {
     var mousePosX = event.evt.layerX;
-    var pixelIndex = this._frameOffset + mousePosX;
-    var time = this.pixelsToTime(pixelIndex);
+    var time = this.pixelOffsetToTime(mousePosX);
 
     this._peaks.emit(eventName, time);
   };
@@ -418,7 +413,7 @@ define([
       // Playhead is not visible. Change the zoom level while keeping the
       // centre of the window at the same position in the waveform.
       playheadOffsetPixels = Math.floor(this._width / 2);
-      apexTime = this.pixelsToTime(this._frameOffset + playheadOffsetPixels);
+      apexTime = this.pixelOffsetToTime(playheadOffsetPixels);
     }
 
     var prevScale = this._scale;
@@ -452,11 +447,11 @@ define([
   };
 
   WaveformZoomView.prototype.getStartTime = function() {
-    return this.pixelsToTime(this._frameOffset);
+    return this.pixelOffsetToTime(0);
   };
 
   WaveformZoomView.prototype.getEndTime = function() {
-    return this.pixelsToTime(this._frameOffset + this._width);
+    return this.pixelOffsetToTime(this._width);
   };
 
   WaveformZoomView.prototype.setStartTime = function(time) {
@@ -490,6 +485,20 @@ define([
    */
 
   WaveformZoomView.prototype.pixelsToTime = function(pixels) {
+    return pixels * this._data.scale / this._data.sample_rate;
+  };
+
+  /**
+   * Returns the time for a given pixel offset (relative to the
+   * current scroll position), for the current zoom level.
+   *
+   * @param {Number} offset Offset from left-visible-edge of view
+   * @returns {Number} Time, in seconds.
+   */
+
+  WaveformZoomView.prototype.pixelOffsetToTime = function(offset) {
+    var pixels = this._frameOffset + offset;
+
     return pixels * this._data.scale / this._data.sample_rate;
   };
 
@@ -621,7 +630,7 @@ define([
 
     this._stage.add(this._waveformLayer);
 
-    this._peaks.emit('zoomview.displaying', 0, this.pixelsToTime(this._width));
+    this._peaks.emit('zoomview.displaying', 0, this.getEndTime());
   };
 
   WaveformZoomView.prototype._createAxisLabels = function() {
@@ -670,8 +679,8 @@ define([
     this._waveformLayer.draw();
     this._axisLayer.draw();
 
-    var frameStartTime = this.pixelsToTime(this._frameOffset);
-    var frameEndTime   = this.pixelsToTime(this._frameOffset + this._width);
+    var frameStartTime = this.getStartTime();
+    var frameEndTime   = this.getEndTime();
 
     this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
