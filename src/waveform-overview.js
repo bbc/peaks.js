@@ -281,12 +281,38 @@ define([
   };
 
   /**
+   * Returns the time for a given pixel index, for the current zoom level.
+   * (This is presented for symmetry with WaveformZoomview. Since WaveformOverview
+   * doesn't scroll, its pixelOffsetToTime & pixelsToTime methods are identical.)
+   *
+   * @param {Number} pixels Pixel index.
+   * @returns {Number} Time, in seconds.
+   */
+  WaveformOverview.prototype.pixelOffsetToTime = WaveformOverview.prototype.pixelsToTime;
+
+  /**
    * @returns {Number} The start position of the waveform shown in the view,
    *   in pixels.
    */
 
   WaveformOverview.prototype.getFrameOffset = function() {
     return 0;
+  };
+
+  /**
+   * @returns {Number} The time at the leftmost edge
+   */
+
+  WaveformOverview.prototype.getStartTime = function() {
+    return 0;
+  };
+
+  /**
+   * @returns {Number} The time at the rightmost edge
+   */
+
+  WaveformOverview.prototype.getEndTime = function() {
+    return this._getDuration();
   };
 
   /**

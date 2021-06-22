@@ -73,10 +73,8 @@ define([
   SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
     var redraw = false;
     var segmentShape = this._segmentShapes[segment.id];
-    var frameOffset = this._view.getFrameOffset();
-    var width = this._view.getWidth();
-    var frameStartTime = this._view.pixelsToTime(frameOffset);
-    var frameEndTime   = this._view.pixelsToTime(frameOffset + width);
+    var frameStartTime = this._view.getStartTime();
+    var frameEndTime   = this._view.getEndTime();
 
     if (segmentShape) {
       this._removeSegment(segment);
@@ -96,11 +94,8 @@ define([
   SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
     var self = this;
 
-    var frameOffset = self._view.getFrameOffset();
-    var width = self._view.getWidth();
-
-    var frameStartTime = self._view.pixelsToTime(frameOffset);
-    var frameEndTime   = self._view.pixelsToTime(frameOffset + width);
+    var frameStartTime = self._view.getStartTime();
+    var frameEndTime   = self._view.getEndTime();
 
     segments.forEach(function(segment) {
       if (segment.isVisible(frameStartTime, frameEndTime)) {
