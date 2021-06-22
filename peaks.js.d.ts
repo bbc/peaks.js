@@ -368,7 +368,7 @@ declare module 'peaks.js' {
     };
     /** Views API */
     views: {
-      createOverview: (container: HTMLElement) => WaveformOverView;
+      createOverview: (container: HTMLElement) => WaveformOverview;
       createZoomview: (container: HTMLElement) => WaveformZoomView;
       destroyOverview: () => void;
       destroyZoomview: () => void;
