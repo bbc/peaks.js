@@ -135,7 +135,7 @@ function createPointMarker(options) {
 
 Your custom point marker handle object must implement the `init` and
 `fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker Methods](#marker-methods) section for
+`destroy`. Refer to the [Marker API](#marker-api) section for
 details.
 
 ### `createSegmentMarker(options)`
@@ -193,7 +193,7 @@ function createSegmentMarker(options) {
 
 Your custom segment marker handle object must implement the `init` and
 `fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker methods](#marker-methods) section for details.
+`destroy`. Refer to the [Marker API](#marker-api) section for details.
 
 ### Marker API
 
