@@ -344,6 +344,10 @@ Returns the height of the layer, in pixels.
 Redraws the layer. Call this method after creating or updating any Konva
 objects.
 
+#### `layer.formatTime()`
+
+Formats the time indicator.
+
 ## Segment Labels
 
 By default, Peaks.js shows the segment label when the user hovers the mouse
