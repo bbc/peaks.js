@@ -304,7 +304,7 @@ WaveformZoomView.prototype.playheadPosChanged = function(time) {
     this._playedSegment.endTime = time;
     this._unplayedSegment.startTime = time;
 
-    this._waveformLayer.draw();
+    this._drawWaveformLayer();
   }
 };
 
@@ -550,7 +550,7 @@ WaveformZoomView.prototype.setAmplitudeScale = function(scale) {
 
   this._amplitudeScale = scale;
 
-  this._waveformLayer.draw();
+  this._drawWaveformLayer();
   this._segmentsLayer.draw();
 };
 
@@ -672,7 +672,7 @@ WaveformZoomView.prototype._updateWaveform = function(frameOffset) {
 
   this._playheadLayer.updatePlayheadTime(this.pixelsToTime(playheadPixel));
 
-  this._waveformLayer.draw();
+  this._drawWaveformLayer();
   this._axisLayer.draw();
 
   var frameStartTime = this.getStartTime();
@@ -684,10 +684,14 @@ WaveformZoomView.prototype._updateWaveform = function(frameOffset) {
   this._peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
 };
 
+WaveformZoomView.prototype._drawWaveformLayer = function() {
+  this._waveformLayer.draw();
+};
+
 WaveformZoomView.prototype.setWaveformColor = function(color) {
   this._waveformColor = color;
   this._waveformShape.setWaveformColor(color);
-  this._waveformLayer.draw();
+  this._drawWaveformLayer();
 };
 
 WaveformZoomView.prototype.setPlayedWaveformColor = function(color) {
@@ -699,12 +703,12 @@ WaveformZoomView.prototype.setPlayedWaveformColor = function(color) {
     }
 
     this._playedWaveformShape.setWaveformColor(color);
-    this._waveformLayer.draw();
+    this._drawWaveformLayer();
   }
   else {
     if (this._playedWaveformShape) {
       this._destroyPlayedWaveformShape();
-      this._waveformLayer.draw();
+      this._drawWaveformLayer();
     }
   }
 };
