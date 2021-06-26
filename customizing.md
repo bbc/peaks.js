@@ -43,15 +43,15 @@ This document describes how to customize various aspects of the waveform renderi
 
 ## Introduction
 
+**Note:** The APIs described in this document are not yet stable, and so may
+change at any time.
+
 Peaks.js makes use of the [Konva.js](https://konvajs.org/) graphics library,
 and so we recommend becoming familiar with Konva. You may find the following tutorials helpful:
 
 * [Konva Polygon Tutorial](https://konvajs.github.io/docs/shapes/Line_-_Polygon.html)
 * [Konva Text Tutorial](https://konvajs.github.io/docs/shapes/Text.html)
 * [Konva Label Tutorial](https://konvajs.github.io/docs/shapes/Label.html)
-
-**Note:** The APIs described in this document are not yet stable, and so may
-change at any time.
 
 ## Point and Segment Markers
 
@@ -80,9 +80,14 @@ Peaks.init(options, function(err, peaks) {
 });
 ```
 
-There is a complete example demo available [here](demo/custom-markers.html) that
+There is a complete example demo available [here](demo/custom-markers) that
 shows how to use these functions to draw custom point and segment marker
 handles.
+
+Customizing markers does not work with the Peaks.js UMD bundle. You must build
+Peaks.js into your own bundle with Konva as a peer dependency, using a module
+bundler such as [Webpack](https://webpack.js.org/),
+[Rollup](https://rollupjs.org/), [Parcel](https://parceljs.org/), etc.
 
 ### `createPointMarker(options)`
 

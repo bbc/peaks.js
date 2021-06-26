@@ -7,7 +7,7 @@
 #
 
 <p align="center">
-    <strong>A client-side JavaScript component to display and interact with audio waveforms in the browser</strong>
+  <strong>A client-side JavaScript component to display and interact with audio waveforms in the browser</strong>
 </p>
 
 ![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
@@ -31,15 +31,19 @@ You can read more about the project and see a demo [here](https://waveform.proto
 
 # Contents
 
-- [Installation](#installation)
+- [Getting started](#getting-started)
+  - [Installing Peaks.js](#installing-peaksjs)
+    - [Add a <script> tag](#add-a-script-tag)
+    - [Install with npm](#install-with-npm)
+  - [Add Peaks.js to your web page](#add-peaksjs-to-your-web-page)
+  - [Initialize Peaks.js](#initialize-peaksjs)
+    - [Using a <script> tag](#using-a-script-tag)
+    - [Using an ES2015 module import](#using-an-es2015-module-import)
+  - [Next steps](#next-steps)
 - [Demos](#demos)
-- [Using Peaks.js in your own project](#using-peaksjs-in-your-own-project)
-  - [Start using AMD and require.js](#start-using-amd-and-requirejs)
-  - [Start using ES2015 module loader](#start-using-es2015-module-loader)
-  - [Start using CommonJS module loader](#start-using-commonjs-module-loader)
-  - [Start using vanilla JavaScript](#start-using-vanilla-javascript)
-  - [Generate waveform data](#generate-waveform-data)
-  - [Web Audio based waveforms](#web-audio-based-waveforms)
+- [Generating waveform data](#generating-waveform-data)
+  - [Pre-computed waveform data](#pre-computed-waveform-data)
+  - [Web Audio based waveform data](#web-audio-based-waveform-data)
 - [Configuration](#configuration)
   - [Marker customization](#marker-customization)
   - [Player customization](#player-customization)
@@ -105,12 +109,106 @@ You can read more about the project and see a demo [here](https://waveform.proto
 - [License](#license)
 - [Credits](#credits)
 
-# Installation
+# Getting started
 
-- **npm**: `npm install --save peaks.js`
-- **bower**: `bower install --save peaks.js`
-- [Browserify CDN](https://wzrd.in/): `http://wzrd.in/standalone/peaks.js`
-- [cdnjs](https://cdnjs.com/): `https://cdnjs.com/libraries/peaks.js`
+## Installing Peaks.js
+
+You can start using Peaks.js by either including the UMD bundle in a `<script>` tag in your web page, or by installing it using `npm` or `yarn` and including it in your module bundle with [Webpack](https://webpack.js.org/), [Rollup](https://rollupjs.org/), [Parcel](https://parceljs.org/), etc.
+
+### Add a <script> tag
+
+To add the Peaks.js UMD bundle to your web page, add a `<script>` tag:
+
+```html
+<script src="https://unpkg.com/peaks.js"></script>
+```
+
+The UMD bundle is available at [unpkg](https://unpkg.com/peaks.js) and [cdnjs](https://cdnjs.com/libraries/peaks.js).
+
+### Install with npm
+
+Run the following commands to include Peaks.js in your module bundle:
+
+```bash
+npm install --save peaks.js
+npm install --save konva
+```
+
+Note that Peaks.js uses [Konva](https://konvajs.org/) as a peer dependency, so you must install both modules.
+
+## Add Peaks.js to your web page
+
+To include Peaks.js in your web page, you need to add container `<div>` elements that Peaks.js will use to render the waveform views, and a [media element](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement) for your audio or video content. Here is an example HTML fragment:
+
+```html
+<div id="zoomview-container"></div>
+<div id="overview-container"></div>
+<audio>
+  <source src="sample.mp3" type="audio/mpeg">
+  <source src="sample.ogg" type="audio/ogg">
+</audio>
+```
+
+The container `div`s should be left empty, as shown above, as their content will be replaced by the waveform view `canvas` elements.
+
+## Initialize Peaks.js
+
+The next step is to initialize a `Peaks` instance with [`Peaks.init()`](#initialization) and your own options.
+
+Refer to the [Configuration](#configuration) section for details of the available options.
+
+### Using a <script> tag
+
+```html
+<script src="https://unpkg.com/peaks.js"></script>
+<script>
+(function(Peaks) {
+  const options = {
+    containers: {
+      overview: document.getElementById('overview-container'),
+      zoomview: document.getElementById('zoomview-container')
+    },
+    mediaElement: document.querySelector('audio'),
+    webAudio: {
+      audioContext: new AudioContext()
+    }
+  };
+
+  Peaks.init(options, function(err, peaks) {
+    // Do something when the waveform is displayed and ready
+  });
+})(peaks);
+</script>
+```
+
+### Using an ES2015 module import
+
+```javascript
+import Peaks from 'peaks.js';
+
+const options = {
+  containers: {
+    overview: document.getElementById('overview-container'),
+    zoomview: document.getElementById('zoomview-container')
+  },
+  mediaElement: document.querySelector('audio'),
+  webAudio: {
+    audioContext: new AudioContext()
+  }
+};
+
+Peaks.init(options, function(err, peaks) {
+  // Do something when the waveform is displayed and ready
+});
+```
+
+# Next steps
+
+We recommend that you take a look at the [demos](#demos), which show how to use the various options and APIs that Peaks.js provides.
+
+Read the [Generating waveform data](#generating-waveform-data) section to learn about how use either pre-computed or Web Audio generated waveform data.
+
+Also refer to the [Configuration](#configuration) section for details of all the `Peaks.init()` options, and more advanced customization options, and the [API](#api) section to learn about the available API methods.
 
 # Demos
 
@@ -125,112 +223,18 @@ npm start
 
 and then open your browser at http://localhost:8080.
 
-# Using Peaks.js in your own project
+# Generating waveform data
 
-Peaks.js can be included in any web page by following these steps:
+Peaks.js creates its audio waveform visualization by processing the audio to produce waveform data. There are two ways that you can do this:
 
-1. Include the following HTML in your web page
-2. Include a media element and its [waveform data file](https://github.com/bbc/audiowaveform)
-3. Install [Peaks.js](#installation)
-4. Initialise Peaks.js with [`Peaks.init()`](#initialization) and your own options
+* Pre-compute the waveform data from the audio, using [audiowaveform](https://github.com/bbc/audiowaveform), and provide the data to Peaks.js from your web server
+* Compute the waveform data in the browser using the Web Audio API
 
-```html
-<div id="peaks-container">
-  <div id="zoomview-container"></div>
-  <div id="overview-container"></div>
-</div>
-<audio>
-  <source src="test_data/sample.mp3" type="audio/mpeg">
-  <source src="test_data/sample.ogg" type="audio/ogg">
-</audio>
-<!-- Using RequireJS -->
-<script src="bower_components/requirejs/require.js" data-main="app.js"></script>
-```
+Using the Web Audio API can work well for short audio files, but involves downloading the entire audio file to the browser and is CPU intensive. Pre-computing the waveform data is preferable for longer audio files, because it saves your users' bandwidth and allows the waveform to be rendered faster.
 
-Note that the container `div`s should be left empty, as shown above, as their
-content will be replaced by the waveform view `canvas` elements.
+## Pre-computed waveform data
 
-## Start using AMD and [require.js](http://requirejs.org/)
-
-AMD modules work out of the box without any optimiser.
-
-```javascript
-// in app.js
-// configure peaks path
-requirejs.config({
-  paths: {
-    peaks: 'bower_components/peaks.js/src/main',
-    EventEmitter: 'bower_components/eventemitter2/lib/eventemitter2',
-    Konva: 'bower_components/konvajs/konva',
-    'waveform-data': 'bower_components/waveform-data/dist/waveform-data.min'
-  }
-});
-
-// require it
-require(['peaks'], function(Peaks) {
-  const options = {
-    containers: {
-      overview: document.getElementById('overview-container'),
-      zoomview: document.getElementById('zoomview-container')
-    }
-    mediaElement: document.querySelector('audio'),
-    dataUri: {
-      json: 'test_data/sample.json',
-    }
-  };
-
-  Peaks.init(options, function(err, peaks) {
-    // Do something when the waveform is displayed and ready.
-  });
-});
-```
-
-## Start using ES2015 module loader
-
-This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/) (with [babelify transform](https://github.com/babel/babelify)).
-
-```js
-import Peaks from 'peaks.js';
-
-const options = { ... };
-
-Peaks.init(options, function(err, peaks) {
-  // ...
-});
-```
-
-## Start using CommonJS module loader
-
-This works well with systems such as [Meteor](https://www.meteor.com/), [webpack](https://webpack.github.io/) and [browserify](http://browserify.org/).
-
-```js
-var Peaks = require('peaks.js');
-
-const options = { ... };
-
-Peaks.init(options, function(err, peaks) {
-  // ...
-});
-```
-
-## Start using vanilla JavaScript
-
-```html
-<script src="node_modules/peaks.js/peaks.js"></script>
-<script>
-(function(Peaks) {
-  const options = { ... };
-
-  Peaks.init(options, function(err, peaks) {
-    // ...
-  });
-})(peaks);
-</script>
-```
-
-## Generate waveform data
-
-Peaks.js uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size, but this is only compatible with [browsers that support Typed Arrays](https://caniuse.com/#feat=typedarrays).
+Peaks.js uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size.
 
 You should also use the `-b 8` option when generating waveform data files, as Peaks.js does not currently support 16-bit waveform data files, and also to minimise file size.
 
@@ -246,16 +250,40 @@ To generate a JSON format waveform data file:
 audiowaveform -i sample.mp3 -o sample.json -b 8
 ```
 
-Refer to the man page audiowaveform(1) for full details of the available command line options.
+Refer to the audiowaveform [documentation](https://github.com/bbc/audiowaveform) documentation for full details of the available command line options, or use the manual page:
 
-## Web Audio based waveforms
+```bash
+man audiowaveform
+```
 
-Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you do not have to pre-generate a `dat` or `json` file beforehand. However, note that this requires the browser to download the entire audio file before the waveform can be shown, and this process can be CPU intensive, so is not recommended for long audio files.
+Once you have created a waveform data file, you can use this from Peaks.js by passing a `dataUri` option to `Peaks.init()`:
+
+```javascript
+import Peaks from 'peaks.js';
+
+const options = {
+  containers: {
+    overview: document.getElementById('overview-container'),
+    zoomview: document.getElementById('zoomview-container')
+  },
+  mediaElement: document.querySelector('audio'),
+  dataUri: {
+    arraybuffer: 'sample.dat' // or json: 'sample.json'
+  }
+};
+
+Peaks.init(options, function(err, peaks) {
+  // ...
+});
+```
+
+## Web Audio based waveform data
+
+Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generate waveforms, which means you do not have to pre-compute a waveform data file beforehand.
 
 To use Web Audio, omit the `dataUri` option and instead pass a `webAudio` object that contains an `AudioContext` instance. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
-const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
 const options = {
@@ -279,7 +307,6 @@ Alternatively, if you have an `AudioBuffer` containing decoded audio samples, e.
 then an `AudioContext` is not needed:
 
 ```js
-const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
 // arrayBuffer contains the encoded audio (e.g., MP3 format)
