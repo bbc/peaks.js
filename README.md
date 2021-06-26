@@ -104,7 +104,9 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Destruction](#destruction)
     - [instance.destroy()](#instancedestroy)
 - [Building Peaks.js](#building-peaksjs)
-- [Testing](#testing)
+  - [Prerequisites](#prerequisites)
+  - [Building](#building)
+  - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
 - [Credits](#credits)
@@ -1298,7 +1300,7 @@ instance.destroy();
 
 # Building Peaks.js
 
-You might want to build a minified standalone version of Peaks.js, to test a contribution or to run additional tests. The project bundles everything you need to do so.
+This section describes how to build Peaks.js locally, if you want to modify the code or contribute changes.
 
 ## Prerequisites
 
@@ -1310,15 +1312,15 @@ npm install
 
 ## Building
 
-This command will produce a UMD-compatible minified standalone version of Peaks.js, which allows you to use it with AMD or CommonJS module loaders, or even as vanilla JavaScript.
+This command will produce UMD-compatible standalone versions of Peaks.js, minified and unminified. You can use these AMD or CommonJS module loaders, or even as vanilla JavaScript.
 
 ```bash
 npm run build
 ```
 
-The output of the build is a file named `peaks.js`, alongside its associated [source map](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+The output of the build are files named `peaks.js`, and `peaks.min.js` alongside their associated [source maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
 
-# Testing
+## Testing
 
 Tests run in Karma using Mocha + Chai + Sinon.
 
