@@ -491,7 +491,7 @@ markers, by specifying the following configuration options: `createPointMarker`,
 By default, Peaks.js supports audio playback using the HTML `<audio>` or
 `<video>` element using the `mediaElement` configuration option. Peaks.js also
 allows you to use your own custom media player library, using the `player`
-option. Please read [Customizing Peaks.js](customizing.md) for more details.
+option. Please read [Customizing Peaks.js](customizing.md#media-playback) for more details.
 
 # API
 

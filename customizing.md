@@ -581,7 +581,7 @@ location of the playhead position on screen. Your custom player should
 emit events to inform Peaks.js of state changes within the player.
 
 These player events are based on the
-[`HTMLMediaElement` events](https://html.spec.whatwg.org/#mediaevents).
+[`HTMLMediaElement` events](https://html.spec.whatwg.org/multipage/media.html#mediaevents).
 
 To enable Peaks.js to correctly update its internal state and visually
 reflect player state changes, events should only be emitted after the
