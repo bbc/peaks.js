@@ -8,6 +8,7 @@
   "types": "./peaks.js.d.ts",
   "files": [
     "peaks.js",
+    "peaks.min.js",
     "peaks.js.d.ts",
     "src"
   ],
@@ -85,7 +86,9 @@
   },
   "dependencies": {
     "eventemitter3": "~4.0.7",
-    "konva": "~8.0.4",
     "waveform-data": "~4.1.0"
+  },
+  "peerDependencies": {
+    "konva": "~8.0.4"
   }
 }
