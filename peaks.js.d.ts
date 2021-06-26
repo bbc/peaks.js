@@ -4,6 +4,9 @@
  */
 
 declare module 'peaks.js' {
+  type Without<T> = { [K in keyof T]?: undefined };
+  type XOR<T, U> = (Without<T> & U) | (T & Without<U>);
+
   interface SegmentAddOptions {
     startTime: number;
     endTime: number;
@@ -70,6 +73,7 @@ declare module 'peaks.js' {
     timeLabelPrecision?: number;
     waveformColor?: string;
   }
+
   interface SeparateViewOptions {
     zoomview?: SharedViewOptions & {
       wheelMode?: "none" | "scroll";
@@ -168,7 +172,7 @@ declare module 'peaks.js' {
     fontFamily: string;
     fontSize: number;
     fontStyle: string;
-   }
+  }
 
   interface CreateSegmentLabelOptions {
     segment: Segment;
@@ -345,14 +349,11 @@ declare module 'peaks.js' {
   }
 
   interface WaveformZoomView extends WaveformView {
-    scrollWaveform: (offset: number) => void;
+    scrollWaveform: (options: XOR<{ seconds: number }, { pixels: number }>) => void;
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none') => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
   }
-
-  type Without<T> = { [K in keyof T]?: undefined };
-  type XOR<T, U> = (Without<T> & U) | (T & Without<U>);
 
   interface PeaksInstance {
     setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;

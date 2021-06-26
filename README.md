@@ -824,6 +824,25 @@ const view = instance.views.getView('zoomview');
 view.setStartTime(6.0); // seconds
 ```
 
+### `view.scrollWaveform(options)`
+
+Changes the start time of the zoomable waveform view, by the given amount.
+
+The `options` parameter is an object with one of the following keys:
+
+* `seconds`: Scrolls the waveform by the given number of seconds.
+* `pixels`: Scrolls the waveform by the given number of pixels.
+
+Pass a negative number to scroll the waveform to the left (towards zero).
+
+Note that this method is not available on the overview waveform.
+
+```js
+const view = instance.views.getView('zoomview');
+view.scrollWaveform({ seconds: 1.0 });
+view.scrollWaveform({ pixels: -100 });
+```
+
 ### `view.setWheelMode(mode)`
 
 Controls how the waveform view responds to mousewheel input. On a laptop trackpad, this is often a horizontal swipe gesture. For users with a mouse with a scroll wheel, hold down the Shift key while using the scroll wheel. Possible values for `mode` are:

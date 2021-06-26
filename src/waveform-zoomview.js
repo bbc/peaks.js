@@ -291,7 +291,7 @@ WaveformZoomView.prototype._keyboardScroll = function(direction, large) {
     increment = direction * this.timeToPixels(this._options.nudgeIncrement);
   }
 
-  this.scrollWaveform(increment);
+  this.scrollWaveform({ pixels: increment });
 };
 
 WaveformZoomView.prototype.setWaveformData = function(waveformData) {
@@ -640,7 +640,19 @@ WaveformZoomView.prototype._createAxisLabels = function() {
  * @param {Number} scrollAmount How far to scroll, in pixels
  */
 
-WaveformZoomView.prototype.scrollWaveform = function(scrollAmount) {
+WaveformZoomView.prototype.scrollWaveform = function(options) {
+  var scrollAmount;
+
+  if (objectHasProperty(options, 'pixels')) {
+    scrollAmount = Math.floor(options.pixels);
+  }
+  else if (objectHasProperty(options, 'seconds')) {
+    scrollAmount = this.timeToPixels(options.seconds);
+  }
+  else {
+    throw new TypeError('view.scrollWaveform(): Missing umber of pixels or seconds');
+  }
+
   this._updateWaveform(this._frameOffset + scrollAmount);
 };
 

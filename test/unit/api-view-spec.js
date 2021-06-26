@@ -2,6 +2,7 @@ import Peaks from '../../src/main';
 
 describe('WaveformView', function() {
   var p;
+  var waveformLayerDraw;
 
   beforeEach(function(done) {
     var options = {
@@ -15,7 +16,13 @@ describe('WaveformView', function() {
 
     Peaks.init(options, function(err, instance) {
       expect(err).to.equal(null);
+
       p = instance;
+
+      var zoomview = instance.views.getView('zoomview');
+      expect(zoomview).to.be.ok;
+      waveformLayerDraw = sinon.spy(zoomview, '_drawWaveformLayer');
+
       done();
     });
   });
@@ -91,6 +98,46 @@ describe('WaveformView', function() {
 
           expect(view._playedWaveformShape._shape.fill()).to.equal('#ff0000');
         });
+      });
+    });
+  });
+
+  describe('scrollWaveform', function() {
+    describe('zoomview', function() {
+      var zoomview;
+
+      beforeEach(function() {
+        zoomview = p.views.getView('zoomview');
+      });
+
+      it('should scroll the waveform to the right by the given number of seconds', function() {
+        zoomview.scrollWaveform({ seconds: 2.0 });
+
+        expect(waveformLayerDraw.callCount).to.equal(1);
+        expect(zoomview.getStartTime()).to.equal(1.9969160997732427);
+      });
+
+      it('should scroll the waveform to the left by the given number of seconds', function() {
+        zoomview.scrollWaveform({ seconds: 2.0 });
+        zoomview.scrollWaveform({ seconds: -2.0 });
+
+        expect(waveformLayerDraw.callCount).to.equal(2);
+        expect(zoomview.getStartTime()).to.equal(0);
+      });
+
+      it('should scroll the waveform to the right by the given number of pixels', function() {
+        zoomview.scrollWaveform({ pixels: 100 });
+
+        expect(waveformLayerDraw.callCount).to.equal(1);
+        expect(zoomview.getStartTime()).to.equal(1.1609977324263039);
+      });
+
+      it('should scroll the waveform to the left by the given number of pixels', function() {
+        zoomview.scrollWaveform({ pixels: 100 });
+        zoomview.scrollWaveform({ pixels: -100 });
+
+        expect(waveformLayerDraw.callCount).to.equal(2);
+        expect(zoomview.getStartTime()).to.equal(0);
       });
     });
   });
