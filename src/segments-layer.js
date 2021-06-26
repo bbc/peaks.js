@@ -255,10 +255,6 @@ SegmentsLayer.prototype.setVisible = function(visible) {
   this._layer.setVisible(visible);
 };
 
-SegmentsLayer.prototype.draw = function() {
-  this._layer.draw();
-};
-
 SegmentsLayer.prototype.destroy = function() {
   this._peaks.off('segments.update', this._onSegmentsUpdate);
   this._peaks.off('segments.add', this._onSegmentsAdd);
