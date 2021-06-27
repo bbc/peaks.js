@@ -3,7 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 
 export default {
-  input: `./main.js`,
+  input: './main.js',
   output: [
     {
       file: 'custom-markers.js',
