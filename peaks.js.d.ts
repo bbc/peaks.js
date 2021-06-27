@@ -338,6 +338,7 @@ declare module 'peaks.js' {
   interface WaveformView {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: string | LinearGradientColor) => void;
+    setPlayedWaveformColor: (color: string | LinearGradientColor | null) => void;
     showPlayheadTime: (show: boolean) => void;
     setTimeLabelPrecision: (precision: number) => void;
     enableAutoScroll: (enable: boolean) => void;

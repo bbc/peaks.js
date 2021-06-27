@@ -67,6 +67,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [View API](#view-api)
     - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
+    - [view.setPlayedWaveformColor()](#viewsetplayedwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
@@ -714,6 +715,26 @@ view.setWaveformColor('#800080'); // Purple
 You can also use a 2 stop linear gradient here. Units are percentage of the view height, starting at the top of the waveform.
 ```js
 view.setWaveformColor({
+  linearGradientStart: 15,
+  linearGradientEnd: 30,
+  linearGradientColorStops: ['hsl(120, 78%, 26%)', 'hsl(120, 78%, 10%)']
+});
+```
+
+### `view.setPlayedWaveformColor(color)`
+
+Sets color of the waveform to the left of the current playhead position. This can be string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value), or `null` to remove coloring of the played waveform region.
+
+The initial color is controlled by the `playedWaveformColor` configuration option.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setPlayedWaveformColor('#800080'); // Purple
+```
+
+You can also use a 2 stop linear gradient here. Units are percentage of the view height, starting at the top of the waveform.
+```js
+view.setPlayedWaveformColor({
   linearGradientStart: 15,
   linearGradientEnd: 30,
   linearGradientColorStops: ['hsl(120, 78%, 26%)', 'hsl(120, 78%, 10%)']
