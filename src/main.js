@@ -394,8 +394,9 @@ Peaks.prototype._setOptions = function(opts) {
  *
  * @typedef {Object} WebAudioOptions
  * @global
- * @property {AudioContext} audioContext
+ * @property {AudioContext=} audioContext
  * @property {AudioBuffer=} audioBuffer
+ * @property {Number=} scale
  * @property {Boolean=} multiChannel
  */
 

@@ -130,21 +130,21 @@ declare module 'peaks.js' {
 
   type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
 
-  interface PointMarker {
+  export interface PointMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
     timeUpdated?: (time: number) => void;
     destroy?: () => void;
   }
 
-  interface SegmentMarker {
+  export interface SegmentMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
     timeUpdated?: (time: number) => void;
     destroy?: () => void;
   }
 
-  interface Layer {
+  export interface Layer {
     getHeight: () => number;
     draw: () => void;
   }
