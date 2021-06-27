@@ -448,7 +448,6 @@ WaveformOverview.prototype._updateWaveform = function() {
 WaveformOverview.prototype.setWaveformColor = function(color) {
   this._waveformColor = color;
   this._waveformShape.setWaveformColor(color);
-  this._waveformLayer.draw();
 };
 
 WaveformOverview.prototype.setPlayedWaveformColor = function(color) {
@@ -460,12 +459,10 @@ WaveformOverview.prototype.setPlayedWaveformColor = function(color) {
     }
 
     this._playedWaveformShape.setWaveformColor(color);
-    this._waveformLayer.draw();
   }
   else {
     if (this._playedWaveformShape) {
       this._destroyPlayedWaveformShape();
-      this._waveformLayer.draw();
     }
   }
 };

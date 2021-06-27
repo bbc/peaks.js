@@ -703,7 +703,6 @@ WaveformZoomView.prototype._drawWaveformLayer = function() {
 WaveformZoomView.prototype.setWaveformColor = function(color) {
   this._waveformColor = color;
   this._waveformShape.setWaveformColor(color);
-  this._drawWaveformLayer();
 };
 
 WaveformZoomView.prototype.setPlayedWaveformColor = function(color) {
@@ -715,12 +714,10 @@ WaveformZoomView.prototype.setPlayedWaveformColor = function(color) {
     }
 
     this._playedWaveformShape.setWaveformColor(color);
-    this._drawWaveformLayer();
   }
   else {
     if (this._playedWaveformShape) {
       this._destroyPlayedWaveformShape();
-      this._drawWaveformLayer();
     }
   }
 };

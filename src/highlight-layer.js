@@ -62,8 +62,6 @@ HighlightLayer.prototype._update = function(startTime, endTime) {
     x:     startOffset,
     width: endOffset - startOffset
   });
-
-  this._layer.draw();
 };
 
 HighlightLayer.prototype._createHighlightRect = function(startTime, endTime) {
@@ -95,7 +93,6 @@ HighlightLayer.prototype.removeHighlight = function() {
   if (this._highlightRect) {
     this._highlightRect.destroy();
     this._highlightRect = null;
-    this._layer.draw();
   }
 };
 

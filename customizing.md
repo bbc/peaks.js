@@ -346,8 +346,8 @@ Returns the height of the layer, in pixels.
 
 #### `layer.draw()`
 
-Redraws the layer. Call this method after creating or updating any Konva
-objects.
+Konva will usually automatically redraw if you change any shape attributes,
+but you can call this function to force a redraw if needed.
 
 ## Segment Labels
 

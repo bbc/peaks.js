@@ -110,20 +110,15 @@ PointsLayer.prototype._onPointsRemove = function(points) {
   points.forEach(function(point) {
     self._removePoint(point);
   });
-
-  self._layer.draw();
 };
 
 PointsLayer.prototype._onPointsRemoveAll = function() {
   this._layer.removeChildren();
   this._pointMarkers = {};
-
-  this._layer.draw();
 };
 
 PointsLayer.prototype._onPointsDrag = function(point) {
   this._updatePoint(point);
-  this._layer.draw();
 };
 
 /**
@@ -261,16 +256,10 @@ PointsLayer.prototype.updatePoints = function(startTime, endTime) {
   // Update all points in the visible time range.
   var points = this._peaks.points.find(startTime, endTime);
 
-  var count = points.length;
-
   points.forEach(this._updatePoint.bind(this));
 
   // TODO: in the overview all points are visible, so no need to check
-  count += this._removeInvisiblePoints(startTime, endTime);
-
-  if (count > 0) {
-    this._layer.draw();
-  }
+  this._removeInvisiblePoints(startTime, endTime);
 };
 
 /**

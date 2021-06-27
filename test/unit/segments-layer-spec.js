@@ -12,9 +12,7 @@ describe('SegmentsLayer', function() {
       mediaElement: document.getElementById('media'),
       dataUri: {
         json: 'base/test_data/sample.json'
-      },
-      keyboard: true,
-      height: 240
+      }
     };
 
     Peaks.init(options, function(err, instance) {
@@ -34,10 +32,9 @@ describe('SegmentsLayer', function() {
   context('when adding a segment', function() {
     it('should redraw the view if the segment is visible', function() {
       var zoomview = p.views.getView('zoomview');
-
       expect(zoomview).to.be.ok;
 
-      var spy = sinon.spy(zoomview._segmentsLayer._layer, 'draw');
+      var spy = sinon.spy(zoomview._segmentsLayer, '_createSegmentShape');
 
       p.segments.add({ startTime: 0, endTime: 10, editable: true, id: 'segment1' });
 
@@ -46,10 +43,9 @@ describe('SegmentsLayer', function() {
 
     it('should not redraw the view if the segment is not visible', function() {
       var zoomview = p.views.getView('zoomview');
-
       expect(zoomview).to.be.ok;
 
-      var spy = sinon.spy(zoomview._segmentsLayer._layer, 'draw');
+      var spy = sinon.spy(zoomview._segmentsLayer, '_createSegmentShape');
 
       p.segments.add({ startTime: 28, endTime: 32, editable: true, id: 'segment2' });
 

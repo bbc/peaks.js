@@ -106,20 +106,15 @@ SegmentsLayer.prototype._onSegmentsRemove = function(segments) {
   segments.forEach(function(segment) {
     self._removeSegment(segment);
   });
-
-  self._layer.draw();
 };
 
 SegmentsLayer.prototype._onSegmentsRemoveAll = function() {
   this._layer.removeChildren();
   this._segmentShapes = {};
-
-  this._layer.draw();
 };
 
 SegmentsLayer.prototype._onSegmentsDragged = function(segment) {
   this._updateSegment(segment);
-  this._layer.draw();
 };
 
 /**
@@ -165,16 +160,10 @@ SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
   // Update segments in visible time range.
   var segments = this._peaks.segments.find(startTime, endTime);
 
-  var count = segments.length;
-
   segments.forEach(this._updateSegment.bind(this));
 
   // TODO: in the overview all segments are visible, so no need to check
-  count += this._removeInvisibleSegments(startTime, endTime);
-
-  if (count > 0) {
-    this._layer.draw();
-  }
+  this._removeInvisibleSegments(startTime, endTime);
 };
 
 /**
