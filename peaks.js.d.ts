@@ -68,7 +68,7 @@ declare module 'peaks.js' {
     }
   }
 
-  interface SharedViewOptions {
+  interface ViewOptions {
     axisGridlineColor?: string;
     axisLabelColor?: string;
     container?: HTMLElement | null;
@@ -82,17 +82,21 @@ declare module 'peaks.js' {
     waveformColor?: WaveformColor;
   }
 
-  interface SeparateViewOptions {
-    zoomview?: SharedViewOptions & {
-      wheelMode?: "none" | "scroll";
-    };
-    overview?: SharedViewOptions & {
-      highlightColor?: string;
-      highlightOffset?: number;
-    };
+  interface ZoomViewOptions extends ViewOptions {
+    wheelMode?: "none" | "scroll";
   }
 
-  type ContainerOptions = ViewContainerOptions | SeparateViewOptions;
+  interface OverviewOptions extends ViewOptions {
+    highlightColor?: string;
+    highlightOffset?: number;
+  }
+
+  interface ViewSpecificOptions {
+    zoomview?: ZoomViewOptions;
+    overview?: OverviewOptions;
+  }
+
+  type ContainerOptions = ViewContainerOptions | ViewSpecificOptions;
 
   interface PreGeneratedWaveformOptions {
     /** URI to waveform data file in binary or JSON */
