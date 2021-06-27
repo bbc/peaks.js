@@ -267,7 +267,7 @@ declare module 'peaks.js' {
   }
 
   interface SetSourceRequiredOptions {
-    mediaUrl: string;
+    mediaUrl?: string;
     withCredentials?: boolean;
   }
 
