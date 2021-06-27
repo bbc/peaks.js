@@ -136,9 +136,9 @@ PointsLayer.prototype._createPointMarker = function(point) {
     point:      point,
     draggable:  editable,
     color:      point.color ? point.color : this._peaks.options.pointMarkerColor,
-    fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:     this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
+    fontFamily: this._peaks.options.fontFamily || defaultFontFamily,
+    fontSize:   this._peaks.options.fontSize || defaultFontSize,
+    fontStyle:  this._peaks.options.fontStyle || defaultFontShape,
     layer:      this,
     view:       this._view.getName()
   });
