@@ -7,11 +7,19 @@ declare module 'peaks.js' {
   type Without<T> = { [K in keyof T]?: undefined };
   type XOR<T, U> = (Without<T> & U) | (T & Without<U>);
 
+  interface LinearGradientColor {
+    linearGradientStart: number
+    linearGradientEnd: number
+    linearGradientColorStops: (string | number)[]
+  }
+
+  type WaveformColor = string | LinearGradientColor;
+
   interface SegmentAddOptions {
     startTime: number;
     endTime: number;
     editable?: boolean;
-    color?: string;
+    color?: WaveformColor;
     labelText?: string;
     id?: string;
     [userAttributes: string]: unknown;
@@ -21,7 +29,7 @@ declare module 'peaks.js' {
     startTime?: number;
     endTime?: number;
     editable?: boolean;
-    color?: string;
+    color?: WaveformColor;
     labelText?: string;
     [userAttributes: string]: unknown;
   }
@@ -67,11 +75,11 @@ declare module 'peaks.js' {
     fontFamily?: string;
     fontSize?: number;
     fontStyle?: string;
-    playedWaveformColor?: string;
+    playedWaveformColor?: WaveformColor;
     playheadColor?: string;
     playheadTextColor?: string;
     timeLabelPrecision?: number;
-    waveformColor?: string;
+    waveformColor?: WaveformColor;
   }
 
   interface SeparateViewOptions {
@@ -148,12 +156,6 @@ declare module 'peaks.js' {
     fontStyle: string;
   }
 
-  interface LinearGradientColor {
-    linearGradientStart: number
-    linearGradientEnd: number
-    linearGradientColorStops: (string | number)[]
-  }
-
   /**
    * Parameters for the {@link createSegmentMarker} function.
    *
@@ -166,7 +168,7 @@ declare module 'peaks.js' {
     segment: Segment;
     view: string;
     draggable: boolean;
-    color: string;
+    color: WaveformColor;
     layer: Layer;
     startMarker: boolean;
     fontFamily: string;
@@ -203,9 +205,9 @@ declare module 'peaks.js' {
     /** Color for segment end marker handles */
     segmentEndMarkerColor?: string;
     /** Color for the zoomed in waveform */
-    zoomWaveformColor?: string | LinearGradientColor;
+    zoomWaveformColor?: WaveformColor;
     /** Color for the overview waveform */
-    overviewWaveformColor?: string | LinearGradientColor;
+    overviewWaveformColor?: WaveformColor;
     /**
      * Color for the overview waveform rectangle
      * that shows what the zoom view shows
@@ -217,7 +219,7 @@ declare module 'peaks.js' {
      */
     overviewHighlightOffset?: number;
     /** Color for segments on the waveform */
-    segmentColor?: string | LinearGradientColor;
+    segmentColor?: WaveformColor;
     /** Color of the play head */
     playheadColor?: string;
     /** Color of the play head text */
@@ -337,8 +339,8 @@ declare module 'peaks.js' {
 
   interface WaveformView {
     setAmplitudeScale: (scale: number) => void;
-    setWaveformColor: (color: string | LinearGradientColor) => void;
-    setPlayedWaveformColor: (color: string | LinearGradientColor | null) => void;
+    setWaveformColor: (color: WaveformColor) => void;
+    setPlayedWaveformColor: (color: WaveformColor | null) => void;
     showPlayheadTime: (show: boolean) => void;
     setTimeLabelPrecision: (precision: number) => void;
     enableAutoScroll: (enable: boolean) => void;
