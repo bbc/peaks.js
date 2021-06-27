@@ -184,9 +184,13 @@
         ];
 
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container'),
+            waveformColor: '#cccccc'
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container'),
+            waveformColor: '#00e180'
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
@@ -194,8 +198,6 @@
           },
           keyboard: true,
           pointMarkerColor: '#006eb0',
-          overviewWaveformColor: '#cccccc',
-          zoomWaveformColor: '#00e180',
           showPlayheadTime: true,
           zoomLevels: [128, 256, 512, 1024, 2048]
         };
