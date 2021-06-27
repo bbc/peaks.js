@@ -245,7 +245,7 @@ describe('WaveformBuilder', function() {
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.be.an.instanceOf(Error);
-        expect(waveformData).to.not.be.ok;
+        expect(waveformData).to.equal(undefined);
         done();
       });
     });
@@ -273,6 +273,27 @@ describe('WaveformBuilder', function() {
         var expectedDataUri = window.ArrayBuffer ? peaks.options.dataUri.arraybuffer : peaks.options.dataUri.json;
 
         expect(url).to.equal(expectedDataUri);
+
+        done();
+      });
+    });
+
+    it('should return an error given 16-bit waveform data', function(done) {
+      var peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            arraybuffer: 'base/test_data/sample_16bit.dat'
+          }
+        }
+      };
+
+      var waveformBuilder = new WaveformBuilder(peaks);
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(err.message).to.match(/16-bit waveform data is not supported/);
+        expect(waveformData).to.equal(undefined);
 
         done();
       });
