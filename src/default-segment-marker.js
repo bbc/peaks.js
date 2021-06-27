@@ -88,12 +88,10 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function(group) {
       }
 
       self._label.show();
-      self._options.layer.draw();
     });
 
     group.on('dragend', function() {
       self._label.hide();
-      self._options.layer.draw();
     });
   }
 
@@ -103,12 +101,10 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function(group) {
     }
 
     self._label.show();
-    self._options.layer.draw();
   });
 
   self._handle.on('mouseout touchend', function() {
     self._label.hide();
-    self._options.layer.draw();
   });
 };
 

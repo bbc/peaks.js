@@ -209,15 +209,11 @@ PlayheadLayer.prototype._syncPlayhead = function(time) {
         this._playheadText.setX(2);
       }
     }
-
-    this._playheadLayer.draw();
   }
   else {
     if (this._playheadVisible) {
       this._playheadVisible = false;
       this._playheadGroup.hide();
-
-      this._playheadLayer.draw();
     }
   }
 
@@ -284,14 +280,11 @@ PlayheadLayer.prototype.getPlayheadPixel = function() {
 };
 
 PlayheadLayer.prototype.showPlayheadTime = function(show) {
-  var updated = false;
-
   if (show) {
     if (!this._playheadText) {
       // Create it
       this._createPlayheadText(this._playheadTextColor);
       this.fitToView();
-      updated = true;
     }
   }
   else {
@@ -299,25 +292,17 @@ PlayheadLayer.prototype.showPlayheadTime = function(show) {
       this._playheadText.remove();
       this._playheadText.destroy();
       this._playheadText = null;
-      updated = true;
     }
-  }
-
-  if (updated) {
-    this._playheadLayer.draw();
   }
 };
 
 PlayheadLayer.prototype.updatePlayheadText = function() {
-  // Update current play head
   if (this._playheadText) {
     var time = this._player.getCurrentTime();
     var text = this._view.formatTime(time);
 
     this._playheadText.setText(text);
   }
-
-  this._playheadLayer.draw();
 };
 
 PlayheadLayer.prototype.destroy = function() {

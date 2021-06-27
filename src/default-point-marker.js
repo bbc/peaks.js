@@ -110,23 +110,19 @@ DefaultPointMarker.prototype.bindEventHandlers = function(group) {
       // Position text to the left of the marker
       self._time.setX(-24 - self._time.getWidth());
       self._time.show();
-      self._options.layer.draw();
     });
 
     self._handle.on('mouseout touchend', function() {
       self._time.hide();
-      self._options.layer.draw();
     });
 
     group.on('dragstart', function() {
       self._time.setX(-24 - self._time.getWidth());
       self._time.show();
-      self._options.layer.draw();
     });
 
     group.on('dragend', function() {
       self._time.hide();
-      self._options.layer.draw();
     });
   }
 };

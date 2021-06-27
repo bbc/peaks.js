@@ -82,7 +82,7 @@ var defaultViewOptions = {
 var defaultZoomviewOptions = {
   // showPlayheadTime:    true,
   waveformColor:       'rgba(0, 225, 128, 1)',
-  wheelMode:           'scroll'
+  wheelMode:           'none'
   // zoomAdapter:         'static'
 };
 

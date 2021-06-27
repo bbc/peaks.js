@@ -186,7 +186,6 @@ SegmentShape.prototype._onMouseEnter = function() {
   if (this._label) {
     this._label.moveToTop();
     this._label.show();
-    this._layer.draw();
   }
 
   this._peaks.emit('segments.mouseenter', this._segment);
@@ -195,7 +194,6 @@ SegmentShape.prototype._onMouseEnter = function() {
 SegmentShape.prototype._onMouseLeave = function() {
   if (this._label) {
     this._label.hide();
-    this._layer.draw();
   }
 
   this._peaks.emit('segments.mouseleave', this._segment);
