@@ -139,6 +139,12 @@ describe('WaveformView', function() {
         expect(waveformLayerDraw.callCount).to.equal(2);
         expect(zoomview.getStartTime()).to.equal(0);
       });
+
+      it('throw if not give a number of pixels or seconds', function() {
+        expect(function() {
+          zoomview.scrollWaveform(100);
+        }).to.throw(TypeError);
+      });
     });
   });
 });
