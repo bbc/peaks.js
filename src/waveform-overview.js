@@ -480,11 +480,6 @@ WaveformOverview.prototype.formatTime = function(time) {
   return formatTime(time, this._timeLabelPrecision);
 };
 
-WaveformOverview.prototype.enableAutoScroll = function() {
-  // The overview waveform doesn't support scrolling,
-  // so nothing to do here.
-};
-
 WaveformOverview.prototype.enableMarkerEditing = function(enable) {
   this._segmentsLayer.enableEditing(enable);
   this._pointsLayer.enableEditing(enable);

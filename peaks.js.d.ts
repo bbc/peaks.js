@@ -339,7 +339,6 @@ declare module 'peaks.js' {
     setPlayedWaveformColor: (color: WaveformColor | null) => void;
     showPlayheadTime: (show: boolean) => void;
     setTimeLabelPrecision: (precision: number) => void;
-    enableAutoScroll: (enable: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;
   }
@@ -348,6 +347,7 @@ declare module 'peaks.js' {
   }
 
   interface WaveformZoomView extends WaveformView {
+    enableAutoScroll: (enable: boolean) => void;
     scrollWaveform: (options: XOR<{ seconds: number }, { pixels: number }>) => void;
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none') => void;
