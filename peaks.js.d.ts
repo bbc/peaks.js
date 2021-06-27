@@ -149,7 +149,7 @@ declare module 'peaks.js' {
     draw: () => void;
   }
 
-  interface CreatePointMarkerOptions {
+  export interface CreatePointMarkerOptions {
     point: Point;
     view: string;
     draggable: boolean;
@@ -160,15 +160,7 @@ declare module 'peaks.js' {
     fontStyle: string;
   }
 
-  /**
-   * Parameters for the {@link createSegmentMarker} function.
-   *
-   * @typedef {Object} CreateSegmentMarkerOptions
-   * @global
-   * @property {Boolean} draggable If true, marker is draggable.
-   */
-
-  interface CreateSegmentMarkerOptions {
+  export interface CreateSegmentMarkerOptions {
     segment: Segment;
     view: string;
     draggable: boolean;
@@ -180,7 +172,7 @@ declare module 'peaks.js' {
     fontStyle: string;
   }
 
-  interface CreateSegmentLabelOptions {
+  export interface CreateSegmentLabelOptions {
     segment: Segment;
     view: string;
     layer: Layer;
@@ -261,7 +253,7 @@ declare module 'peaks.js' {
     /** Emit cue events when playing */
     emitCueEvents?: boolean;
     /** Custom segment marker factory function */
-    createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker;
+    createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker | null;
     /** Custom segment label factory function */
     createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
     /** Custom point marker factory function */
