@@ -2,9 +2,8 @@
   "name": "peaks.js",
   "version": "0.26.0",
   "description": "JavaScript UI component for displaying audio waveforms",
-  "main": "./src/main.js",
-  "exports": "./src/main.js",
-  "type": "module",
+  "main": "peaks.min.js",
+  "module": "./src/main.js",
   "types": "./peaks.js.d.ts",
   "files": [
     "peaks.js",
