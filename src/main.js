@@ -39,6 +39,7 @@ function Peaks() {
     zoomLevels:              [512, 1024, 2048, 4096],
 
     mediaElement:            null,
+    mediaUrl:                null,
 
     dataUri:                 null,
     dataUriDefaultFormat:    'json',
