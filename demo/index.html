@@ -134,8 +134,6 @@
           <button data-action="seek">Seek</button>
           <label for="amplitude-scale">Amplitude scale</label>
           <input type="range" id="amplitude-scale" min="0" max="10" step="1">
-          <input type="checkbox" id="auto-scroll" checked>
-          <label for="auto-scroll">Auto-scroll</label>
         </div>
         <div>
           <label for="mousewheel-mode">Mousewheel mode:</label>
@@ -143,10 +141,14 @@
             <option value="none">None</option>
             <option value="scroll">Scroll</option>
           </select>
+          <input type="checkbox" id="auto-scroll" checked>
+          <label for="auto-scroll">Auto-scroll</label>
+          <input type="checkbox" id="playhead-time" checked>
+          <label for="playhead-time">Show playhead time</label>
         </div>
         <div>
-          <button data-action="add-segment">Add a Segment at current time</button>
-          <button data-action="add-point">Add a Point at current time</button>
+          <button data-action="add-segment">Add Segment</button>
+          <button data-action="add-point">Add Point</button>
           <button data-action="log-data">Log segments/points</button>
         </div>
         <div>
@@ -419,6 +421,11 @@
           document.getElementById('auto-scroll').addEventListener('change', function(event) {
             var view = peaksInstance.views.getView('zoomview');
             view.enableAutoScroll(event.target.checked);
+          });
+
+          document.getElementById('playhead-time').addEventListener('change', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+            view.showPlayheadTime(event.target.checked);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {
