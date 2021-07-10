@@ -8,7 +8,7 @@ This document describes how to customize various aspects of the waveform renderi
 - [Point and Segment Markers](#point-and-segment-markers)
   - [createPointMarker()](#createpointmarkeroptions)
   - [createSegmentMarker()](#createsegmentmarkeroptions)
-  - [Marker Methods](#marker-methods)
+  - [Marker API](#marker-api)
     - [marker.constructor()](#markerconstructoroptions)
     - [marker.init()](#markerinitgroup)
     - [marker.fitToView()](#markerfittoview)
@@ -21,7 +21,7 @@ This document describes how to customize various aspects of the waveform renderi
 - [Segment Labels](#segment-labels)
   - [createSegmentLabel()](#createsegmentlabeloptions)
 - [Media Playback](#media-playback)
-  - [Player Methods](#player-methods)
+  - [Player Interface](#player-interface)
     - [player.init()](#playeriniteventemitter)
     - [player.destroy()](#playerdestroy)
     - [player.play()](#playerplay)
@@ -31,8 +31,6 @@ This document describes how to customize various aspects of the waveform renderi
     - [player.isSeeking()](#playerisseeking)
     - [player.getCurrentTime()](#playergetcurrenttime)
     - [player.getDuration()](#playergetduration)
-  - [Configuration](#configuration)
-  - [Initialization](#initialization)
   - [Events](#events)
     - [player.canplay](#playercanplay-event)
     - [player.error](#playererror-event)
@@ -142,7 +140,7 @@ function createPointMarker(options) {
 
 Your custom point marker handle object must implement the `init` and
 `fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker Methods](#marker-methods) section for
+`destroy`. Refer to the [Marker API](#marker-api) section for
 details.
 
 ### `createSegmentMarker(options)`
@@ -200,7 +198,7 @@ function createSegmentMarker(options) {
 
 Your custom segment marker handle object must implement the `init` and
 `fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker methods](#marker-methods) section for details.
+`destroy`. Refer to the [Marker API](#marker-api) section for details.
 
 ### Marker API
 
@@ -348,6 +346,10 @@ Returns the height of the layer, in pixels.
 
 Konva will usually automatically redraw if you change any shape attributes,
 but you can call this function to force a redraw if needed.
+
+#### `layer.formatTime()`
+
+Formats the time indicator.
 
 ## Segment Labels
 
