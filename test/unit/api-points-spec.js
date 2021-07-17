@@ -125,6 +125,18 @@ describe('Peaks.points', function() {
       expect(points[0].id).to.equal(0);
     });
 
+    it('should accept an optional color', function() {
+      p.points.add({ time: 10, color: '#888' });
+
+      expect(p.points.getPoints()[0].color).to.equal('#888');
+    });
+
+    it('should throw if the color is not valid', function() {
+      expect(function() {
+        p.points.add({ time: 10, color: 1 });
+      }).to.throw(TypeError, /color/);
+    });
+
     it('should accept an optional label text', function() {
       p.points.add({ time: 10, labelText: 'test' });
 
@@ -135,6 +147,18 @@ describe('Peaks.points', function() {
       p.points.add({ time: 10 });
 
       expect(p.points.getPoints()[0].labelText).to.equal('');
+    });
+
+    it('should throw if the label text is not a string', function() {
+      expect(function() {
+        p.points.add({ time: 10, labelText: 1 });
+      }).to.throw(TypeError, /labelText/);
+    });
+
+    it('should throw if the editable flag is not a boolean', function() {
+      expect(function() {
+        p.points.add({ time: 10, editable: 1 });
+      }).to.throw(TypeError, /editable/);
     });
 
     it('should accept optional user data', function() {

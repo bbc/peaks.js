@@ -7,7 +7,8 @@
  */
 
 import {
-  extend, isBoolean, isNullOrUndefined, isString, isValidTime, objectHasProperty
+  extend, isBoolean, isLinearGradientColor, isNullOrUndefined, isString,
+  isValidTime, objectHasProperty
 } from './utils';
 
 var pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
@@ -33,6 +34,13 @@ function validatePoint(options, context) {
 
   if (!isBoolean(options.editable)) {
     throw new TypeError('peaks.points.' + context + ': editable must be true or false');
+  }
+
+  if (options.color &&
+    !isString(options.color) &&
+    !isLinearGradientColor(options.color)) {
+    // eslint-disable-next-line max-len
+    throw new TypeError('peaks.points.' + context + ': color must be a string or a valid linear gradient object');
   }
 }
 

@@ -139,6 +139,12 @@ describe('Peaks.segments', function() {
       expect(p.segments.getSegments()[0].color).to.match(/^#[0-9A-Fa-f]{6}$/);
     });
 
+    it('should throw if the color is not valid', function() {
+      expect(function() {
+        p.segments.add({ startTime: 0, endTime: 10, color: 1 });
+      }).to.throw(TypeError, /color/);
+    });
+
     it('should accept an optional label text', function() {
       p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
 
@@ -149,6 +155,18 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
       expect(p.segments.getSegments()[0].labelText).to.equal('');
+    });
+
+    it('should throw if the label text is not a string', function() {
+      expect(function() {
+        p.segments.add({ startTime: 0, endTime: 10, labelText: 1 });
+      }).to.throw(TypeError, /labelText/);
+    });
+
+    it('should throw if the editable flag is not a boolean', function() {
+      expect(function() {
+        p.segments.add({ startTime: 0, endTime: 10, editable: 1 });
+      }).to.throw(TypeError, /editable/);
     });
 
     it('should accept optional user data', function() {
