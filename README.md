@@ -101,6 +101,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [point.update()](#pointupdate-time-labeltext-color-editable--)
   - [Events](#events)
     - [instance.on()](#instanceonevent-callback)
+    - [instance.once()](#instanceonceevent-callback)
     - [instance.off()](#instanceoffevent-callback)
   - [Destruction](#destruction)
     - [instance.destroy()](#instancedestroy)
@@ -1216,7 +1217,7 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 
 ### `instance.on(event, callback)`
 
-Registers callback function to handle events emitted by a Peaks instance.
+Registers a callback function to handle events emitted by a Peaks instance.
 
 ```js
 function dblClickHandler(time) {
@@ -1300,6 +1301,14 @@ To enable cue events, call `Peaks.init()` with the `{ emitCueEvents: true }` opt
 | `points.enter`           | `Point point`            |
 | `segments.enter`         | `Segment segment`        |
 | `segments.exit`          | `Segment segment`        |
+
+### `instance.once(event, callback)`
+
+Registers a callback function to handle a single one-time event emitted by a Peaks instance.
+
+```js
+instance.once('zoomview.dblclick', dblClickHandler);
+```
 
 ### `instance.off(event, callback)`
 
