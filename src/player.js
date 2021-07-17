@@ -164,8 +164,9 @@ Player.prototype.playSegment = function(segment, loop) {
   if (!segment ||
     !isValidTime(segment.startTime) ||
     !isValidTime(segment.endTime)) {
-    self._peaks.logger('peaks.player.playSegment(): parameter must be a segment object');
-    return;
+    return Promise.reject(
+      new Error('peaks.player.playSegment(): parameter must be a segment object')
+    );
   }
 
   self._segment = segment;
@@ -185,7 +186,7 @@ Player.prototype.playSegment = function(segment, loop) {
   });
 
   // Start playing audio
-  self.play();
+  return self.play();
 };
 
 Player.prototype._playSegmentTimerCallback = function() {

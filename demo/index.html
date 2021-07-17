@@ -599,8 +599,8 @@
             console.log('player.seeked:', time);
           });
 
-          peaksInstance.on('player.play', function(time) {
-            console.log('player.play:', time);
+          peaksInstance.on('player.playing', function(time) {
+            console.log('player.playing:', time);
           });
 
           peaksInstance.on('player.pause', function(time) {

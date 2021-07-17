@@ -36,7 +36,7 @@ This document describes how to customize various aspects of the waveform renderi
   - [Events](#events)
     - [player.canplay](#playercanplay-event)
     - [player.error](#playererror-event)
-    - [player.play](#playerplay-event)
+    - [player.playing](#playerplaying-event)
     - [player.pause](#playerpause-event)
     - [player.seeked](#playerseeked-event)
     - [player.timeupdate](#playertimeupdate-event)
@@ -495,7 +495,7 @@ A [`player.playing`](#playerplaying-event) event should be emitted when playback
 play() {
   return this.externalPlayer.play().then(() => {
     this.state = 'playing';
-    this.eventEmitter.emit('player.play', this.getCurrentTime());
+    this.eventEmitter.emit('player.playing', this.getCurrentTime());
   });
 }
 ```

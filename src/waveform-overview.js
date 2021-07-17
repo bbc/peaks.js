@@ -38,14 +38,14 @@ function WaveformOverview(waveformData, container, peaks) {
 
   // Bind event handlers
   self._onTimeUpdate = self._onTimeUpdate.bind(this);
-  self._onPlay = self._onPlay.bind(this);
+  self._onPlaying = self._onPlaying.bind(this);
   self._onPause = self._onPause.bind(this);
   self._onZoomviewDisplaying = self._onZoomviewDisplaying.bind(this);
   self._onWindowResize = self._onWindowResize.bind(this);
 
   // Register event handlers
   peaks.on('player.timeupdate', self._onTimeUpdate);
-  peaks.on('player.play', self._onPlay);
+  peaks.on('player.playing', self._onPlaying);
   peaks.on('player.pause', self._onPause);
   peaks.on('zoomview.displaying', self._onZoomviewDisplaying);
   peaks.on('window_resize', self._onWindowResize);
@@ -185,7 +185,7 @@ WaveformOverview.prototype._onTimeUpdate = function(time) {
   this._playheadLayer.updatePlayheadTime(time);
 };
 
-WaveformOverview.prototype._onPlay = function(time) {
+WaveformOverview.prototype._onPlaying = function(time) {
   this._playheadLayer.updatePlayheadTime(time);
 };
 
@@ -527,7 +527,7 @@ WaveformOverview.prototype.destroy = function() {
     this._resizeTimeoutId = null;
   }
 
-  this._peaks.off('player.play', this._onPlay);
+  this._peaks.off('player.playing', this._onPlaying);
   this._peaks.off('player.pause', this._onPause);
   this._peaks.off('player.timeupdate', this._onTimeUpdate);
   this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
