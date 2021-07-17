@@ -31,7 +31,7 @@ DefaultSegmentMarker.prototype.init = function(group) {
   var xPosition = this._options.startMarker ? -24 : 24;
 
   var time = this._options.startMarker ? this._options.segment.startTime :
-                                          this._options.segment.endTime;
+                                         this._options.segment.endTime;
 
   // Label - create with default y, the real value is set in fitToView().
   this._label = new Text({
