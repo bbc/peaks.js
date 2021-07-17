@@ -1,6 +1,7 @@
 import {
-  clamp, formatTime, isInAscendingOrder, isFunction, isLinearGradientColor,
-  isNullOrUndefined, isObject, isString, isValidTime, roundUpToNearest
+  clamp, extend, formatTime, isInAscendingOrder, isFinite, isFunction,
+  isLinearGradientColor, isNullOrUndefined, isObject, isString,
+  isValidTime, roundUpToNearest
 } from '../../src/utils';
 
 describe('Utils', function() {
@@ -102,6 +103,20 @@ describe('Utils', function() {
     });
   });
 
+  describe('extend', function() {
+    it('should add properties to an object', function() {
+      var obj = { a: 1 };
+      extend(obj, { b: 2 });
+      expect(obj).to.deep.equal({ a: 1, b: 2 });
+    });
+
+    it("should replace an object's existing properties", function() {
+      var obj = { a: 1, b: 2 };
+      extend(obj, { b: 3 });
+      expect(obj).to.deep.equal({ a: 1, b: 3 });
+    });
+  });
+
   describe('isInAscendingOrder', function() {
     it('should accept an empty array', function() {
       expect(isInAscendingOrder([])).to.equal(true);
@@ -199,6 +214,24 @@ describe('Utils', function() {
       expect(isNullOrUndefined({})).to.equal(false);
       expect(isNullOrUndefined([])).to.equal(false);
       expect(isNullOrUndefined(function foo() {})).to.equal(false);
+    });
+  });
+
+  describe('isFinite', function() {
+    it('should accept finite numbers', function() {
+      expect(isFinite(1.0)).to.equal(true);
+    });
+
+    it('should reject non-finite numbers', function() {
+      expect(isFinite(Infinity)).to.equal(false);
+      expect(isFinite(-Infinity)).to.equal(false);
+      expect(isFinite(NaN)).to.equal(false);
+    });
+
+    it('should reject non-numbers', function() {
+      expect(isFinite('a')).to.equal(false);
+      expect(isFinite(null)).to.equal(false);
+      expect(isFinite(undefined)).to.equal(false);
     });
   });
 
