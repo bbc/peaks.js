@@ -14,7 +14,8 @@ import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
 // import AnimatedZoomAdapter from './animated-zoom-adapter';
 // import StaticZoomAdapter from './static-zoom-adapter';
-import { clamp, formatTime, isFinite, isNumber, isValidTime, objectHasProperty } from './utils';
+import { clamp, extend, formatTime, isFinite, isNumber, isValidTime,
+  objectHasProperty } from './utils';
 import Konva from 'konva/lib/Core';
 
 /**
