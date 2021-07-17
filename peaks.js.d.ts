@@ -359,12 +359,12 @@ declare module 'peaks.js' {
     destroy: () => void;
     /** Player API */
     player: {
-      play: () => void;
+      play: () => Promise<void>;
       pause: () => void;
       getCurrentTime: () => number;
       getDuration: () => number;
       seek: (time: number) => void;
-      playSegment: (segment: Segment, loop?: boolean) => void;
+      playSegment: (segment: Segment, loop?: boolean) => Promise<void>;
     };
     /** Views API */
     views: {

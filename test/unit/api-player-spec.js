@@ -12,12 +12,11 @@ describe('Player', function() {
         destroy: sinon.spy(),
         play: sinon.spy(function() { return 42; }),
         pause: sinon.spy(),
+        seek: sinon.spy(),
         isPlaying: sinon.spy(function() { return true; }),
         isSeeking: sinon.spy(function() { return false; }),
         getCurrentTime: sinon.spy(function() { return 111; }),
-        getDuration: sinon.spy(function() { return 123; }),
-        seek: sinon.spy(),
-        playSegment: sinon.spy()
+        getDuration: sinon.spy(function() { return 123; })
       };
 
       var options = {
@@ -179,6 +178,12 @@ describe('Player', function() {
 
         expect(player.play.calledOnce);
         expect(player.pause.calledOnce);
+      });
+
+      it("should return the value from the player's play() method", function() {
+        var result = p.player.playSegment({ startTime: 10, endTime: 20 });
+
+        expect(result).to.equal(42);
       });
     });
   });
