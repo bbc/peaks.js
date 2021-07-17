@@ -191,7 +191,6 @@ Player.prototype.playSegment = function(segment, loop) {
 
 Player.prototype._playSegmentTimerCallback = function() {
   if (!this.isPlaying()) {
-    this.pause();
     this._playingSegment = false;
     return;
   }
