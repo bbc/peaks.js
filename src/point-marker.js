@@ -59,12 +59,12 @@ export default class PointMarker {
   }
 
   _bindDefaultEventHandlers() {
-    this._group.on('dragstart', () => self._onDragStart(self._point));
-    this._group.on('dragmove', () => self._onDragMove(self._point));
-    this._group.on('dragend', () => self._onDragEnd(self._point));
-    this._group.on('dblclick', () => self._onDblClick(self._point));
-    this._group.on('mouseenter', () => self._onMouseEnter(self._point));
-    this._group.on('mouseleave', () => self._onMouseLeave(self._point));
+    this._group.on('dragstart', () => this._onDragStart(this._point));
+    this._group.on('dragmove', () => this._onDragMove(this._point));
+    this._group.on('dragend', () => this._onDragEnd(this._point));
+    this._group.on('dblclick', () => this._onDblClick(this._point));
+    this._group.on('mouseenter', () => this._onMouseEnter(this._point));
+    this._group.on('mouseleave', () => this._onMouseLeave(this._point));
   }
 
   _dragBoundFunc(pos) {

@@ -123,7 +123,9 @@ export class Peaks extends EventEmitter {
       'axisLabelColor',
       'fontFamily',
       'fontSize',
-      'fontStyle'
+      'fontStyle',
+      'highlightColor',
+      'highlightOffset'
     ];
 
     optNames.forEach(function(optName) {
