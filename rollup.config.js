@@ -24,6 +24,16 @@ export default {
       plugins: [
         terser()
       ]
+    },
+    {
+      file: './dist/peaks.esm.js',
+      name: 'peaks',
+      format: 'esm',
+      sourcemap: true,
+      freeze: false,
+      plugins: [
+        terser()
+      ]
     }
   ],
   // eslint-disable-next-line
