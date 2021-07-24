@@ -12,3 +12,6 @@ peaks.js
 peaks.js.map
 peaks.min.js
 peaks.min.js.map
+peaks.esm.js
+peaks.esm.js.map
+dist
