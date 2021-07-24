@@ -68,6 +68,7 @@
     "@rollup/plugin-commonjs": "~19.0.0",
     "@rollup/plugin-json": "~4.1.0",
     "@rollup/plugin-node-resolve": "~13.0.0",
+    "@size-limit/preset-small-lib": "^5.0.1",
     "babel-plugin-istanbul": "~6.0.0",
     "chai": "~4.3.4",
     "copyfiles": "~2.4.1",
@@ -90,12 +91,11 @@
     "rollup-plugin-terser": "~7.0.2",
     "serve": "~12.0.0",
     "sinon": "~11.1.1",
-    "sinon-chai": "~3.7.0"
+    "sinon-chai": "~3.7.0",
+    "size-limit": "^5.0.1"
   },
   "dependencies": {
-    "@size-limit/preset-small-lib": "^5.0.1",
     "eventemitter3": "~4.0.7",
-    "size-limit": "^5.0.1",
     "waveform-data": "~4.1.0"
   },
   "peerDependencies": {
