@@ -30,6 +30,13 @@ export default {
       name: 'peaks',
       format: 'esm',
       sourcemap: true,
+      freeze: false
+    },
+    {
+      file: './dist/peaks.esm.min.js',
+      name: 'peaks',
+      format: 'esm',
+      sourcemap: true,
       freeze: false,
       plugins: [
         terser()

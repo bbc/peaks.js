@@ -3,7 +3,7 @@
   "version": "0.26.0",
   "description": "JavaScript UI component for displaying audio waveforms",
   "main": "./dist/peaks.min.js",
-  "module": "./dist/peaks.esm.js",
+  "module": "./dist/peaks.esm.min.js",
   "types": "./peaks.js.d.ts",
   "size-limit": [
     {
