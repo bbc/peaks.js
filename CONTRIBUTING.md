@@ -14,13 +14,15 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 * If we agree with your feature proposal, we'll work with you to develop and integrate the feature. But please bear with us, as we may not always be able to respond immediately.
 
+* Pull requests should focus on making a single change. Avoid combining multiple unrelated changes in a single pull request. This allows for easier review and increases the chance that your pull request will be accepted as is.
+
 * Please avoid making commits directly to your copy of the `master` branch. This branch is reserved for aggregating changes from other people, and for mainline development from the core contributors. If you commit to `master`, it's likely that your local fork will diverge from the [upstream repository](https://github.com/bbc/peaks.js).
 
 * Before working on a change, please ensure your local fork is up to date with the code in the upstream repository, and create a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) for your changes.
 
 * Please don't change the `version` field in [package.json](https://github.com/bbc/peaks.js/blob/master/package.json), or update [CHANGELOG.md](https://github.com/bbc/peaks.js/blob/master/CHANGELOG.md). We'll do that when [preparing a new release](#preparing-a-new-release).
 
-* Please follow the existing coding conventions, and ensure that there are no linting errors (`npm run lint`). The eslint config doesn't specify all our coding conventions, so please try to be consistent. (We realise there are some inconsistencies in the codebase already, we're slowly working to resolve them.)
+* Please follow the existing coding conventions, and ensure that there are no linting errors (`npm run lint`). The eslint config doesn't specify all our coding conventions, so please try to be consistent.
 
 * For commit messages, please follow [these guidelines](https://chris.beams.io/posts/git-commit/), although we're not fussy about use of imperative mood vs past tense. In particular, avoid commit messages that include [Angular-style metadata](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit-message-header).
 
@@ -41,4 +43,3 @@ When it's time to publish a new release version, e.g,. to npm, create a single c
 * In GitHub, [create a Release](https://github.com/bbc/peaks.js/releases/new) from this tag, with the tag name as Release title, i.e., vX.Y.Z.
 
 * Creating a Release triggers a [GitHub Action workflow](https://github.com/bbc/peaks.js/blob/master/.github/workflows/npm-publish.yml) that publishes to NPM.
-
