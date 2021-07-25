@@ -8,7 +8,7 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 ## Making changes
 
-* Before creating a pull request, we prefer that you first discuss the change you wish to make, either by raising an issue, or contacting us directly, e.g, [by email](mailto:irfs@bbc.co.uk).
+* Before creating a pull request, we prefer that you first discuss the change you want to make, either by raising an issue, or contacting us directly, e.g, [by email](mailto:irfs@bbc.co.uk).
 
 * Please check our [development plan](https://github.com/bbc/peaks.js/projects/1), which shows the current and planned changes.
 
