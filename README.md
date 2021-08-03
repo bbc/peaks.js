@@ -568,6 +568,15 @@ var options = {
   emitCueEvents: false,
 
   //
+  // Customization options (see customizing.md)
+  //
+
+  createSegmentMarker: null,
+  createSegmentLabel: null,
+  createPointMarker: null,
+  player: null,
+
+  //
   // Point and segment initialization
   //
 
