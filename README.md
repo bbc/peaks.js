@@ -529,6 +529,11 @@ var options = {
   // Array of zoom levels in samples per pixel (big >> small)
   zoomLevels: [512, 1024, 2048, 4096],
 
+  // To avoid computation when changing zoom level, Peaks.js maintains a cache
+  // of waveforms at different zoom levels. This is enabled by default, but
+  // can be disabled by setting waveformCache to false
+  waveformCache: true
+
   //
   // Keyboard input options
   //

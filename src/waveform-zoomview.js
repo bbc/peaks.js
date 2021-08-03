@@ -32,11 +32,18 @@ import Konva from 'konva/lib/Core';
 function WaveformZoomView(waveformData, container, peaks) {
   var self = this;
 
-  self._originalWaveformData = waveformData;
   self._container = container;
   self._peaks = peaks;
   self._options = peaks.options;
-  self._viewOptions = peaks.options.zoomview;
+  self._viewOptions = self._options.zoomview;
+  self._enableWaveformCache = self._options.waveformCache;
+
+  self._originalWaveformData = waveformData;
+
+  if (self._enableWaveformCache) {
+    self._waveformData = {};
+    self._waveformData[self._originalWaveformData.scale] = self._originalWaveformData;
+  }
 
   // Bind event handlers
   self._onTimeUpdate = self._onTimeUpdate.bind(self);
@@ -465,7 +472,19 @@ WaveformZoomView.prototype.setZoom = function(options) {
 };
 
 WaveformZoomView.prototype._resampleData = function(options) {
-  this._data = this._originalWaveformData.resample(options);
+  var scale = options.scale;
+
+  if (this._enableWaveformCache) {
+    if (!this._waveformData[scale]) {
+      this._waveformData[scale] = this._originalWaveformData.resample(options);
+    }
+
+    this._data = this._waveformData[scale];
+  }
+  else {
+    this._data = this._originalWaveformData.resample(options);
+  }
+
   this._scale = this._data.scale;
   this._pixelLength = this._data.length;
 };

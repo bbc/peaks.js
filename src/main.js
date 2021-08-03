@@ -37,6 +37,7 @@ function Peaks() {
   // Set default options
   this.options = {
     zoomLevels:              [512, 1024, 2048, 4096],
+    waveformCache:           true,
 
     mediaElement:            null,
     mediaUrl:                null,
