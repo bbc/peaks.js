@@ -96,7 +96,7 @@ declare module 'peaks.js' {
     overview?: OverviewOptions;
   }
 
-  type ContainerOptions = ViewContainerOptions | ViewSpecificOptions;
+  type ContainerOptions = XOR<ViewContainerOptions, ViewSpecificOptions>;
 
   interface PreGeneratedWaveformOptions {
     /** URI to waveform data file in binary or JSON */
