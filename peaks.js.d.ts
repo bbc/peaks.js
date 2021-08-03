@@ -6,6 +6,9 @@
 declare module 'peaks.js' {
   type Without<T> = { [K in keyof T]?: undefined };
   type XOR<T, U> = (Without<T> & U) | (T & Without<U>);
+  type OneOf<T, U, V> = (T & Without<U> & Without<V>) |
+                        (Without<T> & U & Without<V>) |
+                        (Without<T> & Without<U> & V);
 
   interface LinearGradientColor {
     linearGradientStart: number
@@ -98,12 +101,15 @@ declare module 'peaks.js' {
 
   type ContainerOptions = XOR<ViewContainerOptions, ViewSpecificOptions>;
 
-  interface PreGeneratedWaveformOptions {
+  interface RemoteWaveformDataOptions {
     /** URI to waveform data file in binary or JSON */
     dataUri?: {
       arraybuffer?: string;
       json?: string;
     }
+  }
+
+  interface LocalWaveformDataOptions {
     /** raw waveform data file in binary or JSON */
     waveformData?: {
       arraybuffer?: ArrayBuffer;
@@ -128,7 +134,7 @@ declare module 'peaks.js' {
     }
   }
 
-  type AudioOptions = WebAudioOptions | PreGeneratedWaveformOptions;
+  type AudioOptions = OneOf<RemoteWaveformDataOptions, LocalWaveformDataOptions, WebAudioOptions>;
 
   export interface PointMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
