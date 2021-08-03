@@ -168,9 +168,11 @@ Refer to the [Configuration](#configuration) section for details of the availabl
 <script>
 (function(Peaks) {
   const options = {
-    containers: {
-      overview: document.getElementById('overview-container'),
-      zoomview: document.getElementById('zoomview-container')
+    zoomview: {
+      container: document.getElementById('zoomview-container')
+    },
+    overview: {
+      container: document.getElementById('overview-container')
     },
     mediaElement: document.querySelector('audio'),
     webAudio: {
@@ -191,9 +193,11 @@ Refer to the [Configuration](#configuration) section for details of the availabl
 import Peaks from 'peaks.js';
 
 const options = {
-  containers: {
-    overview: document.getElementById('overview-container'),
-    zoomview: document.getElementById('zoomview-container')
+  zoomview: {
+    container: document.getElementById('zoomview-container')
+  },
+  overview: {
+    container: document.getElementById('overview-container')
   },
   mediaElement: document.querySelector('audio'),
   webAudio: {
@@ -266,9 +270,11 @@ Once you have created a waveform data file, you can use this from Peaks.js by pa
 import Peaks from 'peaks.js';
 
 const options = {
-  containers: {
-    overview: document.getElementById('overview-container'),
-    zoomview: document.getElementById('zoomview-container')
+  zoomview: {
+    container: document.getElementById('zoomview-container')
+  },
+  overview: {
+    container: document.getElementById('overview-container')
   },
   mediaElement: document.querySelector('audio'),
   dataUri: {
@@ -291,13 +297,17 @@ To use Web Audio, omit the `dataUri` option and instead pass a `webAudio` object
 const audioContext = new AudioContext();
 
 const options = {
-  containers: {
-    overview: document.getElementById('overview-container'),
-    zoomview: document.getElementById('zoomview-container')
+  zoomview: {
+    container: document.getElementById('zoomview-container')
+  },
+  overview: {
+    container: document.getElementById('overview-container')
   },
   mediaElement: document.querySelector('audio'),
   webAudio: {
-    audioContext: audioContext
+    audioContext: audioContext,
+    scale: 128,
+    multiChannel: false
   }
 };
 
@@ -317,9 +327,11 @@ const audioContext = new AudioContext();
 audioContext.decodeAudioData(arrayBuffer)
   .then(function(audioBuffer) {
     const options = {
-      containers: {
-        overview: document.getElementById('overview-container'),
-        zoomview: document.getElementById('zoomview-container')
+      zoomview: {
+        container: document.getElementById('zoomview-container')
+      },
+      overview: {
+        container: document.getElementById('overview-container')
       },
       mediaElement: document.querySelector('audio'),
       webAudio: {
@@ -335,30 +347,134 @@ audioContext.decodeAudioData(arrayBuffer)
 
 # Configuration
 
-The available options for configuration of the viewer are as follows:
+Peaks.js provides a number of configuration options, as follows:
 
 ```javascript
 var options = {
-  /** REQUIRED OPTIONS **/
-  containers: {
-    // Container elements for zoomview and overview waveforms
-    zoomview: document.getElementById('zoomview-container'),
-    overview: document.getElementById('overview-container')
+
+  //
+  // Zoomable waveform view options
+  //
+
+  zoomview: {
+    // Container <div> element for the zoomable waveform view
+    container: document.getElementById('zoomview-container'),
+
+    // Color for the zoomable waveform
+    // You can also use a 2 stop gradient here. See setWaveformColor()
+    waveformColor: 'rgba(0, 225, 128, 1)',
+
+    // Color for the played region of the zoomable waveform
+    // You can also use a 2 stop gradient here. See setWaveformColor()
+    playedWaveformColor: 'rgba(0, 225, 128, 1)',
+
+    // Color of the playhead
+    playheadColor: 'rgba(0, 0, 0, 1)',
+
+    // Color of the playhead text
+    playheadTextColor: '#aaa',
+
+    // Show current time next to the play head
+    showPlayheadTime: false,
+
+    // Precision of time label of play head and point/segment markers
+    timeLabelPrecision: 2,
+
+    // Color of the axis gridlines
+    axisGridlineColor: '#ccc',
+
+    // Color of the axis labels
+    axisLabelColor: '#aaa',
+
+    // Font family for axis labels, playhead, and point and segment markers
+    fontFamily: 'sans-serif',
+
+    // Font size for axis labels, playhead, and point and segment markers
+    fontSize: 11,
+
+    // Font style for axis labels, playhead, and point and segment markers
+    // (either 'normal', 'bold', or 'italic')
+    fontStyle: 'normal',
+
+    // Mouse-wheel mode: either 'none' or 'scroll'
+    wheelMode: 'none'
   },
 
-  // HTML5 Media element containing an audio track
+  //
+  // Overview waveform options
+  //
+
+  overview: {
+    // Container <div> element for the non-zoomable "overview" waveform
+    overview: document.getElementById('overview-container')
+
+    // Color for the overview waveform
+    // You can also use a 2 stop gradient here. See setWaveformColor()
+    waveformColor: 'rgba(0,0,0,0.2)',
+
+    // Color for the played region of the overview waveform
+    // You can also use a 2 stop gradient here. See setWaveformColor()
+    playedWaveformColor: 'rgba(0, 225, 128, 1)',
+
+    // Color for the overview waveform rectangle
+    // that shows what the zoomable view shows
+    highlightColor: 'grey',
+
+    // The default number of pixels from the top and bottom of the canvas
+    // that the overviewHighlight takes up
+    highlightOffset: 11,
+
+    // Color of the playhead
+    playheadColor: 'rgba(0, 0, 0, 1)',
+
+    // Color of the playhead text
+    playheadTextColor: '#aaa',
+
+    // Show current time next to the play head
+    showPlayheadTime: false,
+
+    // Precision of time label of play head and point/segment markers
+    timeLabelPrecision: 2,
+
+    // Color of the axis gridlines
+    axisGridlineColor: '#ccc',
+
+    // Color of the axis labels
+    axisLabelColor: '#aaa',
+
+    // Font family for axis labels, playhead, and point and segment markers
+    fontFamily: 'sans-serif',
+
+    // Font size for axis labels, playhead, and point and segment markers
+    fontSize: 11,
+
+    // Font style for axis labels, playhead, and point and segment markers
+    // (either 'normal', 'bold', or 'italic')
+    fontStyle: 'normal',
+  },
+
+  // HTML media element containing an audio track
   mediaElement: document.querySelector('audio'),
 
-  /** Optional config with defaults **/
-  // URI to waveform data file in binary or JSON
+  //
+  // Pre-computed waveform data options
+  //
+
   dataUri: {
-    arraybuffer: '../test_data/sample.dat',
-    json: '../test_data/sample.json',
+    // Binary format
+    arraybuffer: '/data/sample.dat',
+
+    // JSON format
+    json: '/data/sample.json',
   },
 
   // If true, Peaks.js will send credentials with all network requests,
-  // i.e., when fetching waveform data.
+  // i.e., when fetching waveform data
   withCredentials: false,
+
+  //
+  // Web Audio generated waveform data options
+  //
 
   webAudio: {
     // A Web Audio AudioContext instance which can be used
@@ -369,19 +485,17 @@ var options = {
     // samples. In this case, an AudioContext is not needed
     audioBuffer: null,
 
-    // If true, the waveform will show all available channels.
-    // If false, the audio is shown as a single channel waveform.
+    // If true, the waveform will show all available channels
+    // If false, the audio is shown as a single channel waveform
     multiChannel: false
   },
 
-  // async logging function
-  logger: console.error.bind(console),
-
-  // if true, emit cue events on the Peaks instance (see Cue Events)
-  emitCueEvents: false,
-
   // Array of zoom levels in samples per pixel (big >> small)
   zoomLevels: [512, 1024, 2048, 4096],
+
+  //
+  // Keyboard input options
+  //
 
   // Bind keyboard controls
   keyboard: false,
@@ -389,28 +503,19 @@ var options = {
   // Keyboard nudge increment in seconds (left arrow/right arrow)
   nudgeIncrement: 0.01,
 
-  // Color for segment start marker handles
-  segmentStartMarkerColor: '#a0a0a0',
+  //
+  // Default view options. Each of these can be set independently for each
+  // waveform view, under the 'zoomview' and 'overview' options
+  // (described above).
+  //
 
-  // Color for segment end marker handles
-  segmentEndMarkerColor: '#a0a0a0',
+  // Waveform color
+  // You can also use a 2 stop gradient here. See setWaveformColor()
+  waveformColor: 'rgba(0, 225, 128, 1)',
 
-  // Color for the zoomable waveform. You can also use a 2 stop gradient here. See setWaveformColor().
-  zoomWaveformColor: 'rgba(0, 225, 128, 1)',
-
-  // Color for the overview waveform. You can also use a 2 stop gradient here. See setWaveformColor().
-  overviewWaveformColor: 'rgba(0,0,0,0.2)',
-
-  // Color for the overview waveform rectangle
-  // that shows what the zoomable view shows
-  overviewHighlightColor: 'grey',
-
-  // The default number of pixels from the top and bottom of the canvas
-  // that the overviewHighlight takes up
-  overviewHighlightOffset: 11,
-
-  // Color for segments on the waveform
-  segmentColor: 'rgba(255, 161, 39, 1)',
+  // Color for the played waveform region
+  // You can also use a 2 stop gradient here. See setWaveformColor()
+  playedWaveformColor: 'rgba(0, 225, 128, 1)',
 
   // Color of the play head
   playheadColor: 'rgba(0, 0, 0, 1)',
@@ -418,24 +523,11 @@ var options = {
   // Color of the play head text
   playheadTextColor: '#aaa',
 
-  // Precision of time label of play head and point/segment markers
-  timeLabelPrecision: 2,
-
-  // Show current time next to the play head
-  // (zoom view only)
-  showPlayheadTime: false,
-
-  // the color of a point marker
-  pointMarkerColor: '#FF0000',
-
   // Color of the axis gridlines
   axisGridlineColor: '#ccc',
 
   // Color of the axis labels
   axisLabelColor: '#aaa',
-
-  // Random color per segment (overrides segmentColor)
-  randomizeSegmentColor: true,
 
   // Font family for axis labels, playhead, and point and segment markers
   fontFamily: 'sans-serif',
@@ -447,37 +539,77 @@ var options = {
   // (either 'normal', 'bold', or 'italic')
   fontStyle: 'normal',
 
-  // Array of initial segment objects with startTime and
-  // endTime in seconds and a boolean for editable.
-  // See below.
-  segments: [{
-    startTime: 120,
-    endTime: 140,
-    editable: true,
-    color: "#ff0000",
-    labelText: "My label"
-  },
-  {
-    startTime: 220,
-    endTime: 240,
-    editable: false,
-    color: "#00ff00",
-    labelText: "My Second label"
-  }],
+  // Precision of time label of play head and point/segment markers
+  timeLabelPrecision: 2,
 
-  // Array of initial point objects
-  points: [{
-    time: 150,
-    editable: true,
-    color: "#00ff00",
-    labelText: "A point"
-  },
-  {
-    time: 160,
-    editable: true,
-    color: "#00ff00",
-    labelText: "Another point"
-  }]
+  // Show current time next to the play head (zoomview only)
+  showPlayheadTime: false,
+
+  //
+  // Point and segment options
+  //
+
+  // the color of a point marker
+  pointMarkerColor: '#FF0000',
+
+  // Color for segment start marker handles
+  segmentStartMarkerColor: '#a0a0a0',
+
+  // Color for segment end marker handles
+  segmentEndMarkerColor: '#a0a0a0',
+
+  // Color for segments on the waveform
+  segmentColor: 'rgba(255, 161, 39, 1)',
+
+  // Random color per segment (overrides segmentColor)
+  randomizeSegmentColor: true,
+
+  // if true, emit cue events on the Peaks instance (see Cue Events)
+  emitCueEvents: false,
+
+  //
+  // Point and segment initialization
+  //
+
+  segments: [
+    {
+      startTime: 120,
+      endTime: 140,
+      editable: true,
+      color: "#ff0000",
+      labelText: "My label"
+    },
+    {
+      startTime: 220,
+      endTime: 240,
+      editable: false,
+      color: "#00ff00",
+      labelText: "My Second label"
+    }
+  ],
+
+  points: [
+    {
+      time: 150,
+      editable: true,
+      color: "#00ff00",
+      labelText: "A point"
+    },
+    {
+      time: 160,
+      editable: true,
+      color: "#00ff00",
+      labelText: "Another point"
+    }
+  ],
+
+  //
+  // Debugging options
+  //
+
+  // Diagnostic or error information is written to this function.
+  // The default is console.error
+  logger: console.error.bind(console)
 }
 ```
 
