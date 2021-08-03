@@ -188,8 +188,6 @@ declare module 'peaks.js' {
     withCredentials?: boolean;
     /** async logging function */
     logger?: (...args: any[]) => void;
-    /** default height of the waveform canvases in pixels */
-    height?: number;
     /** Array of zoom levels in samples per pixel (big >> small) */
     zoomLevels?: number[];
     /** Bind keyboard controls */
