@@ -461,11 +461,19 @@ var options = {
   //
 
   dataUri: {
-    // Binary format
+    // Binary format waveform data URL
     arraybuffer: '/data/sample.dat',
 
-    // JSON format
+    // JSON format waveform data URL
     json: '/data/sample.json',
+  },
+
+  waveformData: {
+    // ArrayBuffer containing binary format waveform data
+    arraybuffer: null,
+
+    // Object containing JSON format waveform data
+    json: null
   },
 
   // If true, Peaks.js will send credentials with all network requests,
