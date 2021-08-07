@@ -1,4 +1,4 @@
-import Peaks from '../../src/main';
+import Peaks from '../peaks.esm.js';
 
 import { createPointMarker, createSegmentMarker } from './marker-factories';
 import { createSegmentLabel } from './segment-label-factory';

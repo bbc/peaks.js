@@ -2,15 +2,19 @@
   "name": "peaks.js",
   "version": "0.26.0",
   "description": "JavaScript UI component for displaying audio waveforms",
-  "main": "peaks.min.js",
+  "main": "./dist/peaks.min.js",
   "module": "./dist/peaks.esm.js",
   "types": "./peaks.js.d.ts",
   "files": [
     "dist/peaks.js",
+    "dist/peaks.js.map",
     "dist/peaks.min.js",
+    "dist/peaks.min.js.map",
     "dist/peaks.js.d.ts",
     "dist/peaks.esm.js",
-    "dist/peaks.esm.min.js"
+    "dist/peaks.esm.js.map",
+    "dist/peaks.esm.min.js",
+    "dist/peaks.esm.min.js.map"
   ],
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
@@ -78,7 +82,8 @@
     "karma-spec-reporter": "~0.0.32",
     "mocha": "~9.0.3",
     "rollup": "~2.56.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-peer-deps-external": "~2.2.4",
+    "rollup-plugin-sourcemaps": "~0.6.3",
     "rollup-plugin-terser": "~7.0.2",
     "serve": "~12.0.0",
     "sinon": "~11.1.2",
