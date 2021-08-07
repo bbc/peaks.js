@@ -274,15 +274,52 @@ describe('CueEmitter', function() {
     });
 
     it('should emit events on seeking', function(done) {
-      var mediaElement = document.getElementById('media');
+      // This test uses a custom player object as sometimes
+      // the test would timeout waiting for the media element to seek.
+      var player = {
+        init: function(eventEmitter) {
+          this._eventEmitter = eventEmitter;
+          this._currentTime = 0;
+        },
+
+        destroy: function() {
+        },
+
+        play: function() {
+        },
+
+        pause: function() {
+        },
+
+        isPlaying: function() {
+          return false;
+        },
+
+        isSeeking: function() {
+          return false;
+        },
+
+        seek: function(time) {
+          this._currentTime = time;
+          this._eventEmitter.emit('player.seeked', time);
+        },
+
+        getCurrentTime: function() {
+          return this._currentTime;
+        },
+
+        getDuration: function() {
+          return 0;
+        }
+      };
 
       var options = {
         containers: {
           overview: document.getElementById('overview-container'),
           zoomview: document.getElementById('zoomview-container')
         },
-        mediaElement: mediaElement,
         dataUri: 'base/test_data/sample.json',
+        player: player,
         emitCueEvents: true
       };
 
@@ -297,7 +334,7 @@ describe('CueEmitter', function() {
         var events = [];
         var seekTimes = [3, 11]; // Seek to segment.1 then segment.3
 
-        mediaElement.addEventListener('seeked', function() {
+        peaks.on('player.seeked', function() {
           var time = seekTimes.shift();
 
           if (time) {
