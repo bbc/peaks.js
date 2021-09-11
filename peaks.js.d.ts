@@ -301,13 +301,19 @@ declare module 'peaks.js' {
     'overview.dblclick': (time: number) => void;
     'zoomview.dblclick': (time: number) => void;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
+  }
+
+  interface PlayerEvents {
     'player.canplay': () => void;
     'player.ended': () => void;
     'player.error': (error: any) => void;
     'player.pause': (time: number) => void;
-    'player.playing': (time: number) => void;
+    'player.play': (time: number) => void;
     'player.seeked': (time: number) => void;
     'player.timeupdate': (time: number) => void;
+  }
+
+  interface PeaksEvents extends InstanceEvents, PlayerEvents {
   }
 
   interface PlayerAdapter {
@@ -326,14 +332,6 @@ declare module 'peaks.js' {
     emit<E extends keyof PlayerEvents>(event: E, ...eventData: EventData<PlayerEvents[E]>): void;
   }
 
-  interface PlayerEvents {
-    'player.canplay': () => void;
-    'player.error': (error: any) => void;
-    'player.pause': (time: number) => void;
-    'player.play': (time: number) => void;
-    'player.seeked': (time: number) => void;
-    'player.timeupdate': (time: number) => void;
-  }
 
   type EventData<T> = [T] extends [(...eventData: infer U) => any] ? U : [T] extends [void] ? [] : [T];
 
@@ -408,9 +406,9 @@ declare module 'peaks.js' {
       removeAll: () => void;
     };
     /** Events */
-    on: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
-    once: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
-    off: <E extends keyof InstanceEvents>(event: E, listener: InstanceEvents[E]) => void;
+    on: <E extends keyof PeaksEvents>(event: E, listener: PeaksEvents[E]) => void;
+    once: <E extends keyof PeaksEvents>(event: E, listener: PeaksEvents[E]) => void;
+    off: <E extends keyof PeaksEvents>(event: E, listener: PeaksEvents[E]) => void;
   }
 
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
