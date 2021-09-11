@@ -46,7 +46,7 @@
   "scripts": {
     "prebuild": "npm run lint",
     "build": "rollup -c",
-    "postbuild": "copyfiles --up 1 dist/peaks.js dist/peaks.js.map dist/peaks.min.js dist/peaks.min.js.map dist/peaks.esm.js dist/peaks.esm.js.map dist/peaks.esm.min.js dist/peaks.esm.min.js.map demo",
+    "postbuild": "copyfiles --up 1 dist/peaks.js dist/peaks.js.map dist/peaks.min.js dist/peaks.min.js.map dist/peaks.esm.js dist/peaks.esm.js.map demo",
     "doc": "jsdoc --private --destination docs --recurse src",
     "lint": "eslint src/*.js test/**/*.js test/*.cjs karma.conf.cjs rollup.config.js",
     "pretest": "npm run lint",

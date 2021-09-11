@@ -51,16 +51,6 @@ export default [
         sourcemap: true,
         sourcemapPathTransform,
         freeze: false
-      },
-      {
-        file: 'dist/peaks.esm.min.js',
-        name: 'peaks',
-        format: 'es',
-        sourcemap: true,
-        sourcemapPathTransform,
-        plugins: [
-          terser()
-        ]
       }
     ],
     plugins: [
