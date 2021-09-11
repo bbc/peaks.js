@@ -6,15 +6,13 @@
   "module": "./dist/peaks.esm.js",
   "types": "./peaks.js.d.ts",
   "files": [
+    "peaks.js.d.ts",
     "dist/peaks.js",
     "dist/peaks.js.map",
     "dist/peaks.min.js",
     "dist/peaks.min.js.map",
-    "dist/peaks.js.d.ts",
     "dist/peaks.esm.js",
-    "dist/peaks.esm.js.map",
-    "dist/peaks.esm.min.js",
-    "dist/peaks.esm.min.js.map"
+    "dist/peaks.esm.js.map"
   ],
   "contributors": [
     "Chris Finch (https://github.com/chrisfinch)",
