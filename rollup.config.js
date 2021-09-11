@@ -5,10 +5,11 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import { terser } from 'rollup-plugin-terser';
 import path from 'path';
 
-import pkg from "./package.json";
+import pkg from './package.json';
 
-const sourcemapPathTransform = (sourcePath) =>
-  path.join("node_modules", pkg.name, "./src", sourcePath);
+function sourcemapPathTransform(sourcePath) {
+  return path.join('node_modules', pkg.name, './src', sourcePath);
+}
 
 export default [
   {
@@ -49,7 +50,7 @@ export default [
         format: 'es',
         sourcemap: true,
         sourcemapPathTransform,
-        freeze: false,
+        freeze: false
       },
       {
         file: 'dist/peaks.esm.min.js',
