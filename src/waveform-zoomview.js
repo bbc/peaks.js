@@ -344,12 +344,6 @@ WaveformZoomView.prototype._syncPlayhead = function(time) {
   }
 };
 
-/**
- * Changes the zoom level.
- *
- * @param {Number} scale The new zoom level, in samples per pixel.
- */
-
 WaveformZoomView.prototype._getScale = function(duration) {
   return duration * this._data.sample_rate / this._width;
 };
@@ -359,7 +353,25 @@ function isAutoScale(options) {
           (objectHasProperty(options, 'seconds') && options.seconds === 'auto'));
 }
 
-WaveformZoomView.prototype.setZoom = function(options) {
+/**
+ * Options for [WaveformZoomView.setZoom]{@link WaveformZoomView#setZoom}.
+ *
+ * @typedef {Object} SetZoomOptions
+ * @global
+ * @property {Number|String} scale Zoom level, in samples per pixel, or 'auto'
+ *   to fit the entire waveform to the view width
+ * @property {Number|String} seconds Number of seconds to fit to the view width,
+ *   or 'auto' to fit the entire waveform to the view width
+ */
+
+/**
+ * Changes the zoom level.
+ *
+ * @param {SetZoomOptions} options
+ * @returns {Boolean}
+ */
+
+ WaveformZoomView.prototype.setZoom = function(options) {
   var scale;
 
   if (isAutoScale(options)) {
