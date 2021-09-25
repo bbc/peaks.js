@@ -71,6 +71,8 @@ declare module 'peaks.js' {
     }
   }
 
+  type FormatTimeFunction = (time: number) => string;
+
   interface ViewOptions {
     axisGridlineColor?: string;
     axisLabelColor?: string;
@@ -81,7 +83,10 @@ declare module 'peaks.js' {
     playedWaveformColor?: WaveformColor;
     playheadColor?: string;
     playheadTextColor?: string;
+    formatPlayheadTime?: FormatTimeFunction;
     timeLabelPrecision?: number;
+    showAxisLabels?: boolean;
+    formatAxisTime?: FormatTimeFunction;
     waveformColor?: WaveformColor;
   }
 
@@ -224,12 +229,15 @@ declare module 'peaks.js' {
     playheadColor?: string;
     /** Color of the play head text */
     playheadTextColor?: string;
+    /** Returns a string for the playhead timestamp label */
+    formatPlayheadTime?: FormatTimeFunction;
     /** Precision of time label for play head and point/segment markers */
     timeLabelPrecision?: number;
-    /**
-     * Show current time next to the play head
-     * - (zoom view only)
-     */
+    /** Show or hide the time axis labels */
+    showAxisLabels?: boolean;
+    /** Returns a string for the axis label timestamps */
+    formatAxisTime?: FormatTimeFunction;
+    /** Show current time next to the playhead (zoom view only) */
     showPlayheadTime?: boolean;
     /** The color of a point marker */
     pointMarkerColor?: string;
@@ -341,6 +349,7 @@ declare module 'peaks.js' {
     setPlayedWaveformColor: (color: WaveformColor | null) => void;
     showPlayheadTime: (show: boolean) => void;
     setTimeLabelPrecision: (precision: number) => void;
+    showAxisLabels: (show: boolean) => void;
     enableMarkerEditing: (enable: boolean) => void;
     fitToContainer: () => void;
   }
