@@ -371,7 +371,7 @@ function isAutoScale(options) {
  * @returns {Boolean}
  */
 
- WaveformZoomView.prototype.setZoom = function(options) {
+WaveformZoomView.prototype.setZoom = function(options) {
   var scale;
 
   if (isAutoScale(options)) {
