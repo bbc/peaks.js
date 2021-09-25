@@ -125,21 +125,24 @@ You can start using Peaks.js by either including the UMD bundle in a `<script>` 
 To add the Peaks.js UMD bundle to your web page, add a `<script>` tag:
 
 ```html
-<script src="https://unpkg.com/peaks.js"></script>
+<script src="https://unpkg.com/peaks.js/dist/peaks.js"></script>
 ```
 
 The UMD bundle is available at [unpkg](https://unpkg.com/peaks.js) and [cdnjs](https://cdnjs.com/libraries/peaks.js).
 
-### Install with npm
+### ES module bundle
+
+We recommend that you use an ES module bundler.
 
 Run the following commands to include Peaks.js in your module bundle:
 
 ```bash
 npm install --save peaks.js
 npm install --save konva
+npm install --save waveform-data
 ```
 
-Note that Peaks.js uses [Konva](https://konvajs.org/) as a peer dependency, so you must install both modules.
+Note that Peaks.js uses [Konva](https://konvajs.org/) and [waveform-data](https://github.com/bbc/waveform-data.js) as peer dependencies, so you must also install those modules.
 
 ## Add Peaks.js to your web page
 
@@ -165,7 +168,7 @@ Refer to the [Configuration](#configuration) section for details of the availabl
 ### Using a <script> tag
 
 ```html
-<script src="https://unpkg.com/peaks.js"></script>
+<script src="https://unpkg.com/peaks.js/dist/peaks.js"></script>
 <script>
 (function(Peaks) {
   const options = {
@@ -295,6 +298,8 @@ Peaks.js can use the [Web Audio API](https://www.w3.org/TR/webaudio/) to generat
 To use Web Audio, omit the `dataUri` option and instead pass a `webAudio` object that contains an `AudioContext` instance. Your browser must [support](https://caniuse.com/#feat=audio-api) the Web Audio API.
 
 ```js
+import Peaks from 'peaks.js';
+
 const audioContext = new AudioContext();
 
 const options = {
@@ -322,6 +327,8 @@ Alternatively, if you have an `AudioBuffer` containing decoded audio samples, e.
 then an `AudioContext` is not needed:
 
 ```js
+import Peaks from 'peaks.js';
+
 const audioContext = new AudioContext();
 
 // arrayBuffer contains the encoded audio (e.g., MP3 format)
