@@ -53,6 +53,15 @@ function WaveformOverview(waveformData, container, peaks) {
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
 
+  if (self._viewOptions.formatPlayheadTime) {
+    self._formatPlayheadTime = self._viewOptions.formatPlayheadTime;
+  }
+  else {
+    self._formatPlayheadTime = function(time) {
+      return formatTime(time, self._timeLabelPrecision);
+    };
+  }
+
   self._width = container.clientWidth;
   self._height = container.clientHeight;
 
@@ -411,14 +420,7 @@ WaveformOverview.prototype._createWaveform = function() {
 
 WaveformOverview.prototype._createAxisLabels = function() {
   this._axisLayer = new Konva.Layer({ listening: false });
-
-  this._axis = new WaveformAxis(this, {
-    axisGridlineColor:   this._viewOptions.axisGridlineColor,
-    axisLabelColor:      this._viewOptions.axisLabelColor,
-    axisLabelFontFamily: this._viewOptions.fontFamily,
-    axisLabelFontSize:   this._viewOptions.fontSize,
-    axisLabelFontStyle:  this._viewOptions.fontStyle
-  });
+  this._axis = new WaveformAxis(this, this._viewOptions);
 
   this._axis.addToLayer(this._axisLayer);
   this._stage.add(this._axisLayer);
@@ -477,7 +479,12 @@ WaveformOverview.prototype.setTimeLabelPrecision = function(precision) {
 };
 
 WaveformOverview.prototype.formatTime = function(time) {
-  return formatTime(time, this._timeLabelPrecision);
+  return this._formatPlayheadTime(time);
+};
+
+WaveformOverview.prototype.showAxisLabels = function(show) {
+  this._axis.showAxisLabels(show);
+  this._axisLayer.draw();
 };
 
 WaveformOverview.prototype.enableMarkerEditing = function(enable) {

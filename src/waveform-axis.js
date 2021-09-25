@@ -19,9 +19,11 @@ import Konva from 'konva/lib/Core';
  * @param {Object} options
  * @param {String} options.axisGridlineColor
  * @param {String} options.axisLabelColor
- * @param {String} options.axisLabelFontFamily
- * @param {Number} options.axisLabelFontSize
- * @param {String} options.axisLabelFontStyle
+ * @param {Boolean} options.showAxisLabels
+ * @param {Function} options.formatAxisTime
+ * @param {String} options.fontFamily
+ * @param {Number} options.fontSize
+ * @param {String} options.fontStyle
  */
 
 function WaveformAxis(view, options) {
@@ -29,16 +31,27 @@ function WaveformAxis(view, options) {
 
   self._axisGridlineColor = options.axisGridlineColor;
   self._axisLabelColor    = options.axisLabelColor;
+  self._showAxisLabels    = options.showAxisLabels;
+
+  if (options.formatAxisTime) {
+    self._formatAxisTime = options.formatAxisTime;
+  }
+  else {
+    self._formatAxisTime = function(time) {
+      // precision = 0, drops the fractional seconds
+      return formatTime(time, 0);
+    };
+  }
 
   self._axisLabelFont = WaveformAxis._buildFontString(
-    options.axisLabelFontFamily,
-    options.axisLabelFontSize,
-    options.axisLabelFontStyle
+    options.fontFamily,
+    options.fontSize,
+    options.fontStyle
   );
 
   self._axisShape = new Konva.Shape({
     sceneFunc: function(context) {
-      self.drawAxis(context, view);
+      self._drawAxis(context, view);
     }
   });
 }
@@ -63,6 +76,10 @@ WaveformAxis.prototype.addToLayer = function(layer) {
   layer.add(this._axisShape);
 };
 
+WaveformAxis.prototype.showAxisLabels = function(show) {
+  this._showAxisLabels = show;
+};
+
 /**
  * Returns number of seconds for each x-axis marker, appropriate for the
  * current zoom level, ensuring that markers are not too close together
@@ -74,7 +91,7 @@ WaveformAxis.prototype.addToLayer = function(layer) {
  * @returns {Number}
  */
 
-WaveformAxis.prototype.getAxisLabelScale = function(view) {
+WaveformAxis.prototype._getAxisLabelScale = function(view) {
   var baseSecs   = 1; // seconds
   var steps      = [1, 2, 5, 10, 20, 30];
   var minSpacing = 60;
@@ -107,14 +124,14 @@ WaveformAxis.prototype.getAxisLabelScale = function(view) {
  * @param {WaveformOverview|WaveformZoomView} view
  */
 
-WaveformAxis.prototype.drawAxis = function(context, view) {
+WaveformAxis.prototype._drawAxis = function(context, view) {
   var currentFrameStartTime = view.getStartTime();
 
   // Draw axis markers
   var markerHeight = 10;
 
   // Time interval between axis markers (seconds)
-  var axisLabelIntervalSecs = this.getAxisLabelScale(view);
+  var axisLabelIntervalSecs = this._getAxisLabelScale(view);
 
   // Time of first axis marker (seconds)
   var firstAxisLabelSecs = roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
@@ -154,14 +171,15 @@ WaveformAxis.prototype.drawAxis = function(context, view) {
     context.lineTo(x + 0.5, height - markerHeight);
     context.stroke();
 
-    // precision = 0, drops the fractional seconds
-    var label      = formatTime(secs, 0);
-    var labelWidth = context.measureText(label).width;
-    var labelX     = x - labelWidth / 2;
-    var labelY     = height - 1 - markerHeight;
+    if (this._showAxisLabels) {
+      var label      = this._formatAxisTime(secs);
+      var labelWidth = context.measureText(label).width;
+      var labelX     = x - labelWidth / 2;
+      var labelY     = height - 1 - markerHeight;
 
-    if (labelX >= 0) {
-      context.fillText(label, labelX, labelY);
+      if (labelX >= 0) {
+        context.fillText(label, labelX, labelY);
+      }
     }
 
     secs += axisLabelIntervalSecs;

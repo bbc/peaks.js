@@ -147,4 +147,19 @@ describe('WaveformView', function() {
       });
     });
   });
+
+  describe('showAxisLabels', function() {
+    ['zoomview', 'overview'].forEach(function(viewName) {
+      describe(viewName, function() {
+        it('should hide the time axis labels', function() {
+          var view = p.views.getView(viewName);
+          var axisLayerDraw = sinon.spy(view._axisLayer, 'draw');
+
+          view.showAxisLabels(false);
+
+          expect(axisLayerDraw.callCount).to.equal(1);
+        });
+      });
+    });
+  });
 });

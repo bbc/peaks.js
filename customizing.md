@@ -40,6 +40,7 @@ This document describes how to customize various aspects of the waveform renderi
     - [player.pause](#playerpause-event)
     - [player.seeked](#playerseeked-event)
     - [player.timeupdate](#playertimeupdate-event)
+- [Time Labels](#time-labels)
 
 ## Introduction
 
@@ -651,3 +652,37 @@ The event data should be the current playback position, in seconds.
 ```javascript
 this.eventEmitter.emit('player.timeupdate', this.getCurrentTime());
 ```
+
+## Time Labels
+
+Peaks.js allows you to customize the timestamp labels shown on the time axis or
+next to the playhead. This is achieved by providing `formatPlayheadTime` and
+`formatAxisTime` functions in the options passed when calling `Peaks.init()`.
+
+These functions accept the time, as a number, and should return a string,
+for example:
+
+```javascript
+function formatPlayheadTime(time) {
+  // Return time formatted to 2 decimal places
+  return time.toFixed(2);
+}
+
+function formatAxisTime(time) {
+  // Return time as a whole number of seconds
+  return String(Math.floor(time));
+}
+
+const options = {
+  // Add other options, as needed.
+  formatPlayheadTime: formatPlayheadTime,
+  formatAxisTime: formatAxisTime
+};
+
+Peaks.init(options, function(err, peaks) {
+  // Use the Peaks.js instance here
+});
+```
+
+Note that if you pass a `formatPlayheadTime` function, the `timeLabelPrecision`
+option and `view.setTimeLabelPrecision()` function are ignored.

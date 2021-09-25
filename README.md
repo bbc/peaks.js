@@ -47,6 +47,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
 - [Configuration](#configuration)
   - [Marker customization](#marker-customization)
   - [Player customization](#player-customization)
+  - [Time label customization](#time-label-customization)
 - [API](#api)
   - [Initialization](#initialization)
     - [Peaks.init()](#peaksinitoptions-callback)
@@ -374,6 +375,9 @@ var options = {
     // Color of the playhead text
     playheadTextColor: '#aaa',
 
+    // Returns a string for the playhead timestamp label
+    formatPlayheadTime: function,
+
     // Show current time next to the play head
     showPlayheadTime: false,
 
@@ -385,6 +389,12 @@ var options = {
 
     // Color of the axis labels
     axisLabelColor: '#aaa',
+
+    // Returns a string for the axis label timestamps
+    formatAxisTime: function,
+
+    // Show or hide the axis label timestamps
+    showAxisTimeLabels: true,
 
     // Font family for axis labels, playhead, and point and segment markers
     fontFamily: 'sans-serif',
@@ -430,6 +440,9 @@ var options = {
     // Color of the playhead text
     playheadTextColor: '#aaa',
 
+    // Returns a string for the playhead timestamp label
+    formatPlayheadTime: function,
+
     // Show current time next to the play head
     showPlayheadTime: false,
 
@@ -441,6 +454,12 @@ var options = {
 
     // Color of the axis labels
     axisLabelColor: '#aaa',
+
+    // Returns a string for the axis label timestamps
+    formatAxisTime: function,
+
+    // Show or hide the axis label timestamps
+    showAxisTimeLabels: true,
 
     // Font family for axis labels, playhead, and point and segment markers
     fontFamily: 'sans-serif',
@@ -643,6 +662,13 @@ By default, Peaks.js supports audio playback using the HTML `<audio>` or
 `<video>` element using the `mediaElement` configuration option. Peaks.js also
 allows you to use your own custom media player library, using the `player`
 option. Please read [Customizing Peaks.js](customizing.md#media-playback) for more details.
+
+## Time label customization
+
+Peaks.js allows you to customize the appearance of the time labels in the
+time axis and next to the playhead, using the `formatPlayheadTime` and
+`formatAxisTime` options. Please read
+[Customizing Peaks.js](customizing.md#time-labels) for more details.
 
 # API
 
@@ -917,6 +943,18 @@ The initial setting is `2`, for both zoomable and overview waveform views. This 
 ```js
 const view = instance.views.getView('zoomview');
 view.setTimeLabelPrecision(3); // Displays time of playhead/marker as hh:mm:ss.sss
+```
+
+### `view.showAxisLabels(show)`
+
+Shows or hides the time axis timestamp labels.
+
+The initial setting is controlled by the `showAxisTimeLabels` configuration option
+(default: `true`).
+
+```js
+const view = instance.views.getView('zoomview');
+view.showAxisTimeLabels(false); // Remove the time axis labels.
 ```
 
 ### `view.enableAutoScroll(enable)`
