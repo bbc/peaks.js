@@ -1,5 +1,64 @@
 # Peaks.js
 
+## 0.27.0 (2021/11/04)
+
+* (#310) Updated to use ES module format, Replaced browserify with Rollup and
+  removed Bower support (@chrisn, @oncletom)
+
+* (#392) Fixed `MouseDragHandler` under- and over-reporting mousemove events
+  (@jdelStrother)
+
+* Updated Konva to 8.1.4. This made some `draw()` calls unnecessary, so these
+  have been removed (@chrisn)
+
+* (#368) Konva.js and waveform-data.js are now included as peer dependencies.
+  This means that projects using Peaks.js need to also import compatible
+  versions of these libraries into their build. Peaks.js also now only
+  imports the Konva modules that it uses, which significantly reduces bundle
+  size (@chrisn)
+
+* Use Rollup to build the custom markers demo page (@chrisn)
+
+* (#387) Added a new `Peaks.init()` options structure (@chrisn)
+
+* (#340) Added `showAxisTimeLabels`, `formatAxisTime`, and `formatPlayheadTime`
+  options, to allow customization of the time labels shown next to the playhead
+  and on the time axis (@chrisn)
+
+* (#181) Added `playedWaveformColor` zoomview and overview options, and
+  `view.setPlayedWaveformColor()` method (@chrisn)
+
+* (#317) Added `view.setScrollMode()` function to allow scrolling the zoomable
+  waveform using a mousewheel or trackpad gesture (@chrisn, @ffxsam,
+  @jdelStrother)
+
+* (#392) Added `view.scrollWaveform()` function (@jdelStrother, @chrisn)
+
+* (#402) `points.add()` and `segments.add()` now return the objects added
+  (@chrisn)
+
+* (#318, #324) Added various click events: `points.dblclick`, `segments.click`,
+  `zoomview.click`, and `overview.click` (@chrisn)
+
+* (#396) Documentation improvements (@chrisn, @Liscare, @rowild)
+
+* (#390) Fixed segment labels being overlapped by waveform segments, to ensure
+  labels are visible (@chrisn)
+
+* (#348) An error is now returned if `Peaks.init()` or `setSource()` is called
+  with 16-bit waveform data (@chrisn)
+
+* (#408) Added `peaks.once()` to the documented API (@chrisn)
+
+* (#408) Changed `player.playSegment()` to return a Promise (@chrisn)
+
+* (#363) Replaced remaining uses of `player.play` event with `player.playing`
+  (@chrisn)
+
+* Refactored to remove some code duplication (@jdelStrother)
+
+* Improved TypeScript definitions (@jdelStrother, @chrisn)
+
 ## 0.26.0 (2021/05/22)
 
 * Removed the `container` and `template` options. Please use the `containers`
