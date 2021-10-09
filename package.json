@@ -95,6 +95,6 @@
   },
   "peerDependencies": {
     "konva": ">= 8.2.2 < 9",
-    "waveform-data": ">= 4.1.1 < 5"
+    "waveform-data": ">= 4.2.1 < 5"
   }
 }
