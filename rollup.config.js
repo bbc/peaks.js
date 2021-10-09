@@ -31,8 +31,7 @@ export default [
         name: 'peaks',
         format: 'umd',
         sourcemap: true,
-        sourcemapPathTransform,
-        freeze: false
+        sourcemapPathTransform
       },
       {
         file: 'dist/peaks.min.js',
@@ -45,7 +44,6 @@ export default [
         ]
       }
     ],
-    external: [],
     plugins: [
       commonjs(),
       resolve({ browser: true }),
@@ -60,10 +58,7 @@ export default [
       {
         file: 'dist/peaks.esm.js',
         name: 'peaks',
-        format: 'es',
-        sourcemap: true,
-        sourcemapPathTransform,
-        freeze: false
+        format: 'es'
       }
     ],
     plugins: [
@@ -83,7 +78,6 @@ export default [
         name: 'peaks',
         format: 'umd',
         sourcemap: true,
-        freeze: false,
         globals
       },
       {
