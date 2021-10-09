@@ -13,7 +13,7 @@ module.exports = {
     'array-bracket-spacing': ['error', 'never'],
     'brace-style': ['error', 'stroustrup'],
     'block-scoped-var': 'error',
-    'comma-dangle': ['error', 'never'],
+    'comma-dangle': ['warn', 'never'],
     'comma-spacing': ['warn', { 'before': false, 'after': true }],
     'comma-style': ['error', 'last'],
     'consistent-this': ['error', 'self'],
