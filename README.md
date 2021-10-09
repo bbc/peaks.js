@@ -385,10 +385,10 @@ var options = {
     // Returns a string for the playhead timestamp label
     formatPlayheadTime: function,
 
-    // Show current time next to the play head
+    // Show current time next to the playhead
     showPlayheadTime: false,
 
-    // Precision of time label of play head and point/segment markers
+    // Precision of time label of playhead and point/segment markers
     timeLabelPrecision: 2,
 
     // Color of the axis gridlines
