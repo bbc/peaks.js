@@ -68,7 +68,7 @@
     "babel-plugin-istanbul": "~6.0.0",
     "chai": "~4.3.4",
     "copyfiles": "~2.4.1",
-    "eslint": "~7.32.0",
+    "eslint": "~8.0.0",
     "jsdoc": "~3.6.7",
     "karma": "~6.3.3",
     "karma-browserstack-launcher": "~1.6.0",
@@ -95,6 +95,6 @@
   },
   "peerDependencies": {
     "konva": ">= 8.2.2 < 9",
-    "waveform-data": ">= 4.2.1 < 5"
+    "waveform-data": ">= 4.3.0 < 5"
   }
 }
