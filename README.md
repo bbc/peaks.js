@@ -262,7 +262,7 @@ To generate a JSON format waveform data file:
 audiowaveform -i sample.mp3 -o sample.json -b 8
 ```
 
-Refer to the audiowaveform [documentation](https://github.com/bbc/audiowaveform) documentation for full details of the available command line options, or use the manual page:
+Refer to the audiowaveform [documentation](https://github.com/bbc/audiowaveform) for full details of the available command line options, or use the manual page:
 
 ```bash
 man audiowaveform
