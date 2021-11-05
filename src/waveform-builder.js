@@ -95,7 +95,7 @@ WaveformBuilder.prototype.init = function(options, callback) {
 
   if (options.audioContext) {
     // eslint-disable-next-line max-len
-    this._peaks.logger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
+    this._peaks._logger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
 
     options.webAudio = {
       audioContext: options.audioContext
@@ -357,7 +357,7 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
   var self = this;
 
   if (!url) {
-    self._peaks.logger('Peaks.init(): The mediaElement src is invalid');
+    self._peaks._logger('Peaks.init(): The mediaElement src is invalid');
     return;
   }
 

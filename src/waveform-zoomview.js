@@ -404,7 +404,7 @@ WaveformZoomView.prototype.setZoom = function(options) {
 
   if (scale < this._originalWaveformData.scale) {
     // eslint-disable-next-line max-len
-    this._peaks.logger('peaks.zoomview.setZoom(): zoom level must be at least ' + this._originalWaveformData.scale);
+    this._peaks._logger('peaks.zoomview.setZoom(): zoom level must be at least ' + this._originalWaveformData.scale);
     scale = this._originalWaveformData.scale;
   }
 

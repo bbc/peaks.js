@@ -374,9 +374,7 @@ Peaks.prototype._setOptions = function(opts) {
     }
   }
 
-  if (opts.logger) {
-    this.logger = opts.logger;
-  }
+  this._logger = this.options.logger;
 };
 
 /**

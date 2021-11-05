@@ -5,8 +5,11 @@ describe('Player', function() {
   context('with stub player', function() {
     var p;
     var player;
+    var logger;
 
     beforeEach(function(done) {
+      logger = sinon.spy();
+
       player = {
         init: sinon.spy(),
         destroy: sinon.spy(),
@@ -28,7 +31,7 @@ describe('Player', function() {
         dataUri: {
           json: 'base/test_data/sample.json'
         },
-        logger: sinon.spy(),
+        logger: logger,
         player: player
       };
 
@@ -146,7 +149,7 @@ describe('Player', function() {
       it("should call the player's seek() method", function() {
         p.player.seek(42);
 
-        expect(p.logger.notCalled);
+        expect(logger.notCalled);
         expect(player.seek.calledOnce);
         expect(player.seek).to.have.been.calledWith(42);
       });
@@ -154,7 +157,7 @@ describe('Player', function() {
       it('should log an error if the given time is not valid', function() {
         p.player.seek('6.0');
 
-        expect(p.logger.calledOnce);
+        expect(logger.calledOnce);
         expect(p.player.seek.notCalled);
       });
     });
@@ -163,7 +166,7 @@ describe('Player', function() {
       it('should log an error if a segment id is given', function() {
         p.player.playSegment('peaks.segment.0');
 
-        expect(p.logger.calledOnce);
+        expect(logger.calledOnce);
       });
 
       it("should call the player's seek(), play() and pause() method", function() {
@@ -171,7 +174,7 @@ describe('Player', function() {
 
         p.player.playSegment(segment);
 
-        expect(p.logger.notCalled);
+        expect(logger.notCalled);
 
         expect(player.seek.calledOnce);
         expect(player.seek).to.have.been.calledWith(segment.startTime);
@@ -190,8 +193,11 @@ describe('Player', function() {
 
   context('with media element player', function() {
     var p;
+    var logger;
 
     beforeEach(function(done) {
+      logger = sinon.spy();
+
       var options = {
         containers: {
           overview: document.getElementById('overview-container'),
@@ -273,7 +279,7 @@ describe('Player', function() {
       it('should log an error if the given time is not valid', function() {
         p.player.seek('6.0');
 
-        expect(p.logger.calledOnce);
+        expect(logger.calledOnce);
         expect(p.player.getCurrentTime()).to.equal(0.0);
       });
     });
@@ -282,7 +288,7 @@ describe('Player', function() {
       it('should log an error if a segment id is given', function() {
         p.player.playSegment('peaks.segment.0');
 
-        expect(p.logger.calledOnce);
+        expect(logger.calledOnce);
       });
 
       it('should play a given segment', function() {
@@ -294,7 +300,7 @@ describe('Player', function() {
         p.player.playSegment(segments[0]);
         p.player.pause();
 
-        expect(p.logger.notCalled);
+        expect(logger.notCalled);
       });
 
       it('should play a segment if an object with startTime and endTime values is given', function(done) {
