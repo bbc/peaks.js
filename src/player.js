@@ -144,7 +144,7 @@ Player.prototype.getDuration = function() {
 
 Player.prototype.seek = function(time) {
   if (!isValidTime(time)) {
-    this._peaks.logger('peaks.player.seek(): parameter must be a valid time, in seconds');
+    this._peaks._logger('peaks.player.seek(): parameter must be a valid time, in seconds');
     return;
   }
 

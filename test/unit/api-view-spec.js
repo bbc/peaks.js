@@ -3,15 +3,19 @@ import Peaks from '../../src/main';
 describe('WaveformView', function() {
   var p;
   var waveformLayerDraw;
+  var logger;
 
   beforeEach(function(done) {
+    logger = sinon.spy();
+
     var options = {
       containers: {
         overview: document.getElementById('overview-container'),
         zoomview: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json'
+      dataUri: 'base/test_data/sample.json',
+      logger: logger
     };
 
     Peaks.init(options, function(err, instance) {
@@ -158,6 +162,58 @@ describe('WaveformView', function() {
           view.showAxisLabels(false);
 
           expect(axisLayerDraw.callCount).to.equal(1);
+        });
+      });
+    });
+  });
+
+  describe('setZoom', function() {
+    describe('zoomview', function() {
+      context('with scale option', function() {
+        context('with target scale greater than the original waveform data', function() {
+          it('should set the new zoom level', function() {
+            var view = p.views.getView('zoomview');
+
+            view.setZoom({ scale: 512 });
+
+            expect(view._scale).to.equal(512);
+            expect(logger.notCalled);
+          });
+        });
+
+        context('with target scale lower than the original waveform data', function() {
+          it('should log an error and not change the zoom level', function() {
+            var view = p.views.getView('zoomview');
+
+            view.setZoom({ scale: 128 });
+
+            expect(view._scale).to.equal(256);
+            expect(logger.calledOnce);
+          });
+        });
+      });
+
+      context('with seconds option', function() {
+        context('with target scale greater than the original waveform data', function() {
+          it('should set the new zoom level', function() {
+            var view = p.views.getView('zoomview');
+
+            view.setZoom({ seconds: 10.0 });
+
+            expect(view._scale).to.equal(441);
+            expect(logger.notCalled);
+          });
+        });
+
+        context('with target scale lower than the original waveform data', function() {
+          it('should log an error and not change the zoom level', function() {
+            var view = p.views.getView('zoomview');
+
+            view.setZoom({ seconds: 1.0 });
+
+            expect(view._scale).to.equal(256);
+            expect(logger.calledOnce);
+          });
         });
       });
     });
