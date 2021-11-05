@@ -139,7 +139,8 @@
             multiChannel: false
           },
           zoomLevels: [128],
-          keyboard: true
+          keyboard: true,
+          logger: console.error.bind(console)
         };
 
         Peaks.init(options, function(err, peaksInstance) {
