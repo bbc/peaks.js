@@ -86,9 +86,13 @@ module.exports = function(config) {
     autoWatch: false,
 
     customLaunchers: {
-      'ChromeHeadlessWithoutAutoplayPolicy': {
+      ChromeHeadlessWithoutAutoplayPolicy: {
         base: 'ChromeHeadless',
         flags: ['--autoplay-policy=no-user-gesture-required']
+      },
+      FirefoxHeadless: {
+        base: 'Firefox',
+        flags: ['-headless']
       }
     },
 
