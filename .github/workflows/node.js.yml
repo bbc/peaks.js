@@ -18,8 +18,8 @@ jobs:
         include:
           - node-version: 16.x
             browser: "ChromeHeadlessWithoutAutoplayPolicy"
-          - node-version: 16.x
-            browser: "FirefoxHeadless"
+          # - node-version: 16.x
+          #   browser: "FirefoxHeadless"
 
     steps:
     - uses: actions/checkout@v2
