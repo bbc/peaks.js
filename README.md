@@ -130,7 +130,7 @@ To add the Peaks.js UMD bundle to your web page, add a `<script>` tag:
 
 The UMD bundle is available at [unpkg](https://unpkg.com/peaks.js) and [cdnjs](https://cdnjs.com/libraries/peaks.js).
 
-### ES module bundle
+### Install with npm
 
 We recommend that you use an ES module bundler.
 
