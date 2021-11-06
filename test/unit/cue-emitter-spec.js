@@ -188,12 +188,17 @@ describe('CueEmitter', function() {
   });
 
   describe('events', function() {
-    it('should update internal previous time when seeking', function() {
-      p.emit('player.timeupdate', 1.0);
-      expect(cueEmitter._previousTime).equals(1.0, 'did not move previous time');
-      p.emit('player.timeupdate', 2.0);
-      expect(cueEmitter._previousTime).equals(2.0, 'did not move previous time');
-    });
+    // Don't run this test in Firefox. The implementation varies depending
+    // on whether the window is visible, and we can't detect if we're running
+    // Firefox in headless mode.
+    if (!navigator.userAgent.match(/Firefox/)) {
+      it('should update internal previous time when seeking', function() {
+        p.emit('player.timeupdate', 1.0);
+        expect(cueEmitter._previousTime).equals(1.0, 'did not move previous time');
+        p.emit('player.timeupdate', 2.0);
+        expect(cueEmitter._previousTime).equals(2.0, 'did not move previous time');
+      });
+    }
 
     it('should emit point events during forward playback', function(done) {
       var emitted = [];
