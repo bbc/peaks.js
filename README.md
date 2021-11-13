@@ -77,6 +77,8 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.setZoom()](#viewsetzoomoptions)
     - [view.setStartTime()](#viewsetstarttimetime)
     - [view.setWheelMode()](#viewsetwheelmodemode)
+    - [view.enableDragScroll()](#viewenabledragscrollenable)
+    - [view.enableSeek()](#viewenableseekenable)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -1079,6 +1081,29 @@ Note that this method is not available on the overview waveform.
 ```js
 const view = instance.views.getView('zoomview');
 view.setWheelMode('scroll');
+```
+
+### `view.enableDragScroll(enable)`
+
+Enables or disables drag scrolling in the zoomable waveform view.
+
+Note that this method is not available on the overview waveform.
+
+```javascript
+const zoomview = peaksInstance.views.getView('zoomview');
+zoomview.enableDragScroll(false); // or true to re-enable
+```
+
+### `view.enableSeek(enable)`
+
+Enables or disables seeking the playback position by clicking in the waveform view.
+
+```js
+const overview = peaksInstance.views.getView('zoomview');
+const zoomview = peaksInstance.views.getView('zoomview');
+
+overview.enableSeek(false); // or true to re-enable
+zoomview.enableSeek(false);
 ```
 
 ## Zoom API
