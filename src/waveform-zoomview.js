@@ -61,6 +61,8 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._enableAutoScroll = true;
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
+  self._enableDragScroll = true;
+  self._enableSeek = true;
 
   if (self._viewOptions.formatPlayheadTime) {
     self._formatPlayheadTime = self._viewOptions.formatPlayheadTime;
@@ -126,6 +128,21 @@ function WaveformZoomView(waveformData, container, peaks) {
 
   self._syncPlayhead(time);
 
+  self._createMouseDragHandler();
+
+  self._onWheel = self._onWheel.bind(self);
+  self.setWheelMode(self._viewOptions.wheelMode);
+
+  self._onClick = self._onClick.bind(this);
+  self._onDblClick = self._onDblClick.bind(this);
+
+  self._stage.on('click', self._onClick);
+  self._stage.on('dblclick', self._onDblClick);
+}
+
+WaveformZoomView.prototype._createMouseDragHandler = function() {
+  var self = this;
+
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
       this.initialFrameOffset = self._frameOffset;
@@ -138,14 +155,14 @@ function WaveformZoomView(waveformData, container, peaks) {
       var diff = this.mouseDownX - mousePosX;
       var newFrameOffset = this.initialFrameOffset + diff;
 
-      if (newFrameOffset !== this.initialFrameOffset) {
+      if (self._enableDragScroll && newFrameOffset !== this.initialFrameOffset) {
         self._updateWaveform(newFrameOffset);
       }
     },
 
     onMouseUp: function(/* mousePosX */) {
       // Set playhead position only on click release, when not dragging.
-      if (!self._mouseDragHandler.isDragging()) {
+      if (self._enableSeek && !self._mouseDragHandler.isDragging()) {
         var time = self.pixelOffsetToTime(this.mouseDownX);
         var duration = self._getDuration();
 
@@ -161,16 +178,15 @@ function WaveformZoomView(waveformData, container, peaks) {
       }
     }
   });
+};
 
-  self._onWheel = self._onWheel.bind(self);
-  self.setWheelMode(self._viewOptions.wheelMode);
+WaveformZoomView.prototype.enableDragScroll = function(enable) {
+  this._enableDragScroll = enable;
+};
 
-  self._onClick = self._onClick.bind(this);
-  self._onDblClick = self._onDblClick.bind(this);
-
-  self._stage.on('click', self._onClick);
-  self._stage.on('dblclick', self._onDblClick);
-}
+WaveformZoomView.prototype.enableSeek = function(enable) {
+  this._enableSeek = enable;
+};
 
 WaveformZoomView.prototype._onClick = function(event) {
   this._clickHandler(event, 'zoomview.click');
