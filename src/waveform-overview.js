@@ -52,6 +52,7 @@ function WaveformOverview(waveformData, container, peaks) {
 
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
+  self._enableSeek = true;
 
   if (self._viewOptions.formatPlayheadTime) {
     self._formatPlayheadTime = self._viewOptions.formatPlayheadTime;
@@ -128,8 +129,32 @@ function WaveformOverview(waveformData, container, peaks) {
 
   this._playheadLayer.updatePlayheadTime(time);
 
+  self._createMouseDragHandler();
+
+  self._onClick = self._onClick.bind(this);
+  self._onDblClick = self._onDblClick.bind(this);
+
+  self._stage.on('click', self._onClick);
+  self._stage.on('dblclick', self._onDblClick);
+}
+
+WaveformOverview.prototype._createMouseDragHandler = function() {
+  var self = this;
+
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
+      this._seek(mousePosX);
+    },
+
+    onMouseMove: function(mousePosX) {
+      this._seek(mousePosX);
+    },
+
+    _seek: function(mousePosX) {
+      if (!self._enableSeek) {
+        return;
+      }
+
       mousePosX = clamp(mousePosX, 0, self._width);
 
       var time = self.pixelsToTime(mousePosX);
@@ -141,21 +166,6 @@ function WaveformOverview(waveformData, container, peaks) {
         time = duration;
       }
 
-      self._playheadLayer.updatePlayheadTime(time);
-
-      peaks.player.seek(time);
-    },
-
-    onMouseMove: function(mousePosX) {
-      mousePosX = clamp(mousePosX, 0, self._width);
-
-      var time = self.pixelsToTime(mousePosX);
-      var duration = self._getDuration();
-
-      if (time > duration) {
-        time = duration;
-      }
-
       // Update the playhead position. This gives a smoother visual update
       // than if we only use the player.timeupdate event.
       self._playheadLayer.updatePlayheadTime(time);
@@ -163,13 +173,11 @@ function WaveformOverview(waveformData, container, peaks) {
       self._peaks.player.seek(time);
     }
   });
+};
 
-  self._onClick = self._onClick.bind(this);
-  self._onDblClick = self._onDblClick.bind(this);
-
-  self._stage.on('click', self._onClick);
-  self._stage.on('dblclick', self._onDblClick);
-}
+WaveformOverview.prototype.enableSeek = function(enable) {
+  this._enableSeek = enable;
+};
 
 WaveformOverview.prototype._onClick = function(event) {
   this._clickHandler(event, 'overview.click');

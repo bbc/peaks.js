@@ -157,6 +157,14 @@
           <button data-action="toggle-overview">Show/hide overview waveform</button>
           <button data-action="destroy">Destroy</button>
         </div>
+        <div>
+          <input type="checkbox" id="enable-drag-scroll" checked>
+          <label for="enable-drag-scroll">Enable drag scroll (zoomview only)</label>
+        </div>
+        <div>
+          <input type="checkbox" id="enable-seek" checked>
+          <label for="enable-seek">Enable click to seek</label>
+        </div>
       </div>
     </div>
 
@@ -426,6 +434,19 @@
           document.getElementById('playhead-time').addEventListener('change', function(event) {
             var view = peaksInstance.views.getView('zoomview');
             view.showPlayheadTime(event.target.checked);
+          });
+
+          document.getElementById('enable-drag-scroll').addEventListener('change', function(event) {
+            var zoomview = peaksInstance.views.getView('zoomview');
+            zoomview.enableDragScroll(event.target.checked);
+          });
+
+          document.getElementById('enable-seek').addEventListener('change', function(event) {
+            var overview = peaksInstance.views.getView('overview');
+            var zoomview = peaksInstance.views.getView('zoomview');
+
+            zoomview.enableSeek(event.target.checked);
+            overview.enableSeek(event.target.checked);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {
