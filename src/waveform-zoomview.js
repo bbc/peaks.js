@@ -41,8 +41,9 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._originalWaveformData = waveformData;
 
   if (self._enableWaveformCache) {
-    self._waveformData = {};
-    self._waveformData[self._originalWaveformData.scale] = self._originalWaveformData;
+    self._waveformData = new Map();
+    self._waveformData.set(self._originalWaveformData.scale, self._originalWaveformData);
+    self._waveformScales = [self._originalWaveformData.scale];
   }
 
   // Bind event handlers
@@ -475,11 +476,29 @@ WaveformZoomView.prototype._resampleData = function(options) {
   var scale = options.scale;
 
   if (this._enableWaveformCache) {
-    if (!this._waveformData[scale]) {
-      this._waveformData[scale] = this._originalWaveformData.resample(options);
+    if (!this._waveformData.has(scale)) {
+      var sourceWaveform = this._originalWaveformData;
+
+      // Resample from the next lowest available zoom level
+
+      for (var  i = 0; i < this._waveformScales.length; i++) {
+        if (this._waveformScales[i] < scale) {
+          sourceWaveform = this._waveformData.get(this._waveformScales[i]);
+        }
+        else {
+          break;
+        }
+      }
+
+      this._waveformData.set(scale, sourceWaveform.resample(options));
+
+      this._waveformScales.push(scale);
+      this._waveformScales.sort(function(a, b) {
+        return a - b; // Ascending order
+      });
     }
 
-    this._data = this._waveformData[scale];
+    this._data = this._waveformData.get(scale);
   }
   else {
     this._data = this._originalWaveformData.resample(options);
