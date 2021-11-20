@@ -38,7 +38,6 @@ function SegmentMarker(options) {
   this._marker        = options.marker;
   this._segmentShape  = options.segmentShape;
   this._draggable     = options.draggable;
-  this._layer         = options.layer;
   this._startMarker   = options.startMarker;
 
   this._onDrag      = options.onDrag;
