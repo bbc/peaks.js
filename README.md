@@ -1442,8 +1442,9 @@ Peaks instances emit events to enable you to extend its behaviour according to y
 Registers a callback function to handle events emitted by a Peaks instance.
 
 ```js
-function dblClickHandler(time) {
-  console.log('dblclick', time);
+function dblClickHandler(event) {
+  console.log(event.time); // Time position where the user clicked
+  console.log(event.evt.ctrlKey); // Access MouseEvent attributes
 }
 
 instance.on('zoomview.dblclick', dblClickHandler);
@@ -1471,12 +1472,12 @@ The following sections describe the available events.
 
 #### Views
 
-| Event name          | Arguments     |
-| ------------------- | ------------- |
-| `overview.click`    | `Number time` |
-| `overview.dblclick` | `Number time` |
-| `zoomview.click`    | `Number time` |
-| `zoomview.dblclick` | `Number time` |
+| Event name          | Arguments                      |
+| ------------------- | ------------------------------ |
+| `overview.click`    | `WaveformViewClickEvent event` |
+| `overview.dblclick` | `WaveformViewClickEvent event` |
+| `zoomview.click`    | `WaveformViewClickEvent event` |
+| `zoomview.dblclick` | `WaveformViewClickEvent event` |
 
 #### Waveforms
 
@@ -1491,13 +1492,13 @@ The following sections describe the available events.
 | `segments.add`            | `Array<Segment> segments`             |
 | `segments.remove`         | `Array<Segment> segments`             |
 | `segments.remove_all`     | (none)                                |
-| `segments.dragstart`      | `Segment segment`, `Boolean inMarker` |
-| `segments.dragged`        | `Segment segment`, `Boolean inMarker` |
-| `segments.dragend`        | `Segment segment`, `Boolean inMarker` |
-| `segments.mouseenter`     | `Segment segment`                     |
-| `segments.mouseleave`     | `Segment segment`                     |
-| `segments.click`          | `Segment segment`                     |
-| `segments.dblclick`       | `Segment segment`                     |
+| `segments.dragstart`      | `SegmentDragEvent event`              |
+| `segments.dragged`        | `SegmentDragEvent event`              |
+| `segments.dragend`        | `SegmentDragEvent event`              |
+| `segments.mouseenter`     | `SegmentEvent event`                  |
+| `segments.mouseleave`     | `SegmentEvent event`                  |
+| `segments.click`          | `SegmentEvent event`                  |
+| `segments.dblclick`       | `SegmentEvent event`                  |
 
 #### Points
 
@@ -1506,13 +1507,13 @@ The following sections describe the available events.
 | `points.add`              | `Array<Point> points` |
 | `points.remove`           | `Array<Point> points` |
 | `points.remove_all`       | (none)                |
-| `points.dragstart`        | `Point point`         |
-| `points.dragmove`         | `Point point`         |
-| `points.dragend`          | `Point point`         |
-| `points.mouseenter`       | `Point point`         |
-| `points.mouseleave`       | `Point point`         |
-| `points.click`            | `Point point`         |
-| `points.dblclick`         | `Point point`         |
+| `points.dragstart`        | `PointEvent event`    |
+| `points.dragmove`         | `PointEvent event`    |
+| `points.dragend`          | `PointEvent event`    |
+| `points.mouseenter`       | `PointEvent event`    |
+| `points.mouseleave`       | `PointEvent event`    |
+| `points.click`            | `PointEvent event`    |
+| `points.dblclick`         | `PointEvent event`    |
 
 #### Cue Events
 
@@ -1529,6 +1530,11 @@ To enable cue events, call `Peaks.init()` with the `{ emitCueEvents: true }` opt
 Registers a callback function to handle a single one-time event emitted by a Peaks instance.
 
 ```js
+function dblClickHandler(event) {
+  console.log(event.time); // Time position where the user clicked
+  console.log(event.evt.ctrlKey); // Access MouseEvent attributes
+}
+
 instance.once('zoomview.dblclick', dblClickHandler);
 ```
 

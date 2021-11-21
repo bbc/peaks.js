@@ -60,16 +60,16 @@ SegmentMarker.prototype._bindDefaultEventHandlers = function() {
   var self = this;
 
   if (self._draggable) {
-    self._group.on('dragmove', function() {
-      self._onDrag(self);
+    self._group.on('dragmove', function(event) {
+      self._onDrag(event, self);
     });
 
-    self._group.on('dragstart', function() {
-      self._onDragStart(self);
+    self._group.on('dragstart', function(event) {
+      self._onDragStart(event, self);
     });
 
-    self._group.on('dragend', function() {
-      self._onDragEnd(self);
+    self._group.on('dragend', function(event) {
+      self._onDragEnd(event, self);
     });
   }
 };

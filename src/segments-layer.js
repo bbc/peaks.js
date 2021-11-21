@@ -113,8 +113,8 @@ SegmentsLayer.prototype._onSegmentsRemoveAll = function() {
   this._segmentShapes = {};
 };
 
-SegmentsLayer.prototype._onSegmentsDragged = function(segment) {
-  this._updateSegment(segment);
+SegmentsLayer.prototype._onSegmentsDragged = function(event) {
+  this._updateSegment(event.segment);
 };
 
 /**
