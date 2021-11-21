@@ -183,7 +183,7 @@ PointsLayer.prototype._addPointMarker = function(point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDragMove = function(point) {
+PointsLayer.prototype._onPointHandleDragMove = function(event, point) {
   var pointMarker = this._pointMarkers[point.id];
 
   var markerX = pointMarker.getX();
@@ -196,7 +196,10 @@ PointsLayer.prototype._onPointHandleDragMove = function(point) {
     pointMarker.timeUpdated(point.time);
   }
 
-  this._peaks.emit('points.dragmove', point);
+  this._peaks.emit('points.dragmove', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
@@ -231,16 +234,22 @@ PointsLayer.prototype._onPointHandleDblClick = function(point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDragStart = function(point) {
-  this._peaks.emit('points.dragstart', point);
+PointsLayer.prototype._onPointHandleDragStart = function(event, point) {
+  this._peaks.emit('points.dragstart', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDragEnd = function(point) {
-  this._peaks.emit('points.dragend', point);
+PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
+  this._peaks.emit('points.dragend', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**

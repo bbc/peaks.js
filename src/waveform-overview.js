@@ -191,7 +191,10 @@ WaveformOverview.prototype._clickHandler = function(event, eventName) {
   var pixelIndex = event.evt.layerX;
   var time = this.pixelsToTime(pixelIndex);
 
-  this._peaks.emit(eventName, time);
+  this._peaks.emit(eventName, {
+    time: time,
+    evt: event.evt
+  });
 };
 
 WaveformOverview.prototype.getName = function() {

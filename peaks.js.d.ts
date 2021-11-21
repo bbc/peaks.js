@@ -285,31 +285,56 @@ declare module 'peaks.js' {
 
   type SetSourceCallback = (error: Error) => void;
 
+  interface WaveformViewClickEvent {
+    time: number;
+    evt: MouseEvent;
+  }
+
+  interface PointEvent {
+    point: Point;
+    evt: MouseEvent;
+  }
+
+  interface SegmentEvent {
+    segment: Segment;
+    evt: MouseEvent;
+  }
+
+  interface SegmentDragEvent {
+    segment: Segment;
+    startMarker: boolean;
+    evt: MouseEvent;
+  }
+
   interface InstanceEvents {
     'peaks.ready': () => void;
     'points.add': (points: Point[]) => void;
-    'points.dblclick': (point: Point) => void;
-    'points.dragend': (point: Point) => void;
-    'points.dragmove': (point: Point) => void;
-    'points.dragstart': (point: Point) => void;
-    'points.mouseenter': (point: Point) => void;
-    'points.mouseleave': (point: Point) => void;
+    'points.click': (event: PointEvent) => void;
+    'points.dblclick': (event: PointEvent) => void;
+    'points.dragend': (event: PointEvent) => void;
+    'points.dragmove': (event: PointEvent) => void;
+    'points.dragstart': (event: PointEvent) => void;
+    'points.mouseenter': (event: PointEvent) => void;
+    'points.mouseleave': (event: PointEvent) => void;
     'points.remove_all': () => void;
     'points.remove': (points: Point[]) => void;
     'points.enter': (point: Point) => void;
     'segments.add': (segments: Segment[]) => void;
-    'segments.dragstart': (segment: Segment, startMarker: boolean) => void;
-    'segments.dragged': (segment: Segment, startMarker: boolean) => void;
-    'segments.dragend': (segment: Segment, startMarker: boolean) => void;
+    'segments.dragstart': (event: SegmentDragEvent) => void;
+    'segments.dragged': (event: SegmentDragEvent) => void;
+    'segments.dragend': (event: SegmentDragEvent) => void;
     'segments.remove_all': () => void;
     'segments.remove': (segments: Segment[]) => void;
-    'segments.mouseenter': (segment: Segment) => void;
-    'segments.mouseleave': (segment: Segment) => void;
-    'segments.click': (segment: Segment) => void;
+    'segments.mouseenter': (event: SegmentEvent) => void;
+    'segments.mouseleave': (event: SegmentEvent) => void;
+    'segments.click': (event: SegmentEvent) => void;
+    'segments.dblclick': (event: SegmentEvent) => void;
     'segments.enter': (segment: Segment) => void;
     'segments.exit': (segment: Segment) => void;
-    'overview.dblclick': (time: number) => void;
-    'zoomview.dblclick': (time: number) => void;
+    'overview.click': (event: WaveformViewClickEvent) => void;
+    'zoomview.click': (event: WaveformViewClickEvent) => void;
+    'overview.dblclick': (event: WaveformViewClickEvent) => void;
+    'zoomview.dblclick': (event: WaveformViewClickEvent) => void;
     'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
   }
 

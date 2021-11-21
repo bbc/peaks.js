@@ -208,7 +208,10 @@ WaveformZoomView.prototype._clickHandler = function(event, eventName) {
   var mousePosX = event.evt.layerX;
   var time = this.pixelOffsetToTime(mousePosX);
 
-  this._peaks.emit(eventName, time);
+  this._peaks.emit(eventName, {
+    time: time,
+    evt: event.evt
+  });
 };
 
 WaveformZoomView.prototype.setWheelMode = function(mode) {
