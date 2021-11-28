@@ -3,56 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <title>Peaks.js Demo Page</title>
-    <style>
-      body {
-        font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
-        display: grid;
-        grid-template-columns: 200px auto 200px;
-      }
-
-      #zoomview-container {
-        height: 200px;
-        margin: 0 0 24px 0;
-        line-height: 0;
-        -moz-box-shadow: 3px 3px 20px #919191;
-        -webkit-box-shadow: 3px 3px 20px #919191;
-        box-shadow: 3px 3px 20px #919191;
-      }
-
-      #zoomview-container .konvajs-content {
-        width: 100% !important;
-      }
-
-      #demo-controls {
-        margin: 0 auto 24px auto;
-        display: flex;
-        align-items: center;
-      }
-
-      #demo-controls button {
-        background: #fff;
-        border: 1px solid #919191;
-        cursor: pointer;
-      }
-
-      #audio {
-        flex: 0 0 30%;
-      }
-
-      #controls {
-        flex: 1;
-        margin-left: 1em;
-      }
-
-      #seek-time {
-        width: 4em;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    <div id="margin-left">
-    </div>
-    <div id="main">
+    <div id="titles">
       <h1>Peaks.js</h1>
       <p>
         Peaks.js is a JavaScript library that allows you to display and
