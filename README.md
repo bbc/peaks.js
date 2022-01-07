@@ -155,7 +155,7 @@ To include Peaks.js in your web page, you need to add container `<div>` elements
 <div id="overview-container"></div>
 <audio>
   <source src="sample.mp3" type="audio/mpeg">
-  <source src="sample.ogg" type="audio/ogg">
+  <source src="sample.ogg" type="audio/ogg codecs='vorbis'">
 </audio>
 ```
 
