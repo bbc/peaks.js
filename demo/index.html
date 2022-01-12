@@ -280,9 +280,12 @@
         };
 
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container'),
-            overview: document.getElementById('overview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container'),
+            playheadClickTolerance: 3
+          },
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {

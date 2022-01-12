@@ -384,6 +384,10 @@ var options = {
     // Color of the playhead text
     playheadTextColor: '#aaa',
 
+    // Tolerance for clicks in the zoomview to be interpreted as
+    // dragging the playhead (pixels)
+    playheadClickTolerance: 3,
+
     // Returns a string for the playhead timestamp label
     formatPlayheadTime: function,
 

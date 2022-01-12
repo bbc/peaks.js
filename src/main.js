@@ -84,8 +84,9 @@ var defaultViewOptions = {
 
 var defaultZoomviewOptions = {
   // showPlayheadTime:    true,
-  waveformColor:       'rgba(0, 225, 128, 1)',
-  wheelMode:           'none'
+  playheadClickTolerance: 3,
+  waveformColor:          'rgba(0, 225, 128, 1)',
+  wheelMode:              'none'
   // zoomAdapter:         'static'
 };
 
@@ -181,6 +182,7 @@ function getZoomviewOptions(opts) {
     'playheadColor',
     'playheadTextColor',
     'formatPlayheadTime',
+    'playheadClickTolerance',
     'timeLabelPrecision',
     'axisGridlineColor',
     'showAxisLabels',

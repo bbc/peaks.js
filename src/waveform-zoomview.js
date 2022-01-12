@@ -81,6 +81,8 @@ function WaveformZoomView(waveformData, container, peaks) {
     };
   }
 
+  self._playheadClickTolerance = self._viewOptions.playheadClickTolerance;
+
   self._data = null;
   self._pixelLength = 0;
 
@@ -153,37 +155,76 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
-      this.initialFrameOffset = self._frameOffset;
-      this.mouseDownX = mousePosX;
+      this._seeking = false;
+
+      var playheadOffset = self._playheadLayer.getPlayheadOffset();
+
+      if (Math.abs(mousePosX - playheadOffset) <= self._playheadClickTolerance) {
+        this._seeking = true;
+      }
+
+      if (this._seeking) {
+        this._seek(mousePosX);
+      }
+      else {
+        this.initialFrameOffset = self._frameOffset;
+        this.mouseDownX = mousePosX;
+      }
     },
 
     onMouseMove: function(mousePosX) {
-      // Moving the mouse to the left increases the time position of the
-      // left-hand edge of the visible waveform.
-      var diff = this.mouseDownX - mousePosX;
-      var newFrameOffset = this.initialFrameOffset + diff;
+      if (this._seeking) {
+        this._seek(mousePosX);
+      }
+      else {
+        // Moving the mouse to the left increases the time position of the
+        // left-hand edge of the visible waveform.
+        var diff = this.mouseDownX - mousePosX;
+        var newFrameOffset = this.initialFrameOffset + diff;
 
-      if (self._enableDragScroll && newFrameOffset !== this.initialFrameOffset) {
-        self._updateWaveform(newFrameOffset);
+        if (self._enableDragScroll && newFrameOffset !== this.initialFrameOffset) {
+          self._updateWaveform(newFrameOffset);
+        }
       }
     },
 
     onMouseUp: function(/* mousePosX */) {
-      // Set playhead position only on click release, when not dragging.
-      if (self._enableSeek && !self._mouseDragHandler.isDragging()) {
-        var time = self.pixelOffsetToTime(this.mouseDownX);
-        var duration = self._getDuration();
+      if (!this._seeking) {
+        // Set playhead position only on click release, when not dragging.
+        if (self._enableSeek && !self._mouseDragHandler.isDragging()) {
+          var time = self.pixelOffsetToTime(this.mouseDownX);
+          var duration = self._getDuration();
 
-        // Prevent the playhead position from jumping by limiting click
-        // handling to the waveform duration.
-        if (time > duration) {
-          time = duration;
+          // Prevent the playhead position from jumping by limiting click
+          // handling to the waveform duration.
+          if (time > duration) {
+            time = duration;
+          }
+
+          self._playheadLayer.updatePlayheadTime(time);
+
+          self._peaks.player.seek(time);
         }
-
-        self._playheadLayer.updatePlayheadTime(time);
-
-        self._peaks.player.seek(time);
       }
+    },
+
+    _seek: function(mousePosX) {
+      mousePosX = clamp(mousePosX, 0, self._width);
+
+      var time = self.pixelsToTime(mousePosX + self._frameOffset);
+      var duration = self._getDuration();
+
+      // Prevent the playhead position from jumping by limiting click
+      // handling to the waveform duration.
+      if (time > duration) {
+        time = duration;
+      }
+
+      // Update the playhead position. This gives a smoother visual update
+      // than if we only use the player.timeupdate event.
+      self._playheadLayer.updatePlayheadTime(time);
+
+      self._peaks.player.seek(time);
     }
   });
 };
