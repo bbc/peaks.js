@@ -158,7 +158,8 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
 
       var playheadOffset = self._playheadLayer.getPlayheadOffset();
 
-      if (Math.abs(mousePosX - playheadOffset) <= self._playheadClickTolerance) {
+      if (self._enableSeek &&
+          Math.abs(mousePosX - playheadOffset) <= self._playheadClickTolerance) {
         this._seeking = true;
       }
 
