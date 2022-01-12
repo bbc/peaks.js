@@ -92,6 +92,7 @@ declare module 'peaks.js' {
 
   interface ZoomViewOptions extends ViewOptions {
     wheelMode?: "none" | "scroll";
+    playheadClickTolerance?: number;
   }
 
   interface OverviewOptions extends ViewOptions {
