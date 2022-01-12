@@ -69,7 +69,6 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._enableAutoScroll = true;
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
-  self._enableDragScroll = true;
   self._enableSeek = true;
 
   if (self._viewOptions.formatPlayheadTime) {
@@ -182,7 +181,7 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
         var diff = this.mouseDownX - mousePosX;
         var newFrameOffset = this.initialFrameOffset + diff;
 
-        if (self._enableDragScroll && newFrameOffset !== this.initialFrameOffset) {
+        if (newFrameOffset !== this.initialFrameOffset) {
           self._updateWaveform(newFrameOffset);
         }
       }
@@ -227,10 +226,6 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
       self._peaks.player.seek(time);
     }
   });
-};
-
-WaveformZoomView.prototype.enableDragScroll = function(enable) {
-  this._enableDragScroll = enable;
 };
 
 WaveformZoomView.prototype.enableSeek = function(enable) {

@@ -366,7 +366,6 @@ declare module 'peaks.js' {
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none') => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
-    enableDragScroll: (enable: boolean) => void;
   }
 
   interface PeaksInstance {
