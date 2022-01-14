@@ -35,13 +35,14 @@ function PointsLayer(peaks, view, allowEditing) {
 
   this._onPointsDrag = this._onPointsDrag.bind(this);
 
-  this._onPointHandleClick      = this._onPointHandleClick.bind(this);
-  this._onPointHandleDblClick   = this._onPointHandleDblClick.bind(this);
-  this._onPointHandleDragStart  = this._onPointHandleDragStart.bind(this);
-  this._onPointHandleDragMove   = this._onPointHandleDragMove.bind(this);
-  this._onPointHandleDragEnd    = this._onPointHandleDragEnd.bind(this);
-  this._onPointHandleMouseEnter = this._onPointHandleMouseEnter.bind(this);
-  this._onPointHandleMouseLeave = this._onPointHandleMouseLeave.bind(this);
+  this._onPointHandleClick       = this._onPointHandleClick.bind(this);
+  this._onPointHandleDblClick    = this._onPointHandleDblClick.bind(this);
+  this._onPointHandleDragStart   = this._onPointHandleDragStart.bind(this);
+  this._onPointHandleDragMove    = this._onPointHandleDragMove.bind(this);
+  this._onPointHandleDragEnd     = this._onPointHandleDragEnd.bind(this);
+  this._onPointHandleMouseEnter  = this._onPointHandleMouseEnter.bind(this);
+  this._onPointHandleMouseLeave  = this._onPointHandleMouseLeave.bind(this);
+  this._onPointHandleContextMenu = this._onPointHandleContextMenu.bind(this);
 
   this._onPointsUpdate    = this._onPointsUpdate.bind(this);
   this._onPointsAdd       = this._onPointsAdd.bind(this);
@@ -144,16 +145,17 @@ PointsLayer.prototype._createPointMarker = function(point) {
   });
 
   return new PointMarker({
-    point:        point,
-    draggable:    editable,
-    marker:       marker,
-    onClick:      this._onPointHandleClick,
-    onDblClick:   this._onPointHandleDblClick,
-    onDragStart:  this._onPointHandleDragStart,
-    onDragMove:   this._onPointHandleDragMove,
-    onDragEnd:    this._onPointHandleDragEnd,
-    onMouseEnter: this._onPointHandleMouseEnter,
-    onMouseLeave: this._onPointHandleMouseLeave
+    point:         point,
+    draggable:     editable,
+    marker:        marker,
+    onClick:       this._onPointHandleClick,
+    onDblClick:    this._onPointHandleDblClick,
+    onDragStart:   this._onPointHandleDragStart,
+    onDragMove:    this._onPointHandleDragMove,
+    onDragEnd:     this._onPointHandleDragEnd,
+    onMouseEnter:  this._onPointHandleMouseEnter,
+    onMouseLeave:  this._onPointHandleMouseLeave,
+    onContextMenu: this._onPointHandleContextMenu
   });
 };
 
@@ -250,6 +252,14 @@ PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
     point: point,
     evt: event.evt
   });
+};
+
+/**
+ * @param {Point} point
+ */
+
+PointsLayer.prototype._onPointHandleContextMenu = function(point) {
+  this._peaks.emit('points.contextmenu', point);
 };
 
 /**
