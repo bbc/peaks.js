@@ -482,6 +482,10 @@
             console.log('points.dblclick:', point);
           });
 
+          peaksInstance.on('points.contextmenu', function(point) {
+            console.log('points.contextmenu:', point);
+          });
+
           peaksInstance.on('points.dragstart', function(point) {
             console.log('points.dragstart:', point);
           });

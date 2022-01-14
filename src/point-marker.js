@@ -22,6 +22,7 @@ import Konva from 'konva/lib/Core';
  * @property {Function} onDragEnd
  * @property {Function} onMouseEnter
  * @property {Function} onMouseLeave
+ * @property {Function} onContextMenu
  */
 
 /**
@@ -38,13 +39,14 @@ function PointMarker(options) {
   this._marker    = options.marker;
   this._draggable = options.draggable;
 
-  this._onClick      = options.onClick;
-  this._onDblClick   = options.onDblClick;
-  this._onDragStart  = options.onDragStart;
-  this._onDragMove   = options.onDragMove;
-  this._onDragEnd    = options.onDragEnd;
-  this._onMouseEnter = options.onMouseEnter;
-  this._onMouseLeave = options.onMouseLeave;
+  this._onClick       = options.onClick;
+  this._onDblClick    = options.onDblClick;
+  this._onDragStart   = options.onDragStart;
+  this._onDragMove    = options.onDragMove;
+  this._onDragEnd     = options.onDragEnd;
+  this._onMouseEnter  = options.onMouseEnter;
+  this._onMouseLeave  = options.onMouseLeave;
+  this._onContextMenu = options.onContextMenu;
 
   this._dragBoundFunc = this._dragBoundFunc.bind(this);
 
@@ -87,6 +89,10 @@ PointMarker.prototype._bindDefaultEventHandlers = function() {
 
   self._group.on('mouseleave', function() {
     self._onMouseLeave(self._point);
+  });
+
+  self._group.on('contextmenu', function() {
+    self._onContextMenu(self._point);
   });
 };
 
