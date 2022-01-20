@@ -220,6 +220,10 @@ PointsLayer.prototype._onPointHandleMouseLeave = function(point) {
   this._peaks.emit('points.mouseleave', point);
 };
 
+/**
+ * @param {Point} point
+ */
+
 PointsLayer.prototype._onPointHandleClick = function(point) {
   this._peaks.emit('points.click', point);
 };
