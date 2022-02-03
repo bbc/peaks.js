@@ -62,8 +62,6 @@ function WaveformShape(options) {
   this._shape.hitFunc(this._waveformShapeHitFunc.bind(this));
 }
 
-// WaveformShape.prototype = Object.create(Konva.Shape.prototype);
-
 WaveformShape.prototype.setSegment = function(segment) {
   this._segment = segment;
 };
