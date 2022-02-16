@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 0.28.1 (2022/02/16)
+
+* (#442) Fixed `player.isPlaying()` (@chrisn)
+
 ## 0.28.0 (2022/02/03)
 
 * (#430) Fixed scrolling of non-editable waveform segments (@chrisn)
