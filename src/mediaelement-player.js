@@ -44,19 +44,16 @@ MediaElementPlayer.prototype.init = function(player) {
   self._player = player;
   self._listeners = [];
   self._duration = self.getDuration();
-  self._isPlaying = false;
 
   self._addMediaListener('timeupdate', function() {
     self._peaks.emit('player.timeupdate', self.getCurrentTime());
   });
 
   self._addMediaListener('playing', function() {
-    self._isPlaying = true;
     self._peaks.emit('player.playing', self.getCurrentTime());
   });
 
   self._addMediaListener('pause', function() {
-    self._isPlaying = false;
     self._peaks.emit('player.pause', self.getCurrentTime());
   });
 
@@ -114,7 +111,7 @@ MediaElementPlayer.prototype.pause = function() {
 };
 
 MediaElementPlayer.prototype.isPlaying = function() {
-  return this._isPlaying;
+  return !this._mediaElement.paused;
 };
 
 MediaElementPlayer.prototype.isSeeking = function() {
