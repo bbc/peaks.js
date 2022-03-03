@@ -144,9 +144,11 @@ function WaveformZoomView(waveformData, container, peaks) {
 
   self._onClick = self._onClick.bind(this);
   self._onDblClick = self._onDblClick.bind(this);
+  self._onContextMenu = self._onContextMenu.bind(this);
 
   self._stage.on('click', self._onClick);
   self._stage.on('dblclick', self._onDblClick);
+  self._stage.on('contextmenu', self._onContextMenu);
 }
 
 WaveformZoomView.prototype._createMouseDragHandler = function() {
@@ -239,6 +241,10 @@ WaveformZoomView.prototype._onClick = function(event) {
 
 WaveformZoomView.prototype._onDblClick = function(event) {
   this._clickHandler(event, 'zoomview.dblclick');
+};
+
+WaveformZoomView.prototype._onContextMenu = function(event) {
+  this._clickHandler(event, 'zoomview.contextmenu');
 };
 
 WaveformZoomView.prototype._clickHandler = function(event, eventName) {

@@ -133,9 +133,11 @@ function WaveformOverview(waveformData, container, peaks) {
 
   self._onClick = self._onClick.bind(this);
   self._onDblClick = self._onDblClick.bind(this);
+  self._onContextMenu = self._onContextMenu.bind(this);
 
   self._stage.on('click', self._onClick);
   self._stage.on('dblclick', self._onDblClick);
+  self._stage.on('contextmenu', self._onContextMenu);
 }
 
 WaveformOverview.prototype._createMouseDragHandler = function() {
@@ -185,6 +187,10 @@ WaveformOverview.prototype._onClick = function(event) {
 
 WaveformOverview.prototype._onDblClick = function(event) {
   this._clickHandler(event, 'overview.dblclick');
+};
+
+WaveformOverview.prototype._onContextMenu = function(event) {
+  this._clickHandler(event, 'overview.contextmenu');
 };
 
 WaveformOverview.prototype._clickHandler = function(event, eventName) {

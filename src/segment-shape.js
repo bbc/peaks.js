@@ -41,10 +41,11 @@ function SegmentShape(segment, peaks, layer, view) {
     segment: segment
   });
 
-  this._onMouseEnter = this._onMouseEnter.bind(this);
-  this._onMouseLeave = this._onMouseLeave.bind(this);
-  this._onClick      = this._onClick.bind(this);
-  this._onDblClick   = this._onDblClick.bind(this);
+  this._onMouseEnter  = this._onMouseEnter.bind(this);
+  this._onMouseLeave  = this._onMouseLeave.bind(this);
+  this._onClick       = this._onClick.bind(this);
+  this._onDblClick    = this._onDblClick.bind(this);
+  this._onContextMenu = this._onContextMenu.bind(this);
 
   // Set up event handlers to show/hide the segment label text when the user
   // hovers the mouse over the segment.
@@ -52,6 +53,7 @@ function SegmentShape(segment, peaks, layer, view) {
   this._waveformShape.on('mouseleave', this._onMouseLeave);
   this._waveformShape.on('click', this._onClick);
   this._waveformShape.on('dblclick', this._onDblClick);
+  this._waveformShape.on('contextmenu', this._onContextMenu);
 
   // Event handlers for markers
   this._onSegmentHandleDrag      = this._onSegmentHandleDrag.bind(this);
@@ -205,6 +207,10 @@ SegmentShape.prototype._onClick = function() {
 
 SegmentShape.prototype._onDblClick = function() {
   this._peaks.emit('segments.dblclick', this._segment);
+};
+
+SegmentShape.prototype._onContextMenu = function() {
+  this._peaks.emit('segments.contextmenu', this._segment);
 };
 
 /**
