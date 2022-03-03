@@ -1,5 +1,35 @@
 # Peaks.js
 
+## 0.28.1 (2022/02/16)
+
+* (#442) Fixed `player.isPlaying()` (@chrisn)
+
+## 0.28.0 (2022/02/03)
+
+* (#430) Fixed scrolling of non-editable waveform segments (@chrisn)
+
+* The playhead in the zoomable waveform view can now be dragged to seek the
+  playhead position. There is a new option, `playheadClickTolerance` that
+  controls how close you have to click to drag the playhead rather than
+  scroll the waveform view (@chrisn)
+
+* Added some features to speed up changing the zoom level:
+
+  * Added a cache of waveform data at each zoom level used. This avoids
+    unnecessary re-calculation, but increases memory usage. This is enabled
+    by default and can be disabled by setting the `waveformCache` option
+    to `false`
+
+  * Instead of resampling the original waveform data to the target zoom
+    level, resample from the next lowest available zoom level (@chrisn)
+
+* (#421) Added `view.enableSeek()` function to allow seeking the playback
+  position by clicking in the waveform view to be disabled (@chrisn)
+
+* (#417) Fixed `logger` option (@rowild, @chrisn)
+
+* (#418, #423) Fixed documentation links (@rowild)
+
 ## 0.27.0 (2021/11/04)
 
 * (#310) Updated to use ES module format, Replaced browserify with Rollup and
