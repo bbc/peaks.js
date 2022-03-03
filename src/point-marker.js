@@ -16,6 +16,7 @@ import Konva from 'konva/lib/Core';
  * @property {Point} point Point object with timestamp.
  * @property {Boolean} draggable If true, marker is draggable.
  * @property {Marker} marker
+ * @property {Function} onclick
  * @property {Function} onDblClick
  * @property {Function} onDragStart
  * @property {Function} onDragMove Callback during mouse drag operations.
