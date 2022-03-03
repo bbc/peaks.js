@@ -483,6 +483,7 @@
           });
 
           peaksInstance.on('points.contextmenu', function(point) {
+            event.preventDefault();
             console.log('points.contextmenu:', point);
           });
 
@@ -528,6 +529,11 @@
             console.log('segments.dblclick:', event);
           });
 
+          peaksInstance.on('segments.contextmenu', function(segment) {
+            event.preventDefault();
+            console.log('segments.contextmenu:', segment);
+          });
+
           peaksInstance.on('zoomview.click', function(event) {
             console.log('zoomview.click:', event);
           });
@@ -536,12 +542,23 @@
             console.log('zoomview.dblclick:', event);
           });
 
+          peaksInstance.on('zoomview.contextmenu', function(time) {
+            event.preventDefault();
+            console.log('zoomview.contextmenu:', time);
+          });
+
           peaksInstance.on('overview.click', function(time) {
             console.log('overview.click:', time);
           });
 
           peaksInstance.on('overview.dblclick', function(time) {
             console.log('overview.dblclick:', time);
+          });
+
+          peaksInstance.on('overview.contextmenu', function(time) {
+            console.log(event);
+            event.preventDefault();
+            console.log('overview.contextmenu:', time);
           });
 
           peaksInstance.on('player.seeked', function(time) {
