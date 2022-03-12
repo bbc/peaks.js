@@ -205,38 +205,55 @@ PointsLayer.prototype._onPointHandleDragMove = function(event, point) {
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleMouseEnter = function(point) {
-  this._peaks.emit('points.mouseenter', point);
+PointsLayer.prototype._onPointHandleMouseEnter = function(event, point) {
+  this._peaks.emit('points.mouseenter', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleMouseLeave = function(point) {
-  this._peaks.emit('points.mouseleave', point);
+PointsLayer.prototype._onPointHandleMouseLeave = function(event, point) {
+  this._peaks.emit('points.mouseleave', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleClick = function(point) {
-  this._peaks.emit('points.click', point);
+PointsLayer.prototype._onPointHandleClick = function(event, point) {
+  this._peaks.emit('points.click', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDblClick = function(point) {
-  this._peaks.emit('points.dblclick', point);
+PointsLayer.prototype._onPointHandleDblClick = function(event, point) {
+  this._peaks.emit('points.dblclick', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
@@ -248,6 +265,7 @@ PointsLayer.prototype._onPointHandleDragStart = function(event, point) {
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
@@ -259,11 +277,15 @@ PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
 };
 
 /**
+ * @param {KonvaEventObject} event
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleContextMenu = function(point) {
-  this._peaks.emit('points.contextmenu', point);
+PointsLayer.prototype._onPointHandleContextMenu = function(event, point) {
+  this._peaks.emit('points.contextmenu', {
+    point: point,
+    evt: event.evt
+  });
 };
 
 /**
