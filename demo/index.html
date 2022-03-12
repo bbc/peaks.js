@@ -482,9 +482,10 @@
             console.log('points.dblclick:', event);
           });
 
-          peaksInstance.on('points.contextmenu', function(point) {
-            event.preventDefault();
-            console.log('points.contextmenu:', point);
+          peaksInstance.on('points.contextmenu', function(event) {
+            event.evt.preventDefault();
+
+            console.log('points.contextmenu:', event);
           });
 
           peaksInstance.on('points.dragstart', function(event) {
@@ -529,9 +530,10 @@
             console.log('segments.dblclick:', event);
           });
 
-          peaksInstance.on('segments.contextmenu', function(segment) {
-            event.preventDefault();
-            console.log('segments.contextmenu:', segment);
+          peaksInstance.on('segments.contextmenu', function(event) {
+            event.evt.preventDefault();
+
+            console.log('segments.contextmenu:', event);
           });
 
           peaksInstance.on('zoomview.click', function(event) {
@@ -542,23 +544,24 @@
             console.log('zoomview.dblclick:', event);
           });
 
-          peaksInstance.on('zoomview.contextmenu', function(time) {
-            event.preventDefault();
-            console.log('zoomview.contextmenu:', time);
+          peaksInstance.on('zoomview.contextmenu', function(event) {
+            event.evt.preventDefault();
+
+            console.log('zoomview.contextmenu:', event);
           });
 
-          peaksInstance.on('overview.click', function(time) {
-            console.log('overview.click:', time);
+          peaksInstance.on('overview.click', function(event) {
+            console.log('overview.click:', event);
           });
 
-          peaksInstance.on('overview.dblclick', function(time) {
-            console.log('overview.dblclick:', time);
+          peaksInstance.on('overview.dblclick', function(event) {
+            console.log('overview.dblclick:', event);
           });
 
-          peaksInstance.on('overview.contextmenu', function(time) {
-            console.log(event);
-            event.preventDefault();
-            console.log('overview.contextmenu:', time);
+          peaksInstance.on('overview.contextmenu', function(event) {
+            event.evt.preventDefault();
+
+            console.log('overview.contextmenu:', event);
           });
 
           peaksInstance.on('player.seeked', function(time) {

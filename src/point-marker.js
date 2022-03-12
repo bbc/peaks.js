@@ -76,30 +76,24 @@ PointMarker.prototype._bindDefaultEventHandlers = function() {
     self._onDragEnd(event, self._point);
   });
 
-  self._group.on('click', function() {
-    self._onClick(self._point);
+  self._group.on('click', function(event) {
+    self._onClick(event, self._point);
   });
 
-  self._group.on('dblclick', function() {
-    self._onDblClick(self._point);
+  self._group.on('dblclick', function(event) {
+    self._onDblClick(event, self._point);
   });
 
   self._group.on('mouseenter', function(event) {
-    self._onMouseEnter({
-      point: self._point,
-      evt: event.evt
-    });
+    self._onMouseEnter(event, self._point);
   });
 
   self._group.on('mouseleave', function(event) {
-    self._onMouseLeave({
-      point: self._point,
-      evt: event.evt
-    });
+    self._onMouseLeave(event, self._point);
   });
 
-  self._group.on('contextmenu', function() {
-    self._onContextMenu(self._point);
+  self._group.on('contextmenu', function(event) {
+    self._onContextMenu(event, self._point);
   });
 };
 

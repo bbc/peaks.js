@@ -221,8 +221,11 @@ SegmentShape.prototype._onDblClick = function(event) {
   });
 };
 
-SegmentShape.prototype._onContextMenu = function() {
-  this._peaks.emit('segments.contextmenu', this._segment);
+SegmentShape.prototype._onContextMenu = function(event) {
+  this._peaks.emit('segments.contextmenu', {
+    segment: this._segment,
+    evt: event.evt
+  });
 };
 
 /**
