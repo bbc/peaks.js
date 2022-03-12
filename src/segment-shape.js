@@ -184,29 +184,41 @@ SegmentShape.prototype._createMarkers = function() {
   }
 };
 
-SegmentShape.prototype._onMouseEnter = function() {
+SegmentShape.prototype._onMouseEnter = function(event) {
   if (this._label) {
     this._label.moveToTop();
     this._label.show();
   }
 
-  this._peaks.emit('segments.mouseenter', this._segment);
+  this._peaks.emit('segments.mouseenter', {
+    segment: this._segment,
+    evt: event.evt
+  });
 };
 
-SegmentShape.prototype._onMouseLeave = function() {
+SegmentShape.prototype._onMouseLeave = function(event) {
   if (this._label) {
     this._label.hide();
   }
 
-  this._peaks.emit('segments.mouseleave', this._segment);
+  this._peaks.emit('segments.mouseleave', {
+    segment: this._segment,
+    evt: event.evt
+  });
 };
 
-SegmentShape.prototype._onClick = function() {
-  this._peaks.emit('segments.click', this._segment);
+SegmentShape.prototype._onClick = function(event) {
+  this._peaks.emit('segments.click', {
+    segment: this._segment,
+    evt: event.evt
+  });
 };
 
-SegmentShape.prototype._onDblClick = function() {
-  this._peaks.emit('segments.dblclick', this._segment);
+SegmentShape.prototype._onDblClick = function(event) {
+  this._peaks.emit('segments.dblclick', {
+    segment: this._segment,
+    evt: event.evt
+  });
 };
 
 SegmentShape.prototype._onContextMenu = function() {
@@ -217,7 +229,7 @@ SegmentShape.prototype._onContextMenu = function() {
  * @param {SegmentMarker} segmentMarker
  */
 
-SegmentShape.prototype._onSegmentHandleDrag = function(segmentMarker) {
+SegmentShape.prototype._onSegmentHandleDrag = function(event, segmentMarker) {
   var width = this._view.getWidth();
 
   var startMarker = segmentMarker.isStartMarker();
@@ -242,27 +254,39 @@ SegmentShape.prototype._onSegmentHandleDrag = function(segmentMarker) {
     segmentMarker.timeUpdated(this._segment.endTime);
   }
 
-  this._peaks.emit('segments.dragged', this._segment, startMarker);
+  this._peaks.emit('segments.dragged', {
+    segment: this._segment,
+    startMarker: startMarker,
+    evt: event.evt
+  });
 };
 
 /**
  * @param {SegmentMarker} segmentMarker
  */
 
-SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker) {
+SegmentShape.prototype._onSegmentHandleDragStart = function(event, segmentMarker) {
   var startMarker = segmentMarker.isStartMarker();
 
-  this._peaks.emit('segments.dragstart', this._segment, startMarker);
+  this._peaks.emit('segments.dragstart', {
+    segment: this._segment,
+    startMarker: startMarker,
+    evt: event.evt
+  });
 };
 
 /**
  * @param {SegmentMarker} segmentMarker
  */
 
-SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker) {
+SegmentShape.prototype._onSegmentHandleDragEnd = function(event, segmentMarker) {
   var startMarker = segmentMarker.isStartMarker();
 
-  this._peaks.emit('segments.dragend', this._segment, startMarker);
+  this._peaks.emit('segments.dragend', {
+    segment: this._segment,
+    startMarker: startMarker,
+    evt: event.evt
+  });
 };
 
 SegmentShape.prototype.fitToView = function() {

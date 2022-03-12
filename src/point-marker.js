@@ -64,16 +64,16 @@ function PointMarker(options) {
 PointMarker.prototype._bindDefaultEventHandlers = function() {
   var self = this;
 
-  self._group.on('dragstart', function() {
-    self._onDragStart(self._point);
+  self._group.on('dragstart', function(event) {
+    self._onDragStart(event, self._point);
   });
 
-  self._group.on('dragmove', function() {
-    self._onDragMove(self._point);
+  self._group.on('dragmove', function(event) {
+    self._onDragMove(event, self._point);
   });
 
-  self._group.on('dragend', function() {
-    self._onDragEnd(self._point);
+  self._group.on('dragend', function(event) {
+    self._onDragEnd(event, self._point);
   });
 
   self._group.on('click', function() {
@@ -84,12 +84,18 @@ PointMarker.prototype._bindDefaultEventHandlers = function() {
     self._onDblClick(self._point);
   });
 
-  self._group.on('mouseenter', function() {
-    self._onMouseEnter(self._point);
+  self._group.on('mouseenter', function(event) {
+    self._onMouseEnter({
+      point: self._point,
+      evt: event.evt
+    });
   });
 
-  self._group.on('mouseleave', function() {
-    self._onMouseLeave(self._point);
+  self._group.on('mouseleave', function(event) {
+    self._onMouseLeave({
+      point: self._point,
+      evt: event.evt
+    });
   });
 
   self._group.on('contextmenu', function() {

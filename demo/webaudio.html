@@ -241,36 +241,6 @@
               peaksInstance.segments.removeById(id);
             }
           });
-
-          // Points mouse events
-
-          peaksInstance.on('points.mouseenter', function(point) {
-            console.log('points.mouseenter:', point);
-          });
-
-          peaksInstance.on('points.mouseleave', function(point) {
-            console.log('points.mouseleave:', point);
-          });
-
-          peaksInstance.on('points.click', function(point) {
-            console.log('points.click:', point);
-          });
-
-          peaksInstance.on('points.dblclick', function(point) {
-            console.log('points.dblclick:', point);
-          });
-
-          peaksInstance.on('points.dragstart', function(point) {
-            console.log('points.dragstart:', point);
-          });
-
-          peaksInstance.on('points.dragmove', function(point) {
-            console.log('points.dragmove:', point);
-          });
-
-          peaksInstance.on('points.dragend', function(point) {
-            console.log('points.dragend:', point);
-          });
         });
       })(peaks);
     </script>
