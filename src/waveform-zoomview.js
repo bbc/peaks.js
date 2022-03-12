@@ -65,6 +65,7 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
   self._enableSeek = true;
+  self._enableSegmentDragging = false;
 
   if (self._viewOptions.formatPlayheadTime) {
     self._formatPlayheadTime = self._viewOptions.formatPlayheadTime;
@@ -335,6 +336,17 @@ WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
   );
 
   this._updateWaveform(newFrameOffset);
+};
+
+WaveformZoomView.prototype.enableSegmentDragging = function(enable) {
+  this._enableSegmentDragging = enable;
+
+  // Update all existing segments
+  this._segmentsLayer.enableSegmentDragging(enable);
+};
+
+WaveformZoomView.prototype._isSegmentDraggingEnabled = function() {
+  return this._enableSegmentDragging;
 };
 
 WaveformZoomView.prototype.getName = function() {

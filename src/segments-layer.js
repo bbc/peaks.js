@@ -60,6 +60,14 @@ SegmentsLayer.prototype.isEditingEnabled = function() {
   return this._allowEditing;
 };
 
+SegmentsLayer.prototype.enableSegmentDragging = function(enable) {
+  for (var segmentId in this._segmentShapes) {
+    if (objectHasProperty(this._segmentShapes, segmentId)) {
+      this._segmentShapes[segmentId].enableSegmentDragging(enable);
+    }
+  }
+};
+
 SegmentsLayer.prototype.formatTime = function(time) {
   return this._view.formatTime(time);
 };

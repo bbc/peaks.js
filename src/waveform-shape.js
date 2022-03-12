@@ -34,7 +34,14 @@ import Konva from 'konva/lib/Core';
 function WaveformShape(options) {
   this._color = options.color;
 
+  this._dragBoundFunc = this._dragBoundFunc.bind(this);
+
   var shapeOptions = {};
+
+  if (options.view._isSegmentDraggingEnabled()) {
+    shapeOptions.draggable = true;
+    shapeOptions.dragBoundFunc = this._dragBoundFunc;
+  }
 
   if (isString(options.color)) {
     shapeOptions.fill = options.color;
@@ -61,6 +68,14 @@ function WaveformShape(options) {
   this._shape.sceneFunc(this._sceneFunc.bind(this));
   this._shape.hitFunc(this._waveformShapeHitFunc.bind(this));
 }
+
+WaveformShape.prototype.getX = function() {
+  return this._shape.getX();
+};
+
+WaveformShape.prototype.setX = function(x) {
+  return this._shape.setX(x);
+};
 
 WaveformShape.prototype.setSegment = function(segment) {
   this._segment = segment;
@@ -256,6 +271,24 @@ WaveformShape.prototype.addToLayer = function(layer) {
   layer.add(this._shape);
 };
 
+WaveformShape.prototype.enableSegmentDragging = function(enable) {
+  this._shape.setDraggable(enable);
+
+  if (enable) {
+    this._shape.setDragBoundFunc(this._dragBoundFunc);
+  }
+  else {
+    this._shape.setDragBoundFunc(null);
+  }
+};
+
+WaveformShape.prototype._dragBoundFunc = function(pos) {
+  return {
+    x: pos.x,
+    y: this._shape.getAbsolutePosition().y
+  };
+};
+
 WaveformShape.prototype.destroy = function() {
   this._shape.destroy();
   this._shape = null;
@@ -263,6 +296,10 @@ WaveformShape.prototype.destroy = function() {
 
 WaveformShape.prototype.on = function(event, handler) {
   this._shape.on(event, handler);
+};
+
+WaveformShape.prototype.off = function(event, handler) {
+  this._shape.off(event, handler);
 };
 
 /**

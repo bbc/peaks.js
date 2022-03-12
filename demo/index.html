@@ -88,6 +88,8 @@
         <div>
           <input type="checkbox" id="enable-seek" checked>
           <label for="enable-seek">Enable click to seek</label>
+          <input type="checkbox" id="enable-segment-dragging">
+          <label for="enable-segment-dragging">Enable segment dragging</label>
         </div>
       </div>
     </div>
@@ -371,6 +373,12 @@
 
             zoomview.enableSeek(event.target.checked);
             overview.enableSeek(event.target.checked);
+          });
+
+          document.getElementById('enable-segment-dragging').addEventListener('change', function(event) {
+            var zoomview = peaksInstance.views.getView('zoomview');
+
+            zoomview.enableSegmentDragging(event.target.checked);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {

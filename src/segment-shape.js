@@ -34,6 +34,7 @@ function SegmentShape(segment, peaks, layer, view) {
   this._startMarker   = null;
   this._endMarker     = null;
   this._color         = segment.color;
+  this._draggable     = false;
 
   this._waveformShape = new WaveformShape({
     color:   segment.color,
@@ -54,6 +55,15 @@ function SegmentShape(segment, peaks, layer, view) {
   this._waveformShape.on('click', this._onClick);
   this._waveformShape.on('dblclick', this._onDblClick);
   this._waveformShape.on('contextmenu', this._onContextMenu);
+
+  this._onSegmentDragStart = this._onSegmentDragStart.bind(this);
+  this._onSegmentDrag = this._onSegmentDrag.bind(this);
+
+  if (this._segment.editable && this._view._isSegmentDraggingEnabled()) {
+    this._waveformShape.on('dragmove', this._onSegmentDrag);
+    this._waveformShape.on('dragstart', this._onSegmentDragStart);
+    this._draggable = true;
+  }
 
   // Event handlers for markers
   this._onSegmentHandleDrag      = this._onSegmentHandleDrag.bind(this);
@@ -226,6 +236,53 @@ SegmentShape.prototype._onContextMenu = function(event) {
     segment: this._segment,
     evt: event.evt
   });
+};
+
+SegmentShape.prototype.enableSegmentDragging = function(enable) {
+  if (!this._draggable && enable) {
+    this._waveformShape.on('dragmove', this._onSegmentDrag);
+    this._waveformShape.on('dragstart', this._onSegmentDragStart);
+  }
+  else if (this._draggable && !enable) {
+    this._waveformShape.off('dragmove', this._onSegmentDrag);
+    this._waveformShape.off('dragstart', this._onSegmentDragStart);
+  }
+
+  this._waveformShape.enableSegmentDragging(enable);
+
+  this._draggable = enable;
+};
+
+SegmentShape.prototype._onSegmentDragStart = function() {
+  this._dragStartX = 0; // this._waveformShape.getX();
+  this._dragStartTime = this._segment.startTime;
+  this._dragEndTime = this._segment.endTime;
+};
+
+SegmentShape.prototype._onSegmentDrag = function(event) {
+  const x = this._waveformShape.getX();
+  const offsetX = x - this._dragStartX;
+
+  // Prevent the segment from jumping randomly. Not sure
+  // what causes this.
+  if (offsetX !== 0) {
+    var timeOffset = this._view.pixelsToTime(offsetX);
+
+    // The WaveformShape for a segment fills the canvas width
+    // but only draws a subset of the horizontal range. When dragged
+    // we need to keep the shape object in its position but
+    // update the segment start and end time so that the right
+    // subset is drawn.
+    this._segment._setStartTime(this._dragStartTime + timeOffset);
+    this._segment._setEndTime(this._dragEndTime + timeOffset);
+    this._waveformShape.setX(0);
+
+    this._peaks.emit('segments.dragged', {
+      segment: this._segment,
+      startMarker: false,
+      evt: event.evt
+    });
+  }
 };
 
 /**

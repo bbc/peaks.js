@@ -200,6 +200,10 @@ WaveformOverview.prototype._clickHandler = function(event, eventName) {
   });
 };
 
+WaveformOverview.prototype._isSegmentDraggingEnabled = function() {
+  return false;
+};
+
 WaveformOverview.prototype.getName = function() {
   return 'overview';
 };
