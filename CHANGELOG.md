@@ -1,5 +1,15 @@
 # Peaks.js
 
+## 1.0.0 (2022/03/12)
+
+* (#427) Changed all mouse and click event handlers to also expose the
+  MouseEvent or PointerEvent. This is a breaking API change, please refer to
+  doc/migration-guide.md for details of how to update your application
+  (@chrisn)
+
+* (#441) Added `zoomview.contextmenu`, `overview.contextmenu`,
+  `points.contextmenu`, and `segments.contextmenu` events (@rowild)
+
 ## 0.28.1 (2022/02/16)
 
 * (#442) Fixed `player.isPlaying()` (@chrisn)
