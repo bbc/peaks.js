@@ -303,77 +303,101 @@ Peaks.init(options, function(err, peaksInstance) {
 
   // Points mouse events
 
-  peaksInstance.on('points.mouseenter', function(point) {
-    console.log('points.mouseenter:', point);
+  peaksInstance.on('points.mouseenter', function(event) {
+    console.log('points.mouseenter:', event);
   });
 
-  peaksInstance.on('points.mouseleave', function(point) {
-    console.log('points.mouseleave:', point);
+  peaksInstance.on('points.mouseleave', function(event) {
+    console.log('points.mouseleave:', event);
   });
 
-  peaksInstance.on('points.click', function(point) {
-    console.log('points.click:', point);
+  peaksInstance.on('points.click', function(event) {
+    console.log('points.click:', event);
   });
 
-  peaksInstance.on('points.dblclick', function(point) {
-    console.log('points.dblclick:', point);
+  peaksInstance.on('points.dblclick', function(event) {
+    console.log('points.dblclick:', event);
   });
 
-  peaksInstance.on('points.dragstart', function(point) {
-    console.log('points.dragstart:', point);
+  peaksInstance.on('points.contextmenu', function(event) {
+    event.evt.preventDefault();
+
+    console.log('points.contextmenu:', event);
   });
 
-  peaksInstance.on('points.dragmove', function(point) {
-    console.log('points.dragmove:', point);
+  peaksInstance.on('points.dragstart', function(event) {
+    console.log('points.dragstart:', event);
   });
 
-  peaksInstance.on('points.dragend', function(point) {
-    console.log('points.dragend:', point);
+  peaksInstance.on('points.dragmove', function(event) {
+    console.log('points.dragmove:', event);
+  });
+
+  peaksInstance.on('points.dragend', function(event) {
+    console.log('points.dragend:', event);
   });
 
   // Segments mouse events
 
-  peaksInstance.on('segments.dragstart', function(segment, startMarker) {
-    console.log('segments.dragstart:', segment, startMarker);
+  peaksInstance.on('segments.dragstart', function(event) {
+    console.log('segments.dragstart:', event);
   });
 
-  peaksInstance.on('segments.dragend', function(segment, startMarker) {
-    console.log('segments.dragend:', segment, startMarker);
+  peaksInstance.on('segments.dragend', function(event) {
+    console.log('segments.dragend:', event);
   });
 
-  peaksInstance.on('segments.dragged', function(segment, startMarker) {
-    console.log('segments.dragged:', segment, startMarker);
+  peaksInstance.on('segments.dragged', function(event) {
+    console.log('segments.dragged:', event);
   });
 
-  peaksInstance.on('segments.mouseenter', function(segment) {
-    console.log('segments.mouseenter:', segment);
+  peaksInstance.on('segments.mouseenter', function(event) {
+    console.log('segments.mouseenter:', event);
   });
 
-  peaksInstance.on('segments.mouseleave', function(segment) {
-    console.log('segments.mouseleave:', segment);
+  peaksInstance.on('segments.mouseleave', function(event) {
+    console.log('segments.mouseleave:', event);
   });
 
-  peaksInstance.on('segments.click', function(segment) {
-    console.log('segments.click:', segment);
+  peaksInstance.on('segments.click', function(event) {
+    console.log('segments.click:', event);
   });
 
-  peaksInstance.on('segments.dblclick', function(segment) {
-    console.log('segments.dblclick:', segment);
+  peaksInstance.on('segments.dblclick', function(event) {
+    console.log('segments.dblclick:', event);
   });
 
-  peaksInstance.on('zoomview.click', function(time) {
-    console.log('zoomview.click:', time);
+  peaksInstance.on('segments.contextmenu', function(event) {
+    event.evt.preventDefault();
+
+    console.log('segments.contextmenu:', event);
   });
 
-  peaksInstance.on('zoomview.dblclick', function(time) {
-    console.log('zoomview.dblclick:', time);
+  peaksInstance.on('zoomview.click', function(event) {
+    console.log('zoomview.click:', event);
   });
 
-  peaksInstance.on('overview.click', function(time) {
-    console.log('overview.click:', time);
+  peaksInstance.on('zoomview.dblclick', function(event) {
+    console.log('zoomview.dblclick:', event);
   });
 
-  peaksInstance.on('overview.dblclick', function(time) {
-    console.log('overview.dblclick:', time);
+  peaksInstance.on('zoomview.contextmenu', function(event) {
+    event.evt.preventDefault();
+
+    console.log('zoomview.contextmenu:', event);
+  });
+
+  peaksInstance.on('overview.click', function(event) {
+    console.log('overview.click:', event);
+  });
+
+  peaksInstance.on('overview.dblclick', function(event) {
+    console.log('overview.dblclick:', event);
+  });
+
+  peaksInstance.on('overview.contextmenu', function(event) {
+    event.evt.preventDefault();
+
+    console.log('overview.contextmenu:', event);
   });
 });
