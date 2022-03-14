@@ -1,6 +1,6 @@
 # Peaks.js
 
-## 1.0.0 (2022/03/12)
+## 1.0.0 (2022/03/14)
 
 * (#427) Changed all mouse and click event handlers to also expose the
   MouseEvent or PointerEvent. This is a breaking API change, please refer to
