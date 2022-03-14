@@ -118,8 +118,8 @@ PointsLayer.prototype._onPointsRemoveAll = function() {
   this._pointMarkers = {};
 };
 
-PointsLayer.prototype._onPointsDrag = function(point) {
-  this._updatePoint(point);
+PointsLayer.prototype._onPointsDrag = function(event) {
+  this._updatePoint(event.point);
 };
 
 /**
