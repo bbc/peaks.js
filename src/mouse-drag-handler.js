@@ -64,6 +64,13 @@ function MouseDragHandler(stage, handlers) {
  */
 
 MouseDragHandler.prototype._mouseDown = function(event) {
+  if (event.type === 'mousedown' && event.evt.button !== 0) {
+    // Mouse drag only applies to the primary mouse button.
+    // The secondary button may be used to show a context menu
+    // and we don't want to also treat this as a mouse drag operation.
+    return;
+  }
+
   var marker = getMarkerObject(event.target);
 
   // Avoid interfering with drag/drop of point and segment markers.
