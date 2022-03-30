@@ -406,7 +406,7 @@ var options = {
     formatAxisTime: function,
 
     // Show or hide the axis label timestamps
-    showAxisTimeLabels: true,
+    showAxisLabels: true,
 
     // Font family for axis labels, playhead, and point and segment markers
     fontFamily: 'sans-serif',
@@ -471,7 +471,7 @@ var options = {
     formatAxisTime: function,
 
     // Show or hide the axis label timestamps
-    showAxisTimeLabels: true,
+    showAxisLabels: true,
 
     // Font family for axis labels, playhead, and point and segment markers
     fontFamily: 'sans-serif',
