@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 1.1.0 (2022/03/31)
+
+* (#447) Playhead dragging in the zoomable and overview waveform views is
+  now limited to only the primary mouse button (@chrisn)
+
 ## 1.0.0 (2022/03/14)
 
 * (#427) Changed all mouse and click event handlers to also expose the
