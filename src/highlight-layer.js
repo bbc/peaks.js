@@ -6,9 +6,10 @@
  * @module highlight-layer
  */
 
-import { clamp } from  './utils';
 import Konva from 'konva/lib/Core';
 import { Rect } from 'konva/lib/shapes/Rect';
+
+import { clamp } from  './utils';
 
 /**
  * Creates the highlight region that shows the position of the zoomable
@@ -73,7 +74,7 @@ HighlightLayer.prototype._createHighlightRect = function(startTime, endTime) {
 
   // Create with default y and height, the real values are set in fitToView().
   this._highlightRect = new Rect({
-    startOffset:  0,
+    x:            startOffset,
     y:            0,
     width:        endOffset - startOffset,
     stroke:       this._color,
