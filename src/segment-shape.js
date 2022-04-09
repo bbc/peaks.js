@@ -6,6 +6,8 @@
  * @module segment-shape
  */
 
+import { Rect } from 'konva/lib/shapes/Rect';
+
 import SegmentMarker from './segment-marker';
 import WaveformShape from './waveform-shape';
 
@@ -48,22 +50,9 @@ function SegmentShape(segment, peaks, layer, view) {
   this._onDblClick    = this._onDblClick.bind(this);
   this._onContextMenu = this._onContextMenu.bind(this);
 
-  // Set up event handlers to show/hide the segment label text when the user
-  // hovers the mouse over the segment.
-  this._waveformShape.on('mouseenter', this._onMouseEnter);
-  this._waveformShape.on('mouseleave', this._onMouseLeave);
-  this._waveformShape.on('click', this._onClick);
-  this._waveformShape.on('dblclick', this._onDblClick);
-  this._waveformShape.on('contextmenu', this._onContextMenu);
-
+  this._dragBoundFunc = this._dragBoundFunc.bind(this);
   this._onSegmentDragStart = this._onSegmentDragStart.bind(this);
   this._onSegmentDrag = this._onSegmentDrag.bind(this);
-
-  if (this._segment.editable && this._view._isSegmentDraggingEnabled()) {
-    this._waveformShape.on('dragmove', this._onSegmentDrag);
-    this._waveformShape.on('dragstart', this._onSegmentDragStart);
-    this._draggable = true;
-  }
 
   // Event handlers for markers
   this._onSegmentHandleDrag      = this._onSegmentHandleDrag.bind(this);
@@ -83,8 +72,52 @@ function SegmentShape(segment, peaks, layer, view) {
     this._label.hide();
   }
 
+  // Create with default y and height, the real values are set in fitToView().
+  var segmentStartOffset = this._view.timeToPixels(this._segment.startTime);
+  var segmentEndOffset   = this._view.timeToPixels(this._segment.endTime);
+  var frameStartOffset = this._view.getFrameOffset();
+  var startPixel = segmentStartOffset - frameStartOffset;
+
+  var overlayOffset = 20;
+
+  this._overlay = new Rect({
+    x:            startPixel,
+    y:            20,
+    width:        segmentEndOffset - segmentStartOffset,
+    stroke:       '#f00',
+    strokeWidth:  2,
+    height:       this._view.getHeight() - 2 * overlayOffset,
+    fill:         '#f00',
+    opacity:      0.3,
+    cornerRadius: 5,
+    draggable:    true,
+    dragBoundFunc: this._dragBoundFunc
+  });
+
+  // Set up event handlers to show/hide the segment label text when the user
+  // hovers the mouse over the segment.
+  this._overlay.on('mouseenter', this._onMouseEnter);
+  this._overlay.on('mouseleave', this._onMouseLeave);
+
+  this._overlay.on('click', this._onClick);
+  this._overlay.on('dblclick', this._onDblClick);
+  this._overlay.on('contextmenu', this._onContextMenu);
+
+  if (this._segment.editable && this._view._isSegmentDraggingEnabled()) {
+    this._overlay.on('dragmove', this._onSegmentDrag);
+    this._overlay.on('dragstart', this._onSegmentDragStart);
+    this._draggable = true;
+  }
+
   this._createMarkers();
 }
+
+SegmentShape.prototype._dragBoundFunc = function(pos) {
+  return {
+    x: pos.x,
+    y: this._overlay.getAbsolutePosition().y
+  };
+};
 
 SegmentShape.prototype.updatePosition = function() {
   var segmentStartOffset = this._view.timeToPixels(this._segment.startTime);
@@ -105,6 +138,13 @@ SegmentShape.prototype.updatePosition = function() {
 
   if (marker) {
     marker.setX(endPixel);
+  }
+
+  if (this._overlay) {
+    this._overlay.setAttrs({
+      x: startPixel,
+      width: endPixel - startPixel
+    });
   }
 };
 
@@ -133,6 +173,12 @@ SegmentShape.prototype.addToLayer = function(layer) {
 
   if (this._endMarker) {
     this._endMarker.addToLayer(layer);
+  }
+
+  if (this._overlay) {
+    layer.add(this._overlay);
+
+    layer.draw();
   }
 };
 
@@ -240,49 +286,52 @@ SegmentShape.prototype._onContextMenu = function(event) {
 
 SegmentShape.prototype.enableSegmentDragging = function(enable) {
   if (!this._draggable && enable) {
-    this._waveformShape.on('dragmove', this._onSegmentDrag);
-    this._waveformShape.on('dragstart', this._onSegmentDragStart);
+    this._overlay.on('dragmove', this._onSegmentDrag);
+    this._overlay.on('dragstart', this._onSegmentDragStart);
   }
   else if (this._draggable && !enable) {
-    this._waveformShape.off('dragmove', this._onSegmentDrag);
-    this._waveformShape.off('dragstart', this._onSegmentDragStart);
+    this._overlay.off('dragmove', this._onSegmentDrag);
+    this._overlay.off('dragstart', this._onSegmentDragStart);
   }
-
-  this._waveformShape.enableSegmentDragging(enable);
 
   this._draggable = enable;
 };
 
 SegmentShape.prototype._onSegmentDragStart = function() {
-  this._dragStartX = 0; // this._waveformShape.getX();
+  this._dragStartX = this._overlay.getX();
   this._dragStartTime = this._segment.startTime;
   this._dragEndTime = this._segment.endTime;
 };
 
 SegmentShape.prototype._onSegmentDrag = function(event) {
-  const x = this._waveformShape.getX();
+  const x = this._overlay.getX();
   const offsetX = x - this._dragStartX;
 
-  // Prevent the segment from jumping randomly. Not sure
-  // what causes this.
-  if (offsetX !== 0) {
-    var timeOffset = this._view.pixelsToTime(offsetX);
+  var timeOffset = this._view.pixelsToTime(offsetX);
 
-    // The WaveformShape for a segment fills the canvas width
-    // but only draws a subset of the horizontal range. When dragged
-    // we need to keep the shape object in its position but
-    // update the segment start and end time so that the right
-    // subset is drawn.
-    this._segment._setStartTime(this._dragStartTime + timeOffset);
-    this._segment._setEndTime(this._dragEndTime + timeOffset);
-    this._waveformShape.setX(0);
+  // The WaveformShape for a segment fills the canvas width
+  // but only draws a subset of the horizontal range. When dragged
+  // we need to keep the shape object in its position but
+  // update the segment start and end time so that the right
+  // subset is drawn.
 
-    this._peaks.emit('segments.dragged', {
-      segment: this._segment,
-      startMarker: false,
-      evt: event.evt
-    });
+  var startTime = this._dragStartTime + timeOffset;
+  var endTime = this._dragEndTime + timeOffset;
+
+  if (startTime < 0) {
+    startTime = 0;
+    endTime = this._segment.endTime - this._segment.startTime;
   }
+
+  this._segment._setStartTime(startTime);
+  this._segment._setEndTime(endTime);
+  this._overlay.setX(0);
+
+  this._peaks.emit('segments.dragged', {
+    segment: this._segment,
+    startMarker: false,
+    evt: event.evt
+  });
 };
 
 /**
@@ -359,6 +408,16 @@ SegmentShape.prototype.fitToView = function() {
   }
 
   this._waveformShape.setWaveformColor(this._color);
+
+  if (this._overlay) {
+    var height = this._view.getHeight();
+    var offset = 20;
+
+    this._overlay.setAttrs({
+      y: offset,
+      height: height - (offset * 2)
+    });
+  }
 };
 
 SegmentShape.prototype.destroy = function() {
@@ -374,6 +433,10 @@ SegmentShape.prototype.destroy = function() {
 
   if (this._endMarker) {
     this._endMarker.destroy();
+  }
+
+  if (this._overlay) {
+    this._overlay.destroy();
   }
 };
 

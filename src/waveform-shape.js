@@ -34,14 +34,7 @@ import Konva from 'konva/lib/Core';
 function WaveformShape(options) {
   this._color = options.color;
 
-  this._dragBoundFunc = this._dragBoundFunc.bind(this);
-
   var shapeOptions = {};
-
-  if (options.view._isSegmentDraggingEnabled()) {
-    shapeOptions.draggable = true;
-    shapeOptions.dragBoundFunc = this._dragBoundFunc;
-  }
 
   if (isString(options.color)) {
     shapeOptions.fill = options.color;
@@ -66,7 +59,6 @@ function WaveformShape(options) {
   this._segment = options.segment;
 
   this._shape.sceneFunc(this._sceneFunc.bind(this));
-  this._shape.hitFunc(this._waveformShapeHitFunc.bind(this));
 }
 
 WaveformShape.prototype.getX = function() {
@@ -230,63 +222,8 @@ WaveformShape.prototype._drawChannel = function(context, channel,
   context.fillShape(this._shape);
 };
 
-WaveformShape.prototype._waveformShapeHitFunc = function(context) {
-  if (!this._segment) {
-    return;
-  }
-
-  var frameOffset = this._view.getFrameOffset();
-  var viewWidth = this._view.getWidth();
-  var viewHeight = this._view.getHeight();
-
-  var startPixels = this._view.timeToPixels(this._segment.startTime);
-  var endPixels   = this._view.timeToPixels(this._segment.endTime);
-
-  var offsetY = 10;
-  var hitRectHeight = viewHeight - 2 * offsetY;
-
-  if (hitRectHeight < 0) {
-    hitRectHeight = 0;
-  }
-
-  var hitRectLeft = startPixels - frameOffset;
-  var hitRectWidth = endPixels - startPixels;
-
-  if (hitRectLeft < 0) {
-    hitRectWidth -= -hitRectLeft;
-    hitRectLeft = 0;
-  }
-
-  if (hitRectLeft + hitRectWidth > viewWidth) {
-    hitRectWidth -= hitRectLeft + hitRectWidth - viewWidth;
-  }
-
-  context.beginPath();
-  context.rect(hitRectLeft, offsetY, hitRectWidth, hitRectHeight);
-  context.closePath();
-  context.fillStrokeShape(this._shape);
-};
-
 WaveformShape.prototype.addToLayer = function(layer) {
   layer.add(this._shape);
-};
-
-WaveformShape.prototype.enableSegmentDragging = function(enable) {
-  this._shape.setDraggable(enable);
-
-  if (enable) {
-    this._shape.setDragBoundFunc(this._dragBoundFunc);
-  }
-  else {
-    this._shape.setDragBoundFunc(null);
-  }
-};
-
-WaveformShape.prototype._dragBoundFunc = function(pos) {
-  return {
-    x: pos.x,
-    y: this._shape.getAbsolutePosition().y
-  };
 };
 
 WaveformShape.prototype.destroy = function() {
