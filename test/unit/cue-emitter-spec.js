@@ -285,6 +285,8 @@ describe('CueEmitter', function() {
         init: function(eventEmitter) {
           this._eventEmitter = eventEmitter;
           this._currentTime = 0;
+
+          return Promise.resolve();
         },
 
         destroy: function() {

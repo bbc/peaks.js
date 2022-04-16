@@ -8,7 +8,7 @@ import sampleJsonData from '../../test_data/sample.json';
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
 var externalPlayer = {
-  init: function() {},
+  init: function() { return Promise.resolve(); },
   destroy: function() {},
   play: function() {},
   pause: function() {},
@@ -774,6 +774,27 @@ describe('Peaks', function() {
 
         p.setSource(options, function(error) {
           expect(error).to.be.an.instanceOf(MediaError);
+          done();
+        });
+      });
+
+      it('should preserve existing event handlers', function(done) {
+        var options = {
+          mediaUrl: '/base/test_data/unknown.mp3',
+          dataUri: {
+            arraybuffer: '/base/test_data/unknown.dat'
+          }
+        };
+
+        function onError() {
+          // Nothing
+        }
+
+        p.on('player.error', onError);
+
+        p.setSource(options, function(error) {
+          expect(error).to.be.an.instanceOf(MediaError);
+          expect(p.listeners('player.error').length).to.equal(1);
           done();
         });
       });

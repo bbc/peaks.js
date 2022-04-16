@@ -88,8 +88,6 @@
 
                 Tone.connectSeries(this.externalPlayer, Tone.Master);
 
-                eventEmitter.emit('player.canplay');
-
                 Tone.Transport.scheduleRepeat(() => {
                   var time = this.getCurrentTime();
                   eventEmitter.emit('player.timeupdate', time);
@@ -98,6 +96,8 @@
                     Tone.Transport.stop();
                   }
                 }, 0.25);
+
+                return Promise.resolve();
               },
 
               destroy: function() {

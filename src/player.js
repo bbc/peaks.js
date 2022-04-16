@@ -70,9 +70,11 @@ function Player(peaks, adapter) {
 
   validateAdapter(adapter);
   this._adapter = adapter;
-
-  this._adapter.init(peaks);
 }
+
+Player.prototype.init = function() {
+  return this._adapter.init(this._peaks);
+};
 
 /**
  * Cleans up the player object.
@@ -207,6 +209,10 @@ Player.prototype._playSegmentTimerCallback = function() {
   }
 
   window.requestAnimationFrame(this._playSegmentTimerCallback);
+};
+
+Player.prototype._setSource = function(options) {
+  return this._adapter.setSource(options);
 };
 
 export default Player;

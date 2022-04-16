@@ -269,7 +269,7 @@ Peaks.init = function(opts, callback) {
 
   var player = opts.player ?
     opts.player :
-    new MediaElementPlayer(instance, instance.options.mediaElement);
+    new MediaElementPlayer(instance.options.mediaElement);
 
   instance.player = new Player(instance, player);
   instance.segments = new WaveformSegments(instance);
@@ -280,48 +280,56 @@ Peaks.init = function(opts, callback) {
   // Setup the UI components
   var waveformBuilder = new WaveformBuilder(instance);
 
-  waveformBuilder.init(instance.options, function(err, waveformData) {
-    if (err) {
+  player.init(instance)
+    .then(function() {
+      waveformBuilder.init(instance.options, function(err, waveformData) {
+        if (err) {
+          if (callback) {
+            callback(err);
+          }
+
+          return;
+        }
+
+        instance._waveformData = waveformData;
+
+        if (overviewContainer) {
+          instance.views.createOverview(overviewContainer);
+        }
+
+        if (zoomviewContainer) {
+          instance.views.createZoomview(zoomviewContainer);
+        }
+
+        instance._addWindowResizeHandler();
+
+        if (opts.segments) {
+          instance.segments.add(opts.segments);
+        }
+
+        if (opts.points) {
+          instance.points.add(opts.points);
+        }
+
+        if (opts.emitCueEvents) {
+          instance._cueEmitter = new CueEmitter(instance);
+        }
+
+        // Allow applications to attach event handlers before emitting events,
+        // when initialising with local waveform data.
+
+        setTimeout(function() {
+          instance.emit('peaks.ready');
+        }, 0);
+
+        callback(null, instance);
+      });
+    })
+    .catch(function(err) {
       if (callback) {
         callback(err);
       }
-
-      return;
-    }
-
-    instance._waveformData = waveformData;
-
-    if (overviewContainer) {
-      instance.views.createOverview(overviewContainer);
-    }
-
-    if (zoomviewContainer) {
-      instance.views.createZoomview(zoomviewContainer);
-    }
-
-    instance._addWindowResizeHandler();
-
-    if (opts.segments) {
-      instance.segments.add(opts.segments);
-    }
-
-    if (opts.points) {
-      instance.points.add(opts.points);
-    }
-
-    if (opts.emitCueEvents) {
-      instance._cueEmitter = new CueEmitter(instance);
-    }
-
-    // Allow applications to attach event handlers before emitting events,
-    // when initialising with local waveform data.
-
-    setTimeout(function() {
-      instance.emit('peaks.ready');
-    }, 0);
-
-    callback(null, instance);
-  });
+    });
 };
 
 Peaks.prototype._setOptions = function(opts) {
@@ -414,7 +422,7 @@ Peaks.prototype._setOptions = function(opts) {
  *
  * @typedef {Object} PeaksSetSourceOptions
  * @global
- * @property {String} mediaUrl
+ * @property {String=} mediaUrl
  * @property {RemoteWaveformDataOptions=} dataUri
  * @property {LocalWaveformDataOptions=} waveformData
  * @property {WebAudioOptions=} webAudio
@@ -426,6 +434,8 @@ Peaks.prototype._setOptions = function(opts) {
  * Changes the audio or video media source associated with the {@link Peaks}
  * instance.
  *
+ * @see SetSourceHandler
+ *
  * @param {PeaksSetSourceOptions} options
  * @param {Function} callback
  */
@@ -433,64 +443,38 @@ Peaks.prototype._setOptions = function(opts) {
 Peaks.prototype.setSource = function(options, callback) {
   var self = this;
 
-  if (this.options.mediaElement && !options.mediaUrl) {
-    // eslint-disable-next-line max-len
-    callback(new Error('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
-    return;
-  }
-
-  function reset() {
-    self.removeAllListeners('player.canplay');
-    self.removeAllListeners('player.error');
-  }
-
-  function playerErrorHandler(err) {
-    reset();
-
-    // Return the MediaError object from the media element
-    callback(err);
-  }
-
-  function playerCanPlayHandler() {
-    reset();
-
-    if (!options.zoomLevels) {
-      options.zoomLevels = self.options.zoomLevels;
-    }
-
-    var waveformBuilder = new WaveformBuilder(self);
-
-    waveformBuilder.init(options, function(err, waveformData) {
-      if (err) {
-        callback(err);
-        return;
+  this.player._setSource(options)
+    .then(function() {
+      if (!options.zoomLevels) {
+        options.zoomLevels = self.options.zoomLevels;
       }
 
-      self._waveformData = waveformData;
+      var waveformBuilder = new WaveformBuilder(self);
 
-      ['overview', 'zoomview'].forEach(function(viewName) {
-        var view = self.views.getView(viewName);
-
-        if (view) {
-          view.setWaveformData(waveformData);
+      waveformBuilder.init(options, function(err, waveformData) {
+        if (err) {
+          callback(err);
+          return;
         }
+
+        self._waveformData = waveformData;
+
+        ['overview', 'zoomview'].forEach(function(viewName) {
+          var view = self.views.getView(viewName);
+
+          if (view) {
+            view.setWaveformData(waveformData);
+          }
+        });
+
+        self.zoom.setZoomLevels(options.zoomLevels);
+
+        callback();
       });
-
-      self.zoom.setZoomLevels(options.zoomLevels);
-
-      callback();
+    })
+    .catch(function(err) {
+      callback(err);
     });
-  }
-
-  self.once('player.canplay', playerCanPlayHandler);
-  self.once('player.error', playerErrorHandler);
-
-  if (this.options.mediaElement) {
-    self.options.mediaElement.setAttribute('src', options.mediaUrl);
-  }
-  else {
-    playerCanPlayHandler();
-  }
 };
 
 Peaks.prototype.getWaveformData = function() {

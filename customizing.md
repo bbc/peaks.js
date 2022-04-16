@@ -453,6 +453,10 @@ The player implementation should store the `eventEmitter` for later use.
 See the [Events](#events) section for more details for how your custom player
 should use the `eventEmitter` to communicate with the `Peaks` instance.
 
+To allow for initialization that may involve asynchronous operations, the
+player implementation should return a `Promise` that resolves when the
+external media player has been initialized.
+
 ```javascript
 init(eventEmitter) {
   this.eventEmitter = eventEmitter;
@@ -462,7 +466,7 @@ init(eventEmitter) {
   // Initialize the external player
   this.externalPlayer = new MediaPlayer();
 
-  this.eventEmitter.emit('player.canplay');
+  return Promise.resolve();
 }
 ```
 

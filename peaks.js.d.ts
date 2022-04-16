@@ -372,7 +372,7 @@ declare module 'peaks.js' {
   }
 
   interface PlayerAdapter {
-    init: (eventEmitter: EventEmitterForPlayerEvents) => void;
+    init: (eventEmitter: EventEmitterForPlayerEvents) => Promise<void>;
     destroy: () => void;
     play: () => Promise<void>;
     pause: () => void;

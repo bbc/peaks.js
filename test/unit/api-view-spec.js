@@ -177,7 +177,7 @@ describe('WaveformView', function() {
             view.setZoom({ scale: 512 });
 
             expect(view._scale).to.equal(512);
-            expect(logger.notCalled);
+            expect(logger.notCalled).to.equal(true);
           });
         });
 
@@ -188,7 +188,7 @@ describe('WaveformView', function() {
             view.setZoom({ scale: 128 });
 
             expect(view._scale).to.equal(256);
-            expect(logger.calledOnce);
+            expect(logger.calledOnce).to.equal(true);
           });
         });
       });
@@ -201,7 +201,7 @@ describe('WaveformView', function() {
             view.setZoom({ seconds: 10.0 });
 
             expect(view._scale).to.equal(441);
-            expect(logger.notCalled);
+            expect(logger.notCalled).to.equal(true);
           });
         });
 
@@ -212,7 +212,7 @@ describe('WaveformView', function() {
             view.setZoom({ seconds: 1.0 });
 
             expect(view._scale).to.equal(256);
-            expect(logger.calledOnce);
+            expect(logger.calledOnce).to.equal(true);
           });
         });
       });
