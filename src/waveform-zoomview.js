@@ -376,6 +376,14 @@ WaveformZoomView.prototype._keyboardScroll = function(direction, large) {
 
 WaveformZoomView.prototype.setWaveformData = function(waveformData) {
   this._originalWaveformData = waveformData;
+
+  if (this._enableWaveformCache) {
+    // Clear cached waveforms
+    this._waveformData.clear();
+    this._waveformData.set(this._originalWaveformData.scale, this._originalWaveformData);
+    this._waveformScales = [this._originalWaveformData.scale];
+  }
+
   // Don't update the UI here, call setZoom().
 };
 
