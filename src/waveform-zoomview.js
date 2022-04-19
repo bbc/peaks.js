@@ -39,12 +39,7 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._enableWaveformCache = self._options.waveformCache;
 
   self._originalWaveformData = waveformData;
-
-  if (self._enableWaveformCache) {
-    self._waveformData = new Map();
-    self._waveformData.set(self._originalWaveformData.scale, self._originalWaveformData);
-    self._waveformScales = [self._originalWaveformData.scale];
-  }
+  self._initWaveformCache();
 
   // Bind event handlers
   self._onTimeUpdate = self._onTimeUpdate.bind(self);
@@ -150,6 +145,14 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._stage.on('dblclick', self._onDblClick);
   self._stage.on('contextmenu', self._onContextMenu);
 }
+
+WaveformZoomView.prototype._initWaveformCache = function() {
+  if (this._enableWaveformCache) {
+    this._waveformData = new Map();
+    this._waveformData.set(this._originalWaveformData.scale, this._originalWaveformData);
+    this._waveformScales = [this._originalWaveformData.scale];
+  }
+};
 
 WaveformZoomView.prototype._createMouseDragHandler = function() {
   var self = this;
@@ -376,13 +379,8 @@ WaveformZoomView.prototype._keyboardScroll = function(direction, large) {
 
 WaveformZoomView.prototype.setWaveformData = function(waveformData) {
   this._originalWaveformData = waveformData;
-
-  if (this._enableWaveformCache) {
-    // Clear cached waveforms
-    this._waveformData.clear();
-    this._waveformData.set(this._originalWaveformData.scale, this._originalWaveformData);
-    this._waveformScales = [this._originalWaveformData.scale];
-  }
+  // Clear cached waveforms
+  this._initWaveformCache();
 
   // Don't update the UI here, call setZoom().
 };
