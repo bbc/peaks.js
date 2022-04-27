@@ -1,5 +1,16 @@
 # Peaks.js
 
+## 2.0.0 (2022/04/27)
+
+* (#450) Fixed waveform view initialisztion. This required a changed to
+  how custom player objects are initialized, to be async. If your application
+  uses a custom player object, this is a breaking API change. Please refer to
+  doc/migration-guide.md for details of how to update your application
+  (@chrisn)
+
+* The waveform cache is now cleared on calling `setSource()`. This would
+  cause the waveform to not be updated when it should (@chrisn)
+
 ## 1.1.0 (2022/03/31)
 
 * (#447) Playhead dragging in the zoomable and overview waveform views is
