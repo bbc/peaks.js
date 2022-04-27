@@ -663,7 +663,7 @@ var options = {
   // Diagnostic or error information is written to this function.
   // The default is console.error
   logger: console.error.bind(console)
-}
+};
 ```
 
 ## Marker customization
@@ -966,12 +966,12 @@ view.setTimeLabelPrecision(3); // Displays time of playhead/marker as hh:mm:ss.s
 
 Shows or hides the time axis timestamp labels.
 
-The initial setting is controlled by the `showAxisTimeLabels` configuration option
+The initial setting is controlled by the `showAxisLabels` configuration option
 (default: `true`).
 
 ```js
 const view = instance.views.getView('zoomview');
-view.showAxisTimeLabels(false); // Remove the time axis labels.
+view.showAxisLabels(false); // Remove the time axis labels.
 ```
 
 ### `view.enableAutoScroll(enable)`
