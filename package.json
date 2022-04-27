@@ -42,7 +42,7 @@
   "browserslist": [
     "last 2 versions",
     "> 0.2%",
-    "IE 10"
+    "not IE 11"
   ],
   "scripts": {
     "prebuild": "npm run lint",
