@@ -2,7 +2,7 @@
 
 ## 2.0.0 (2022/04/27)
 
-* (#450) Fixed waveform view initialisztion. This required a changed to
+* (#450) Fixed waveform view initialization. This required a changed to
   how custom player objects are initialized, to be async. If your application
   uses a custom player object, this is a breaking API change. Please refer to
   doc/migration-guide.md for details of how to update your application
