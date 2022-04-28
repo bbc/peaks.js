@@ -205,7 +205,7 @@ WaveformShape.prototype._drawChannel = function(context, channel,
     amplitude = channel.max_sample(x);
 
     lineX = x - frameOffset + 0.5;
-    lineY = top + WaveformShape.scaleY(amplitude, height, amplitudeScale) + 0.5;
+    lineY = top + WaveformShape.scaleY(amplitude, height, amplitudeScale) + 1.0;
 
     context.lineTo(lineX, lineY);
   }
