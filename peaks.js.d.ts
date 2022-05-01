@@ -203,7 +203,7 @@ declare module 'peaks.js' {
     /** Array of zoom levels in samples per pixel (big >> small) */
     zoomLevels?: number[];
     /** Enable or disable the waveform cache */
-    waveformCache: boolean;
+    waveformCache?: boolean;
     /** Bind keyboard controls */
     keyboard?: boolean;
     /** Keyboard nudge increment in seconds (left arrow/right arrow) */
