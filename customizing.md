@@ -24,6 +24,7 @@ This document describes how to customize various aspects of the waveform renderi
   - [Player Interface](#player-interface)
     - [player.init()](#playeriniteventemitter)
     - [player.destroy()](#playerdestroy)
+    - [player.setSource()](#playersetsourceoptions)
     - [player.play()](#playerplay)
     - [player.pause()](#playerpause)
     - [player.seek()](#playerseektime)
@@ -484,6 +485,22 @@ destroy() {
   // Release the external player
   this.externalPlayer.destroy();
   this.externalPlayer = null;
+}
+```
+
+#### player.setSource(options)
+
+Changes the audio or video media source associated with the Peaks instance.
+
+The `options` are the same as those passed to [`peaks.setSource()`](README.md#instancesetsourceoptions-callback).
+
+This function should return a Promise that resolves when the external media player has been updated.
+
+```javascript
+setSource(options) {
+  // Use the given options to update the external player
+
+  return Promise.resolve();
 }
 ```
 
