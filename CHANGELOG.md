@@ -1,5 +1,16 @@
 # Peaks.js
 
+## 2.0.1 (2022/06/02)
+
+* Improved support for page mode in mousewheel events (@chrisn)
+
+* Improved waveform rendering. The waveform now shows a horizontal line where
+  the audio amplitude is zero (@chrisn)
+
+* Added `setSource()` documentation for custom player objects (@chrisn)
+
+* Fixed `waveformCache` TypeScript definition (@tscz)
+
 ## 2.0.0 (2022/04/27)
 
 * (#450) Fixed waveform view initialization. This required a changed to
