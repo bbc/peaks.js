@@ -277,9 +277,10 @@ WaveformZoomView.prototype.setWheelMode = function(mode) {
 };
 
 WaveformZoomView.prototype._onWheel = function(event) {
-  var wheelEvent = event.evt;
-  var delta = wheelEvent.shiftKey ? wheelEvent.deltaY : wheelEvent.deltaX;
-  var offAxisDelta = wheelEvent.shiftKey ? wheelEvent.deltaX : wheelEvent.deltaY;
+  var wheelEvent   = event.evt;
+  var multiplier   = wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PAGE ? this._width : 1;
+  var delta        = (wheelEvent.shiftKey ? wheelEvent.deltaY : wheelEvent.deltaX) * multiplier;
+  var offAxisDelta = (wheelEvent.shiftKey ? wheelEvent.deltaX : wheelEvent.deltaY) * multiplier;
 
   // Ignore the event if it looks like the user is scrolling vertically
   // down the page
