@@ -288,7 +288,7 @@ WaveformZoomView.prototype._onWheel = function(event) {
     return;
   }
 
-  event.evt.preventDefault();
+  wheelEvent.preventDefault();
 
   var newFrameOffset = clamp(
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
