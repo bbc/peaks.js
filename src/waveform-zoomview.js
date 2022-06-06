@@ -277,15 +277,32 @@ WaveformZoomView.prototype.setWheelMode = function(mode) {
 };
 
 WaveformZoomView.prototype._onWheel = function(event) {
-  var wheelEvent   = event.evt;
-  var multiplier   = wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PAGE ? this._width : 1;
-  var delta        = (wheelEvent.shiftKey ? wheelEvent.deltaY : wheelEvent.deltaX) * multiplier;
-  var offAxisDelta = (wheelEvent.shiftKey ? wheelEvent.deltaX : wheelEvent.deltaY) * multiplier;
+  var wheelEvent = event.evt;
+  var delta;
 
-  // Ignore the event if it looks like the user is scrolling vertically
-  // down the page
-  if (Math.abs(delta) < Math.abs(offAxisDelta)) {
-    return;
+  if (wheelEvent.shiftKey) {
+    if (wheelEvent.deltaY !== 0) {
+      delta = wheelEvent.deltaY;
+    }
+    else if (wheelEvent.deltaX !== 0) {
+      delta = wheelEvent.deltaX;
+    }
+    else {
+      return;
+    }
+  }
+  else {
+    // Ignore the event if it looks like the user is scrolling vertically
+    // down the page
+    if (wheelEvent.deltaY !== 0) {
+      return;
+    }
+
+    delta = wheelEvent.deltaX;
+  }
+
+  if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    delta *= this._width;
   }
 
   wheelEvent.preventDefault();
