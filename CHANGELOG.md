@@ -4,8 +4,8 @@
 
 * Improved support for page mode in mousewheel events (@chrisn)
 
-* Improved waveform rendering. The waveform now shows a horizontal line where
-  the audio amplitude is zero (@chrisn)
+* (#374) Improved waveform rendering. The waveform now shows a horizontal
+  line where the audio amplitude is zero (@chrisn)
 
 * Added `setSource()` documentation for custom player objects (@chrisn)
 
