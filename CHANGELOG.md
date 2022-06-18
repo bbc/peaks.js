@@ -1,5 +1,18 @@
 # Peaks.js
 
+## 2.0.2 (2022/06/18)
+
+* (#454) Fixed mousewheel scrolling on Mac OS. The new behaviour is:
+
+  * Vertical trackpad gesture scrolls the page
+  * Horizontal trackpad gesture (with pointer over the waveform view) scrolls
+    the waveform
+  * Shift + either horizontal or vertical trackpad gesture (with pointer over
+    the waveform view) scrolls the waveform
+  * Mousewheel scrolls the page
+  * Shift + mousewheel (with pointer over the waveform view) scrolls the
+    waveform (@chrisn)
+
 ## 2.0.1 (2022/06/02)
 
 * Improved support for page mode in mousewheel events (@chrisn)
