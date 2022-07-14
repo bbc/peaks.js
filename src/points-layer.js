@@ -7,7 +7,7 @@
  */
 
 import PointMarker from './point-marker';
-import { objectHasProperty } from './utils';
+import { clamp, objectHasProperty } from './utils';
 import Konva from 'konva/lib/Core';
 
 var defaultFontFamily = 'sans-serif';
@@ -40,6 +40,7 @@ function PointsLayer(peaks, view, allowEditing) {
   this._onPointHandleDragStart   = this._onPointHandleDragStart.bind(this);
   this._onPointHandleDragMove    = this._onPointHandleDragMove.bind(this);
   this._onPointHandleDragEnd     = this._onPointHandleDragEnd.bind(this);
+  this._pointHandleDragBoundFunc = this._pointHandleDragBoundFunc.bind(this);
   this._onPointHandleMouseEnter  = this._onPointHandleMouseEnter.bind(this);
   this._onPointHandleMouseLeave  = this._onPointHandleMouseLeave.bind(this);
   this._onPointHandleContextMenu = this._onPointHandleContextMenu.bind(this);
@@ -118,10 +119,6 @@ PointsLayer.prototype._onPointsRemoveAll = function() {
   this._pointMarkers = {};
 };
 
-PointsLayer.prototype._onPointsDrag = function(event) {
-  this._updatePoint(event.point);
-};
-
 /**
  * Creates the Konva UI objects for a given point.
  *
@@ -153,6 +150,7 @@ PointsLayer.prototype._createPointMarker = function(point) {
     onDragStart:   this._onPointHandleDragStart,
     onDragMove:    this._onPointHandleDragMove,
     onDragEnd:     this._onPointHandleDragEnd,
+    dragBoundFunc: this._pointHandleDragBoundFunc,
     onMouseEnter:  this._onPointHandleMouseEnter,
     onMouseLeave:  this._onPointHandleMouseLeave,
     onContextMenu: this._onPointHandleContextMenu
@@ -181,6 +179,10 @@ PointsLayer.prototype._addPointMarker = function(point) {
   return pointMarker;
 };
 
+PointsLayer.prototype._onPointsDrag = function(event) {
+  this._updatePoint(event.point);
+};
+
 /**
  * @param {Point} point
  */
@@ -190,13 +192,11 @@ PointsLayer.prototype._onPointHandleDragMove = function(event, point) {
 
   var markerX = pointMarker.getX();
 
-  if (markerX >= 0 && markerX < this._view.getWidth()) {
-    var offset = markerX + pointMarker.getWidth();
+  var offset = markerX + pointMarker.getWidth();
 
-    point._setTime(this._view.pixelOffsetToTime(offset));
+  point._setTime(this._view.pixelOffsetToTime(offset));
 
-    pointMarker.timeUpdated(point.time);
-  }
+  pointMarker.timeUpdated(point.time);
 
   this._peaks.emit('points.dragmove', {
     point: point,
@@ -274,6 +274,14 @@ PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
     point: point,
     evt: event.evt
   });
+};
+
+PointsLayer.prototype._pointHandleDragBoundFunc = function(pos) {
+  // Allow the marker to be moved horizontally but not vertically.
+  return {
+    x: clamp(pos.x, 0, this._view.getWidth()),
+    y: 0
+  };
 };
 
 /**

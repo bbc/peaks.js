@@ -83,7 +83,8 @@ WaveformSegments.prototype._getSegmentColor = function() {
     return colors[this._colorIndex];
   }
   else {
-    return this._peaks.options.segmentColor;
+    return this._peaks.options.segmentOptions.waveformColor ||
+      this._peaks.options.segmentColor;
   }
 };
 

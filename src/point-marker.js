@@ -21,6 +21,7 @@ import Konva from 'konva/lib/Core';
  * @property {Function} onDragStart
  * @property {Function} onDragMove Callback during mouse drag operations.
  * @property {Function} onDragEnd
+ * @property {Function} dragBoundFunc
  * @property {Function} onMouseEnter
  * @property {Function} onMouseLeave
  * @property {Function} onContextMenu
@@ -45,15 +46,14 @@ function PointMarker(options) {
   this._onDragStart   = options.onDragStart;
   this._onDragMove    = options.onDragMove;
   this._onDragEnd     = options.onDragEnd;
+  this._dragBoundFunc = options.dragBoundFunc;
   this._onMouseEnter  = options.onMouseEnter;
   this._onMouseLeave  = options.onMouseLeave;
   this._onContextMenu = options.onContextMenu;
 
-  this._dragBoundFunc = this._dragBoundFunc.bind(this);
-
   this._group = new Konva.Group({
     draggable:     this._draggable,
-    dragBoundFunc: this._dragBoundFunc
+    dragBoundFunc: options.dragBoundFunc
   });
 
   this._bindDefaultEventHandlers();
@@ -95,14 +95,6 @@ PointMarker.prototype._bindDefaultEventHandlers = function() {
   self._group.on('contextmenu', function(event) {
     self._onContextMenu(event, self._point);
   });
-};
-
-PointMarker.prototype._dragBoundFunc = function(pos) {
-  // Allow the marker to be moved horizontally but not vertically.
-  return {
-    x: pos.x,
-    y: this._group.getAbsolutePosition().y
-  };
 };
 
 /**

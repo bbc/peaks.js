@@ -24,7 +24,7 @@
         The following pages demonstrate various configuration options:
       </p>
       <p>
-        Precomputed Waveform Data |
+        <a href="/index.html">Precomputed Waveform Data</a> |
         <a href="/webaudio.html">Web Audio API</a> |
         <a href="/zoomable-waveform.html">Single Zoomable Waveform</a> |
         <a href="/overview-waveform.html">Single Fixed Waveform</a> |
@@ -32,14 +32,13 @@
         <a href="/set-source.html">Changing the Media URL</a> |
         <a href="/multi-channel.html">Multi-Channel Waveform</a> |
         <a href="/custom-markers">Custom Point and Segment Markers</a> |
-        <a href="/overlay-segments.html">Overlay Segments</a> |
+        Overlay Segments |
         <a href="/external-player.html">External Audio Player</a>
       </p>
-      <h2>Demo: Precomputed Waveform Data</h2>
+      <h2>Demo: Overlay Segments</h2>
       <p>
-        This demo shows how to use waveform data precomputed using
-        <a href="https://github.com/bbc/audiowaveform">audiowaveform</a>.
-        The data is requested from the web server in binary or JSON format.
+        This demo shows how to configure Peaks.js to use overlay segments
+        and the available options to customize segment appearance.
       </p>
     </div>
 
@@ -295,7 +294,24 @@
           pointMarkerColor: '#006eb0',
           showPlayheadTime: true,
           waveformCache: true,
-          zoomLevels: [512, 1024, 2048, 4096]
+          zoomLevels: [512, 1024, 2048, 4096],
+          segmentOptions: {
+            style:               'overlay',
+            waveformColor:       '#ff851b',
+            overlayColor:        '#ff0000',
+            overlayOpacity:      0.3,
+            overlayBorderColor:  '#ff0000',
+            overlayBorderWidth:  2,
+            overlayCornerRadius: 5,
+            overlayOffset:       40,
+            overlayLabelX:       8,
+            overlayLabelY:       8,
+            overlayLabelColor:   '#000000',
+            overlayFontFamily:   'sans-serif',
+            overlayFontSize:     14,
+            overlayFontStyle:    'normal'
+          },
+          createSegmentLabel: function() { return null; },
         };
 
         Peaks.init(options, function(err, peaksInstance) {

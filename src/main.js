@@ -19,7 +19,8 @@ import ZoomController from './zoom-controller';
 import WaveformBuilder from './waveform-builder';
 import {
   isHTMLElement, isFunction, isInAscendingOrder, isObject,
-  objectHasProperty
+  objectHasProperty,
+  extend
 } from './utils';
 
 /**
@@ -51,10 +52,6 @@ function Peaks() {
 
     nudgeIncrement:          1.0,
 
-    segmentStartMarkerColor: '#aaaaaa',
-    segmentEndMarkerColor:   '#aaaaaa',
-    randomizeSegmentColor:   true,
-    segmentColor:            '#ff851b',
     pointMarkerColor:        '#39cccc',
 
     createSegmentMarker:     createSegmentMarker,
@@ -98,6 +95,25 @@ var defaultOverviewOptions = {
   highlightOpacity:       0.3,
   highlightOffset:        11,
   highlightCornerRadius:  2
+};
+
+var defaultSegmentOptions = {
+  style:               'markers',
+  startMarkerColor:    '#aaaaaa',
+  endMarkerColor:      '#aaaaaa',
+  waveformColor:       '#ff851b',
+  overlayColor:        '#ff0000',
+  overlayOpacity:      0.3,
+  overlayBorderColor:  '#ff0000',
+  overlayBorderWidth:  2,
+  overlayCornerRadius: 5,
+  overlayOffset:       25,
+  overlayLabelX:       8,
+  overlayLabelY:       8,
+  overlayLabelColor:   '#000000',
+  overlayFontFamily:   'sans-serif',
+  overlayFontSize:     12,
+  overlayFontStyle:    'normal'
 };
 
 function getOverviewOptions(opts) {
@@ -231,6 +247,20 @@ function extendOptions(to, from) {
   }
 
   return to;
+}
+
+function getSegmentOptions(opts) {
+  var segmentOptions = {};
+  var userSegmentOptions = opts.segmentOptions || {};
+
+  extend(segmentOptions, defaultSegmentOptions);
+  extendOptions(segmentOptions, userSegmentOptions);
+
+  if (segmentOptions.overlay && !userSegmentOptions.waveformColor) {
+    segmentOptions.waveformColor = null;
+  }
+
+  return segmentOptions;
 }
 
 /**
@@ -386,6 +416,7 @@ Peaks.prototype._setOptions = function(opts) {
 
   this.options.overview = getOverviewOptions(opts);
   this.options.zoomview = getZoomviewOptions(opts);
+  this.options.segmentOptions = getSegmentOptions(opts);
 
   if (!Array.isArray(this.options.zoomLevels)) {
     return new TypeError('Peaks.init(): The zoomLevels option should be an array');

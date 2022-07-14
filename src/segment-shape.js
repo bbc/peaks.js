@@ -6,10 +6,12 @@
  * @module segment-shape
  */
 
-import { Rect } from 'konva/lib/shapes/Rect';
+import Konva from 'konva/lib/Core';
 
+import OverlaySegmentMarker from './overlay-segment-marker';
 import SegmentMarker from './segment-marker';
 import WaveformShape from './waveform-shape';
+import { clamp } from './utils';
 
 var defaultFontFamily = 'sans-serif';
 var defaultFontSize = 10;
@@ -36,13 +38,19 @@ function SegmentShape(segment, peaks, layer, view) {
   this._startMarker   = null;
   this._endMarker     = null;
   this._color         = segment.color;
-  this._draggable     = false;
+  this._draggable     = this._segment.editable && this._view._isSegmentDraggingEnabled();
 
-  this._waveformShape = new WaveformShape({
-    color:   segment.color,
-    view:    view,
-    segment: segment
-  });
+  var segmentOptions = this._peaks.options.segmentOptions;
+
+  this._overlayOffset = segmentOptions.overlayOffset;
+
+  if (segment.color) {
+    this._waveformShape = new WaveformShape({
+      color:   segment.color,
+      view:    view,
+      segment: segment
+    });
+  }
 
   this._onMouseEnter  = this._onMouseEnter.bind(this);
   this._onMouseLeave  = this._onMouseLeave.bind(this);
@@ -50,14 +58,15 @@ function SegmentShape(segment, peaks, layer, view) {
   this._onDblClick    = this._onDblClick.bind(this);
   this._onContextMenu = this._onContextMenu.bind(this);
 
-  this._dragBoundFunc = this._dragBoundFunc.bind(this);
+  this._dragBoundFunc      = this._dragBoundFunc.bind(this);
   this._onSegmentDragStart = this._onSegmentDragStart.bind(this);
-  this._onSegmentDrag = this._onSegmentDrag.bind(this);
+  this._onSegmentDragMove  = this._onSegmentDragMove.bind(this);
 
   // Event handlers for markers
-  this._onSegmentHandleDrag      = this._onSegmentHandleDrag.bind(this);
-  this._onSegmentHandleDragStart = this._onSegmentHandleDragStart.bind(this);
-  this._onSegmentHandleDragEnd   = this._onSegmentHandleDragEnd.bind(this);
+  this._onSegmentHandleDragStart   = this._onSegmentHandleDragStart.bind(this);
+  this._onSegmentHandleDragMove    = this._onSegmentHandleDragMove.bind(this);
+  this._onSegmentHandleDragEnd     = this._onSegmentHandleDragEnd.bind(this);
+  this._segmentHandleDragBoundFunc = this._segmentHandleDragBoundFunc.bind(this);
 
   this._label = this._peaks.options.createSegmentLabel({
     segment:    segment,
@@ -78,21 +87,58 @@ function SegmentShape(segment, peaks, layer, view) {
   var frameStartOffset = this._view.getFrameOffset();
   var startPixel = segmentStartOffset - frameStartOffset;
 
-  var overlayOffset = 20;
-
-  this._overlay = new Rect({
-    x:            startPixel,
-    y:            20,
-    width:        segmentEndOffset - segmentStartOffset,
-    stroke:       '#f00',
-    strokeWidth:  2,
-    height:       this._view.getHeight() - 2 * overlayOffset,
-    fill:         '#f00',
-    opacity:      0.3,
-    cornerRadius: 5,
-    draggable:    true,
+  this._overlay = new Konva.Group({
+    x:             startPixel,
+    y:             0,
+    width:         segmentEndOffset - segmentStartOffset,
+    height:        this._view.getHeight(),
+    clipX:         0,
+    clipY:         0,
+    clipWidth:     segmentEndOffset - segmentStartOffset,
+    clipHeight:    this._view.getHeight(),
+    draggable:     this._draggable,
     dragBoundFunc: this._dragBoundFunc
   });
+
+  var overlayBorderColor, overlayBorderWidth, overlayColor, overlayOpacity, overlayCornerRadius;
+
+  var hasOverlay = segmentOptions.style === 'overlay';
+
+  if (hasOverlay) {
+    overlayBorderColor  = segmentOptions.overlayBorderColor;
+    overlayBorderWidth  = segmentOptions.overlayBorderWidth;
+    overlayColor        = segmentOptions.overlayColor;
+    overlayOpacity      = segmentOptions.overlayOpacity;
+    overlayCornerRadius = segmentOptions.overlayCornerRadius;
+  }
+
+  this._overlayRect = new Konva.Rect({
+    x:            0,
+    y:            this._overlayOffset,
+    width:        segmentEndOffset - segmentStartOffset,
+    stroke:       overlayBorderColor,
+    strokeWidth:  overlayBorderWidth,
+    height:       this._view.getHeight() - 2 * this._overlayOffset,
+    fill:         overlayColor,
+    opacity:      overlayOpacity,
+    cornerRadius: overlayCornerRadius
+  });
+
+  this._overlay.add(this._overlayRect);
+
+  if (hasOverlay) {
+    this._overlayText = new Konva.Text({
+      x:          segmentOptions.overlayLabelX,
+      y:          this._overlayOffset + segmentOptions.overlayLabelY,
+      text:       this._segment.labelText,
+      fontFamily: segmentOptions.overlayFontFamily,
+      fontSize:   segmentOptions.overlayFontSize,
+      fontStyle:  segmentOptions.overlayFontStyle,
+      fill:       segmentOptions.overlayLabelColor
+    });
+
+    this._overlay.add(this._overlayText);
+  }
 
   // Set up event handlers to show/hide the segment label text when the user
   // hovers the mouse over the segment.
@@ -103,19 +149,19 @@ function SegmentShape(segment, peaks, layer, view) {
   this._overlay.on('dblclick', this._onDblClick);
   this._overlay.on('contextmenu', this._onContextMenu);
 
-  if (this._segment.editable && this._view._isSegmentDraggingEnabled()) {
-    this._overlay.on('dragmove', this._onSegmentDrag);
+  if (this._draggable) {
+    this._overlay.on('dragmove', this._onSegmentDragMove);
     this._overlay.on('dragstart', this._onSegmentDragStart);
-    this._draggable = true;
   }
 
   this._createMarkers();
 }
 
 SegmentShape.prototype._dragBoundFunc = function(pos) {
+  // Allow the segment to be moved horizontally but not vertically.
   return {
     x: pos.x,
-    y: this._overlay.getAbsolutePosition().y
+    y: 0
   };
 };
 
@@ -127,6 +173,7 @@ SegmentShape.prototype.updatePosition = function() {
 
   var startPixel = segmentStartOffset - frameStartOffset;
   var endPixel   = segmentEndOffset   - frameStartOffset;
+  var width      = endPixel - startPixel;
 
   var marker = this.getStartMarker();
 
@@ -142,8 +189,14 @@ SegmentShape.prototype.updatePosition = function() {
 
   if (this._overlay) {
     this._overlay.setAttrs({
-      x: startPixel,
-      width: endPixel - startPixel
+      x:         startPixel,
+      width:     width,
+      clipWidth: width < 1 ? 1 : width
+    });
+
+    this._overlayRect.setAttrs({
+      x:     0,
+      width: width
     });
   }
 };
@@ -161,7 +214,9 @@ SegmentShape.prototype.getEndMarker = function() {
 };
 
 SegmentShape.prototype.addToLayer = function(layer) {
-  this._waveformShape.addToLayer(layer);
+  if (this._waveformShape) {
+    this._waveformShape.addToLayer(layer);
+  }
 
   if (this._label) {
     layer.add(this._label);
@@ -177,10 +232,12 @@ SegmentShape.prototype.addToLayer = function(layer) {
 
   if (this._overlay) {
     layer.add(this._overlay);
-
-    layer.draw();
   }
 };
+
+function createOverlayMarker(options) {
+  return new OverlaySegmentMarker(options);
+}
 
 SegmentShape.prototype._createMarkers = function() {
   var editable = this._layer.isEditingEnabled() && this._segment.editable;
@@ -189,11 +246,15 @@ SegmentShape.prototype._createMarkers = function() {
     return;
   }
 
-  var startMarker = this._peaks.options.createSegmentMarker({
+  var createSegmentMarker = this._peaks.options.segmentOptions.style === 'markers' ?
+    this._peaks.options.createSegmentMarker :
+    createOverlayMarker;
+
+  var startMarker = createSegmentMarker({
     segment:      this._segment,
     draggable:    editable,
     startMarker:  true,
-    color:        this._peaks.options.segmentStartMarkerColor,
+    color:        this._peaks.options.segmentOptions.startMarkerColor,
     fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:     this._peaks.options.fontSize || defaultFontSize,
     fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
@@ -203,22 +264,23 @@ SegmentShape.prototype._createMarkers = function() {
 
   if (startMarker) {
     this._startMarker = new SegmentMarker({
-      segment:      this._segment,
-      segmentShape: this,
-      draggable:    editable,
-      startMarker:  true,
-      marker:       startMarker,
-      onDrag:       this._onSegmentHandleDrag,
-      onDragStart:  this._onSegmentHandleDragStart,
-      onDragEnd:    this._onSegmentHandleDragEnd
+      segment:       this._segment,
+      segmentShape:  this,
+      draggable:     editable,
+      startMarker:   true,
+      marker:        startMarker,
+      onDragStart:   this._onSegmentHandleDragStart,
+      onDragMove:    this._onSegmentHandleDragMove,
+      onDragEnd:     this._onSegmentHandleDragEnd,
+      dragBoundFunc: this._segmentHandleDragBoundFunc
     });
   }
 
-  var endMarker = this._peaks.options.createSegmentMarker({
+  var endMarker = createSegmentMarker({
     segment:      this._segment,
     draggable:    editable,
     startMarker:  false,
-    color:        this._peaks.options.segmentEndMarkerColor,
+    color:        this._peaks.options.segmentOptions.endMarkerColor,
     fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:     this._peaks.options.fontSize || defaultFontSize,
     fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
@@ -228,14 +290,15 @@ SegmentShape.prototype._createMarkers = function() {
 
   if (endMarker) {
     this._endMarker = new SegmentMarker({
-      segment:      this._segment,
-      segmentShape: this,
-      draggable:    editable,
-      startMarker:  false,
-      marker:       endMarker,
-      onDrag:       this._onSegmentHandleDrag,
-      onDragStart:  this._onSegmentHandleDragStart,
-      onDragEnd:    this._onSegmentHandleDragEnd
+      segment:       this._segment,
+      segmentShape:  this,
+      draggable:     editable,
+      startMarker:   false,
+      marker:        endMarker,
+      onDragStart:   this._onSegmentHandleDragStart,
+      onDragMove:    this._onSegmentHandleDragMove,
+      onDragEnd:     this._onSegmentHandleDragEnd,
+      dragBoundFunc: this._segmentHandleDragBoundFunc
     });
   }
 };
@@ -286,14 +349,15 @@ SegmentShape.prototype._onContextMenu = function(event) {
 
 SegmentShape.prototype.enableSegmentDragging = function(enable) {
   if (!this._draggable && enable) {
-    this._overlay.on('dragmove', this._onSegmentDrag);
     this._overlay.on('dragstart', this._onSegmentDragStart);
+    this._overlay.on('dragmove', this._onSegmentDragMove);
   }
   else if (this._draggable && !enable) {
-    this._overlay.off('dragmove', this._onSegmentDrag);
     this._overlay.off('dragstart', this._onSegmentDragStart);
+    this._overlay.off('dragmove', this._onSegmentDragMove);
   }
 
+  this._overlay.draggable(enable);
   this._draggable = enable;
 };
 
@@ -303,7 +367,7 @@ SegmentShape.prototype._onSegmentDragStart = function() {
   this._dragEndTime = this._segment.endTime;
 };
 
-SegmentShape.prototype._onSegmentDrag = function(event) {
+SegmentShape.prototype._onSegmentDragMove = function(event) {
   const x = this._overlay.getX();
   const offsetX = x - this._dragStartX;
 
@@ -338,57 +402,65 @@ SegmentShape.prototype._onSegmentDrag = function(event) {
  * @param {SegmentMarker} segmentMarker
  */
 
-SegmentShape.prototype._onSegmentHandleDrag = function(event, segmentMarker) {
-  var width = this._view.getWidth();
+SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker, event) {
+  this._startMarkerX = this._startMarker.getX();
+  this._endMarkerX = this._endMarker.getX();
 
+  this._peaks.emit('segments.dragstart', {
+    segment: this._segment,
+    startMarker: segmentMarker.isStartMarker(),
+    evt: event.evt
+  });
+};
+
+/**
+ * @param {SegmentMarker} segmentMarker
+ */
+
+SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event) {
   var startMarker = segmentMarker.isStartMarker();
 
   var startMarkerX = this._startMarker.getX();
   var endMarkerX = this._endMarker.getX();
+  var segmentWidth = endMarkerX - startMarkerX;
 
-  if (startMarker && startMarkerX >= 0) {
+  if (startMarker) {
     var startMarkerOffset = startMarkerX +
                             this._startMarker.getWidth();
+
+    this._overlay.clipWidth(segmentWidth);
 
     this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerOffset));
 
     segmentMarker.timeUpdated(this._segment.startTime);
   }
-
-  if (!startMarker && endMarkerX < width) {
+  else {
     var endMarkerOffset = endMarkerX;
+
+    this._overlay.clipWidth(segmentWidth);
 
     this._segment._setEndTime(this._view.pixelOffsetToTime(endMarkerOffset));
 
     segmentMarker.timeUpdated(this._segment.endTime);
   }
 
-  this._peaks.emit('segments.dragged', {
-    segment: this._segment,
-    startMarker: startMarker,
-    evt: event.evt
-  });
+  if (startMarkerX !== this._startMarkerX || endMarkerX !== this._endMarkerX) {
+    this._startMarkerX = startMarkerX;
+    this._endMarkerX = endMarkerX;
+
+    this._peaks.emit('segments.dragged', {
+      segment: this._segment,
+      startMarker: startMarker,
+      evt: event.evt
+    });
+  }
 };
 
 /**
  * @param {SegmentMarker} segmentMarker
  */
 
-SegmentShape.prototype._onSegmentHandleDragStart = function(event, segmentMarker) {
-  var startMarker = segmentMarker.isStartMarker();
-
-  this._peaks.emit('segments.dragstart', {
-    segment: this._segment,
-    startMarker: startMarker,
-    evt: event.evt
-  });
-};
-
-/**
- * @param {SegmentMarker} segmentMarker
- */
-
-SegmentShape.prototype._onSegmentHandleDragEnd = function(event, segmentMarker) {
+SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker, event) {
   var startMarker = segmentMarker.isStartMarker();
 
   this._peaks.emit('segments.dragend', {
@@ -396,6 +468,28 @@ SegmentShape.prototype._onSegmentHandleDragEnd = function(event, segmentMarker) 
     startMarker: startMarker,
     evt: event.evt
   });
+};
+
+SegmentShape.prototype._segmentHandleDragBoundFunc = function(segmentMarker, pos) {
+  var lowerLimit;
+  var upperLimit;
+
+  if (segmentMarker.isStartMarker()) {
+    upperLimit = this._endMarker.getX() - this._endMarker.getWidth();
+    lowerLimit = 0;
+  }
+  else {
+    lowerLimit = this._startMarker.getX() + this._startMarker.getWidth();
+    upperLimit = this._view.getWidth();
+  }
+
+  pos.x = clamp(pos.x, lowerLimit, upperLimit);
+
+  // Allow the marker handle to be moved horizontally but not vertically.
+  return {
+    x: pos.x,
+    y: 0
+  };
 };
 
 SegmentShape.prototype.fitToView = function() {
@@ -407,21 +501,31 @@ SegmentShape.prototype.fitToView = function() {
     this._endMarker.fitToView();
   }
 
-  this._waveformShape.setWaveformColor(this._color);
+  if (this._waveformShape) {
+    this._waveformShape.setWaveformColor(this._color);
+  }
 
   if (this._overlay) {
     var height = this._view.getHeight();
-    var offset = 20;
 
     this._overlay.setAttrs({
-      y: offset,
-      height: height - (offset * 2)
+      y:          0,
+      height:     height,
+      clipY:      0,
+      clipHeight: height
+    });
+
+    this._overlayRect.setAttrs({
+      y:      this._overlayOffset,
+      height: height - (this._overlayOffset * 2)
     });
   }
 };
 
 SegmentShape.prototype.destroy = function() {
-  this._waveformShape.destroy();
+  if (this._waveformShape) {
+    this._waveformShape.destroy();
+  }
 
   if (this._label) {
     this._label.destroy();

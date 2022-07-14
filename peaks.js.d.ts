@@ -204,6 +204,24 @@ declare module 'peaks.js' {
     layer: Layer;
   }
 
+  interface SegmentDisplayOptions {
+    /** Segments can be either shown as start and end markers or an overlay rectangle */
+    style?:               'markers' | 'overlay';
+    startMarkerColor?:    string;
+    endMarkerColor?:      string;
+    waveformColor?:       WaveformColor;
+    overlayColor?:        string;
+    overlayOpacity?:      number;
+    overlayBorderColor?:  string;
+    overlayBorderWidth?:  number;
+    overlayCornerRadius?: number;
+    overlayOffset?:       number;
+    overlayLabelColor?:   string;
+    overlayFontFamily?:   string;
+    overlayFontSize?:     number;
+    overlayFontStyle?:    string;
+  }
+
   interface OptionalOptions {
     /** HTML5 Media element containing an audio track. Optional when using an external player */
     mediaElement?: Element;
@@ -222,10 +240,8 @@ declare module 'peaks.js' {
     keyboard?: boolean;
     /** Keyboard nudge increment in seconds (left arrow/right arrow) */
     nudgeIncrement?: number;
-    /** Color for segment start marker handles */
-    segmentStartMarkerColor?: string;
-    /** Color for segment end marker handles */
-    segmentEndMarkerColor?: string;
+    /** Options that control segment appearance */
+    segmentOptions?: SegmentDisplayOptions;
     /**
      * Waveform color (or use zoomview.waveformColor and overview.waveformColor
      * to set the waveform color for each view)
@@ -253,8 +269,6 @@ declare module 'peaks.js' {
      * @deprecated use overview.hightlightOffset instead
      */
     overviewHighlightOffset?: number;
-    /** Color for segments on the waveform */
-    segmentColor?: WaveformColor;
     /** Color of the play head */
     playheadColor?: string;
     /** Show current time next to the playhead (zoomview only) */
@@ -441,6 +455,7 @@ declare module 'peaks.js' {
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none', options?: SetWheelModeOptions) => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
+    enableSegmentDragging: (enable: boolean) => void;
   }
 
   interface PeaksInstance {

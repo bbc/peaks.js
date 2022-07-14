@@ -19,13 +19,14 @@ import Konva from 'konva/lib/Core';
  * @property {Boolean} startMarker If <code>true</code>, the marker indicates
  *   the start time of the segment. If <code>false</code>, the marker
  *   indicates the end time of the segment.
- * @property {Function} onDrag
  * @property {Function} onDragStart
+ * @property {Function} onDragMove
  * @property {Function} onDragEnd
+ * @property {Function} dragBoundFunc
  */
 
 /**
- * Creates a Left or Right side segment handle marker.
+ * Creates a segment handle marker for the start or end of a segment.
  *
  * @class
  * @alias SegmentMarker
@@ -34,71 +35,46 @@ import Konva from 'konva/lib/Core';
  */
 
 function SegmentMarker(options) {
-  this._segment       = options.segment;
-  this._marker        = options.marker;
-  this._segmentShape  = options.segmentShape;
-  this._draggable     = options.draggable;
-  this._startMarker   = options.startMarker;
+  var self = this;
 
-  this._onDrag      = options.onDrag;
-  this._onDragStart = options.onDragStart;
-  this._onDragEnd   = options.onDragEnd;
+  self._segment       = options.segment;
+  self._marker        = options.marker;
+  self._segmentShape  = options.segmentShape;
+  self._draggable     = options.draggable;
+  self._startMarker   = options.startMarker;
 
-  this._dragBoundFunc = this._dragBoundFunc.bind(this);
+  self._onDragStart   = options.onDragStart;
+  self._onDragMove    = options.onDragMove;
+  self._onDragEnd     = options.onDragEnd;
 
-  this._group = new Konva.Group({
-    draggable:     this._draggable,
-    dragBoundFunc: this._dragBoundFunc
+  self._group = new Konva.Group({
+    draggable:     self._draggable,
+    dragBoundFunc: function(pos) {
+      return options.dragBoundFunc(self, pos);
+    }
   });
 
-  this._bindDefaultEventHandlers();
+  self._bindDefaultEventHandlers();
 
-  this._marker.init(this._group);
+  self._marker.init(self._group);
 }
 
 SegmentMarker.prototype._bindDefaultEventHandlers = function() {
   var self = this;
 
   if (self._draggable) {
-    self._group.on('dragmove', function(event) {
-      self._onDrag(event, self);
+    self._group.on('dragstart', function(event) {
+      self._onDragStart(self, event);
     });
 
-    self._group.on('dragstart', function(event) {
-      self._onDragStart(event, self);
+    self._group.on('dragmove', function(event) {
+      self._onDragMove(self, event);
     });
 
     self._group.on('dragend', function(event) {
-      self._onDragEnd(event, self);
+      self._onDragEnd(self, event);
     });
   }
-};
-
-SegmentMarker.prototype._dragBoundFunc = function(pos) {
-  var marker;
-  var limit;
-
-  if (this._startMarker) {
-    marker = this._segmentShape.getEndMarker();
-    limit  = marker.getX() - marker.getWidth();
-
-    if (pos.x > limit) {
-      pos.x = limit;
-    }
-  }
-  else {
-    marker = this._segmentShape.getStartMarker();
-    limit  = marker.getX() + marker.getWidth();
-
-    if (pos.x < limit) {
-      pos.x = limit;
-    }
-  }
-
-  return {
-    x: pos.x,
-    y: this._group.getAbsolutePosition().y
-  };
 };
 
 SegmentMarker.prototype.addToLayer = function(layer) {
