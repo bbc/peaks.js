@@ -294,7 +294,7 @@ WaveformZoomView.prototype._onWheel = function(event) {
   else {
     // Ignore the event if it looks like the user is scrolling vertically
     // down the page
-    if (wheelEvent.deltaY !== 0) {
+    if (Math.abs(wheelEvent.deltaX) < Math.abs(wheelEvent.deltaY)) {
       return;
     }
 
