@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 2.0.3 (2022/07/31)
+
+* (#457) Improve horizontal scrolling on trackpad on Mac OS (@jdelStrother)
+
 ## 2.0.2 (2022/06/18)
 
 * (#454) Fixed mousewheel scrolling on Mac OS. The new behaviour is:
