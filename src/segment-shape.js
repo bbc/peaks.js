@@ -87,15 +87,17 @@ function SegmentShape(segment, peaks, layer, view) {
   var frameStartOffset = this._view.getFrameOffset();
   var startPixel = segmentStartOffset - frameStartOffset;
 
+  var overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
+
   this._overlay = new Konva.Group({
     x:             startPixel,
     y:             0,
     width:         segmentEndOffset - segmentStartOffset,
     height:        this._view.getHeight(),
     clipX:         0,
-    clipY:         0,
+    clipY:         this._overlayOffset,
     clipWidth:     segmentEndOffset - segmentStartOffset,
-    clipHeight:    this._view.getHeight(),
+    clipHeight:    overlayRectHeight,
     draggable:     this._draggable,
     dragBoundFunc: this._dragBoundFunc
   });
@@ -118,7 +120,7 @@ function SegmentShape(segment, peaks, layer, view) {
     width:        segmentEndOffset - segmentStartOffset,
     stroke:       overlayBorderColor,
     strokeWidth:  overlayBorderWidth,
-    height:       this._view.getHeight() - 2 * this._overlayOffset,
+    height:       overlayRectHeight,
     fill:         overlayColor,
     opacity:      overlayOpacity,
     cornerRadius: overlayCornerRadius
@@ -138,6 +140,11 @@ function SegmentShape(segment, peaks, layer, view) {
     });
 
     this._overlay.add(this._overlayText);
+
+    // Only show the label text if it fits within the overlay segment.
+    if (segmentOptions.overlayLabelY + segmentOptions.overlayFontSize > overlayRectHeight) {
+      this._overlayText.hide();
+    }
   }
 
   // Set up event handlers to show/hide the segment label text when the user
@@ -508,17 +515,30 @@ SegmentShape.prototype.fitToView = function() {
   if (this._overlay) {
     var height = this._view.getHeight();
 
+    var overlayRectHeight = clamp(0, height - (this._overlayOffset * 2));
+
     this._overlay.setAttrs({
       y:          0,
       height:     height,
-      clipY:      0,
-      clipHeight: height
+      clipY:      this._overlayOffset,
+      clipHeight: overlayRectHeight
     });
 
     this._overlayRect.setAttrs({
       y:      this._overlayOffset,
-      height: height - (this._overlayOffset * 2)
+      height: overlayRectHeight
     });
+
+    if (this._overlayText) {
+      var segmentOptions = this._peaks.options.segmentOptions;
+
+      if (segmentOptions.overlayLabelY + segmentOptions.overlayFontSize > overlayRectHeight) {
+        this._overlayText.hide();
+      }
+      else {
+        this._overlayText.show();
+      }
+    }
   }
 };
 
