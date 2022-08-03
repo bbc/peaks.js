@@ -378,6 +378,56 @@ describe('Peaks.segments', function() {
     });
   });
 
+  describe('findPreviousSegment', function() {
+    beforeEach(function() {
+      p.segments.add([
+        { startTime: 10, endTime: 12, id: 'segment_id.1' },
+        { startTime: 5,  endTime: 12, id: 'segment_id.2' }
+      ]);
+    });
+
+    it('should return the previous segment', function() {
+      var segment = p.segments.getSegment('segment_id.1');
+
+      var previous = p.segments.findPreviousSegment(segment);
+
+      expect(previous.id).to.equal('segment_id.2');
+    });
+
+    it('should return undefined when given the first segment', function() {
+      var segment = p.segments.getSegment('segment_id.2');
+
+      var previous = p.segments.findPreviousSegment(segment);
+
+      expect(previous).to.equal(undefined);
+    });
+  });
+
+  describe('findNextSegment', function() {
+    beforeEach(function() {
+      p.segments.add([
+        { startTime: 10, endTime: 12, id: 'segment_id.1' },
+        { startTime: 5,  endTime: 12, id: 'segment_id.2' }
+      ]);
+    });
+
+    it('should return the next segment', function() {
+      var segment = p.segments.getSegment('segment_id.2');
+
+      var next = p.segments.findNextSegment(segment);
+
+      expect(next.id).to.equal('segment_id.1');
+    });
+
+    it('should return undefined when given the last segment', function() {
+      var segment = p.segments.getSegment('segment_id.1');
+
+      var next = p.segments.findNextSegment(segment);
+
+      expect(next).to.equal(undefined);
+    });
+  });
+
   describe('remove', function() {
     beforeEach(function() {
       p.segments.add({ startTime: 10, endTime: 12, id: 'segment1' });

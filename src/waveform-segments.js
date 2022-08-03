@@ -192,6 +192,46 @@ WaveformSegments.prototype.find = function(startTime, endTime) {
 };
 
 /**
+ * Returns a copy of the segments array, sorted by ascending segment start time.
+ *
+ * @returns {Array<Segment>}
+ */
+
+WaveformSegments.prototype._getSortedSegments = function() {
+  return this._segments.slice().sort(function(a, b) {
+    return a.startTime - b.startTime;
+  });
+};
+
+WaveformSegments.prototype.findPreviousSegment = function(segment) {
+  var sortedSegments = this._getSortedSegments();
+
+  var index = sortedSegments.findIndex(function(s) {
+    return s.id === segment.id;
+  });
+
+  if (index !== -1) {
+    return sortedSegments[index - 1];
+  }
+
+  return undefined;
+};
+
+WaveformSegments.prototype.findNextSegment = function(segment) {
+  var sortedSegments = this._getSortedSegments();
+
+  var index = sortedSegments.findIndex(function(s) {
+    return s.id === segment.id;
+  });
+
+  if (index !== -1) {
+    return sortedSegments[index + 1];
+  }
+
+  return undefined;
+};
+
+/**
  * Adds one or more segments to the timeline.
  *
  * @param {SegmentOptions|Array<SegmentOptions>} segmentOrSegments
