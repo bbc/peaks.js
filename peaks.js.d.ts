@@ -456,6 +456,7 @@ declare module 'peaks.js' {
     setWheelMode: (mode: 'scroll' | 'none', options?: SetWheelModeOptions) => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
     enableSegmentDragging: (enable: boolean) => void;
+    setSegmentDragMode: (mode: 'overlap' | 'no-overlap' | 'compress') => void;
   }
 
   interface PeaksInstance {
