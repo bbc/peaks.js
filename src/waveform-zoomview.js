@@ -350,6 +350,14 @@ WaveformZoomView.prototype._isSegmentDraggingEnabled = function() {
   return this._enableSegmentDragging;
 };
 
+WaveformZoomView.prototype.setSegmentDragMode = function(mode) {
+  this._segmentDragMode = mode;
+};
+
+WaveformZoomView.prototype.getSegmentDragMode = function() {
+  return this._segmentDragMode;
+};
+
 WaveformZoomView.prototype.getName = function() {
   return 'zoomview';
 };

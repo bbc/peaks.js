@@ -88,8 +88,16 @@
         <div>
           <input type="checkbox" id="enable-seek" checked>
           <label for="enable-seek">Enable click to seek</label>
+        </div>
+        <div>
           <input type="checkbox" id="enable-segment-dragging">
           <label for="enable-segment-dragging">Enable segment dragging</label>
+          <label for="segment-drag-mode">Segment drag mode:</label>
+          <select id="segment-drag-mode">
+            <option value="overlap">Overlap</option>
+            <option value="no-overlap">No overlap</option>
+            <option value="compress">Compress</option>
+          </select>
         </div>
       </div>
     </div>
@@ -396,6 +404,12 @@
             var zoomview = peaksInstance.views.getView('zoomview');
 
             zoomview.enableSegmentDragging(event.target.checked);
+          });
+
+          document.getElementById('segment-drag-mode').addEventListener('change', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+
+            view.setSegmentDragMode(event.target.value);
           });
 
           document.querySelector('body').addEventListener('click', function(event) {

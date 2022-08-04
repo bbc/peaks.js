@@ -368,15 +368,31 @@ SegmentShape.prototype.enableSegmentDragging = function(enable) {
   this._draggable = enable;
 };
 
+SegmentShape.prototype._setPreviousAndNextSegments = function() {
+  if (this._view.getSegmentDragMode() !== 'overlap') {
+    this._nextSegment = this._peaks.segments.findNextSegment(this._segment);
+    this._previousSegment = this._peaks.segments.findPreviousSegment(this._segment);
+  }
+  else {
+    this._nextSegment = null;
+    this._previousSegment = null;
+  }
+};
+
 SegmentShape.prototype._onSegmentDragStart = function() {
+  this._setPreviousAndNextSegments();
+
   this._dragStartX = this._overlay.getX();
   this._dragStartTime = this._segment.startTime;
   this._dragEndTime = this._segment.endTime;
 };
 
 SegmentShape.prototype._onSegmentDragMove = function(event) {
-  const x = this._overlay.getX();
-  const offsetX = x - this._dragStartX;
+  var x = this._overlay.getX();
+  var offsetX = x - this._dragStartX;
+  var dragMode;
+  var minSegmentDuration = 0.25;
+  var segmentDuration;
 
   var timeOffset = this._view.pixelsToTime(offsetX);
 
@@ -392,6 +408,54 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   if (startTime < 0) {
     startTime = 0;
     endTime = this._segment.endTime - this._segment.startTime;
+  }
+
+  if (this._previousSegment && startTime < this._previousSegment.endTime) {
+    dragMode = this._view.getSegmentDragMode();
+
+    if (dragMode === 'no-overlap') {
+      endTime = this._previousSegment.endTime + (endTime - startTime);
+      startTime = this._previousSegment.endTime;
+    }
+    else if (dragMode === 'compress') {
+      segmentDuration = this._previousSegment.endTime - this._previousSegment.startTime;
+
+      if (segmentDuration < minSegmentDuration) {
+        minSegmentDuration = segmentDuration;
+      }
+
+      if (startTime >= this._previousSegment.startTime + minSegmentDuration) {
+        this._previousSegment.update({ endTime: startTime });
+      }
+      else {
+        endTime = this._previousSegment.startTime + minSegmentDuration + (endTime - startTime);
+        startTime = this._previousSegment.endTime;
+      }
+    }
+  }
+
+  if (this._nextSegment && endTime > this._nextSegment.startTime) {
+    dragMode = this._view.getSegmentDragMode();
+
+    if (dragMode === 'no-overlap') {
+      startTime = this._nextSegment.startTime - (endTime - startTime);
+      endTime = this._nextSegment.startTime;
+    }
+    else if (dragMode === 'compress') {
+      segmentDuration = this._nextSegment.endTime - this._nextSegment.startTime;
+
+      if (segmentDuration < minSegmentDuration) {
+        minSegmentDuration = segmentDuration;
+      }
+
+      if (endTime >= this._nextSegment.endTime - minSegmentDuration) {
+        startTime = this._nextSegment.endTime - minSegmentDuration - (endTime - startTime);
+        endTime = this._nextSegment.startTime;
+      }
+      else {
+        this._nextSegment.update({ startTime: endTime });
+      }
+    }
   }
 
   this._segment._setStartTime(startTime);
@@ -410,6 +474,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
  */
 
 SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker, event) {
+  this._setPreviousAndNextSegments();
+
   this._startMarkerX = this._startMarker.getX();
   this._endMarkerX = this._endMarker.getX();
 
@@ -468,6 +534,9 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
  */
 
 SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker, event) {
+  this._nextSegment = null;
+  this._previousSegment = null;
+
   var startMarker = segmentMarker.isStartMarker();
 
   this._peaks.emit('segments.dragend', {
@@ -480,14 +549,98 @@ SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker, event) 
 SegmentShape.prototype._segmentHandleDragBoundFunc = function(segmentMarker, pos) {
   var lowerLimit;
   var upperLimit;
+  var dragMode;
+  var minSegmentDuration = 0.25;
+  var segmentDuration;
+  var time;
 
   if (segmentMarker.isStartMarker()) {
     upperLimit = this._endMarker.getX() - this._endMarker.getWidth();
-    lowerLimit = 0;
+
+    if (this._previousSegment) {
+      dragMode = this._view.getSegmentDragMode();
+
+      if (dragMode === 'no-overlap') {
+        lowerLimit = this._view.timeToPixels(this._previousSegment.endTime) -
+                     this._view.getFrameOffset();
+
+        if (lowerLimit < 0) {
+          lowerLimit = 0;
+        }
+      }
+      else if (dragMode === 'compress') {
+        segmentDuration = this._previousSegment.endTime - this._previousSegment.startTime;
+
+        if (segmentDuration < minSegmentDuration) {
+          minSegmentDuration = segmentDuration;
+        }
+
+        lowerLimit = this._view.timeToPixels(this._previousSegment.startTime + minSegmentDuration) -
+                     this._view.getFrameOffset();
+
+        if (lowerLimit < 0) {
+          lowerLimit = 0;
+        }
+
+        var prevSegmentEndX = this._view.timeToPixels(this._previousSegment.endTime) -
+                              this._view.getFrameOffset();
+
+        if (pos.x < prevSegmentEndX && pos.x >= lowerLimit) {
+          prevSegmentEndX = pos.x;
+          time = this._view.pixelOffsetToTime(prevSegmentEndX);
+
+          this._previousSegment.update({ endTime: time });
+        }
+      }
+    }
+    else {
+      lowerLimit = 0;
+    }
   }
   else {
     lowerLimit = this._startMarker.getX() + this._startMarker.getWidth();
-    upperLimit = this._view.getWidth();
+
+    var width = this._view.getWidth();
+
+    if (this._nextSegment) {
+      dragMode = this._view.getSegmentDragMode();
+
+      if (dragMode === 'no-overlap') {
+        upperLimit = this._view.timeToPixels(this._nextSegment.startTime) -
+                     this._view.getFrameOffset();
+
+        if (upperLimit > width) {
+          upperLimit = width;
+        }
+      }
+      else if (dragMode === 'compress') {
+        segmentDuration = this._nextSegment.endTime - this._nextSegment.startTime;
+
+        if (segmentDuration < minSegmentDuration) {
+          minSegmentDuration = segmentDuration;
+        }
+
+        upperLimit = this._view.timeToPixels(this._nextSegment.endTime - minSegmentDuration) -
+                     this._view.getFrameOffset();
+
+        if (upperLimit > width) {
+          upperLimit = width;
+        }
+
+        var nextSegmentStartX = this._view.timeToPixels(this._nextSegment.startTime) -
+                                this._view.getFrameOffset();
+
+        if (pos.x > nextSegmentStartX && pos.x < upperLimit) {
+          nextSegmentStartX = pos.x;
+          time = this._view.pixelOffsetToTime(nextSegmentStartX);
+
+          this._nextSegment.update({ startTime: time });
+        }
+      }
+    }
+    else {
+      upperLimit = width;
+    }
   }
 
   pos.x = clamp(pos.x, lowerLimit, upperLimit);
