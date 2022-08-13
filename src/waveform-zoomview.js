@@ -135,6 +135,7 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._createMouseDragHandler();
 
   self._onWheel = self._onWheel.bind(self);
+  self._onWheelCaptureVerticalScroll = self._onWheelCaptureVerticalScroll.bind(self);
   self.setWheelMode(self._viewOptions.wheelMode);
 
   self._onClick = self._onClick.bind(this);
@@ -260,17 +261,26 @@ WaveformZoomView.prototype._clickHandler = function(event, eventName) {
   });
 };
 
-WaveformZoomView.prototype.setWheelMode = function(mode) {
-  if (mode !== this._wheelMode) {
+WaveformZoomView.prototype.setWheelMode = function(mode, options) {
+  if (!options) {
+    options = {};
+  }
+
+  if (mode !== this._wheelMode ||
+      options.captureVerticalScroll !== this._captureVerticalScroll) {
+    this._stage.off('wheel');
+
     this._wheelMode = mode;
+    this._captureVerticalScroll = options.captureVerticalScroll;
 
     switch (mode) {
       case 'scroll':
-        this._stage.on('wheel', this._onWheel);
-        break;
-
-      case 'none':
-        this._stage.off('wheel');
+        if (options.captureVerticalScroll) {
+          this._stage.on('wheel', this._onWheelCaptureVerticalScroll);
+        }
+        else {
+          this._stage.on('wheel', this._onWheel);
+        }
         break;
     }
   }
@@ -304,6 +314,21 @@ WaveformZoomView.prototype._onWheel = function(event) {
   if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
     delta *= this._width;
   }
+
+  wheelEvent.preventDefault();
+
+  var newFrameOffset = clamp(
+    this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
+  );
+
+  this._updateWaveform(newFrameOffset);
+};
+
+WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
+  var wheelEvent = event.evt;
+
+  var delta = Math.abs(wheelEvent.deltaX) < Math.abs(wheelEvent.deltaY) ?
+    wheelEvent.deltaY : wheelEvent.deltaX;
 
   wheelEvent.preventDefault();
 
