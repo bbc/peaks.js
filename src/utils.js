@@ -247,6 +247,7 @@ export function isHTMLElement(value) {
 
 /**
  * Checks whether the given value is an array
+ *
  * @param {Function} value The value to test
  * @returns {Boolean}
  */
@@ -257,6 +258,7 @@ export function isArray(value) {
 
 /**
  * Checks whether the given value is a valid linear gradient color
+ *
  * @param {Function} value The value to test
  * @returns {Boolean}
  */
