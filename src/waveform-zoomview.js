@@ -67,6 +67,7 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
   self._enableSeek = true;
   self._enableSegmentDragging = false;
+  self._segmentDragMode = 'overlap';
 
   if (self._viewOptions.formatPlayheadTime) {
     self._formatPlayheadTime = self._viewOptions.formatPlayheadTime;
