@@ -140,9 +140,16 @@ declare module 'peaks.js' {
     highlightCornerRadius?: number;
   }
 
+  interface ScrollbarOptions {
+    container: HTMLElement;
+    color?: string;
+    minWidth?: number;
+  }
+
   interface ViewSpecificOptions {
     zoomview?: ZoomViewOptions;
     overview?: OverviewOptions;
+    scrollbar?: ScrollbarOptions;
   }
 
   type ContainerOptions = XOR<ViewContainerOptions, ViewSpecificOptions>;

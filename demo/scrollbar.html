@@ -3,12 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Peaks.js Demo Page</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <style>
-      #overview-container {
-        height: 200px;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="scrollbar.css">
   </head>
   <body>
     <div id="titles">
@@ -32,24 +27,24 @@
         <a href="/index.html">Precomputed Waveform Data</a> |
         <a href="/webaudio.html">Web Audio API</a> |
         <a href="/zoomable-waveform.html">Single Zoomable Waveform</a> |
-        Single Fixed Waveform |
+        <a href="/overview-waveform.html">Single Fixed Waveform</a> |
         <a href="/cue-events.html">Cue Events</a> |
         <a href="/set-source.html">Changing the Media URL</a> |
         <a href="/multi-channel.html">Multi-Channel Waveform</a> |
         <a href="/custom-markers">Custom Point and Segment Markers</a> |
         <a href="/overlay-segments.html">Overlay Segments</a> |
         <a href="/external-player.html">External Audio Player</a> |
-        <a href="/scrollbar.html">Scrollbar</a>
+        Scrollbar
       </p>
-      <h2>Demo: Single Fixed Waveform</h2>
+      <h2>Demo: Scrollbar</h2>
       <p>
-        This demo shows how to configure Peaks.js to render a single waveform
-        view, scaled to fit a given container element.
+        This demo shows how to configure Peaks.js with a scrollbar.
       </p>
     </div>
 
     <div id="waveform-container">
-      <div id="overview-container"></div>
+      <div id="zoomview-container"></div>
+      <div id="scrollbar-container"></div>
     </div>
 
     <div id="demo-controls">
@@ -61,16 +56,19 @@
 
       <div id="controls">
         <div>
+          <button data-action="zoom-in">Zoom in</button>
+          <button data-action="zoom-out">Zoom out</button>
           <input type="text" id="seek-time" value="0.0">
           <button data-action="seek">Seek</button>
-          <label for="amplitude-scale">Amplitude scale</label>
-          <input type="range" id="amplitude-scale" min="0" max="10" step="1">
         </div>
         <div>
-          <label for="waveform-color">Waveform color</label>
-          <input type="color" id="waveform-color" value="#cccccc">
-          <label for="played-waveform-color">Played waveform color</label>
-          <input type="color" id="played-waveform-color" value="#888888">
+          <label for="mousewheel-mode">Mousewheel mode:</label>
+          <select id="mousewheel-mode">
+            <option value="none">None</option>
+            <option value="scroll">Scroll</option>
+          </select>
+          <input type="checkbox" id="auto-scroll" checked>
+          <label for="auto-scroll">Auto-scroll</label>
         </div>
       </div>
     </div>
@@ -79,18 +77,25 @@
     <script>
       (function(Peaks) {
         var options = {
-          overview: {
-            container: document.getElementById('overview-container'),
-            waveformColor: '#cccccc',
-            playedWaveformColor: '#888888',
-            showPlayheadTime: true
+          zoomview: {
+            container: document.getElementById('zoomview-container'),
+            playheadClickTolerance: 3
+          },
+          scrollbar: {
+            container: document.getElementById('scrollbar-container'),
+            color: '#888',
+            minWidth: 100
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
             arraybuffer: '/TOL_6min_720p_download.dat',
             json: '/TOL_6min_720p_download.json'
           },
-          keyboard: true
+          keyboard: true,
+          pointMarkerColor: '#006eb0',
+          showPlayheadTime: true,
+          waveformCache: true,
+          zoomLevels: [512, 1024, 2048, 4096]
         };
 
         Peaks.init(options, function(err, peaksInstance) {
@@ -99,7 +104,15 @@
             return;
           }
 
-          console.log('Peaks instance ready');
+          console.log("Peaks instance ready");
+
+          document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
+            peaksInstance.zoom.zoomIn();
+          });
+
+          document.querySelector('[data-action="zoom-out"]').addEventListener('click', function() {
+            peaksInstance.zoom.zoomOut();
+          });
 
           document.querySelector('button[data-action="seek"]').addEventListener('click', function(event) {
             var time = document.getElementById('seek-time').value;
@@ -110,37 +123,16 @@
             }
           });
 
-          var amplitudeScales = {
-            "0": 0.0,
-            "1": 0.1,
-            "2": 0.25,
-            "3": 0.5,
-            "4": 0.75,
-            "5": 1.0,
-            "6": 1.5,
-            "7": 2.0,
-            "8": 3.0,
-            "9": 4.0,
-            "10": 5.0
-          };
+          document.getElementById('mousewheel-mode').addEventListener('change', function(event) {
+            var mode = event.target.value;
+            var view = peaksInstance.views.getView('zoomview');
 
-          document.getElementById('amplitude-scale').addEventListener('input', function(event) {
-            var scale = amplitudeScales[event.target.value];
-            var view = peaksInstance.views.getView();
-
-            view.setAmplitudeScale(scale);
+            view.setWheelMode(mode);
           });
 
-          document.getElementById('waveform-color').addEventListener('input', function(event) {
-            var view = peaksInstance.views.getView();
-
-            view.setWaveformColor(event.target.value);
-          });
-
-          document.getElementById('played-waveform-color').addEventListener('input', function(event) {
-            var view = peaksInstance.views.getView();
-
-            view.setPlayedWaveformColor(event.target.value);
+          document.getElementById('auto-scroll').addEventListener('change', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+            view.enableAutoScroll(event.target.checked);
           });
         });
       })(peaks);

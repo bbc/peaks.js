@@ -1,0 +1,57 @@
+body {
+  font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
+}
+
+#titles {
+  margin: 24px auto;
+  width: 1000px;
+}
+
+#waveform-container {
+  margin: 24px auto;
+  width: 1000px;
+  -moz-box-shadow: 3px 3px 20px #919191;
+  -webkit-box-shadow: 3px 3px 20px #919191;
+  box-shadow: 3px 3px 20px #919191;
+}
+
+#zoomview-container {
+  height: 200px;
+  margin: 0;
+  line-height: 0;
+}
+
+#scrollbar-container {
+  height: 16px;
+  background-color: #ccc;
+}
+
+#demo-controls {
+  margin: 0 auto 24px auto;
+  width: 1000px;
+  display: flex;
+  align-items: center;
+}
+
+#demo-controls button {
+  background: #fff;
+  border: 1px solid #919191;
+  cursor: pointer;
+}
+
+#audio {
+  flex: 0 0 30%;
+}
+
+#controls {
+  flex: 1;
+  margin-left: 1em;
+}
+
+#seek-time {
+  width: 4em;
+}
+
+p code {
+  margin-left: 4em
+}

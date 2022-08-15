@@ -38,7 +38,6 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._options = peaks.options;
   self._viewOptions = self._options.zoomview;
   self._enableWaveformCache = self._options.waveformCache;
-
   self._originalWaveformData = waveformData;
   self._initWaveformCache();
 
@@ -190,7 +189,7 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
         var newFrameOffset = this.initialFrameOffset + diff;
 
         if (newFrameOffset !== this.initialFrameOffset) {
-          self._updateWaveform(newFrameOffset);
+          self.updateWaveform(newFrameOffset);
         }
       }
     },
@@ -322,7 +321,7 @@ WaveformZoomView.prototype._onWheel = function(event) {
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
   );
 
-  this._updateWaveform(newFrameOffset);
+  this.updateWaveform(newFrameOffset);
 };
 
 WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
@@ -337,7 +336,7 @@ WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
   );
 
-  this._updateWaveform(newFrameOffset);
+  this.updateWaveform(newFrameOffset);
 };
 
 WaveformZoomView.prototype.enableSegmentDragging = function(enable) {
@@ -387,7 +386,7 @@ WaveformZoomView.prototype._onWindowResize = function() {
   if (!self._zoomLevelAuto) {
     self._width = width;
     self._stage.width(width);
-    self._updateWaveform(self._frameOffset);
+    self.updateWaveform(self._frameOffset);
   }
   else {
     if (self._resizeTimeoutId) {
@@ -405,7 +404,7 @@ WaveformZoomView.prototype._onWindowResize = function() {
         self._data = self._originalWaveformData.resample(width);
         self._stage.width(width);
 
-        self._updateWaveform(self._frameOffset);
+        self.updateWaveform(self._frameOffset);
       }, 500);
     }
   }
@@ -478,7 +477,7 @@ WaveformZoomView.prototype._syncPlayhead = function(time) {
         this._frameOffset = 0;
       }
 
-      this._updateWaveform(this._frameOffset);
+      this.updateWaveform(this._frameOffset);
     }
   }
 };
@@ -571,7 +570,7 @@ WaveformZoomView.prototype.setZoom = function(options) {
 
   this._frameOffset = apexPixel - playheadOffsetPixels;
 
-  this._updateWaveform(this._frameOffset);
+  this.updateWaveform(this._frameOffset);
 
   this._playheadLayer.zoomLevelChanged();
 
@@ -640,7 +639,7 @@ WaveformZoomView.prototype.setStartTime = function(time) {
     time = 0;
   }
 
-  this._updateWaveform(this.timeToPixels(time));
+  this.updateWaveform(this.timeToPixels(time));
 };
 
 /**
@@ -721,6 +720,13 @@ WaveformZoomView.prototype.getWidth = function() {
 
 WaveformZoomView.prototype.getHeight = function() {
   return this._height;
+};
+
+/**
+ * @returns {Number} The length of the waveform, in pixels.
+ */
+WaveformZoomView.prototype.getPixelLength = function() {
+  return this._pixelLength;
 };
 
 /**
@@ -843,7 +849,7 @@ WaveformZoomView.prototype.scrollWaveform = function(options) {
     throw new TypeError('view.scrollWaveform(): Missing umber of pixels or seconds');
   }
 
-  this._updateWaveform(this._frameOffset + scrollAmount);
+  this.updateWaveform(this._frameOffset + scrollAmount);
 };
 
 /**
@@ -852,7 +858,7 @@ WaveformZoomView.prototype.scrollWaveform = function(options) {
  * @param {Number} frameOffset The new frame offset, in pixels.
  */
 
-WaveformZoomView.prototype._updateWaveform = function(frameOffset) {
+WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
   var upperLimit;
 
   if (this._pixelLength < this._width) {
@@ -982,7 +988,7 @@ WaveformZoomView.prototype.fitToContainer = function() {
   this._pointsLayer.fitToView();
 
   if (updateWaveform) {
-    this._updateWaveform(this._frameOffset);
+    this.updateWaveform(this._frameOffset);
   }
 
   this._stage.draw();

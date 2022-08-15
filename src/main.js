@@ -14,6 +14,7 @@ import KeyboardHandler from './keyboard-handler';
 import MediaElementPlayer from './mediaelement-player';
 import Player from './player';
 import { createPointMarker, createSegmentMarker, createSegmentLabel } from './marker-factories';
+import Scrollbar from './scrollbar';
 import ViewController from './view-controller';
 import ZoomController from './zoom-controller';
 import WaveformBuilder from './waveform-builder';
@@ -115,6 +116,11 @@ var defaultSegmentOptions = {
   overlayFontFamily:         'sans-serif',
   overlayFontSize:           12,
   overlayFontStyle:          'normal'
+};
+
+var defaultScrollbarOptions = {
+  color: '#888888',
+  minWidth: 50
 };
 
 function getOverviewOptions(opts) {
@@ -239,6 +245,31 @@ function getZoomviewOptions(opts) {
   return zoomviewOptions;
 }
 
+function getScrollbarOptions(opts) {
+  if (!objectHasProperty(opts, 'scrollbar')) {
+    return null;
+  }
+
+  var scrollbarOptions = {};
+
+  var optNames = [
+    'container',
+    'color',
+    'minWidth'
+  ];
+
+  optNames.forEach(function(optName) {
+    if (objectHasProperty(opts.scrollbar, optName)) {
+      scrollbarOptions[optName] = opts.scrollbar[optName];
+    }
+    else {
+      scrollbarOptions[optName] = defaultScrollbarOptions[optName];
+    }
+  });
+
+  return scrollbarOptions;
+}
+
 function extendOptions(to, from) {
   for (var key in from) {
     if (objectHasProperty(from, key) &&
@@ -318,6 +349,24 @@ Peaks.init = function(opts, callback) {
     return;
   }
 
+  var scrollbarContainer = null;
+
+  if (instance.options.scrollbar) {
+    scrollbarContainer = instance.options.scrollbar.container;
+
+    if (!isHTMLElement(scrollbarContainer)) {
+      // eslint-disable-next-line max-len
+      callback(new TypeError('Peaks.init(): The scrollbar container option must be a valid HTML element'));
+      return;
+    }
+
+    if (scrollbarContainer.clientWidth <= 0) {
+      // eslint-disable-next-line max-len
+      callback(new TypeError('Peaks.init(): Please ensure that the scrollbar container is visible and has non-zero width'));
+      return;
+    }
+  }
+
   if (opts.keyboard) {
     instance._keyboardHandler = new KeyboardHandler(instance);
   }
@@ -354,6 +403,10 @@ Peaks.init = function(opts, callback) {
 
         if (zoomviewContainer) {
           instance.views.createZoomview(zoomviewContainer);
+        }
+
+        if (scrollbarContainer) {
+          instance.createScrollbar(scrollbarContainer);
         }
 
         instance._addWindowResizeHandler();
@@ -450,6 +503,7 @@ Peaks.prototype._setOptions = function(opts) {
 
   this.options.overview = getOverviewOptions(opts);
   this.options.zoomview = getZoomviewOptions(opts);
+  this.options.scrollbar = getScrollbarOptions(opts);
 
   addSegmentOptions(this.options, opts);
 
@@ -563,6 +617,18 @@ Peaks.prototype.getWaveformData = function() {
   return this._waveformData;
 };
 
+Peaks.prototype.createScrollbar = function(container) {
+  var waveformData = this.getWaveformData();
+
+  this._scrollbar = new Scrollbar(
+    waveformData,
+    container,
+    this
+  );
+
+  return this._scrollbar;
+};
+
 Peaks.prototype._addWindowResizeHandler = function() {
   this._onResize = this._onResize.bind(this);
   window.addEventListener('resize', this._onResize);
@@ -589,6 +655,11 @@ Peaks.prototype.destroy = function() {
 
   if (this.views) {
     this.views.destroy();
+  }
+
+  if (this._scrollbar) {
+    this._scrollbar.destroy();
+    this._scrollbar = null;
   }
 
   if (this.player) {
