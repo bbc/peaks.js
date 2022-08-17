@@ -387,7 +387,6 @@ declare module 'peaks.js' {
     emit<E extends keyof PlayerEvents>(event: E, ...eventData: EventData<PlayerEvents[E]>): void;
   }
 
-
   type EventData<T> = [T] extends [(...eventData: infer U) => any] ? U : [T] extends [void] ? [] : [T];
 
   interface WaveformView {
@@ -405,11 +404,15 @@ declare module 'peaks.js' {
   interface WaveformOverview extends WaveformView {
   }
 
+  interface SetWheelModeOptions {
+    captureVerticalScroll?: boolean;
+  }
+
   interface WaveformZoomView extends WaveformView {
     enableAutoScroll: (enable: boolean) => void;
     scrollWaveform: (options: XOR<{ seconds: number }, { pixels: number }>) => void;
     setStartTime: (time: number) => void;
-    setWheelMode: (mode: 'scroll' | 'none') => void;
+    setWheelMode: (mode: 'scroll' | 'none', options?: SetWheelModeOptions) => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
   }
 
