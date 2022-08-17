@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 2.0.4 (2022/08/17)
+
+* (#454) Added captureVerticalScroll option to view.setWheelMode().
+  This option makes the zoomview respond to all mousewheel / touchpad
+  events. It means that the user no longer has to press Shift to
+  scroll the waveform, but it also means that using the mousewheel
+  while the pointer is over the waveform will no longer scroll the
+  page (@chrisn)
+
 ## 2.0.3 (2022/07/31)
 
 * (#457) Improve horizontal scrolling on trackpad on Mac OS (@jdelStrother)
