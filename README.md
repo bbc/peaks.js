@@ -76,7 +76,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.fitToContainer()](#viewfittocontainer)
     - [view.setZoom()](#viewsetzoomoptions)
     - [view.setStartTime()](#viewsetstarttimetime)
-    - [view.setWheelMode()](#viewsetwheelmodemode)
+    - [view.setWheelMode()](#viewsetwheelmodemode-options)
     - [view.enableSeek()](#viewenableseekenable)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
@@ -1077,18 +1077,23 @@ view.scrollWaveform({ seconds: 1.0 });
 view.scrollWaveform({ pixels: -100 });
 ```
 
-### `view.setWheelMode(mode)`
+### `view.setWheelMode(mode[, options])`
 
 Controls how the waveform view responds to mousewheel input. On a laptop trackpad, this is often a horizontal swipe gesture. For users with a mouse with a scroll wheel, hold down the Shift key while using the scroll wheel. Possible values for `mode` are:
 
 * `'none'` to disable use of the mousewheel input (default)
 * `'scroll'` to scroll the waveform view
 
+The optional `options` parameter allows the behavior to be customized. If present, `options` should be an object with one of the following keys:
+
+* `captureVerticalScroll`: controls whether the mousewheel will scroll the waveform when the mouse is positioned over the waveform, or instead scrolls the page (boolean, defaults to `false`)
+
 Note that this method is not available on the overview waveform.
 
 ```js
 const view = instance.views.getView('zoomview');
 view.setWheelMode('scroll');
+view.setWheelMode('scroll', { captureVerticalScroll: true });
 ```
 
 ### `view.enableSeek(enable)`
