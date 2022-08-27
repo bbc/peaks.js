@@ -280,7 +280,7 @@ declare module 'peaks.js' {
     /** Custom segment marker factory function */
     createSegmentMarker?: (options: CreateSegmentMarkerOptions) => SegmentMarker | null;
     /** Custom segment label factory function */
-    createSegmentLabel?: (options: CreateSegmentLabelOptions) => object; // Konva.Node;
+    createSegmentLabel?: (options: CreateSegmentLabelOptions) => object | null; // Konva.Node;
     /** Custom point marker factory function */
     createPointMarker?: (options: CreatePointMarkerOptions) => PointMarker;
     /** External Player */
