@@ -115,6 +115,16 @@ declare module 'peaks.js' {
     }
   }
 
+  export interface JsonWaveformData {
+    version: number;
+    channels: number;
+    sample_rate: number;
+    samples_per_pixel: number;
+    bits: number;
+    length: number;
+    data: number[];
+  }
+
   interface LocalWaveformDataOptions {
     /** raw waveform data file in binary or JSON */
     waveformData?: {
@@ -471,18 +481,11 @@ declare module 'peaks.js' {
     off: <E extends keyof PeaksEvents>(event: E, listener: PeaksEvents[E]) => void;
   }
 
+  export type PeaksOptions = OptionalOptions & AudioOptions & ContainerOptions;
+
   type PeaksInitCallback = (error: Error, peaks?: PeaksInstance) => void;
 
-  export interface JsonWaveformData {
-    version: number;
-    channels: number;
-    sample_rate: number;
-    samples_per_pixel: number;
-    bits: number;
-    length: number;
-    data: number[];
+  export default class Peaks {
+    static init(options: PeaksOptions, callback?: PeaksInitCallback): void;
   }
-
-  export type PeaksOptions = OptionalOptions & AudioOptions & ContainerOptions;
-  export function init(options: PeaksOptions, callback?: PeaksInitCallback): PeaksInstance;
 }
