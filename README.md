@@ -236,6 +236,11 @@ npm start
 
 and then open your browser at http://localhost:8080.
 
+There are also some example projects that show how to use Peaks.js with popular JavaScript frameworks:
+
+* [React](https://github.com/chrisn/peaksjs-react-example)
+* [Angular](https://github.com/chrisn/peaksjs-angular-example)
+
 # Generating waveform data
 
 Peaks.js creates its audio waveform visualization by processing the audio to produce waveform data. There are two ways that you can do this:
