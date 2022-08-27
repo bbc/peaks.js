@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 2.0.5 (2022/08/27)
+
+* (#460) Fixed TypeScript declarations, which were causing problems
+  using Peaks.js in Angular apps.
+
 ## 2.0.4 (2022/08/17)
 
 * (#454) Added captureVerticalScroll option to view.setWheelMode().
