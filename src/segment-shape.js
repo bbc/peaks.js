@@ -401,59 +401,66 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   // update the segment start and end time so that the right
   // subset is drawn.
 
+  // Calculate new segment start/end time based on drag position. We'll
+  // correct this later based on the drag mode, to prevent overlapping
+  // segments or to compress the adjacent segment.
+
   var startTime = this._dragStartTime + timeOffset;
   var endTime = this._dragEndTime + timeOffset;
+  var segmentDuration = this._segment.endTime - this._segment.startTime;
+
+  // Prevent the segment from being dragged beyond the start of the waveform
 
   if (startTime < 0) {
     startTime = 0;
-    endTime = this._segment.endTime - this._segment.startTime;
+    endTime = segmentDuration;
   }
+
+  // Adjust segment position if it now overlaps the previous segment?
 
   if (this._previousSegment && startTime < this._previousSegment.endTime) {
     dragMode = this._view.getSegmentDragMode();
 
     if (dragMode === 'no-overlap') {
-      endTime = this._previousSegment.endTime + (endTime - startTime);
       startTime = this._previousSegment.endTime;
+      endTime = startTime + segmentDuration;
     }
     else if (dragMode === 'compress') {
-      var previousSegmentDuration = this._previousSegment.endTime - this._previousSegment.startTime;
+      var previousSegmentEndTime = startTime;
+      var previousSegmentDuration = previousSegmentEndTime - this._previousSegment.startTime;
 
       if (previousSegmentDuration < minSegmentDuration) {
-        minSegmentDuration = previousSegmentDuration;
+        previousSegmentDuration = minSegmentDuration;
+        previousSegmentEndTime = this._previousSegment.startTime + minSegmentDuration;
+        startTime = previousSegmentEndTime;
+        endTime = startTime + segmentDuration;
       }
 
-      if (startTime >= this._previousSegment.startTime + minSegmentDuration) {
-        this._previousSegment.update({ endTime: startTime });
-      }
-      else {
-        endTime = this._previousSegment.startTime + minSegmentDuration + (endTime - startTime);
-        startTime = this._previousSegment.endTime;
-      }
+      this._previousSegment.update({ endTime: previousSegmentEndTime });
     }
   }
+
+  // Adjust segment position if it now overlaps the following segment?
 
   if (this._nextSegment && endTime > this._nextSegment.startTime) {
     dragMode = this._view.getSegmentDragMode();
 
     if (dragMode === 'no-overlap') {
-      startTime = this._nextSegment.startTime - (endTime - startTime);
       endTime = this._nextSegment.startTime;
+      startTime = endTime - segmentDuration;
     }
     else if (dragMode === 'compress') {
-      var nextSegmentDuration = this._nextSegment.endTime - this._nextSegment.startTime;
+      var nextSegmentStartTime = endTime;
+      var nextSegmentDuration = this._nextSegment.endTime - nextSegmentStartTime;
 
       if (nextSegmentDuration < minSegmentDuration) {
-        minSegmentDuration = nextSegmentDuration;
+        nextSegmentDuration = minSegmentDuration;
+        nextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
+        endTime = nextSegmentStartTime;
+        startTime = endTime - segmentDuration;
       }
 
-      if (endTime >= this._nextSegment.endTime - minSegmentDuration) {
-        startTime = this._nextSegment.endTime - minSegmentDuration - (endTime - startTime);
-        endTime = this._nextSegment.startTime;
-      }
-      else {
-        this._nextSegment.update({ startTime: endTime });
-      }
+      this._nextSegment.update({ startTime: nextSegmentStartTime });
     }
   }
 
