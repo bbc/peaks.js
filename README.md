@@ -193,6 +193,11 @@ Refer to the [Configuration](#configuration) section for details of the availabl
   };
 
   Peaks.init(options, function(err, peaks) {
+    if (err) {
+      console.error('Failed to initialize Peaks instance: ' + err.message);
+      return;
+    }
+
     // Do something when the waveform is displayed and ready
   });
 })(peaks);
@@ -218,6 +223,11 @@ const options = {
 };
 
 Peaks.init(options, function(err, peaks) {
+  if (err) {
+    console.error('Failed to initialize Peaks instance: ' + err.message);
+    return;
+  }
+
   // Do something when the waveform is displayed and ready
 });
 ```
@@ -300,7 +310,7 @@ const options = {
 };
 
 Peaks.init(options, function(err, peaks) {
-  // ...
+  // Do something when the waveform is displayed and ready, or handle errors
 });
 ```
 
@@ -331,7 +341,7 @@ const options = {
 };
 
 Peaks.init(options, function(err, peaks) {
-  // Do something when the waveform is displayed and ready
+  // Do something when the waveform is displayed and ready, or handle errors
 });
 ```
 
@@ -361,7 +371,7 @@ audioContext.decodeAudioData(arrayBuffer)
     };
 
     Peaks.init(options, function(err, peaks) {
-      // Do something when the waveform is displayed and ready
+      // Do something when the waveform is displayed and ready, or handle errors
     });
   });
 ```
