@@ -251,15 +251,19 @@ Peaks.init = function(opts, callback) {
     return;
   }
 
-  if (zoomviewContainer && zoomviewContainer.clientWidth <= 0) {
+  if (zoomviewContainer &&
+      (zoomviewContainer.clientWidth  <= 0 ||
+       zoomviewContainer.clientHeight <= 0)) {
     // eslint-disable-next-line max-len
-    callback(new TypeError('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width'));
+    callback(new Error('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width and height'));
     return;
   }
 
-  if (overviewContainer && overviewContainer.clientWidth <= 0) {
+  if (overviewContainer &&
+      (overviewContainer.clientWidth  <= 0 ||
+       overviewContainer.clientHeight <= 0)) {
     // eslint-disable-next-line max-len
-    callback(new TypeError('Peaks.init(): Please ensure that the overview container is visible and has non-zero width'));
+    callback(new Error('Peaks.init(): Please ensure that the overview container is visible and has non-zero width and height'));
     return;
   }
 
