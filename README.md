@@ -158,7 +158,14 @@ To include Peaks.js in your web page, you need to add container `<div>` elements
 </audio>
 ```
 
-The container `div`s should be left empty, as shown above, as their content will be replaced by the waveform view `canvas` elements.
+The container `div`s should be left empty, as shown above, as their content will be replaced by the waveform view `canvas` elements. They should also be styled to have the desired width and height:
+
+```css
+#zoomview-container, #overview-container {
+  width: 1000px;
+  height: 100px;
+}
+```
 
 ## Initialize Peaks.js
 
