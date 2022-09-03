@@ -39,6 +39,7 @@ function SegmentShape(segment, peaks, layer, view) {
   this._endMarker     = null;
   this._color         = segment.color;
   this._draggable     = this._segment.editable && this._view._isSegmentDraggingEnabled();
+  this._dragging      = false;
 
   var segmentOptions = this._peaks.options.segmentOptions;
 
@@ -61,6 +62,7 @@ function SegmentShape(segment, peaks, layer, view) {
   this._dragBoundFunc      = this._dragBoundFunc.bind(this);
   this._onSegmentDragStart = this._onSegmentDragStart.bind(this);
   this._onSegmentDragMove  = this._onSegmentDragMove.bind(this);
+  this._onSegmentDragEnd   = this._onSegmentDragEnd.bind(this);
 
   // Event handlers for markers
   this._onSegmentHandleDragStart   = this._onSegmentHandleDragStart.bind(this);
@@ -159,6 +161,7 @@ function SegmentShape(segment, peaks, layer, view) {
   if (this._draggable) {
     this._overlay.on('dragmove', this._onSegmentDragMove);
     this._overlay.on('dragstart', this._onSegmentDragStart);
+    this._overlay.on('dragend', this._onSegmentDragEnd);
   }
 
   this._createMarkers();
@@ -194,17 +197,21 @@ SegmentShape.prototype.updatePosition = function() {
     marker.setX(endPixel);
   }
 
-  if (this._overlay) {
-    this._overlay.setAttrs({
-      x:         startPixel,
-      width:     width,
-      clipWidth: width < 1 ? 1 : width
-    });
+  // While dragging, the overlay position is controlled in _onSegmentDragMove().
 
-    this._overlayRect.setAttrs({
-      x:     0,
-      width: width
-    });
+  if (!this._dragging) {
+    if (this._overlay) {
+      this._overlay.setAttrs({
+        x:         startPixel,
+        width:     width,
+        clipWidth: width < 1 ? 1 : width
+      });
+
+      this._overlayRect.setAttrs({
+        x:     0,
+        width: width
+      });
+    }
   }
 };
 
@@ -358,10 +365,12 @@ SegmentShape.prototype.enableSegmentDragging = function(enable) {
   if (!this._draggable && enable) {
     this._overlay.on('dragstart', this._onSegmentDragStart);
     this._overlay.on('dragmove', this._onSegmentDragMove);
+    this._overlay.on('dragend', this._onSegmentDragEnd);
   }
   else if (this._draggable && !enable) {
     this._overlay.off('dragstart', this._onSegmentDragStart);
     this._overlay.off('dragmove', this._onSegmentDragMove);
+    this._overlay.off('dragend', this._onSegmentDragEnd);
   }
 
   this._overlay.draggable(enable);
@@ -382,6 +391,7 @@ SegmentShape.prototype._setPreviousAndNextSegments = function() {
 SegmentShape.prototype._onSegmentDragStart = function() {
   this._setPreviousAndNextSegments();
 
+  this._dragging = true;
   this._dragStartX = this._overlay.getX();
   this._dragStartTime = this._segment.startTime;
   this._dragEndTime = this._segment.endTime;
@@ -390,9 +400,6 @@ SegmentShape.prototype._onSegmentDragStart = function() {
 SegmentShape.prototype._onSegmentDragMove = function(event) {
   var x = this._overlay.getX();
   var offsetX = x - this._dragStartX;
-  var dragMode;
-  var minSegmentDuration = this._view.pixelsToTime(50);
-
   var timeOffset = this._view.pixelsToTime(offsetX);
 
   // The WaveformShape for a segment fills the canvas width
@@ -408,71 +415,98 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   var startTime = this._dragStartTime + timeOffset;
   var endTime = this._dragEndTime + timeOffset;
   var segmentDuration = this._segment.endTime - this._segment.startTime;
+  var dragMode;
+  var minSegmentWidth = 50;
+  var minSegmentDuration = this._view.pixelsToTime(minSegmentWidth);
 
-  // Prevent the segment from being dragged beyond the start of the waveform
+  // Prevent the segment from being dragged beyond the start of the waveform.
 
   if (startTime < 0) {
     startTime = 0;
     endTime = segmentDuration;
+    this._overlay.setX(this._view.timeToPixelOffset(startTime));
   }
 
   // Adjust segment position if it now overlaps the previous segment?
 
-  if (this._previousSegment && startTime < this._previousSegment.endTime) {
-    dragMode = this._view.getSegmentDragMode();
+  if (this._previousSegment) {
+    var previousSegmentEndX = this._view.timeToPixels(this._previousSegment.endTime);
 
-    if (dragMode === 'no-overlap') {
-      startTime = this._previousSegment.endTime;
-      endTime = startTime + segmentDuration;
-    }
-    else if (dragMode === 'compress') {
-      var previousSegmentEndTime = startTime;
-      var previousSegmentDuration = previousSegmentEndTime - this._previousSegment.startTime;
+    if (startTime < this._previousSegment.endTime) {
+      dragMode = this._view.getSegmentDragMode();
 
-      if (previousSegmentDuration < minSegmentDuration) {
-        previousSegmentDuration = minSegmentDuration;
-        previousSegmentEndTime = this._previousSegment.startTime + minSegmentDuration;
-        startTime = previousSegmentEndTime;
+      if (dragMode === 'no-overlap') {
+        startTime = this._previousSegment.endTime;
         endTime = startTime + segmentDuration;
+        this._overlay.setX(previousSegmentEndX);
       }
+      else if (dragMode === 'compress') {
+        var previousSegmentEndTime = this._view.pixelOffsetToTime(x);
+        var minPreviousSegmentEndTime = this._previousSegment.startTime + minSegmentDuration;
 
-      this._previousSegment.update({ endTime: previousSegmentEndTime });
+        if (previousSegmentEndTime < minPreviousSegmentEndTime) {
+          previousSegmentEndTime = minPreviousSegmentEndTime;
+
+          previousSegmentEndX = this._view.timeToPixelOffset(previousSegmentEndTime);
+
+          this._overlay.setX(previousSegmentEndX);
+
+          startTime = previousSegmentEndTime;
+          endTime = startTime + segmentDuration;
+        }
+
+        this._previousSegment.update({ endTime: previousSegmentEndTime });
+      }
     }
   }
 
   // Adjust segment position if it now overlaps the following segment?
 
-  if (this._nextSegment && endTime > this._nextSegment.startTime) {
-    dragMode = this._view.getSegmentDragMode();
+  if (this._nextSegment) {
+    var nextSegmentStartX = this._view.timeToPixels(this._nextSegment.startTime);
 
-    if (dragMode === 'no-overlap') {
-      endTime = this._nextSegment.startTime;
-      startTime = endTime - segmentDuration;
-    }
-    else if (dragMode === 'compress') {
-      var nextSegmentStartTime = endTime;
-      var nextSegmentDuration = this._nextSegment.endTime - nextSegmentStartTime;
+    var endX = this._overlay.getX() + this._overlay.getWidth();
 
-      if (nextSegmentDuration < minSegmentDuration) {
-        nextSegmentDuration = minSegmentDuration;
-        nextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
-        endTime = nextSegmentStartTime;
+    if (endTime > this._nextSegment.startTime) {
+      dragMode = this._view.getSegmentDragMode();
+
+      if (dragMode === 'no-overlap') {
+        endTime = this._nextSegment.startTime;
         startTime = endTime - segmentDuration;
+        this._overlay.setX(nextSegmentStartX - this._overlay.getWidth());
       }
+      else if (dragMode === 'compress') {
+        var nextSegmentStartTime = this._view.pixelOffsetToTime(endX);
+        var maxNextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
 
-      this._nextSegment.update({ startTime: nextSegmentStartTime });
+        if (nextSegmentStartTime > maxNextSegmentStartTime) {
+          nextSegmentStartTime = maxNextSegmentStartTime;
+
+          nextSegmentStartX = this._view.timeToPixelOffset(nextSegmentStartTime);
+
+          this._overlay.setX(nextSegmentStartX - this._overlay.getWidth());
+
+          endTime = nextSegmentStartTime;
+          startTime = endTime - segmentDuration;
+        }
+
+        this._nextSegment.update({ startTime: nextSegmentStartTime });
+      }
     }
   }
 
   this._segment._setStartTime(startTime);
   this._segment._setEndTime(endTime);
-  this._overlay.setX(0);
 
   this._peaks.emit('segments.dragged', {
     segment: this._segment,
     startMarker: false,
     evt: event.evt
   });
+};
+
+SegmentShape.prototype._onSegmentDragEnd = function() {
+  this._dragging = false;
 };
 
 /**

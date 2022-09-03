@@ -679,6 +679,10 @@ WaveformZoomView.prototype.pixelOffsetToTime = function(offset) {
   return pixels * this._data.scale / this._data.sample_rate;
 };
 
+WaveformZoomView.prototype.timeToPixelOffset = function(time) {
+  return Math.floor(time * this._data.sample_rate / this._data.scale) - this._frameOffset;
+};
+
 /* var zoomAdapterMap = {
   'animated': AnimatedZoomAdapter,
   'static': StaticZoomAdapter
