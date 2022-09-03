@@ -1221,7 +1221,7 @@ Adds a segment to the waveform timeline. Accepts an object containing the follow
 instance.segments.add({ startTime: 0, endTime: 10.5 });
 ```
 
-Alternatively, provide an array of segment objects to add all those segments at once.
+Alternatively, provide an array of segment objects to add all those segments at once. It's much more efficient to do this than add a single segment at a time.
 
 ```js
 instance.segments.add([
@@ -1350,7 +1350,7 @@ Adds one or more points to the waveform timeline. Accepts an object containing t
 instance.points.add({ time: 3.5 });
 ```
 
-Alternatively, provide an array of point objects to add several at once.
+Alternatively, provide an array of point objects to add several at once. Note that it's much more efficient to do this than add a single point at a time.
 
 ```js
 instance.points.add([
