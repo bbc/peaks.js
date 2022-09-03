@@ -319,6 +319,33 @@ describe('Peaks', function() {
             expect(zoomview._axis._axisGridlineColor).to.equal('#cccccc');
             done();
           });
+
+          it('should use deprecated options', function(done) {
+            Peaks.init({
+              overview: {
+                container: document.getElementById('overview-container')
+              },
+              zoomview: {
+                container: document.getElementById('zoomview-container')
+              },
+              mediaElement: document.getElementById('media'),
+              dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+              zoomWaveformColor: '#111111',
+              overviewWaveformColor: '#222222',
+              overviewHighlightColor: '#333333'
+            }, function(err, instance) {
+              expect(err).to.equal(null);
+              expect(instance).to.be.an.instanceof(Peaks);
+
+              var overview = instance.views.getView('overview');
+              var zoomview = instance.views.getView('zoomview');
+
+              expect(overview._waveformcolor).to.equal('#111111');
+              expect(zoomview._waveformcolor).to.equal('#222222');
+              expect(overview._highlightLayer._color).to.equal('#333333');
+              done();
+            });
+          });
         });
       });
 

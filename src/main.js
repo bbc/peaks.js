@@ -146,11 +146,13 @@ function getOverviewOptions(opts) {
     else if (objectHasProperty(opts, optName)) {
       overviewOptions[optName] = opts[optName];
     }
-    else if (objectHasProperty(defaultOverviewOptions, optName)) {
-      overviewOptions[optName] = defaultOverviewOptions[optName];
-    }
-    else if (objectHasProperty(defaultViewOptions, optName)) {
-      overviewOptions[optName] = defaultViewOptions[optName];
+    else if (!objectHasProperty(overviewOptions, optName)) {
+      if (objectHasProperty(defaultOverviewOptions, optName)) {
+        overviewOptions[optName] = defaultOverviewOptions[optName];
+      }
+      else if (objectHasProperty(defaultViewOptions, optName)) {
+        overviewOptions[optName] = defaultViewOptions[optName];
+      }
     }
   });
 
@@ -201,11 +203,13 @@ function getZoomviewOptions(opts) {
     else if (objectHasProperty(opts, optName)) {
       zoomviewOptions[optName] = opts[optName];
     }
-    else if (objectHasProperty(defaultZoomviewOptions, optName)) {
-      zoomviewOptions[optName] = defaultZoomviewOptions[optName];
-    }
-    else if (objectHasProperty(defaultViewOptions, optName)) {
-      zoomviewOptions[optName] = defaultViewOptions[optName];
+    else if (!objectHasProperty(zoomviewOptions, optName)) {
+      if (objectHasProperty(defaultZoomviewOptions, optName)) {
+        zoomviewOptions[optName] = defaultZoomviewOptions[optName];
+      }
+      else if (objectHasProperty(defaultViewOptions, optName)) {
+        zoomviewOptions[optName] = defaultViewOptions[optName];
+      }
     }
   });
 

@@ -926,7 +926,7 @@ view.setAmplitudeScale(1.0);
 
 Sets the waveform color, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
 
-The initial color is controlled by the `zoomWaveformColor` and `overviewWaveformColor` configuration options.
+The initial color is controlled by the `waveformColor`, `zoomview.waveformColor`, and `overview.waveformColor` configuration options.
 
 ```js
 const view = instance.views.getView('zoomview');
@@ -946,7 +946,7 @@ view.setWaveformColor({
 
 Sets color of the waveform to the left of the current playhead position. This can be string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value), or `null` to remove coloring of the played waveform region.
 
-The initial color is controlled by the `playedWaveformColor` configuration option.
+The initial color is controlled by the `playedWaveformColor`, `zoomview.playedWaveformColor`, and `overview.playedWaveformColor` configuration options.
 
 ```js
 const view = instance.views.getView('zoomview');

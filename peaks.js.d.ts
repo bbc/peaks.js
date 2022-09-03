@@ -222,18 +222,31 @@ declare module 'peaks.js' {
     segmentStartMarkerColor?: string;
     /** Color for segment end marker handles */
     segmentEndMarkerColor?: string;
-    /** Color for the zoomed in waveform */
+    /**
+     * Waveform color (or use zoomview.waveformColor and overview.waveformColor
+     * to set the waveform color for each view)
+     */
+    waveformColor?: WaveformColor;
+    /**
+     * Zoomview waveform color
+     * @deprecated use zoomview.waveformColor instead
+     */
     zoomWaveformColor?: WaveformColor;
-    /** Color for the overview waveform */
+    /**
+     * Overview waveform color
+     * @deprecated use overview.waveformColor instead
+     */
     overviewWaveformColor?: WaveformColor;
     /**
      * Color for the overview waveform rectangle
      * that shows what the zoom view shows
+     * @deprecated use overview.highlightColor instead
      */
     overviewHighlightColor?: string;
     /**
      * The default number of pixels from the top and bottom of the canvas
      * that the overviewHighlight takes up
+     * @deprecated use overview.hightlightOffset instead
      */
     overviewHighlightOffset?: number;
     /** Color for segments on the waveform */
@@ -250,7 +263,7 @@ declare module 'peaks.js' {
     showAxisLabels?: boolean;
     /** Returns a string for the axis label timestamps */
     formatAxisTime?: FormatTimeFunction;
-    /** Show current time next to the playhead (zoom view only) */
+    /** Show current time next to the playhead (zoomview only) */
     showPlayheadTime?: boolean;
     /** The color of a point marker */
     pointMarkerColor?: string;
