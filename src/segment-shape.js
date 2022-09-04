@@ -84,15 +84,13 @@ function SegmentShape(segment, peaks, layer, view) {
   }
 
   // Create with default y and height, the real values are set in fitToView().
-  var segmentStartOffset = this._view.timeToPixels(this._segment.startTime);
-  var segmentEndOffset   = this._view.timeToPixels(this._segment.endTime);
-  var frameStartOffset = this._view.getFrameOffset();
-  var startPixel = segmentStartOffset - frameStartOffset;
+  var segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
+  var segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
 
   var overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
 
   this._overlay = new Konva.Group({
-    x:             startPixel,
+    x:             segmentStartOffset,
     y:             0,
     width:         segmentEndOffset - segmentStartOffset,
     height:        this._view.getHeight(),
@@ -176,25 +174,20 @@ SegmentShape.prototype._dragBoundFunc = function(pos) {
 };
 
 SegmentShape.prototype.updatePosition = function() {
-  var segmentStartOffset = this._view.timeToPixels(this._segment.startTime);
-  var segmentEndOffset   = this._view.timeToPixels(this._segment.endTime);
-
-  var frameStartOffset = this._view.getFrameOffset();
-
-  var startPixel = segmentStartOffset - frameStartOffset;
-  var endPixel   = segmentEndOffset   - frameStartOffset;
-  var width      = endPixel - startPixel;
+  var segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
+  var segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
+  var width = segmentEndOffset - segmentStartOffset;
 
   var marker = this.getStartMarker();
 
   if (marker) {
-    marker.setX(startPixel - marker.getWidth());
+    marker.setX(segmentStartOffset - marker.getWidth());
   }
 
   marker = this.getEndMarker();
 
   if (marker) {
-    marker.setX(endPixel);
+    marker.setX(segmentEndOffset);
   }
 
   // While dragging, the overlay position is controlled in _onSegmentDragMove().
@@ -202,7 +195,7 @@ SegmentShape.prototype.updatePosition = function() {
   if (!this._dragging) {
     if (this._overlay) {
       this._overlay.setAttrs({
-        x:         startPixel,
+        x:         segmentStartOffset,
         width:     width,
         clipWidth: width < 1 ? 1 : width
       });
@@ -552,8 +545,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
       dragMode = this._view.getSegmentDragMode();
 
       if (dragMode === 'no-overlap') {
-        lowerLimit = this._view.timeToPixels(this._previousSegment.endTime) -
-                     this._view.getFrameOffset();
+        lowerLimit = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
         if (lowerLimit < 0) {
           lowerLimit = 0;
@@ -566,8 +558,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
           minSegmentDuration = segmentDuration;
         }
 
-        lowerLimit = this._view.timeToPixels(this._previousSegment.startTime + minSegmentDuration) -
-                     this._view.getFrameOffset();
+        lowerLimit = this._view.timeToPixelOffset(this._previousSegment.startTime + minSegmentDuration);
 
         if (lowerLimit < 0) {
           lowerLimit = 0;
@@ -588,8 +579,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
       segmentMarker.timeUpdated(this._segment.startTime);
 
       if (this._previousSegment) {
-        var prevSegmentEndX = this._view.timeToPixels(this._previousSegment.endTime) -
-                              this._view.getFrameOffset();
+        var prevSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
         if (startMarkerX < prevSegmentEndX) {
           this._previousSegment.update({
@@ -617,8 +607,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
       dragMode = this._view.getSegmentDragMode();
 
       if (dragMode === 'no-overlap') {
-        upperLimit = this._view.timeToPixels(this._nextSegment.startTime) -
-                     this._view.getFrameOffset();
+        upperLimit = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
         if (upperLimit > width) {
           upperLimit = width;
@@ -631,8 +620,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
           minSegmentDuration = segmentDuration;
         }
 
-        upperLimit = this._view.timeToPixels(this._nextSegment.endTime - minSegmentDuration) -
-                     this._view.getFrameOffset();
+        upperLimit = this._view.timeToPixelOffset(this._nextSegment.endTime - minSegmentDuration);
 
         if (upperLimit > width) {
           upperLimit = width;
@@ -653,8 +641,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
       segmentMarker.timeUpdated(this._segment.endTime);
 
       if (this._nextSegment) {
-        var nextSegmentStartX = this._view.timeToPixels(this._nextSegment.startTime) -
-                               this._view.getFrameOffset();
+        var nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
         if (endMarkerX > nextSegmentStartX) {
           this._nextSegment.update({
