@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 2.0.6 (2022/09/07)
+
+* (#443) Check container element height is non-zero in `Peaks.init()`
+
+* (#461) Fixed handling of deprecated `zoomviewWaveformColor` and
+  `overviewWaveformColor` options (@chrisn)
+
+* Fixed TypeScript declarations
+
 ## 2.0.5 (2022/08/27)
 
 * (#460) Fixed TypeScript declarations, which were causing problems
@@ -7,7 +16,7 @@
 
 ## 2.0.4 (2022/08/17)
 
-* (#454) Added captureVerticalScroll option to view.setWheelMode().
+* (#454) Added `captureVerticalScroll` option to `view.setWheelMode()`.
   This option makes the zoomview respond to all mousewheel / touchpad
   events. It means that the user no longer has to press Shift to
   scroll the waveform, but it also means that using the mousewheel
