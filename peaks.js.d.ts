@@ -82,6 +82,7 @@ declare module 'peaks.js' {
     fontStyle?: string;
     playedWaveformColor?: WaveformColor;
     playheadColor?: string;
+    showPlayheadTime?: boolean;
     playheadTextColor?: string;
     formatPlayheadTime?: FormatTimeFunction;
     timeLabelPrecision?: number;
@@ -253,7 +254,9 @@ declare module 'peaks.js' {
     segmentColor?: WaveformColor;
     /** Color of the play head */
     playheadColor?: string;
-    /** Color of the play head text */
+    /** Show current time next to the playhead (zoomview only) */
+    showPlayheadTime?: boolean;
+    /** Color of the playhead timestamp label */
     playheadTextColor?: string;
     /** Returns a string for the playhead timestamp label */
     formatPlayheadTime?: FormatTimeFunction;
@@ -263,8 +266,6 @@ declare module 'peaks.js' {
     showAxisLabels?: boolean;
     /** Returns a string for the axis label timestamps */
     formatAxisTime?: FormatTimeFunction;
-    /** Show current time next to the playhead (zoomview only) */
-    showPlayheadTime?: boolean;
     /** The color of a point marker */
     pointMarkerColor?: string;
     /** Color of the axis gridlines */
