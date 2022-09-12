@@ -100,8 +100,6 @@ function WaveformZoomView(waveformData, container, peaks) {
     height: self._height
   });
 
-  self._waveformLayer = new Konva.Layer({ listening: false });
-
   self._waveformColor = self._viewOptions.waveformColor;
   self._playedWaveformColor = self._viewOptions.playedWaveformColor;
 
@@ -160,7 +158,7 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
-      this._seeking = false;
+      this._seeking = true;
 
       var playheadOffset = self._playheadLayer.getPlayheadOffset();
 
@@ -212,6 +210,8 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
           self._peaks.player.seek(time);
         }
       }
+
+      // this._seeking = false;
     },
 
     _seek: function(mousePosX) {
@@ -783,6 +783,8 @@ WaveformZoomView.prototype._destroyPlayedWaveformShape = function() {
 };
 
 WaveformZoomView.prototype._createWaveform = function() {
+  this._waveformLayer = new Konva.Layer({ listening: false });
+
   this._createWaveformShapes();
 
   this._stage.add(this._waveformLayer);

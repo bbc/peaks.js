@@ -90,8 +90,6 @@ function WaveformOverview(waveformData, container, peaks) {
     height: self._height
   });
 
-  self._waveformLayer = new Konva.Layer({ listening: false });
-
   self._waveformColor = self._viewOptions.waveformColor;
   self._playedWaveformColor = self._viewOptions.playedWaveformColor;
 
@@ -430,6 +428,8 @@ WaveformOverview.prototype._destroyPlayedWaveformShape = function() {
 };
 
 WaveformOverview.prototype._createWaveform = function() {
+  this._waveformLayer = new Konva.Layer({ listening: false });
+
   this._createWaveformShapes();
 
   this._stage.add(this._waveformLayer);
