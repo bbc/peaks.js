@@ -551,7 +551,8 @@ var options = {
     multiChannel: false
   },
 
-  // Array of zoom levels in samples per pixel (big >> small)
+  // Array of zoom levels in samples per pixel. Smaller numbers represent
+  // being more "zoomed in".
   zoomLevels: [512, 1024, 2048, 4096],
 
   // To avoid computation when changing zoom level, Peaks.js maintains a cache
@@ -1057,7 +1058,7 @@ older [Zoom API](#zoom-api) methods.
 
 The `options` parameter is an object with one of the following keys:
 
-* `scale`: Sets the zoom level, in samples per pixel.
+* `scale`: Sets the zoom level, in samples per pixel. Smaller numbers represent being more "zoomed in".
 * `seconds`: Sets the zoom level to fit the given number of seconds in the available width.
 
 Either option may have the value `'auto'`, which fits the entire waveform to the container width.
