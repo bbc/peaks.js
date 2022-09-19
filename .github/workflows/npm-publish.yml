@@ -28,6 +28,12 @@ jobs:
           node-version: 16.x
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm publish
+      - name: Set env vars for latest release
+        run: echo "NPM_TAG=latest" >> $GITHUB_ENV
+        if: ${{ !contains(github.ref, 'beta') }}
+      - name: Set env vars for beta release
+        run: echo "NPM_TAG=beta" >> $GITHUB_ENV
+        if: ${{ contains(github.ref, 'beta') }}
+      - run: npm publish --tag ${{ env.NPM_TAG }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
