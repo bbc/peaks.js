@@ -42,4 +42,6 @@ When it's time to publish a new release version, e.g,. to npm, create a single c
 
 * In GitHub, [create a Release](https://github.com/bbc/peaks.js/releases/new) from this tag, with the tag name as Release title, i.e., vX.Y.Z.
 
-* Creating a Release triggers a [GitHub Action workflow](https://github.com/bbc/peaks.js/blob/master/.github/workflows/npm-publish.yml) that publishes to NPM.
+* If this is a beta release, the tag and release names should have the form `vX.Y.Z-beta.N`.
+
+* Creating a Release triggers a [GitHub Action workflow](https://github.com/bbc/peaks.js/blob/master/.github/workflows/npm-publish.yml) that publishes to NPM. This will publish either a `latest` or `beta` release, based on the tag name.
