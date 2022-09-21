@@ -130,21 +130,22 @@ function SegmentShape(segment, peaks, layer, view) {
 
   if (hasOverlay) {
     this._overlayText = new Konva.Text({
-      x:          segmentOptions.overlayLabelX,
-      y:          this._overlayOffset + segmentOptions.overlayLabelY,
-      text:       this._segment.labelText,
-      fontFamily: segmentOptions.overlayFontFamily,
-      fontSize:   segmentOptions.overlayFontSize,
-      fontStyle:  segmentOptions.overlayFontStyle,
-      fill:       segmentOptions.overlayLabelColor
+      x:             0,
+      y:             this._overlayOffset,
+      text:          this._segment.labelText,
+      fontFamily:    segmentOptions.overlayFontFamily,
+      fontSize:      segmentOptions.overlayFontSize,
+      fontStyle:     segmentOptions.overlayFontStyle,
+      fill:          segmentOptions.overlayLabelColor,
+      listening:     false,
+      align:         segmentOptions.overlayLabelAlign,
+      width:         segmentEndOffset - segmentStartOffset,
+      verticalAlign: segmentOptions.overlayLabelVerticalAlign,
+      height:        overlayRectHeight,
+      padding:       segmentOptions.overlayLabelPadding
     });
 
     this._overlay.add(this._overlayText);
-
-    // Only show the label text if it fits within the overlay segment.
-    if (segmentOptions.overlayLabelY + segmentOptions.overlayFontSize > overlayRectHeight) {
-      this._overlayText.hide();
-    }
   }
 
   // Set up event handlers to show/hide the segment label text when the user
@@ -177,16 +178,13 @@ SegmentShape.prototype.updatePosition = function() {
   var segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
   var segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
   var width = segmentEndOffset - segmentStartOffset;
+  var marker;
 
-  var marker = this.getStartMarker();
-
-  if (marker) {
+  if ((marker = this.getStartMarker())) {
     marker.setX(segmentStartOffset - marker.getWidth());
   }
 
-  marker = this.getEndMarker();
-
-  if (marker) {
+  if ((marker = this.getEndMarker())) {
     marker.setX(segmentEndOffset);
   }
 
@@ -204,6 +202,12 @@ SegmentShape.prototype.updatePosition = function() {
         x:     0,
         width: width
       });
+
+      if (this._overlayText) {
+        this._overlayText.setAttrs({
+          width: width
+        });
+      }
     }
   }
 };
@@ -423,7 +427,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   // Adjust segment position if it now overlaps the previous segment?
 
   if (this._previousSegment) {
-    var previousSegmentEndX = this._view.timeToPixels(this._previousSegment.endTime);
+    var previousSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
     if (startTime < this._previousSegment.endTime) {
       dragMode = this._view.getSegmentDragMode();
@@ -456,7 +460,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   // Adjust segment position if it now overlaps the following segment?
 
   if (this._nextSegment) {
-    var nextSegmentStartX = this._view.timeToPixels(this._nextSegment.startTime);
+    var nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
     var endX = this._overlay.getX() + this._overlay.getWidth();
 
@@ -527,7 +531,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
   var isStartMarker = segmentMarker.isStartMarker();
 
   var startMarkerX = this._startMarker.getX();
-  var endMarkerX = this._endMarker.getX();
+  var endMarkerX   = this._endMarker.getX();
 
   var lowerLimit;
   var upperLimit;
@@ -558,7 +562,9 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
           minSegmentDuration = segmentDuration;
         }
 
-        lowerLimit = this._view.timeToPixelOffset(this._previousSegment.startTime + minSegmentDuration);
+        lowerLimit = this._view.timeToPixelOffset(
+          this._previousSegment.startTime + minSegmentDuration
+        );
 
         if (lowerLimit < 0) {
           lowerLimit = 0;
@@ -719,14 +725,10 @@ SegmentShape.prototype.fitToView = function() {
     });
 
     if (this._overlayText) {
-      var segmentOptions = this._peaks.options.segmentOptions;
-
-      if (segmentOptions.overlayLabelY + segmentOptions.overlayFontSize > overlayRectHeight) {
-        this._overlayText.hide();
-      }
-      else {
-        this._overlayText.show();
-      }
+      this._overlayText.setAttrs({
+        y:      this._overlayOffset,
+        height: overlayRectHeight
+      });
     }
   }
 };

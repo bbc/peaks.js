@@ -204,22 +204,29 @@ declare module 'peaks.js' {
     layer: Layer;
   }
 
+  type SegmentStyle = 'markers' | 'overlay';
+  type LabelAlign = 'left' | 'center' | 'right';
+  type LabelVerticalAlign = 'top' | 'middle' | 'bottom';
+
   interface SegmentDisplayOptions {
     /** Segments can be either shown as start and end markers or an overlay rectangle */
-    style?:               'markers' | 'overlay';
-    startMarkerColor?:    string;
-    endMarkerColor?:      string;
-    waveformColor?:       WaveformColor;
-    overlayColor?:        string;
-    overlayOpacity?:      number;
-    overlayBorderColor?:  string;
-    overlayBorderWidth?:  number;
-    overlayCornerRadius?: number;
-    overlayOffset?:       number;
-    overlayLabelColor?:   string;
-    overlayFontFamily?:   string;
-    overlayFontSize?:     number;
-    overlayFontStyle?:    string;
+    style?:                     SegmentStyle;
+    startMarkerColor?:          string;
+    endMarkerColor?:            string;
+    waveformColor?:             WaveformColor;
+    overlayColor?:              string;
+    overlayOpacity?:            number;
+    overlayBorderColor?:        string;
+    overlayBorderWidth?:        number;
+    overlayCornerRadius?:       number;
+    overlayOffset?:             number;
+    overlayLabelAlign?:         LabelHorizontalAlign;
+    overlayLabelVerticalAlign?: LabelVerticalAlign;
+    overlayLabelPadding?:       number;
+    overlayLabelColor?:         string;
+    overlayFontFamily?:         string;
+    overlayFontSize?:           number;
+    overlayFontStyle?:          string;
   }
 
   interface OptionalOptions {

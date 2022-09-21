@@ -98,22 +98,23 @@ var defaultOverviewOptions = {
 };
 
 var defaultSegmentOptions = {
-  style:               'markers',
-  startMarkerColor:    '#aaaaaa',
-  endMarkerColor:      '#aaaaaa',
-  waveformColor:       '#ff851b',
-  overlayColor:        '#ff0000',
-  overlayOpacity:      0.3,
-  overlayBorderColor:  '#ff0000',
-  overlayBorderWidth:  2,
-  overlayCornerRadius: 5,
-  overlayOffset:       25,
-  overlayLabelX:       8,
-  overlayLabelY:       8,
-  overlayLabelColor:   '#000000',
-  overlayFontFamily:   'sans-serif',
-  overlayFontSize:     12,
-  overlayFontStyle:    'normal'
+  style:                     'markers',
+  startMarkerColor:          '#aaaaaa',
+  endMarkerColor:            '#aaaaaa',
+  waveformColor:             '#ff851b',
+  overlayColor:              '#ff0000',
+  overlayOpacity:            0.3,
+  overlayBorderColor:        '#ff0000',
+  overlayBorderWidth:        2,
+  overlayCornerRadius:       5,
+  overlayOffset:             25,
+  overlayLabelAlign:         'left',
+  overlayLabelVerticalAlign: 'top',
+  overlayLabelPadding:       8,
+  overlayLabelColor:         '#000000',
+  overlayFontFamily:         'sans-serif',
+  overlayFontSize:           12,
+  overlayFontStyle:          'normal'
 };
 
 function getOverviewOptions(opts) {
