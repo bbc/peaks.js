@@ -265,8 +265,7 @@ SegmentShape.prototype._createMarkers = function() {
     segment:      this._segment,
     draggable:    editable,
     startMarker:  true,
-    color:        this._peaks.options.segmentOptions.startMarkerColor ||
-                  this._peaks.options.segmentStartMarkerColor,
+    color:        this._peaks.options.segmentOptions.startMarkerColor,
     fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:     this._peaks.options.fontSize || defaultFontSize,
     fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
@@ -292,8 +291,7 @@ SegmentShape.prototype._createMarkers = function() {
     segment:      this._segment,
     draggable:    editable,
     startMarker:  false,
-    color:        this._peaks.options.segmentOptions.endMarkerColor ||
-                  this._peaks.options.endStartMarkerColor,
+    color:        this._peaks.options.segmentOptions.endMarkerColor,
     fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:     this._peaks.options.fontSize || defaultFontSize,
     fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
