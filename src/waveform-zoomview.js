@@ -158,7 +158,7 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
-      this._seeking = true;
+      this._seeking = false;
 
       var playheadOffset = self._playheadLayer.getPlayheadOffset();
 
@@ -210,8 +210,6 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
           self._peaks.player.seek(time);
         }
       }
-
-      // this._seeking = false;
     },
 
     _seek: function(mousePosX) {
