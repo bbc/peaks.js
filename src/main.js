@@ -377,6 +377,29 @@ Peaks.init = function(opts, callback) {
     });
 };
 
+Peaks.prototype._logDeprecatedOptions = function(opts) {
+  var self = this;
+
+  var deprecated = [
+    { old: 'segmentStartMarkerColor', new: 'segmentOptions.startMarkerColor'       },
+    { old: 'segmentEndMarkerColor',   new: 'segmentOptions.endMarkerColor'         },
+    { old: 'segmentColor',            new: 'segmentOptions.waveformColor'          },
+    { old: 'randomizeSegmentColor',   new: null                                    }
+  ];
+
+  deprecated.forEach(function(option) {
+    if (objectHasProperty(opts, option.old)) {
+      // eslint-disable-next-line max-len
+      if (option.new) {
+        self._logger('Peaks.init(): The ' + option.old + ' option is deprecated, use ' + option.new + ' instead');
+      }
+      else {
+        self._logger('Peaks.init(): The ' + option.old + ' option has been removed');
+      }
+    }
+  });
+};
+
 Peaks.prototype._setOptions = function(opts) {
   if (!isObject(opts)) {
     return new TypeError('Peaks.init(): The options parameter should be an object');
@@ -432,6 +455,8 @@ Peaks.prototype._setOptions = function(opts) {
   }
 
   this._logger = this.options.logger;
+
+  this._logDeprecatedOptions(opts);
 };
 
 /**

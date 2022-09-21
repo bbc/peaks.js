@@ -626,23 +626,87 @@ var options = {
   // Point and segment options
   //
 
-  // the color of a point marker
-  pointMarkerColor: '#FF0000',
+  // Default point marker color
+  pointMarkerColor: '#ff0000',
 
   // Color for segment start marker handles
+  // (deprecated, use segmentOptions.startMarkerColor instead)
   segmentStartMarkerColor: '#a0a0a0',
 
   // Color for segment end marker handles
+  // (deprecated, use segmentOptions.endMarkerColor instead)
   segmentEndMarkerColor: '#a0a0a0',
 
   // Color for segments on the waveform
+  // (deprecated, use segmentOptions.waveformColor instead)
   segmentColor: 'rgba(255, 161, 39, 1)',
-
-  // Random color per segment (overrides segmentColor)
-  randomizeSegmentColor: true,
 
   // if true, emit cue events on the Peaks instance (see Cue Events)
   emitCueEvents: false,
+
+  segmentOptions: {
+    // Segment marker style, either 'markers' (default), or 'overlay'
+    style: 'markers',
+
+    // Color for segment start marker handles
+    // (not applicable for 'overlay' style segments)
+    startMarkerColor: '#aaaaaa',
+
+    // Color for segment end marker handles
+    // (not applicable for 'overlay' style segments)
+    endMarkerColor: '#aaaaaa',
+
+    // Segment waveform color
+    waveformColor: '#ff851b',
+
+    // Segment overlay color
+    // (only applicable for 'overlay' style segments)
+    overlayColor: '#ff0000',
+
+    // Segment overlay opacity
+    // (only applicable for 'overlay' style segments)
+    overlayOpacity: 0.3,
+
+    // Segment overlay border color
+    // (only applicable for 'overlay' style segments)
+    overlayBorderColor: '#ff0000',
+
+    // Segment overlay border width
+    // (only applicable for 'overlay' style segments)
+    overlayBorderWidth: 2,
+
+    // Segment overlay border corner radius
+    // (only applicable for 'overlay' style segments)
+    overlayCornerRadius: 5,
+
+    // Segment overlay offset from the top and bottom of the waveform view, in pixels
+    // (only applicable for 'overlay' style segments)
+    overlayOffset: 25,
+
+    // Segment overlay label alignment, either 'top-left' or 'center'
+    // (only applicable for 'overlay' style segments)
+    overlayLabelAlign: 'top-left',
+
+    // Segment overlay label offset, in pixels
+    // (only applicable for 'overlay' style segments)
+    overlayLabelPadding: 8,
+
+    // Segment overlay label color
+    // (only applicable for 'overlay' style segments)
+    overlayLabelColor: '#000000',
+
+    // Segment overlay font family
+    // (only applicable for 'overlay' style segments)
+    overlayFontFamily: 'sans-serif',
+
+    // Segment overlay font size
+    // (only applicable for 'overlay' style segments)
+    overlayFontSize: 12,
+
+    // Segment overlay font style
+    // (only applicable for 'overlay' style segments)
+    overlayFontStyle: 'normal'
+  },
 
   //
   // Customization options (see customizing.md)
@@ -1222,13 +1286,12 @@ Adds a segment to the waveform timeline. Accepts an object containing the follow
 * `startTime`: the segment start time (seconds)
 * `endTime`: the segment end time (seconds)
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
-* `color`: (optional) the segment color. If not specified, the segment is given a default color (see the `segmentColor` and
-`randomizeSegmentColor` [options](#Configuration))
+* `color`: (optional) the segment color. If not specified, the segment is given a default color (set by the `segmentColor` [option](#Configuration))
 * `labelText`: (option) a text label which is displayed when the user hovers the mouse pointer over the segment
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier
 
 ```js
-// Add non-editable segment, from 0 to 10.5 seconds, with a random color
+// Add non-editable segment, from 0 to 10.5 seconds, with the default color
 instance.segments.add({ startTime: 0, endTime: 10.5 });
 ```
 
@@ -1357,7 +1420,7 @@ Adds one or more points to the waveform timeline. Accepts an object containing t
 * `id`: (optional) the point identifier. If not specified, the point is automatically given a unique identifier
 
 ```js
-// Add non-editable point, with a random color
+// Add non-editable point, with the default color
 instance.points.add({ time: 3.5 });
 ```
 

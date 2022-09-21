@@ -209,7 +209,9 @@ declare module 'peaks.js' {
   type LabelVerticalAlign = 'top' | 'middle' | 'bottom';
 
   interface SegmentDisplayOptions {
-    /** Segments can be either shown as start and end markers or an overlay rectangle */
+    /**
+     * Segments can be either shown as start and end markers or an overlay rectangle
+     */
     style?:                     SegmentStyle;
     startMarkerColor?:          string;
     endMarkerColor?:            string;
@@ -247,7 +249,24 @@ declare module 'peaks.js' {
     keyboard?: boolean;
     /** Keyboard nudge increment in seconds (left arrow/right arrow) */
     nudgeIncrement?: number;
-    /** Options that control segment appearance */
+    /**
+     * Color for segment start marker handles
+     * @deprecated use segmentOptions.startMarkerColor instead
+     */
+    segmentStartMarkerColor?: string;
+    /**
+     * Color for segment end marker handles
+     * @deprecated use segmentOptions.endMarkerColor instead
+     */
+    segmentEndMarkerColor?: string;
+    /**
+     * Color for segments on the waveform
+     * @deprecated use segmentOptions.waveformColor instead
+     */
+    segmentColor?: WaveformColor;
+    /**
+     * Options that control segment appearance
+     */
     segmentOptions?: SegmentDisplayOptions;
     /**
      * Waveform color (or use zoomview.waveformColor and overview.waveformColor
@@ -290,14 +309,14 @@ declare module 'peaks.js' {
     showAxisLabels?: boolean;
     /** Returns a string for the axis label timestamps */
     formatAxisTime?: FormatTimeFunction;
-    /** The color of a point marker */
+    /**
+     * Default point marker color
+     */
     pointMarkerColor?: string;
     /** Color of the axis gridlines */
     axisGridlineColor?: string;
     /** Color of the axis labels */
     axisLabelColor?: string;
-    /** Random color per segment (overrides segmentColor) */
-    randomizeSegmentColor?: boolean;
     /** Font family, for axis labels, playhead, and point and segment markers */
     fontFamily?: string;
     /** Font size, in px */

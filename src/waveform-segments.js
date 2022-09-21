@@ -56,38 +56,6 @@ WaveformSegments.prototype._getNextSegmentId = function() {
   return 'peaks.segment.' + this._segmentIdCounter++;
 };
 
-var colors = [
-  '#001f3f', // navy
-  '#0074d9', // blue
-  '#7fdbff', // aqua
-  '#39cccc', // teal
-  '#ffdc00', // yellow
-  '#ff851b', // orange
-  '#ff4136', // red
-  '#85144b', // maroon
-  '#f012be', // fuchsia
-  '#b10dc9'  // purple
-];
-
-/**
- * @private
- * @returns {String}
- */
-
-WaveformSegments.prototype._getSegmentColor = function() {
-  if (this._peaks.options.randomizeSegmentColor) {
-    if (++this._colorIndex === colors.length) {
-      this._colorIndex = 0;
-    }
-
-    return colors[this._colorIndex];
-  }
-  else {
-    return this._peaks.options.segmentOptions.waveformColor ||
-      this._peaks.options.segmentColor;
-  }
-};
-
 /**
  * Adds a new segment object.
  *
@@ -128,7 +96,8 @@ WaveformSegments.prototype._createSegment = function(options) {
   }
 
   if (isNullOrUndefined(segmentOptions.color)) {
-    segmentOptions.color = this._getSegmentColor();
+    segmentOptions.color = this._peaks.options.segmentOptions.waveformColor ||
+                           this._peaks.options.segmentColor;
   }
 
   if (isNullOrUndefined(segmentOptions.labelText)) {
