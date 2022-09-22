@@ -359,6 +359,10 @@ SegmentShape.prototype._onContextMenu = function(event) {
 };
 
 SegmentShape.prototype.enableSegmentDragging = function(enable) {
+  if (!this._segment.editable) {
+    return;
+  }
+
   if (!this._draggable && enable) {
     this._overlay.on('dragstart', this._onSegmentDragStart);
     this._overlay.on('dragmove', this._onSegmentDragMove);
@@ -432,7 +436,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
     if (startTime < this._previousSegment.endTime) {
       dragMode = this._view.getSegmentDragMode();
 
-      if (dragMode === 'no-overlap') {
+      if (dragMode === 'no-overlap' ||
+          (dragMode === 'compress' && !this._previousSegment.editable)) {
         startTime = this._previousSegment.endTime;
         endTime = startTime + segmentDuration;
         this._overlay.setX(previousSegmentEndX);
@@ -467,7 +472,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
     if (endTime > this._nextSegment.startTime) {
       dragMode = this._view.getSegmentDragMode();
 
-      if (dragMode === 'no-overlap') {
+      if (dragMode === 'no-overlap' ||
+          (dragMode === 'compress' && !this._nextSegment.editable)) {
         endTime = this._nextSegment.startTime;
         startTime = endTime - segmentDuration;
         this._overlay.setX(nextSegmentStartX - this._overlay.getWidth());
@@ -548,7 +554,8 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
     if (this._previousSegment) {
       dragMode = this._view.getSegmentDragMode();
 
-      if (dragMode === 'no-overlap') {
+      if (dragMode === 'no-overlap' ||
+          (dragMode === 'compress' && !this._previousSegment.editable)) {
         lowerLimit = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
         if (lowerLimit < 0) {
@@ -612,7 +619,8 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
     if (this._nextSegment) {
       dragMode = this._view.getSegmentDragMode();
 
-      if (dragMode === 'no-overlap') {
+      if (dragMode === 'no-overlap' ||
+          (dragMode === 'compress' && !this._nextSegment.editable)) {
         upperLimit = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
         if (upperLimit > width) {
