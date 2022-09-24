@@ -261,6 +261,12 @@ function getSegmentOptions(opts) {
     segmentOptions.waveformColor = null;
   }
 
+  if (segmentOptions.style === 'overlay') {
+    if (!objectHasProperty(userSegmentOptions, 'waveformColor')) {
+      segmentOptions.waveformColor = null;
+    }
+  }
+
   return segmentOptions;
 }
 
@@ -389,8 +395,8 @@ Peaks.prototype._logDeprecatedOptions = function(opts) {
 
   deprecated.forEach(function(option) {
     if (objectHasProperty(opts, option.old)) {
-      // eslint-disable-next-line max-len
       if (option.new) {
+        // eslint-disable-next-line max-len
         self._logger('Peaks.init(): The ' + option.old + ' option is deprecated, use ' + option.new + ' instead');
       }
       else {

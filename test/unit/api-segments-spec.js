@@ -133,16 +133,34 @@ describe('Peaks.segments', function() {
       expect(p.segments.getSegments()[0].color).to.equal('#888');
     });
 
-    it('should assign a default (random) color if not specified', function() {
+    it('should assign a default color if not specified', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
-      expect(p.segments.getSegments()[0].color).to.match(/^#[0-9A-Fa-f]{6}$/);
+      expect(p.segments.getSegments()[0].color).to.equal('#ff851b');
     });
 
     it('should throw if the color is not valid', function() {
       expect(function() {
         p.segments.add({ startTime: 0, endTime: 10, color: 1 });
       }).to.throw(TypeError, /color/);
+    });
+
+    it('should accept an optional border color', function() {
+      p.segments.add({ startTime: 0, endTime: 10, borderColor: '#888' });
+
+      expect(p.segments.getSegments()[0].borderColor).to.equal('#888');
+    });
+
+    it('should assign a default border color if not specified', function() {
+      p.segments.add({ startTime: 0, endTime: 10 });
+
+      expect(p.segments.getSegments()[0].borderColor).to.equal('#ff0000');
+    });
+
+    it('should throw if the border color is not valid', function() {
+      expect(function() {
+        p.segments.add({ startTime: 0, endTime: 10, borderColor: 1 });
+      }).to.throw(TypeError, /borderColor/);
     });
 
     it('should accept an optional label text', function() {

@@ -29,19 +29,31 @@ describe('Point', function() {
     });
 
     it('should be possible to update all properties programatically', function() {
-      p.points.add({ time: 10, editable: true, color: '#ff0000', labelText: 'A point' });
+      p.points.add({
+        time: 10,
+        editable: true,
+        color: '#ff0000',
+        labelText: 'A point'
+      });
 
-      var newLabelText = 'new label text';
-      var newTime = 12;
+      var emit = sinon.spy(p, 'emit');
+
       var point = p.points.getPoints()[0];
 
       point.update({
-        time: newTime,
-        labelText: newLabelText
+        time: 12,
+        editable: false,
+        color: '#800000',
+        labelText: 'new label text'
       });
 
-      expect(point.time).to.equal(newTime);
-      expect(point.labelText).to.equal(newLabelText);
+      expect(point.time).to.equal(12);
+      expect(point.editable).to.equal(false);
+      expect(point.color).to.equal('#800000');
+      expect(point.labelText).to.equal('new label text');
+
+      expect(emit.callCount).to.equal(1);
+      expect(emit).to.have.been.calledWith('points.update', point);
     });
 
     it('should not allow invalid updates', function() {
@@ -74,6 +86,8 @@ describe('Point', function() {
         labelText: 'A point'
       });
 
+      var emit = sinon.spy(p, 'emit');
+
       var point = p.points.getPoints()[0];
 
       expect(function() {
@@ -89,6 +103,8 @@ describe('Point', function() {
       expect(point.editable).to.equal(true);
       expect(point.color).to.equal('#ff0000');
       expect(point.labelText).to.equal('A point');
+
+      expect(emit.callCount).to.equal(0);
     });
 
     it('should allow a user data attribute to be created', function() {

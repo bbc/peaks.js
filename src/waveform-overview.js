@@ -284,6 +284,8 @@ WaveformOverview.prototype.timeToPixels = function(time) {
   return Math.floor(time * this._data.sample_rate / this._data.scale);
 };
 
+WaveformOverview.prototype.timeToPixelOffset = WaveformOverview.prototype.timeToPixels;
+
 /**
  * Returns the time for a given pixel index, for the current zoom level.
  *

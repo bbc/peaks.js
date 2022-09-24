@@ -29,22 +29,37 @@ describe('Segment', function() {
     });
 
     it('should be possible to update all properties programatically', function() {
-      p.segments.add({ startTime: 0, endTime: 10, labelText: 'label text' });
+      p.segments.add({
+        startTime: 0,
+        endTime: 10,
+        labelText: 'label text',
+        color: '#ff0000',
+        borderColor: '#00ff00',
+        editable: true
+      });
 
-      var newLabelText = 'new label text';
-      var newStartTime = 2;
-      var newEndTime = 9;
+      var emit = sinon.spy(p, 'emit');
+
       var segment = p.segments.getSegments()[0];
 
       segment.update({
-        startTime: newStartTime,
-        endTime: newEndTime,
-        labelText: newLabelText
+        startTime: 2,
+        endTime: 9,
+        labelText: 'new label text',
+        color: '#800000',
+        borderColor: '#008000',
+        editable: false
       });
 
-      expect(segment.startTime).to.equal(newStartTime);
-      expect(segment.endTime).to.equal(newEndTime);
-      expect(segment.labelText).to.equal(newLabelText);
+      expect(segment.startTime).to.equal(2);
+      expect(segment.endTime).to.equal(9);
+      expect(segment.editable).to.equal(false);
+      expect(segment.color).to.equal('#800000');
+      expect(segment.borderColor).to.equal('#008000');
+      expect(segment.labelText).to.equal('new label text');
+
+      expect(emit.callCount).to.equal(1);
+      expect(emit).to.have.been.calledWith('segments.update', segment);
     });
 
     it('should not allow invalid updates', function() {
@@ -71,8 +86,11 @@ describe('Segment', function() {
         endTime: 10,
         editable: true,
         color: '#ff0000',
+        borderColor: '#00ff00',
         labelText: 'A segment'
       });
+
+      var emit = sinon.spy(p, 'emit');
 
       var segment = p.segments.getSegments()[0];
 
@@ -82,6 +100,7 @@ describe('Segment', function() {
           endTime: 0,
           editable: false,
           color: '#000000',
+          borderColor: '#0000ff',
           labelText: 'Updated'
         });
       }).to.throw(RangeError);
@@ -90,7 +109,10 @@ describe('Segment', function() {
       expect(segment.endTime).to.equal(10);
       expect(segment.editable).to.equal(true);
       expect(segment.color).to.equal('#ff0000');
+      expect(segment.borderColor).to.equal('#00ff00');
       expect(segment.labelText).to.equal('A segment');
+
+      expect(emit.callCount).to.equal(0);
     });
 
     it('should allow a user data attribute to be created', function() {

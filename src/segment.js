@@ -11,7 +11,9 @@ import {
   isString, isValidTime, objectHasProperty
 } from './utils';
 
-var segmentOptions = ['peaks', 'id', 'startTime', 'endTime', 'labelText', 'color', 'editable'];
+var segmentOptions = [
+  'peaks', 'id', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
+];
 
 function validateSegment(options, context) {
   if (!isValidTime(options.startTime)) {
@@ -57,6 +59,11 @@ function validateSegment(options, context) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
   }
+
+  if (options.borderColor && !isString(options.borderColor)) {
+    // eslint-disable-next-line max-len
+    throw new TypeError('peaks.segments.' + context + ': borderColor must be a string');
+  }
 }
 
 /**
@@ -70,7 +77,8 @@ function validateSegment(options, context) {
  * @param {Number} startTime Segment start time, in seconds.
  * @param {Number} endTime Segment end time, in seconds.
  * @param {String} labelText Segment label text.
- * @param {String | LinearGradientColor} color Segment waveform color.
+ * @param {String | LinearGradientColor} color Segment color.
+ * @param {String} borderColor Segment border color.
  * @param {Boolean} editable If <code>true</code> the segment start and
  *   end times can be adjusted via the user interface.
  * @param {*} data Optional application specific data.
@@ -79,13 +87,14 @@ function validateSegment(options, context) {
 function Segment(options) {
   validateSegment(options, 'add()');
 
-  this._peaks     = options.peaks;
-  this._id        = options.id;
-  this._startTime = options.startTime;
-  this._endTime   = options.endTime;
-  this._labelText = options.labelText;
-  this._color     = options.color;
-  this._editable  = options.editable;
+  this._peaks       = options.peaks;
+  this._id          = options.id;
+  this._startTime   = options.startTime;
+  this._endTime     = options.endTime;
+  this._labelText   = options.labelText;
+  this._color       = options.color;
+  this._borderColor = options.borderColor;
+  this._editable    = options.editable;
 
   this._setUserData(options);
 }
@@ -129,6 +138,12 @@ Object.defineProperties(Segment.prototype, {
       return this._color;
     }
   },
+  borderColor: {
+    enumerable: true,
+    get: function() {
+      return this._borderColor;
+    }
+  },
   editable: {
     enumerable: true,
     get: function() {
@@ -139,22 +154,24 @@ Object.defineProperties(Segment.prototype, {
 
 Segment.prototype.update = function(options) {
   var opts = {
-    startTime: this.startTime,
-    endTime:   this.endTime,
-    labelText: this.labelText,
-    color:     this.color,
-    editable:  this.editable
+    startTime:   this.startTime,
+    endTime:     this.endTime,
+    labelText:   this.labelText,
+    color:       this.color,
+    borderColor: this.borderColor,
+    editable:    this.editable
   };
 
   extend(opts, options);
 
   validateSegment(opts, 'update()');
 
-  this._startTime = opts.startTime;
-  this._endTime   = opts.endTime;
-  this._labelText = opts.labelText;
-  this._color     = opts.color;
-  this._editable  = opts.editable;
+  this._startTime   = opts.startTime;
+  this._endTime     = opts.endTime;
+  this._labelText   = opts.labelText;
+  this._color       = opts.color;
+  this._borderColor = opts.borderColor;
+  this._editable    = opts.editable;
 
   this._setUserData(options);
 

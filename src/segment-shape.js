@@ -30,22 +30,25 @@ var defaultFontShape = 'normal';
  */
 
 function SegmentShape(segment, peaks, layer, view) {
-  this._segment       = segment;
-  this._peaks         = peaks;
-  this._layer         = layer;
-  this._view          = view;
-  this._label         = null;
-  this._startMarker   = null;
-  this._endMarker     = null;
-  this._color         = segment.color;
-  this._draggable     = this._segment.editable && this._view._isSegmentDraggingEnabled();
-  this._dragging      = false;
+  this._segment     = segment;
+  this._peaks       = peaks;
+  this._layer       = layer;
+  this._view        = view;
+  this._label       = null;
+  this._startMarker = null;
+  this._endMarker   = null;
+  this._color       = segment.color;
+  this._borderColor = segment.borderColor;
+  this._draggable   = this._segment.editable && this._view._isSegmentDraggingEnabled();
+  this._dragging    = false;
 
   var segmentOptions = this._peaks.options.segmentOptions;
 
   this._overlayOffset = segmentOptions.overlayOffset;
 
-  if (segment.color) {
+  var hasOverlay = segmentOptions.style === 'overlay';
+
+  if (!hasOverlay && segment.color) {
     this._waveformShape = new WaveformShape({
       color:   segment.color,
       view:    view,
@@ -104,12 +107,10 @@ function SegmentShape(segment, peaks, layer, view) {
 
   var overlayBorderColor, overlayBorderWidth, overlayColor, overlayOpacity, overlayCornerRadius;
 
-  var hasOverlay = segmentOptions.style === 'overlay';
-
   if (hasOverlay) {
-    overlayBorderColor  = segmentOptions.overlayBorderColor;
+    overlayBorderColor  = this._borderColor || segmentOptions.overlayBorderColor;
     overlayBorderWidth  = segmentOptions.overlayBorderWidth;
-    overlayColor        = segmentOptions.overlayColor;
+    overlayColor        = this._color || segmentOptions.overlayColor;
     overlayOpacity      = segmentOptions.overlayOpacity;
     overlayCornerRadius = segmentOptions.overlayCornerRadius;
   }
@@ -709,10 +710,6 @@ SegmentShape.prototype.fitToView = function() {
 
   if (this._endMarker) {
     this._endMarker.fitToView();
-  }
-
-  if (this._waveformShape) {
-    this._waveformShape.setWaveformColor(this._color);
   }
 
   if (this._overlay) {

@@ -42,7 +42,6 @@ function WaveformSegments(peaks) {
   this._segments = [];
   this._segmentsById = {};
   this._segmentIdCounter = 0;
-  this._colorIndex = 0;
 }
 
 /**
@@ -98,6 +97,10 @@ WaveformSegments.prototype._createSegment = function(options) {
   if (isNullOrUndefined(segmentOptions.color)) {
     segmentOptions.color = this._peaks.options.segmentOptions.waveformColor ||
                            this._peaks.options.segmentColor;
+  }
+
+  if (isNullOrUndefined(segmentOptions.borderColor)) {
+    segmentOptions.borderColor = this._peaks.options.segmentOptions.overlayBorderColor;
   }
 
   if (isNullOrUndefined(segmentOptions.labelText)) {

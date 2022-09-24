@@ -12,9 +12,7 @@ describe('SegmentShape', function() {
       mediaElement: document.getElementById('media'),
       dataUri: {
         json: 'base/test_data/sample.json'
-      },
-      keyboard: true,
-      height: 240
+      }
     };
 
     Peaks.init(options, function(err, instance) {
