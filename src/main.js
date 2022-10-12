@@ -92,9 +92,12 @@ var defaultZoomviewOptions = {
 
 var defaultOverviewOptions = {
   // showPlayheadTime:    false,
-  waveformColor:       'rgba(0, 0, 0, 0.2)',
-  highlightColor:      '#aaaaaa',
-  highlightOffset:     11
+  waveformColor:          'rgba(0, 0, 0, 0.2)',
+  highlightColor:         '#aaa',
+  highlightStrokeColor:   'transparent',
+  highlightOpacity:       0.3,
+  highlightOffset:        11,
+  highlightCornerRadius:  2
 };
 
 function getOverviewOptions(opts) {
@@ -136,6 +139,9 @@ function getOverviewOptions(opts) {
     'fontSize',
     'fontStyle',
     'highlightColor',
+    'highlightStrokeColor',
+    'highlightOpacity',
+    'highlightCornerRadius',
     'highlightOffset'
   ];
 

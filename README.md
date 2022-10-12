@@ -464,6 +464,16 @@ var options = {
     // that shows what the zoomable view shows
     highlightColor: 'grey',
 
+
+    // Stroke color for the zoomed region
+    highlightStrokeColor:   'transparent',
+
+    // Opacity for the zoomed region
+    highlightOpacity:       0.3,
+
+    // Corner Radius for the zoomed region
+    highlightCornerRadius:  2,
+
     // The default number of pixels from the top and bottom of the canvas
     // that the overviewHighlight takes up
     highlightOffset: 11,
