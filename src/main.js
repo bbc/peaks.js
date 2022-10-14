@@ -93,7 +93,7 @@ var defaultZoomviewOptions = {
 var defaultOverviewOptions = {
   // showPlayheadTime:    false,
   waveformColor:          'rgba(0, 0, 0, 0.2)',
-  highlightColor:         '#aaa',
+  highlightColor:         '#aaaaaa',
   highlightStrokeColor:   'transparent',
   highlightOpacity:       0.3,
   highlightOffset:        11,

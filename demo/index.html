@@ -281,8 +281,7 @@
             playheadClickTolerance: 3
           },
           overview: {
-            container: document.getElementById('overview-container'),
-            // highlightColor: 'rgba(0, 0, 0, 0.1)',
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('audio'),
           dataUri: {
@@ -293,7 +292,7 @@
           pointMarkerColor: '#006eb0',
           showPlayheadTime: true,
           waveformCache: true,
-          zoomLevels: [512, 1024, 2048, 4096],
+          zoomLevels: [512, 1024, 2048, 4096]
         };
 
         Peaks.init(options, function(err, peaksInstance) {

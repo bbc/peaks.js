@@ -103,11 +103,7 @@ function WaveformOverview(waveformData, container, peaks) {
 
   self._highlightLayer = new HighlightLayer(
     self,
-    self._viewOptions.highlightOffset,
-    self._viewOptions.highlightColor,
-    self._viewOptions.highlightStrokeColor,
-    self._viewOptions.highlightOpacity,
-    self._viewOptions.highlightCornerRadius
+    self._viewOptions
   );
   self._highlightLayer.addToStage(self._stage);
 
