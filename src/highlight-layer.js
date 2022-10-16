@@ -23,14 +23,17 @@ import { clamp } from  './utils';
  * @param {String} color
  */
 
-function HighlightLayer(view, offset, color) {
+function HighlightLayer(view, viewOptions) {
   this._view          = view;
-  this._offset        = offset;
-  this._color         = color;
+  this._offset        = viewOptions.highlightOffset;
+  this._color         = viewOptions.highlightColor;
   this._layer         = new Konva.Layer({ listening: false });
   this._highlightRect = null;
   this._startTime     = null;
   this._endTime       = null;
+  this._strokeColor   = viewOptions.highlightStrokeColor;
+  this._opacity       = viewOptions.highlightOpacity;
+  this._cornerRadius  = viewOptions.highlightCornerRadius;
 }
 
 HighlightLayer.prototype.addToStage = function(stage) {
@@ -77,12 +80,12 @@ HighlightLayer.prototype._createHighlightRect = function(startTime, endTime) {
     x:            startOffset,
     y:            0,
     width:        endOffset - startOffset,
-    stroke:       this._color,
+    stroke:       this._strokeColor,
     strokeWidth:  1,
     height:       0,
     fill:         this._color,
-    opacity:      0.3,
-    cornerRadius: 2
+    opacity:      this._opacity,
+    cornerRadius: this._cornerRadius
   });
 
   this.fitToView();
