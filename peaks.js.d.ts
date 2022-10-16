@@ -99,6 +99,8 @@ declare module 'peaks.js' {
   interface OverviewOptions extends ViewOptions {
     highlightColor?: string;
     highlightOffset?: number;
+    highlightStrokeColor?: string;
+    highlightCornerRadius?: number;
   }
 
   interface ViewSpecificOptions {

@@ -12,6 +12,18 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { clamp } from  './utils';
 
 /**
+ * Highlight layer options
+ *
+ * @typedef {Object} HighlightLayerOptions
+ * @global
+ * @property {Number} highlightOffset
+ * @property {String} highlightColor
+ * @property {String} highlightStrokeColor
+ * @property {Number} highlightOpacity
+ * @property {Number} highlightCornerRadius
+ */
+
+/**
  * Creates the highlight region that shows the position of the zoomable
  * waveform view in the overview waveform.
  *
@@ -19,21 +31,20 @@ import { clamp } from  './utils';
  * @alias HighlightLayer
  *
  * @param {WaveformOverview} view
- * @param {Number} offset
- * @param {String} color
+ * @param {HighlightLayerOptions} options
  */
 
-function HighlightLayer(view, viewOptions) {
+function HighlightLayer(view, options) {
   this._view          = view;
-  this._offset        = viewOptions.highlightOffset;
-  this._color         = viewOptions.highlightColor;
+  this._offset        = options.highlightOffset;
+  this._color         = options.highlightColor;
   this._layer         = new Konva.Layer({ listening: false });
   this._highlightRect = null;
   this._startTime     = null;
   this._endTime       = null;
-  this._strokeColor   = viewOptions.highlightStrokeColor;
-  this._opacity       = viewOptions.highlightOpacity;
-  this._cornerRadius  = viewOptions.highlightCornerRadius;
+  this._strokeColor   = options.highlightStrokeColor;
+  this._opacity       = options.highlightOpacity;
+  this._cornerRadius  = options.highlightCornerRadius;
 }
 
 HighlightLayer.prototype.addToStage = function(stage) {

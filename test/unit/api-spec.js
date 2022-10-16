@@ -217,7 +217,10 @@ describe('Peaks', function() {
               axisLabelColor: '#0000ff',
               axisGridlineColor: '#000000',
               highlightColor: '#808080',
-              highlightOffset: 2
+              highlightOffset: 2,
+              highlightStrokeColor: '#404040',
+              highlightOpacity: 0.5,
+              highlightCornerRadius: 5
             },
             zoomview: {
               container: document.getElementById('zoomview-container'),
@@ -248,6 +251,9 @@ describe('Peaks', function() {
             expect(zoomview._axis._axisGridlineColor).to.equal('#808080');
             expect(overview._highlightLayer._offset).to.equal(2);
             expect(overview._highlightLayer._color).to.equal('#808080');
+            expect(overview._highlightLayer._strokeColor).to.equal('#404040');
+            expect(overview._highlightLayer._opacity).to.equal(0.5);
+            expect(overview._highlightLayer._cornerRadius).to.equal(5);
             done();
           });
         });
@@ -266,7 +272,12 @@ describe('Peaks', function() {
             playheadTextColor: '#00ff00',
             showPlayheadTime: true,
             axisLabelColor: '#0000ff',
-            axisGridlineColor: '#000000'
+            axisGridlineColor: '#000000',
+            highlightColor: '#808080',
+            highlightOffset: 2,
+            highlightStrokeColor: '#404040',
+            highlightOpacity: 0.5,
+            highlightCornerRadius: 5
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -284,8 +295,11 @@ describe('Peaks', function() {
             expect(zoomview._axis._axisLabelColor).to.equal('#0000ff');
             expect(overview._axis._axisGridlineColor).to.equal('#000000');
             expect(zoomview._axis._axisGridlineColor).to.equal('#000000');
-            expect(overview._highlightLayer._offset).to.equal(11);
-            expect(overview._highlightLayer._color).to.equal('#aaaaaa');
+            expect(overview._highlightLayer._offset).to.equal(2);
+            expect(overview._highlightLayer._color).to.equal('#808080');
+            expect(overview._highlightLayer._strokeColor).to.equal('#404040');
+            expect(overview._highlightLayer._opacity).to.equal(0.5);
+            expect(overview._highlightLayer._cornerRadius).to.equal(5);
             done();
           });
         });
@@ -317,6 +331,11 @@ describe('Peaks', function() {
             expect(zoomview._axis._axisLabelColor).to.equal('#aaaaaa');
             expect(overview._axis._axisGridlineColor).to.equal('#cccccc');
             expect(zoomview._axis._axisGridlineColor).to.equal('#cccccc');
+            expect(overview._highlightLayer._offset).to.equal(11);
+            expect(overview._highlightLayer._color).to.equal('#aaaaaa');
+            expect(overview._highlightLayer._strokeColor).to.equal('transparent');
+            expect(overview._highlightLayer._opacity).to.equal(0.3);
+            expect(overview._highlightLayer._cornerRadius).to.equal(2);
             done();
           });
 
