@@ -1,5 +1,13 @@
 # Peaks.js
 
+## 2.1.0 (2022/10/17)
+
+* (#467) Added new config options to style the overview waveform
+  highlight region: `highlightStrokeColor`, `highlightOpacity`,
+  and `highlightCornerRadius` (@jakiestfu)
+
+* Fixed zoomview mouse drag handler (@chrisn)
+
 ## 2.0.6 (2022/09/07)
 
 * (#443) Check container element height is non-zero in `Peaks.init()`
