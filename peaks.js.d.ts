@@ -62,6 +62,41 @@ declare module 'peaks.js' {
     update: (options: PointUpdateOptions) => void;
   }
 
+  type SegmentStyle = 'markers' | 'overlay';
+  type LabelHorizontalAlign = 'left' | 'center' | 'right';
+  type LabelVerticalAlign = 'top' | 'middle' | 'bottom';
+
+  interface SegmentDisplayOptions {
+    /**
+     * Segments can be either shown as start and end markers or an overlay rectangle
+     */
+    style?:                     SegmentStyle;
+    startMarkerColor?:          string;
+    endMarkerColor?:            string;
+    overlayOpacity?:            number;
+    overlayBorderColor?:        string;
+    overlayBorderWidth?:        number;
+    overlayCornerRadius?:       number;
+    overlayOffset?:             number;
+    overlayLabelAlign?:         LabelHorizontalAlign;
+    overlayLabelVerticalAlign?: LabelVerticalAlign;
+    overlayLabelPadding?:       number;
+    overlayLabelColor?:         string;
+    overlayFontFamily?:         string;
+    overlayFontSize?:           number;
+    overlayFontStyle?:          string;
+  }
+
+  /**
+   * These options can only be set globally, and not separately for the
+   * the zoomview and overview waveforms.
+   */
+
+  interface GlobalSegmentDisplayOptions extends SegmentDisplayOptions {
+    waveformColor?: WaveformColor;
+    overlayColor?:  string;
+  }
+
   interface ViewContainerOptions {
     containers: {
       /** Container element for the overview (non-zoomable) waveform view */
@@ -89,6 +124,7 @@ declare module 'peaks.js' {
     showAxisLabels?: boolean;
     formatAxisTime?: FormatTimeFunction;
     waveformColor?: WaveformColor;
+    segmentOptions?: SegmentDisplayOptions;
   }
 
   interface ZoomViewOptions extends ViewOptions {
@@ -204,33 +240,6 @@ declare module 'peaks.js' {
     layer: Layer;
   }
 
-  type SegmentStyle = 'markers' | 'overlay';
-  type LabelAlign = 'left' | 'center' | 'right';
-  type LabelVerticalAlign = 'top' | 'middle' | 'bottom';
-
-  interface SegmentDisplayOptions {
-    /**
-     * Segments can be either shown as start and end markers or an overlay rectangle
-     */
-    style?:                     SegmentStyle;
-    startMarkerColor?:          string;
-    endMarkerColor?:            string;
-    waveformColor?:             WaveformColor;
-    overlayColor?:              string;
-    overlayOpacity?:            number;
-    overlayBorderColor?:        string;
-    overlayBorderWidth?:        number;
-    overlayCornerRadius?:       number;
-    overlayOffset?:             number;
-    overlayLabelAlign?:         LabelHorizontalAlign;
-    overlayLabelVerticalAlign?: LabelVerticalAlign;
-    overlayLabelPadding?:       number;
-    overlayLabelColor?:         string;
-    overlayFontFamily?:         string;
-    overlayFontSize?:           number;
-    overlayFontStyle?:          string;
-  }
-
   interface OptionalOptions {
     /** HTML5 Media element containing an audio track. Optional when using an external player */
     mediaElement?: Element;
@@ -267,7 +276,7 @@ declare module 'peaks.js' {
     /**
      * Options that control segment appearance
      */
-    segmentOptions?: SegmentDisplayOptions;
+    segmentOptions?: GlobalSegmentDisplayOptions;
     /**
      * Waveform color (or use zoomview.waveformColor and overview.waveformColor
      * to set the waveform color for each view)
