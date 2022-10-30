@@ -1,26 +1,39 @@
 import Peaks from '../../src/main';
 import SegmentShape from '../../src/segment-shape';
+import { extend } from '../../src/utils';
 import WaveformShape from '../../src/waveform-shape';
 
 describe('SegmentShape', function() {
   var p;
 
-  function createPeaksInstance(segmentOptions, done) {
-    var options = {
+  function createPeaksInstance(options, done) {
+    var opts = {
       overview: {
-        container: document.getElementById('overview-container')
+        container: document.getElementById('overview-container'),
+        segmentOptions: {}
       },
       zoomview: {
-        container: document.getElementById('zoomview-container')
+        container: document.getElementById('zoomview-container'),
+        segmentOptions: {}
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
         json: 'base/test_data/sample.json'
       },
-      segmentOptions: segmentOptions
+      segmentOptions: {}
     };
 
-    Peaks.init(options, function(err, instance) {
+    extend(opts.segmentOptions, options.segmentOptions);
+
+    if (options.overview) {
+      extend(opts.overview.segmentOptions, options.overview.segmentOptions);
+    }
+
+    if (options.zoomview) {
+      extend(opts.zoomview.segmentOptions, options.zoomview.segmentOptions);
+    }
+
+    Peaks.init(opts, function(err, instance) {
       expect(err).to.equal(null);
       p = instance;
       done();
@@ -38,7 +51,9 @@ describe('SegmentShape', function() {
     context('with editable segments', function() {
       it('should create marker handles', function(done) {
         createPeaksInstance({
-          style: 'markers'
+          segmentOptions: {
+            style: 'markers'
+          }
         },
         function() {
           var spy = sinon.spy(p.options, 'createSegmentMarker');
@@ -73,7 +88,9 @@ describe('SegmentShape', function() {
     context('with non-editable segments', function() {
       it('should not create marker handles', function(done) {
         createPeaksInstance({
-          style: 'markers'
+          segmentOptions: {
+            style: 'markers'
+          }
         },
         function() {
           var spy = sinon.spy(p.options, 'createSegmentMarker');
@@ -89,7 +106,9 @@ describe('SegmentShape', function() {
     context('with no given waveform color', function() {
       it('should use the default color', function(done) {
         createPeaksInstance({
-          style: 'markers'
+          segmentOptions: {
+            style: 'markers'
+          }
         },
         function() {
           p.segments.add({
@@ -99,10 +118,10 @@ describe('SegmentShape', function() {
             id:        'segment1'
           });
 
-          var zoomView = p.views.getView('zoomview');
+          var zoomview = p.views.getView('zoomview');
 
           // eslint-disable-next-line dot-notation
-          var segmentShape = zoomView._segmentsLayer._segmentShapes['segment1'];
+          var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
           expect(segmentShape).to.be.an.instanceOf(SegmentShape);
 
@@ -116,8 +135,10 @@ describe('SegmentShape', function() {
     context('with a given waveform color', function() {
       it('should create a waveform segment', function(done) {
         createPeaksInstance({
-          style:         'markers',
-          waveformColor: '#f00'
+          segmentOptions: {
+            style:         'markers',
+            waveformColor: '#f00'
+          }
         },
         function() {
           p.segments.add({
@@ -128,10 +149,10 @@ describe('SegmentShape', function() {
             color:     '#0f0'
           });
 
-          var zoomView = p.views.getView('zoomview');
+          var zoomview = p.views.getView('zoomview');
 
           // eslint-disable-next-line dot-notation
-          var segmentShape = zoomView._segmentsLayer._segmentShapes['segment1'];
+          var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
           expect(segmentShape).to.be.an.instanceOf(SegmentShape);
           expect(segmentShape._waveformShape).to.be.an.instanceOf(WaveformShape);
@@ -140,12 +161,49 @@ describe('SegmentShape', function() {
         });
       });
     });
+
+    it('should use view specific segment options', function(done) {
+      createPeaksInstance({
+        segmentOptions: {
+          style: 'markers'
+        },
+        zoomview: {
+          segmentOptions: {
+            startMarkerColor: '#0f0',
+            endMarkerColor: '#080'
+          }
+        }
+      },
+      function() {
+        p.segments.add({
+          startTime:   0,
+          endTime:     10,
+          editable:    true,
+          id:          'segment1'
+        });
+
+        var zoomview = p.views.getView('zoomview');
+
+        // eslint-disable-next-line dot-notation
+        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+
+        expect(segmentShape).to.be.an.instanceOf(SegmentShape);
+        expect(segmentShape._startMarker._marker._options.color).to.equal('#0f0');
+        expect(segmentShape._endMarker._marker._options.color).to.equal('#080');
+
+        // Note: We don't test overview-specific options here, as marker style
+        // segments in the overview waveform aren't editable, so don't have handles
+        done();
+      });
+    });
   });
 
   context('with overlay style segments', function() {
     it('should not create marker handles', function(done) {
       createPeaksInstance({
-        style: 'overlay'
+        segmentOptions: {
+          style: 'overlay'
+        }
       },
       function() {
         var spy = sinon.spy(p.options, 'createSegmentMarker');
@@ -165,7 +223,9 @@ describe('SegmentShape', function() {
 
     it('should not create a waveform segment', function(done) {
       createPeaksInstance({
-        style: 'overlay'
+        segmentOptions: {
+          style: 'overlay'
+        }
       },
       function() {
         p.segments.add({
@@ -175,10 +235,10 @@ describe('SegmentShape', function() {
           id:        'segment1'
         });
 
-        var zoomView = p.views.getView('zoomview');
+        var zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomView._segmentsLayer._segmentShapes['segment1'];
+        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._waveformShape).to.equal(undefined);
@@ -188,7 +248,9 @@ describe('SegmentShape', function() {
 
     it('should create an overlay with default attributes', function(done) {
       createPeaksInstance({
-        style: 'overlay'
+        segmentOptions: {
+          style: 'overlay'
+        }
       },
       function() {
         p.segments.add({
@@ -198,10 +260,10 @@ describe('SegmentShape', function() {
           id:        'segment1'
         });
 
-        var zoomView = p.views.getView('zoomview');
+        var zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomView._segmentsLayer._segmentShapes['segment1'];
+        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._overlayRect.getStroke()).to.equal('#ff0000');
@@ -215,7 +277,9 @@ describe('SegmentShape', function() {
 
     it('should create an overlay with given color', function(done) {
       createPeaksInstance({
-        style: 'overlay'
+        segmentOptions: {
+          style: 'overlay'
+        }
       },
       function() {
         p.segments.add({
@@ -227,10 +291,10 @@ describe('SegmentShape', function() {
           borderColor: '#00ff00'
         });
 
-        var zoomView = p.views.getView('zoomview');
+        var zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomView._segmentsLayer._segmentShapes['segment1'];
+        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._overlayRect.getStroke()).to.equal('#00ff00');
@@ -238,6 +302,96 @@ describe('SegmentShape', function() {
         expect(segmentShape._overlayRect.getFill()).to.equal('#0000ff');
         expect(segmentShape._overlayRect.getOpacity()).to.equal(0.3);
         expect(segmentShape._overlayRect.getCornerRadius()).to.equal(5);
+        done();
+      });
+    });
+
+    it('should use view specific segment options', function(done) {
+      createPeaksInstance({
+        segmentOptions: {
+          style: 'overlay'
+        },
+        overview: {
+          segmentOptions: {
+            overlayOffset: 10
+          }
+        },
+        zoomview: {
+          segmentOptions: {
+            overlayOffset: 20
+          }
+        }
+      },
+      function() {
+        p.segments.add({
+          startTime:   0,
+          endTime:     10,
+          editable:    true,
+          id:          'segment1'
+        });
+
+        var zoomview = p.views.getView('zoomview');
+        var overview = p.views.getView('overview');
+
+        // eslint-disable-next-line dot-notation
+        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+
+        expect(segmentShape).to.be.an.instanceOf(SegmentShape);
+        expect(segmentShape._overlayOffset).to.equal(20);
+
+        // eslint-disable-next-line dot-notation
+        segmentShape = overview._segmentsLayer._segmentShapes['segment1'];
+
+        expect(segmentShape).to.be.an.instanceOf(SegmentShape);
+        expect(segmentShape._overlayOffset).to.equal(10);
+        done();
+      });
+    });
+
+    it('should use global color and border color options', function(done) {
+      createPeaksInstance({
+        segmentOptions: {
+          style:              'overlay',
+          overlayColor:       '#444',
+          overlayBorderColor: '#222'
+        },
+        overview: {
+          segmentOptions: {
+            overlayColor:       '#888',
+            overlayBorderColor: '#aaa'
+          }
+        },
+        zoomview: {
+          segmentOptions: {
+            overlayColor:       '#888',
+            overlayBorderColor: '#aaa'
+          }
+        }
+      },
+      function() {
+        p.segments.add({
+          startTime:   0,
+          endTime:     10,
+          editable:    true,
+          id:          'segment1'
+        });
+
+        var zoomview = p.views.getView('zoomview');
+        var overview = p.views.getView('overview');
+
+        // eslint-disable-next-line dot-notation
+        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+
+        expect(segmentShape).to.be.an.instanceOf(SegmentShape);
+        expect(segmentShape._overlayRect.getStroke()).to.equal('#222');
+        expect(segmentShape._overlayRect.getFill()).to.equal('#444');
+
+        // eslint-disable-next-line dot-notation
+        segmentShape = overview._segmentsLayer._segmentShapes['segment1'];
+
+        expect(segmentShape).to.be.an.instanceOf(SegmentShape);
+        expect(segmentShape._overlayRect.getStroke()).to.equal('#222');
+        expect(segmentShape._overlayRect.getFill()).to.equal('#444');
         done();
       });
     });
