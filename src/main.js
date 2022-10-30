@@ -101,7 +101,7 @@ var defaultSegmentOptions = {
   style:                     'markers',
   startMarkerColor:          '#aaaaaa',
   endMarkerColor:            '#aaaaaa',
-  waveformColor:             '#ff851b',
+  waveformColor:             '#0074d9',
   overlayColor:              '#ff0000',
   overlayOpacity:            0.3,
   overlayBorderColor:        '#ff0000',
