@@ -138,7 +138,7 @@ describe('Peaks.segments', function() {
     it('should assign a default color if not specified', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
-      expect(p.segments.getSegments()[0].color).to.equal('#ff851b');
+      expect(p.segments.getSegments()[0].color).to.equal('#0074d9');
     });
 
     it('should throw if the color is not valid', function() {

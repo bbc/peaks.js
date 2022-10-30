@@ -107,7 +107,7 @@ describe('SegmentShape', function() {
           expect(segmentShape).to.be.an.instanceOf(SegmentShape);
 
           expect(segmentShape._waveformShape).to.be.an.instanceOf(WaveformShape);
-          expect(segmentShape._waveformShape._color).to.equal('#ff851b');
+          expect(segmentShape._waveformShape._color).to.equal('#0074d9');
           done();
         });
       });
