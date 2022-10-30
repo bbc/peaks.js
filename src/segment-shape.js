@@ -42,13 +42,13 @@ function SegmentShape(segment, peaks, layer, view) {
   this._draggable   = this._segment.editable && this._view._isSegmentDraggingEnabled();
   this._dragging    = false;
 
-  var segmentOptions = this._peaks.options.segmentOptions;
+  var segmentOptions = view.getViewOptions().segmentOptions;
 
   this._overlayOffset = segmentOptions.overlayOffset;
 
   var hasOverlay = segmentOptions.style === 'overlay';
 
-  if (!hasOverlay && segment.color) {
+  if (!hasOverlay) {
     this._waveformShape = new WaveformShape({
       color:   segment.color,
       view:    view,
@@ -258,7 +258,9 @@ SegmentShape.prototype._createMarkers = function() {
     return;
   }
 
-  var createSegmentMarker = this._peaks.options.segmentOptions.style === 'markers' ?
+  var segmentOptions = this._view.getViewOptions().segmentOptions;
+
+  var createSegmentMarker = segmentOptions.style === 'markers' ?
     this._peaks.options.createSegmentMarker :
     createOverlayMarker;
 
@@ -266,7 +268,7 @@ SegmentShape.prototype._createMarkers = function() {
     segment:      this._segment,
     draggable:    editable,
     startMarker:  true,
-    color:        this._peaks.options.segmentOptions.startMarkerColor,
+    color:        segmentOptions.startMarkerColor,
     fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:     this._peaks.options.fontSize || defaultFontSize,
     fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
@@ -292,7 +294,7 @@ SegmentShape.prototype._createMarkers = function() {
     segment:      this._segment,
     draggable:    editable,
     startMarker:  false,
-    color:        this._peaks.options.segmentOptions.endMarkerColor,
+    color:        segmentOptions.endMarkerColor,
     fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:     this._peaks.options.fontSize || defaultFontSize,
     fontStyle:    this._peaks.options.fontStyle || defaultFontShape,

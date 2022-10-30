@@ -988,6 +988,10 @@ WaveformZoomView.prototype.fitToContainer = function() {
   this._stage.draw();
 };
 
+WaveformZoomView.prototype.getViewOptions = function() {
+  return this._viewOptions;
+};
+
 /* WaveformZoomView.prototype.beginZoom = function() {
   // Fade out the time axis and the segments
   // this._axis.axisShape.setAttr('opacity', 0);

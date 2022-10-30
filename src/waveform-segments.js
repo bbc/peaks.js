@@ -95,8 +95,13 @@ WaveformSegments.prototype._createSegment = function(options) {
   }
 
   if (isNullOrUndefined(segmentOptions.color)) {
-    segmentOptions.color = this._peaks.options.segmentOptions.waveformColor ||
-                           this._peaks.options.segmentColor;
+    if (this._peaks.options.segmentOptions.style === 'overlay') {
+      segmentOptions.color = this._peaks.options.segmentOptions.overlayColor;
+    }
+    else {
+      segmentOptions.color = this._peaks.options.segmentOptions.waveformColor ||
+        this._peaks.options.segmentColor; // TODO: deprecate
+    }
   }
 
   if (isNullOrUndefined(segmentOptions.borderColor)) {

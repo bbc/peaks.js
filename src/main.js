@@ -250,24 +250,28 @@ function extendOptions(to, from) {
   return to;
 }
 
-function getSegmentOptions(opts) {
-  var segmentOptions = {};
-  var userSegmentOptions = opts.segmentOptions || {};
+function addSegmentOptions(options, opts) {
+  options.segmentOptions = {};
 
-  extend(segmentOptions, defaultSegmentOptions);
-  extendOptions(segmentOptions, userSegmentOptions);
+  extend(options.segmentOptions, defaultSegmentOptions);
 
-  if (segmentOptions.overlay && !userSegmentOptions.waveformColor) {
-    segmentOptions.waveformColor = null;
+  if (opts.segmentOptions) {
+    extendOptions(options.segmentOptions, opts.segmentOptions);
   }
 
-  if (segmentOptions.style === 'overlay') {
-    if (!objectHasProperty(userSegmentOptions, 'waveformColor')) {
-      segmentOptions.waveformColor = null;
-    }
+  options.zoomview.segmentOptions = {};
+  extend(options.zoomview.segmentOptions, options.segmentOptions);
+
+  if (opts.zoomview && opts.zoomview.segmentOptions) {
+    extendOptions(options.zoomview.segmentOptions, opts.zoomview.segmentOptions);
   }
 
-  return segmentOptions;
+  options.overview.segmentOptions = {};
+  extend(options.overview.segmentOptions, options.segmentOptions);
+
+  if (opts.overview && opts.overview.segmentOptions) {
+    extendOptions(options.overview.segmentOptions, opts.overview.segmentOptions);
+  }
 }
 
 /**
@@ -446,7 +450,8 @@ Peaks.prototype._setOptions = function(opts) {
 
   this.options.overview = getOverviewOptions(opts);
   this.options.zoomview = getZoomviewOptions(opts);
-  this.options.segmentOptions = getSegmentOptions(opts);
+
+  addSegmentOptions(this.options, opts);
 
   if (!Array.isArray(this.options.zoomLevels)) {
     return new TypeError('Peaks.init(): The zoomLevels option should be an array');

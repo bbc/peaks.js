@@ -550,6 +550,10 @@ WaveformOverview.prototype.fitToContainer = function() {
   this._stage.draw();
 };
 
+WaveformOverview.prototype.getViewOptions = function() {
+  return this._viewOptions;
+};
+
 WaveformOverview.prototype.destroy = function() {
   if (this._resizeTimeoutId) {
     clearTimeout(this._resizeTimeoutId);
