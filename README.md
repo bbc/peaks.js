@@ -1330,7 +1330,8 @@ Adds a segment to the waveform timeline. Accepts an object containing the follow
 * `startTime`: the segment start time (seconds)
 * `endTime`: the segment end time (seconds)
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
-* `color`: (optional) the segment color. If not specified, the segment is given a default color (set by the `segmentColor` [option](#Configuration))
+* `color`: (optional) the segment color. If not specified, the segment is given a default color (set by the [`segmentoptions.waveformColor` option](#Configuration) for marker-style segments or the [`segmentOptions.overlayColor` option](#Configuration) for overlay-style segments)
+* `borderColor`: (optional) the segment border color. This applies only to overlay style segments. If not specified, the segment is given a default border color (set by the [`segmentOptions.overlayBorderColor` option](#Configuration))
 * `labelText`: (option) a text label which is displayed when the user hovers the mouse pointer over the segment
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier
 
