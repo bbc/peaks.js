@@ -73,6 +73,8 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
     - [view.enableAutoScroll()](#viewenableautoscrollenable)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
+    - [view.enableSegmentDragging()](#viewenablesegmentdraggingenable)
+    - [view.setSegmentDragMode()](#viewsetsegmentdragmodemode)
     - [view.fitToContainer()](#viewfittocontainer)
     - [view.setZoom()](#viewsetzoomoptions)
     - [view.setStartTime()](#viewsetstarttimetime)
@@ -515,6 +517,22 @@ var options = {
     // (either 'normal', 'bold', or 'italic')
     fontStyle: 'normal',
   },
+
+  //
+  // Scrollbar options
+  //
+
+  scrollbar: {
+    // Container <div> element for the scrollbar
+    overview: document.getElementById('scrollbar-container'),
+
+    // Scrollbar color. The background color can be set using CSS on the
+    // scrollbar container element
+    color: '#888888',
+
+    // Minimum scrollbar handle width, in pixels
+    minWidth: 50
+  }
 
   // HTML media element containing an audio track
   mediaElement: document.querySelector('audio'),
@@ -1096,6 +1114,32 @@ instance.segments.add({
   label: 'Test segment',
   editable: true
 });
+```
+
+### `view.enableSegmentDragging(enable)`
+
+Enables or disables segment dragging. By default, segments cannot be dragged.
+
+This method applies to the zoomable waveform view only.
+
+```js
+const view = instance.views.getView('zoomview');
+view.enableSegmentDragging(true);
+```
+
+### `view.setSegmentDragMode(mode)`
+
+Controls how segments behave when dragged over an adjacent segment. Possible values for the `mode` parameter are:
+
+* `'overlap'` (default): Segments can be dragged to overlap each other
+* `'no-overlap'`: Segment overlap is prevented
+* `'compress'`: Dragging a segment over the previous or next segment causes that segment to reduce in size
+
+This method applies to the zoomable waveform view only.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setSegmentDragMode('no-overlap');
 ```
 
 ### `view.fitToContainer()`
