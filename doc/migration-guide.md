@@ -12,8 +12,7 @@ Peaks.init({
   // Include other options as needed
   segmentStartMarkerColor: '#888',
   segmentEndMarkerColor: '#888',
-  segmentColor: '#800',
-  randomizeSegmentColor: false
+  segmentColor: '#800'
 }, function(err, peaks) {
   // ...
 });
@@ -31,7 +30,49 @@ Peaks.init({
 });
 ```
 
-The `randomizeSegmentColor` option has been removed. This option was `true` by default in earlier versions. Instead of using this option, set the `color` attribute when calling [`segments.add()`](https://github.com/bbc/peaks.js#instancesegmentsaddsegment).
+The following options have also been moved, so you will need to update your code as shown below.
+
+- `containers` (use `zoomview.container` or `overview.container`instead)
+- `overviewWaveformColor` (use `overview.waveformColor` instead)
+- `overviewHighlightOffset` (use `overview.highlightOffset` instead)
+- `overviewHighlightColor` (use `overview.highlightColor` instead)
+- `zoomWaveformColor` (use `zoomview.waveformColor` instead)
+
+```js
+// Before
+Peaks.init({
+  containers: {
+    zoomview: document.getElementById('zoomview-container'),
+    overview: document.getElementById('overview-container')
+  },
+  zoomWaveformColor: '#00e180',
+  overviewWaveformColor: '#cccccc',
+  overviewHighlightOffset: 11,
+  overviewHighlightColor: '#aaaaaa'
+  // Include other options as needed
+}, function(err, peaks) {
+  // ...
+});
+
+// After
+Peaks.init({
+  zoomview: {
+    container: document.getElementById('zoomview-container'),
+    waveformColor: '#00e180'
+  },
+  overview: {
+    container: document.getElementById('overview-container'),
+    waveformColor: '#cccccc',
+    highlightOffset: 11,
+    highlightColor: '#aaaaaa'
+  }
+  // Include other options as needed
+}, function(err, peaks) {
+  // ...
+});
+```
+
+Finally, the `randomizeSegmentColor` option has been removed. This option was `true` by default in earlier versions. Instead of using this option, set the `color` attribute when calling [`segments.add()`](https://github.com/bbc/peaks.js#instancesegmentsaddsegment).
 
 ## Peaks.js v2.0.0
 
