@@ -99,8 +99,7 @@ WaveformSegments.prototype._createSegment = function(options) {
       segmentOptions.color = this._peaks.options.segmentOptions.overlayColor;
     }
     else {
-      segmentOptions.color = this._peaks.options.segmentOptions.waveformColor ||
-        this._peaks.options.segmentColor; // TODO: deprecate
+      segmentOptions.color = this._peaks.options.segmentOptions.waveformColor;
     }
   }
 

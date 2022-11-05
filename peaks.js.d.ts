@@ -266,21 +266,6 @@ declare module 'peaks.js' {
     /** Keyboard nudge increment in seconds (left arrow/right arrow) */
     nudgeIncrement?: number;
     /**
-     * Color for segment start marker handles
-     * @deprecated use segmentOptions.startMarkerColor instead
-     */
-    segmentStartMarkerColor?: string;
-    /**
-     * Color for segment end marker handles
-     * @deprecated use segmentOptions.endMarkerColor instead
-     */
-    segmentEndMarkerColor?: string;
-    /**
-     * Color for segments on the waveform
-     * @deprecated use segmentOptions.waveformColor instead
-     */
-    segmentColor?: WaveformColor;
-    /**
      * Options that control segment appearance
      */
     segmentOptions?: GlobalSegmentDisplayOptions;
