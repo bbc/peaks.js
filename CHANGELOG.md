@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 3.0.0-beta.1 (2022/11/05)
+
+* Fixed dragging of custom point and segment markers (@chrisn)
+
 ## 3.0.0-beta.0 (2022/11/05)
 
 * (#443) Added new options to control segment appearance. Two segment styles
