@@ -159,7 +159,7 @@ following options:
 | `view`        | `string`        | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                                                      |
 | `layer`       | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                                          |
 | `draggable`   | `boolean`       | This value is always `true` for segment marker handles.                                                                                                |
-| `color`       | `string`        | Color for the marker handle (set by the `segmentStartMarkerColor` or `segmentEndMarkerColor` option in `Peaks.init()`.                                 |
+| `color`       | `string`        | Color for the marker handle (set by the `segmentOptions.startMarkerColor` or `segmentOptions.endMarkerColor` option in `Peaks.init()`.                 |
 | `fontFamily`  | `string`        | Font family for the marker handle text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                                    |
 | `fontSize`    | `number`        | Font size, in px, for the marker handle text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                                           |
 | `fontShape`   | `string`        | Font shape for the marker handle text (set by the `fontShape` option in `Peaks.init()`, default: `'normal'`).                                          |

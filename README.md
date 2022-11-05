@@ -443,7 +443,12 @@ var options = {
     fontStyle: 'normal',
 
     // Mouse-wheel mode: either 'none' or 'scroll'
-    wheelMode: 'none'
+    wheelMode: 'none',
+
+    segmentOptions: {
+      // Some segment options can be overridden for the zoomable waveform,
+      // see segmentOptions below
+    }
   },
 
   //
@@ -465,7 +470,6 @@ var options = {
     // Color for the overview waveform rectangle
     // that shows what the zoomable view shows
     highlightColor: 'grey',
-
 
     // Stroke color for the zoomed region
     highlightStrokeColor:   'transparent',
@@ -516,6 +520,11 @@ var options = {
     // Font style for axis labels, playhead, and point and segment markers
     // (either 'normal', 'bold', or 'italic')
     fontStyle: 'normal',
+
+    segmentOptions: {
+      // Some segment options can be overridden for the overview waveform,
+      // see segmentOptions below
+    }
   },
 
   //
@@ -646,18 +655,6 @@ var options = {
 
   // Default point marker color
   pointMarkerColor: '#ff0000',
-
-  // Color for segment start marker handles
-  // (deprecated, use segmentOptions.startMarkerColor instead)
-  segmentStartMarkerColor: '#a0a0a0',
-
-  // Color for segment end marker handles
-  // (deprecated, use segmentOptions.endMarkerColor instead)
-  segmentEndMarkerColor: '#a0a0a0',
-
-  // Color for segments on the waveform
-  // (deprecated, use segmentOptions.waveformColor instead)
-  segmentColor: 'rgba(255, 161, 39, 1)',
 
   // if true, emit cue events on the Peaks instance (see Cue Events)
   emitCueEvents: false,
