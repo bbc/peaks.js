@@ -258,6 +258,8 @@ PointsLayer.prototype._onPointHandleDblClick = function(event, point) {
  */
 
 PointsLayer.prototype._onPointHandleDragStart = function(event, point) {
+  this._dragPointMarker = this._pointMarkers[point.id];
+
   this._peaks.emit('points.dragstart', {
     point: point,
     evt: event.evt
@@ -270,6 +272,8 @@ PointsLayer.prototype._onPointHandleDragStart = function(event, point) {
  */
 
 PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
+  this._dragPointMarker = null;
+
   this._peaks.emit('points.dragend', {
     point: point,
     evt: event.evt
@@ -280,7 +284,7 @@ PointsLayer.prototype._pointHandleDragBoundFunc = function(pos) {
   // Allow the marker to be moved horizontally but not vertically.
   return {
     x: clamp(pos.x, 0, this._view.getWidth()),
-    y: 0
+    y: this._dragPointMarker.getAbsolutePosition().y
   };
 };
 

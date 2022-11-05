@@ -93,16 +93,20 @@ SegmentMarker.prototype.getX = function() {
   return this._group.getX();
 };
 
+SegmentMarker.prototype.setX = function(x) {
+  this._group.setX(x);
+};
+
 SegmentMarker.prototype.getWidth = function() {
   return this._group.getWidth();
 };
 
-SegmentMarker.prototype.isStartMarker = function() {
-  return this._startMarker;
+SegmentMarker.prototype.getAbsolutePosition = function() {
+  return this._group.getAbsolutePosition();
 };
 
-SegmentMarker.prototype.setX = function(x) {
-  this._group.setX(x);
+SegmentMarker.prototype.isStartMarker = function() {
+  return this._startMarker;
 };
 
 SegmentMarker.prototype.timeUpdated = function(time) {

@@ -117,12 +117,16 @@ PointMarker.prototype.getX = function() {
   return this._group.getX();
 };
 
+PointMarker.prototype.setX = function(x) {
+  this._group.setX(x);
+};
+
 PointMarker.prototype.getWidth = function() {
   return this._group.getWidth();
 };
 
-PointMarker.prototype.setX = function(x) {
-  this._group.setX(x);
+PointMarker.prototype.getAbsolutePosition = function() {
+  return this._group.getAbsolutePosition();
 };
 
 PointMarker.prototype.timeUpdated = function(time) {

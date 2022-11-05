@@ -701,7 +701,7 @@ SegmentShape.prototype._segmentHandleDragBoundFunc = function(segmentMarker, pos
   // Allow the marker handle to be moved horizontally but not vertically.
   return {
     x: pos.x,
-    y: 0
+    y: segmentMarker.getAbsolutePosition().y
   };
 };
 
