@@ -2,6 +2,37 @@
 
 This document describes any breaking changes in the Peaks.js API and provides advice on how to migrate your code to the updated API.
 
+## Peaks.js v3.0.0
+
+Peaks.js v3.0.0 adds a number of new customization options for segments. These have been moved under a new `segmentOptions` object in the call to `Peaks.init()`.
+
+```js
+// Before
+Peaks.init({
+  // Include other options as needed
+  segmentStartMarkerColor: '#888',
+  segmentEndMarkerColor: '#888',
+  segmentColor: '#800',
+  randomizeSegmentColor: false
+}, function(err, peaks) {
+  // ...
+});
+
+// After
+Peaks.init({
+  // Include other options as needed
+  segmentOptions: {
+    startMarkerColor: '#888',
+    endMarkerColor: '#888',
+    waveformColor: '#800'
+  }
+}, function(err, peaks) {
+  // ...
+});
+```
+
+The `randomizeSegmentColor` option has been removed. This option was `true` by default in earlier versions. Instead of using this option, set the `color` attribute when calling [`segments.add()`](https://github.com/bbc/peaks.js#instancesegmentsaddsegment).
+
 ## Peaks.js v2.0.0
 
 Peaks.js v2.0.0 changes how [custom player objects](../customizing.md#media-playback) should be initialized. To allow for initialization that may involve asynchronous operations, your custom player object's `init` function must now return a `Promise` that resolves when the player has been initialized.
