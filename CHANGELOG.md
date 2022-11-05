@@ -1,5 +1,20 @@
 # Peaks.js
 
+## 3.0.0-beta.0 (2022/11/05)
+
+* (#443) Added new options to control segment appearance. Two segment styles
+  are now supported: marker style (as in previous versions), and overlay
+  style.
+
+  Segment options are now controlled using the new `segmentOptions` settings
+  in `Peaks.init()`, and settings can be controlled separately for the
+  overview and zoomable waveform views, using the `overview.segmentOptions`
+  and `zoomview.segmentOptions` settings.
+
+  Some segment options have been removed, please refer to
+  doc/migration-guide.md for details of how to update your application
+  (@chrisn)
+
 ## 2.1.0 (2022/10/17)
 
 * (#467) Added new config options to style the overview waveform
