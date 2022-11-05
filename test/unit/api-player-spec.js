@@ -23,9 +23,11 @@ describe('Player', function() {
       };
 
       var options = {
-        containers: {
-          overview: document.getElementById('overview-container'),
-          zoomview: document.getElementById('zoomview-container')
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        zoomview: {
+          container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
@@ -203,9 +205,11 @@ describe('Player', function() {
       logger = sinon.spy();
 
       var options = {
-        containers: {
-          overview: document.getElementById('overview-container'),
-          zoomview: document.getElementById('zoomview-container')
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        zoomview: {
+          container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
@@ -361,9 +365,11 @@ describe('Player', function() {
         };
 
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {

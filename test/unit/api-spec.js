@@ -3,7 +3,10 @@ import WaveformData from 'waveform-data';
 import Konva from 'konva';
 
 import sampleJsonData from '../../test_data/sample.json';
-// import { getSampleJsonData } from '../../test_data/sample-json.js';
+
+import Scrollbar from '../../src/scrollbar';
+import WaveformOverview from '../../src/waveform-overview';
+import WaveformZoomView from '../../src/waveform-zoomview';
 
 var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
@@ -33,9 +36,11 @@ describe('Peaks', function() {
     context('with valid options', function() {
       it('should invoke callback when initialised', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
@@ -48,11 +53,13 @@ describe('Peaks', function() {
         });
       });
 
-      it('should not return a Peaks instance', function(done) {
+      it('should return undefined', function(done) {
         var result = Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
@@ -68,9 +75,11 @@ describe('Peaks', function() {
 
       it('should emit a peaks.ready event when initialised', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
@@ -81,65 +90,6 @@ describe('Peaks', function() {
 
           instance.on('peaks.ready', function() {
             expect(instance.getWaveformData()).to.be.an.instanceOf(WaveformData);
-            done();
-          });
-        });
-      });
-
-      context('with containers option', function() {
-        it('should construct a Peaks object with overview and zoomable waveforms', function(done) {
-          Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container'),
-              zoomview: document.getElementById('zoomview-container')
-            },
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          }, function(err, instance) {
-            expect(err).to.equal(null);
-            expect(instance).to.be.an.instanceof(Peaks);
-            done();
-          });
-        });
-
-        it('should construct a Peaks object with an overview waveform only', function(done) {
-          Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container')
-            },
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          }, function(err, instance) {
-            expect(err).to.equal(null);
-            expect(instance).to.be.an.instanceof(Peaks);
-            done();
-          });
-        });
-
-        it('should construct a Peaks object with a zoomable waveform only', function(done) {
-          Peaks.init({
-            containers: {
-              zoomview: document.getElementById('zoomview-container')
-            },
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          }, function(err, instance) {
-            expect(err).to.equal(null);
-            expect(instance).to.be.an.instanceof(Peaks);
-            done();
-          });
-        });
-
-        it('should return an error if no containers are given', function(done) {
-          Peaks.init({
-            containers: {
-            },
-            mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-          }, function(err, instance) {
-            expect(err).to.be.an.instanceOf(TypeError);
-            expect(err.message).to.match(/must be valid HTML elements/);
-            expect(instance).to.equal(undefined);
             done();
           });
         });
@@ -159,6 +109,8 @@ describe('Peaks', function() {
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
+            expect(instance.views.getView('overview')).to.be.an.instanceOf(WaveformOverview);
+            expect(instance.views.getView('zoomview')).to.be.an.instanceOf(WaveformZoomView);
             done();
           });
         });
@@ -173,6 +125,8 @@ describe('Peaks', function() {
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
+            expect(instance.views.getView('overview')).to.be.an.instanceOf(WaveformOverview);
+            expect(instance.views.getView('zoomview')).to.equal(null);
             done();
           });
         });
@@ -187,6 +141,9 @@ describe('Peaks', function() {
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
+            expect(instance.views.getView('overview')).to.equal(null);
+            expect(instance.views.getView('zoomview')).to.be.an.instanceOf(WaveformZoomView);
+
             done();
           });
         });
@@ -338,32 +295,28 @@ describe('Peaks', function() {
             expect(overview._highlightLayer._cornerRadius).to.equal(2);
             done();
           });
+        });
+      });
 
-          it('should use deprecated options', function(done) {
-            Peaks.init({
-              overview: {
-                container: document.getElementById('overview-container')
-              },
-              zoomview: {
-                container: document.getElementById('zoomview-container')
-              },
-              mediaElement: document.getElementById('media'),
-              dataUri: { arraybuffer: '/base/test_data/sample.dat' },
-              zoomWaveformColor: '#111111',
-              overviewWaveformColor: '#222222',
-              overviewHighlightColor: '#333333'
-            }, function(err, instance) {
-              expect(err).to.equal(null);
-              expect(instance).to.be.an.instanceof(Peaks);
-
-              var overview = instance.views.getView('overview');
-              var zoomview = instance.views.getView('zoomview');
-
-              expect(overview._waveformcolor).to.equal('#111111');
-              expect(zoomview._waveformcolor).to.equal('#222222');
-              expect(overview._highlightLayer._color).to.equal('#333333');
-              done();
-            });
+      context('with scrollbar option', function() {
+        it('should construct a Peaks object with scrollbar', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
+            },
+            scrollbar: {
+              container: document.getElementById('scrollbar-container')
+            },
+            mediaElement: document.getElementById('media'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.equal(null);
+            expect(instance).to.be.an.instanceof(Peaks);
+            expect(instance._scrollbar).to.be.an.instanceOf(Scrollbar);
+            done();
           });
         });
       });
@@ -371,9 +324,11 @@ describe('Peaks', function() {
       context('with precomputed stereo waveform data', function() {
         it('should initialise correctly', function(done) {
           Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container'),
-              zoomview: document.getElementById('zoomview-container')
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
             dataUri: { arraybuffer: '/base/test_data/07023003-2channel.dat' }
@@ -390,9 +345,11 @@ describe('Peaks', function() {
       context('with valid json waveform data', function() {
         it('should initialise correctly', function(done) {
           Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container'),
-              zoomview: document.getElementById('zoomview-container')
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
             waveformData: {
@@ -416,9 +373,11 @@ describe('Peaks', function() {
             })
             .then(function(buffer) {
               Peaks.init({
-                containers: {
-                  overview: document.getElementById('overview-container'),
-                  zoomview: document.getElementById('zoomview-container')
+                overview: {
+                  container: document.getElementById('overview-container')
+                },
+                zoomview: {
+                  container: document.getElementById('zoomview-container')
                 },
                 mediaElement: document.getElementById('media'),
                 waveformData: {
@@ -438,9 +397,11 @@ describe('Peaks', function() {
       context('with audioContext and multiChannel enabled', function() {
         it('should initialise correctly', function(done) {
           Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container'),
-              zoomview: document.getElementById('zoomview-container')
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
             webAudio: {
@@ -470,9 +431,11 @@ describe('Peaks', function() {
             })
             .then(function(audioBuffer) {
               Peaks.init({
-                containers: {
-                  overview: document.getElementById('overview-container'),
-                  zoomview: document.getElementById('zoomview-container')
+                overview: {
+                  container: document.getElementById('overview-container')
+                },
+                zoomview: {
+                  container: document.getElementById('zoomview-container')
                 },
                 mediaElement: document.getElementById('media'),
                 webAudio: {
@@ -494,9 +457,11 @@ describe('Peaks', function() {
       context('with external player', function() {
         it('should ignore mediaUrl if using an external player', function(done) {
           Peaks.init({
-            containers: {
-              overview: document.getElementById('overview-container'),
-              zoomview: document.getElementById('zoomview-container')
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
             },
             mediaUrl: 'invalid',
             waveformData: {
@@ -525,9 +490,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if no mediaElement is provided', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
         }, function(err, instance) {
@@ -540,9 +507,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if mediaElement is not an HTMLMediaElement', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.createElement('div'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
@@ -556,9 +525,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if both a dataUri and audioContext are provided', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' },
@@ -575,9 +546,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if neither a dataUri nor an audioContext are provided', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media')
         }, function(err, instance) {
@@ -590,9 +563,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if the dataUri is not an object', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: true
@@ -606,9 +581,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if provided json waveform data is invalid', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           waveformData: {
@@ -628,9 +605,11 @@ describe('Peaks', function() {
           })
           .then(function(buffer) {
             Peaks.init({
-              containers: {
-                overview: document.getElementById('overview-container'),
-                zoomview: document.getElementById('zoomview-container')
+              overview: {
+                container: document.getElementById('overview-container')
+              },
+              zoomview: {
+                container: document.getElementById('zoomview-container')
               },
               mediaElement: document.getElementById('media'),
               waveformData: {
@@ -644,7 +623,7 @@ describe('Peaks', function() {
           });
       });
 
-      it('should invoke callback with an error if no container is provided', function(done) {
+      it('should invoke callback with an error if no zoomview or overview options are provided', function(done) {
         Peaks.init({
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
@@ -656,7 +635,7 @@ describe('Peaks', function() {
         });
       });
 
-      it('should invoke callback with an error if the container option is used', function(done) {
+      /* it('should invoke callback with an error if the container option is used', function(done) {
         Peaks.init({
           container: document.createElement('div'),
           mediaElement: document.getElementById('media'),
@@ -666,13 +645,15 @@ describe('Peaks', function() {
           expect(instance).to.equal(undefined);
           done();
         });
-      });
+      }); */
 
       it('should invoke callback with an error if the logger is defined and not a function', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: '/base/test_data/sample.json',
@@ -687,9 +668,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if the zoomLevels option is missing', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: '/base/test_data/sample.json',
@@ -704,9 +687,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if the zoomLevels option is empty', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: '/base/test_data/sample.json',
@@ -721,9 +706,11 @@ describe('Peaks', function() {
 
       it('should invoke callback with an error if the zoomLevels option is not in ascending order', function(done) {
         Peaks.init({
-          containers: {
-            overview: document.getElementById('overview-container'),
-            zoomview: document.getElementById('zoomview-container')
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: '/base/test_data/sample.json',
@@ -741,8 +728,8 @@ describe('Peaks', function() {
         container.style.width = '0px';
 
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: container
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -763,8 +750,8 @@ describe('Peaks', function() {
         container.style.height = '0px';
 
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: container
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -785,8 +772,8 @@ describe('Peaks', function() {
         container.style.width = '0px';
 
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: container
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -807,8 +794,8 @@ describe('Peaks', function() {
         container.style.height = '0px';
 
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: container
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -831,9 +818,11 @@ describe('Peaks', function() {
 
     beforeEach(function(done) {
       var options = {
-        containers: {
-          overview: document.getElementById('overview-container'),
-          zoomview: document.getElementById('zoomview-container')
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        zoomview: {
+          container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
         dataUri: { arraybuffer: '/base/test_data/sample.dat' },
@@ -1093,9 +1082,11 @@ describe('Peaks', function() {
       window.onerror = errorSpy;
 
       Peaks.init({
-        containers: {
-          overview: document.getElementById('overview-container'),
-          zoomview: document.getElementById('zoomview-container')
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        zoomview: {
+          container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
         webAudio: {
@@ -1125,9 +1116,14 @@ describe('Peaks', function() {
 
     it('should be safe to call more than once', function(done) {
       Peaks.init({
-        containers: {
-          overview: document.getElementById('overview-container'),
-          zoomview: document.getElementById('zoomview-container')
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        zoomview: {
+          container: document.getElementById('zoomview-container')
+        },
+        scrollbar: {
+          container: document.getElementById('scrollbar-container')
         },
         mediaElement: document.getElementById('media'),
         dataUri: { arraybuffer: '/base/test_data/sample.dat' }

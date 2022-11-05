@@ -14,9 +14,11 @@ describe('CueEmitter', function() {
 
   beforeEach(function(done) {
     var options = {
-      containers: {
-        overview: document.getElementById('overview-container'),
-        zoomview: document.getElementById('zoomview-container')
+      overview: {
+        container: document.getElementById('overview-container')
+      },
+      zoomview: {
+        container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
@@ -50,9 +52,11 @@ describe('CueEmitter', function() {
 
   it('should initialise with already existing points', function(done) {
     var options = {
-      containers: {
-        overview: document.getElementById('overview-container'),
-        zoomview: document.getElementById('zoomview-container')
+      overview: {
+        container: document.getElementById('overview-container')
+      },
+      zoomview: {
+        container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
@@ -72,9 +76,11 @@ describe('CueEmitter', function() {
 
   it('should be destroyed when the Peaks instance is destroyed', function(done) {
     var options = {
-      containers: {
-        overview: document.getElementById('overview-container'),
-        zoomview: document.getElementById('zoomview-container')
+      overview: {
+        container: document.getElementById('overview-container')
+      },
+      zoomview: {
+        container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
       dataUri: 'base/test_data/sample.json',
@@ -321,9 +327,11 @@ describe('CueEmitter', function() {
       };
 
       var options = {
-        containers: {
-          overview: document.getElementById('overview-container'),
-          zoomview: document.getElementById('zoomview-container')
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        zoomview: {
+          container: document.getElementById('zoomview-container')
         },
         dataUri: 'base/test_data/sample.json',
         player: player,

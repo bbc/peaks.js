@@ -15,8 +15,8 @@ describe('Peaks.views', function() {
     context('with existing zoomview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -45,8 +45,8 @@ describe('Peaks.views', function() {
     context('without existing zoomview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -79,8 +79,8 @@ describe('Peaks.views', function() {
     context('with existing overview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -109,8 +109,8 @@ describe('Peaks.views', function() {
     context('without existing overview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -143,9 +143,11 @@ describe('Peaks.views', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container'),
-            overview: document.getElementById('overview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
+          },
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -184,8 +186,8 @@ describe('Peaks.views', function() {
     context('with only a zoomview container', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -224,8 +226,8 @@ describe('Peaks.views', function() {
     context('with only an overview container', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -266,9 +268,11 @@ describe('Peaks.views', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container'),
-            overview: document.getElementById('overview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
+          },
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -297,8 +301,8 @@ describe('Peaks.views', function() {
     context('with only a zoomview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -323,8 +327,8 @@ describe('Peaks.views', function() {
     context('with no zoomview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -351,9 +355,11 @@ describe('Peaks.views', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container'),
-            overview: document.getElementById('overview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
+          },
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -382,8 +388,8 @@ describe('Peaks.views', function() {
     context('with only an overview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
@@ -408,8 +414,8 @@ describe('Peaks.views', function() {
     context('with no overview', function() {
       beforeEach(function(done) {
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
           dataUri: {

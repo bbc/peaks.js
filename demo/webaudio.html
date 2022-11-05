@@ -164,9 +164,11 @@
         var audioElement = document.getElementById('audio');
 
         var options = {
-          containers: {
-            zoomview: document.getElementById('zoomview-container'),
-            overview: document.getElementById('overview-container')
+          zoomview: {
+            container: document.getElementById('zoomview-container')
+          },
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: audioElement,
           webAudio: {

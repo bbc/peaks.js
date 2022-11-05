@@ -24,8 +24,8 @@ describe('WaveformOverview', function() {
         var container = document.getElementById('overview-container');
 
         var options = {
-          containers: {
-            overview: container
+          overview: {
+            container: container
           },
           mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/sample.dat' }
@@ -54,8 +54,8 @@ describe('WaveformOverview', function() {
     context('with waveform shorter than the container width', function() {
       it('should use default waveform scale', function(done) {
         var options = {
-          containers: {
-            overview: document.getElementById('overview-container')
+          overview: {
+            container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('audio'),
           dataUri: { arraybuffer: '/base/test_data/STAT3S3.dat' }

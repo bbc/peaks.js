@@ -97,15 +97,6 @@ declare module 'peaks.js' {
     overlayColor?:  string;
   }
 
-  interface ViewContainerOptions {
-    containers: {
-      /** Container element for the overview (non-zoomable) waveform view */
-      overview?: HTMLElement | null;
-      /** Container element for the zoomable waveform view */
-      zoomview?: HTMLElement | null;
-    }
-  }
-
   type FormatTimeFunction = (time: number) => string;
 
   interface ViewOptions {
@@ -133,7 +124,15 @@ declare module 'peaks.js' {
   }
 
   interface OverviewOptions extends ViewOptions {
+    /**
+     * The default number of pixels from the top and bottom of the canvas
+     * that the overview highlight rectangle
+     */
     highlightOffset?: number;
+    /**
+     * Color for the overview waveform rectangle that shows the region
+     * visible in the zoomable waveform view
+     */
     highlightColor?: string;
     highlightStrokeColor?: string;
     highlightOpacity?: number;
@@ -146,13 +145,11 @@ declare module 'peaks.js' {
     minWidth?: number;
   }
 
-  interface ViewSpecificOptions {
+  interface ContainerOptions {
     zoomview?: ZoomViewOptions;
     overview?: OverviewOptions;
     scrollbar?: ScrollbarOptions;
   }
-
-  type ContainerOptions = XOR<ViewContainerOptions, ViewSpecificOptions>;
 
   interface RemoteWaveformDataOptions {
     /** URI to waveform data file in binary or JSON */
@@ -274,28 +271,6 @@ declare module 'peaks.js' {
      * to set the waveform color for each view)
      */
     waveformColor?: WaveformColor;
-    /**
-     * Zoomview waveform color
-     * @deprecated use zoomview.waveformColor instead
-     */
-    zoomWaveformColor?: WaveformColor;
-    /**
-     * Overview waveform color
-     * @deprecated use overview.waveformColor instead
-     */
-    overviewWaveformColor?: WaveformColor;
-    /**
-     * Color for the overview waveform rectangle
-     * that shows what the zoom view shows
-     * @deprecated use overview.highlightColor instead
-     */
-    overviewHighlightColor?: string;
-    /**
-     * The default number of pixels from the top and bottom of the canvas
-     * that the overviewHighlight takes up
-     * @deprecated use overview.hightlightOffset instead
-     */
-    overviewHighlightOffset?: number;
     /** Color of the play head */
     playheadColor?: string;
     /** Show current time next to the playhead (zoomview only) */

@@ -149,9 +149,22 @@ function renderPoints(peaks) {
 };
 
 var options = {
-  containers: {
-    zoomview: document.getElementById('zoomview-container'),
-    overview: document.getElementById('overview-container')
+  zoomview: {
+    container: document.getElementById('zoomview-container'),
+    waveformColor: {
+      linearGradientStart: 20,
+      linearGradientEnd: 60,
+      linearGradientColorStops: ['hsl(180, 78%, 46%)', 'hsl(180, 78%, 16%)']
+    }
+  },
+  overview: {
+    container: document.getElementById('overview-container'),
+    waveformColor: {
+      linearGradientStart: 50,
+      linearGradientEnd: 58,
+      linearGradientColorStops: ['rgba(150, 0, 0, 0.2)', 'rgba(150, 0, 0, 0.5)']
+    },
+    highlightColor: '#888'
   },
   mediaElement: document.getElementById('audio'),
   dataUri: {
@@ -163,17 +176,6 @@ var options = {
   createSegmentMarker: createSegmentMarker,
   createSegmentLabel: createSegmentLabel,
   createPointMarker: createPointMarker,
-  overviewWaveformColor: {
-    linearGradientStart: 50,
-    linearGradientEnd: 58,
-    linearGradientColorStops: ['rgba(150, 0, 0, 0.2)', 'rgba(150, 0, 0, 0.5)']
-  },
-  overviewHighlightColor: '#888',
-  zoomWaveformColor: {
-    linearGradientStart: 20,
-    linearGradientEnd: 60,
-    linearGradientColorStops: ['hsl(180, 78%, 46%)', 'hsl(180, 78%, 16%)']
-  }
 };
 
 Peaks.init(options, function(err, peaksInstance) {

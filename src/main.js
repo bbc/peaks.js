@@ -126,22 +126,6 @@ var defaultScrollbarOptions = {
 function getOverviewOptions(opts) {
   var overviewOptions = {};
 
-  if (opts.containers && opts.containers.overview) {
-    overviewOptions.container = opts.containers.overview;
-  }
-
-  if (opts.overviewWaveformColor) {
-    overviewOptions.waveformColor = opts.overviewWaveformColor;
-  }
-
-  if (opts.overviewHighlightOffset) {
-    overviewOptions.highlightOffset = opts.overviewHighlightOffset;
-  }
-
-  if (opts.overviewHighlightColor) {
-    overviewOptions.highlightColor = opts.overviewHighlightColor;
-  }
-
   if (opts.overview && opts.overview.showPlayheadTime) {
     overviewOptions.showPlayheadTime = opts.overview.showPlayheadTime;
   }
@@ -190,14 +174,6 @@ function getOverviewOptions(opts) {
 
 function getZoomviewOptions(opts) {
   var zoomviewOptions = {};
-
-  if (opts.containers && opts.containers.zoomview) {
-    zoomviewOptions.container = opts.containers.zoomview;
-  }
-
-  if (opts.zoomWaveformColor) {
-    zoomviewOptions.waveformColor = opts.zoomWaveformColor;
-  }
 
   if (opts.showPlayheadTime) {
     zoomviewOptions.showPlayheadTime = opts.showPlayheadTime;
@@ -454,11 +430,6 @@ Peaks.prototype._setOptions = function(opts) {
       // eslint-disable-next-line max-len
       return new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
     }
-  }
-
-  if (opts.container) {
-    // eslint-disable-next-line max-len
-    return new Error('Peaks.init(): The container option has been removed, please use containers instead');
   }
 
   if (opts.logger && !isFunction(opts.logger)) {
