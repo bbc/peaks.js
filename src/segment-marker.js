@@ -35,7 +35,7 @@ import Konva from 'konva/lib/Core';
  */
 
 function SegmentMarker(options) {
-  var self = this;
+  const self = this;
 
   self._segment       = options.segment;
   self._marker        = options.marker;
@@ -60,7 +60,7 @@ function SegmentMarker(options) {
 }
 
 SegmentMarker.prototype._bindDefaultEventHandlers = function() {
-  var self = this;
+  const self = this;
 
   if (self._draggable) {
     self._group.on('dragstart', function(event) {

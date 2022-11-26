@@ -1,14 +1,14 @@
 import Peaks from '../../src/main';
 
 describe('WaveformView', function() {
-  var p;
-  var waveformLayerDraw;
-  var logger;
+  let p;
+  let waveformLayerDraw;
+  let logger;
 
   beforeEach(function(done) {
     logger = sinon.spy();
 
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -25,7 +25,7 @@ describe('WaveformView', function() {
 
       p = instance;
 
-      var zoomview = instance.views.getView('zoomview');
+      const zoomview = instance.views.getView('zoomview');
       expect(zoomview).to.be.ok;
       waveformLayerDraw = sinon.spy(zoomview, '_drawWaveformLayer');
 
@@ -44,7 +44,7 @@ describe('WaveformView', function() {
     ['zoomview', 'overview'].forEach(function(viewName) {
       describe(viewName, function() {
         it('should set the amplitude scale to default', function() {
-          var view = p.views.getView(viewName);
+          const view = p.views.getView(viewName);
 
           expect(function() {
             view.setAmplitudeScale(1.2);
@@ -54,7 +54,7 @@ describe('WaveformView', function() {
         });
 
         it('should throw if no scale is given', function() {
-          var view = p.views.getView(viewName);
+          const view = p.views.getView(viewName);
 
           expect(function() {
             view.setAmplitudeScale();
@@ -62,7 +62,7 @@ describe('WaveformView', function() {
         });
 
         it('should throw if an invalid scale is given', function() {
-          var view = p.views.getView(viewName);
+          const view = p.views.getView(viewName);
 
           expect(function() {
             view.setAmplitudeScale('test');
@@ -70,7 +70,7 @@ describe('WaveformView', function() {
         });
 
         it('should throw if an invalid number is given', function() {
-          var view = p.views.getView(viewName);
+          const view = p.views.getView(viewName);
 
           expect(function() {
             view.setAmplitudeScale(Infinity);
@@ -84,7 +84,7 @@ describe('WaveformView', function() {
     ['zoomview', 'overview'].forEach(function(viewName) {
       describe(viewName, function() {
         it('should set the waveform color', function() {
-          var view = p.views.getView(viewName);
+          const view = p.views.getView(viewName);
 
           view.setWaveformColor('#ff0000');
 
@@ -98,7 +98,7 @@ describe('WaveformView', function() {
     ['zoomview', 'overview'].forEach(function(viewName) {
       describe(viewName, function() {
         it('should set the color of the waveform behind the playhead', function() {
-          var view = p.views.getView(viewName);
+          const view = p.views.getView(viewName);
 
           view.setPlayedWaveformColor('#ff0000');
 
@@ -110,7 +110,7 @@ describe('WaveformView', function() {
 
   describe('scrollWaveform', function() {
     describe('zoomview', function() {
-      var zoomview;
+      let zoomview;
 
       beforeEach(function() {
         zoomview = p.views.getView('zoomview');
@@ -158,8 +158,8 @@ describe('WaveformView', function() {
     ['zoomview', 'overview'].forEach(function(viewName) {
       describe(viewName, function() {
         it('should hide the time axis labels', function() {
-          var view = p.views.getView(viewName);
-          var axisLayerDraw = sinon.spy(view._axisLayer, 'draw');
+          const view = p.views.getView(viewName);
+          const axisLayerDraw = sinon.spy(view._axisLayer, 'draw');
 
           view.showAxisLabels(false);
 
@@ -174,7 +174,7 @@ describe('WaveformView', function() {
       context('with scale option', function() {
         context('with target scale greater than the original waveform data', function() {
           it('should set the new zoom level', function() {
-            var view = p.views.getView('zoomview');
+            const view = p.views.getView('zoomview');
 
             view.setZoom({ scale: 512 });
 
@@ -185,7 +185,7 @@ describe('WaveformView', function() {
 
         context('with target scale lower than the original waveform data', function() {
           it('should log an error and not change the zoom level', function() {
-            var view = p.views.getView('zoomview');
+            const view = p.views.getView('zoomview');
 
             view.setZoom({ scale: 128 });
 
@@ -198,7 +198,7 @@ describe('WaveformView', function() {
       context('with seconds option', function() {
         context('with target scale greater than the original waveform data', function() {
           it('should set the new zoom level', function() {
-            var view = p.views.getView('zoomview');
+            const view = p.views.getView('zoomview');
 
             view.setZoom({ seconds: 10.0 });
 
@@ -209,7 +209,7 @@ describe('WaveformView', function() {
 
         context('with target scale lower than the original waveform data', function() {
           it('should log an error and not change the zoom level', function() {
-            var view = p.views.getView('zoomview');
+            const view = p.views.getView('zoomview');
 
             view.setZoom({ seconds: 1.0 });
 

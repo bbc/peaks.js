@@ -180,9 +180,9 @@ WaveformSegments.prototype._getSortedSegments = function() {
 };
 
 WaveformSegments.prototype.findPreviousSegment = function(segment) {
-  var sortedSegments = this._getSortedSegments();
+  const sortedSegments = this._getSortedSegments();
 
-  var index = sortedSegments.findIndex(function(s) {
+  const index = sortedSegments.findIndex(function(s) {
     return s.id === segment.id;
   });
 
@@ -194,9 +194,9 @@ WaveformSegments.prototype.findPreviousSegment = function(segment) {
 };
 
 WaveformSegments.prototype.findNextSegment = function(segment) {
-  var sortedSegments = this._getSortedSegments();
+  const sortedSegments = this._getSortedSegments();
 
-  var index = sortedSegments.findIndex(function(s) {
+  const index = sortedSegments.findIndex(function(s) {
     return s.id === segment.id;
   });
 
@@ -216,15 +216,15 @@ WaveformSegments.prototype.findNextSegment = function(segment) {
  */
 
 WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
-  var self = this;
+  const self = this;
 
-  var arrayArgs = Array.isArray(arguments[0]);
-  var segments = arrayArgs ?
+  const arrayArgs = Array.isArray(arguments[0]);
+  let segments = arrayArgs ?
                  arguments[0] :
                  Array.prototype.slice.call(arguments);
 
   segments = segments.map(function(segmentOptions) {
-    var segment = self._createSegment(segmentOptions);
+    const segment = self._createSegment(segmentOptions);
 
     if (objectHasProperty(self._segmentsById, segment.id)) {
       throw new Error('peaks.segments.add(): duplicate id');
@@ -252,9 +252,9 @@ WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
  */
 
 WaveformSegments.prototype._findSegment = function(predicate) {
-  var indexes = [];
+  const indexes = [];
 
-  for (var i = 0, length = this._segments.length; i < length; i++) {
+  for (let i = 0, length = this._segments.length; i < length; i++) {
     if (predicate(this._segments[i])) {
       indexes.push(i);
     }
@@ -272,12 +272,12 @@ WaveformSegments.prototype._findSegment = function(predicate) {
  */
 
 WaveformSegments.prototype._removeIndexes = function(indexes) {
-  var removed = [];
+  const removed = [];
 
-  for (var i = 0; i < indexes.length; i++) {
-    var index = indexes[i] - removed.length;
+  for (let i = 0; i < indexes.length; i++) {
+    const index = indexes[i] - removed.length;
 
-    var itemRemoved = this._segments.splice(index, 1)[0];
+    const itemRemoved = this._segments.splice(index, 1)[0];
 
     delete this._segmentsById[itemRemoved.id];
 
@@ -301,9 +301,9 @@ WaveformSegments.prototype._removeIndexes = function(indexes) {
  */
 
 WaveformSegments.prototype._removeSegments = function(predicate) {
-  var indexes = this._findSegment(predicate);
+  const indexes = this._findSegment(predicate);
 
-  var removed = this._removeIndexes(indexes);
+  const removed = this._removeIndexes(indexes);
 
   this._peaks.emit('segments.remove', removed);
 
@@ -348,20 +348,20 @@ WaveformSegments.prototype.removeById = function(segmentId) {
 WaveformSegments.prototype.removeByTime = function(startTime, endTime) {
   endTime = (typeof endTime === 'number') ? endTime : 0;
 
-  var fnFilter;
+  let filter;
 
   if (endTime > 0) {
-    fnFilter = function(segment) {
+    filter = function(segment) {
       return segment.startTime === startTime && segment.endTime === endTime;
     };
   }
   else {
-    fnFilter = function(segment) {
+    filter = function(segment) {
       return segment.startTime === startTime;
     };
   }
 
-  return this._removeSegments(fnFilter);
+  return this._removeSegments(filter);
 };
 
 /**

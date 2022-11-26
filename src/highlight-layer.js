@@ -70,8 +70,8 @@ HighlightLayer.prototype._update = function(startTime, endTime) {
   this._startTime = startTime;
   this._endTime = endTime;
 
-  var startOffset = this._view.timeToPixels(startTime);
-  var endOffset   = this._view.timeToPixels(endTime);
+  const startOffset = this._view.timeToPixels(startTime);
+  const endOffset   = this._view.timeToPixels(endTime);
 
   this._highlightRect.setAttrs({
     x:     startOffset,
@@ -83,8 +83,8 @@ HighlightLayer.prototype._createHighlightRect = function(startTime, endTime) {
   this._startTime = startTime;
   this._endTime   = endTime;
 
-  var startOffset = this._view.timeToPixels(startTime);
-  var endOffset   = this._view.timeToPixels(endTime);
+  const startOffset = this._view.timeToPixels(startTime);
+  const endOffset   = this._view.timeToPixels(endTime);
 
   // Create with default y and height, the real values are set in fitToView().
   this._highlightRect = new Rect({
@@ -119,8 +119,8 @@ HighlightLayer.prototype.updateHighlight = function() {
 
 HighlightLayer.prototype.fitToView = function() {
   if (this._highlightRect) {
-    var height = this._view.getHeight();
-    var offset = clamp(this._offset, 0, Math.floor(height / 2));
+    const height = this._view.getHeight();
+    const offset = clamp(this._offset, 0, Math.floor(height / 2));
 
     this._highlightRect.setAttrs({
       y: offset,

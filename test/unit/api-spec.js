@@ -8,9 +8,9 @@ import Scrollbar from '../../src/scrollbar';
 import WaveformOverview from '../../src/waveform-overview';
 import WaveformZoomView from '../../src/waveform-zoomview';
 
-var TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
+const TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 
-var externalPlayer = {
+const externalPlayer = {
   init: function() { return Promise.resolve(); },
   destroy: function() {},
   play: function() {},
@@ -23,7 +23,7 @@ var externalPlayer = {
 };
 
 describe('Peaks', function() {
-  var p = null;
+  let p = null;
 
   afterEach(function() {
     if (p) {
@@ -54,7 +54,7 @@ describe('Peaks', function() {
       });
 
       it('should return undefined', function(done) {
-        var result = Peaks.init({
+        const result = Peaks.init({
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -193,8 +193,8 @@ describe('Peaks', function() {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
 
-            var overview = instance.views.getView('overview');
-            var zoomview = instance.views.getView('zoomview');
+            const overview = instance.views.getView('overview');
+            const zoomview = instance.views.getView('zoomview');
 
             expect(overview._playheadLayer._playheadColor).to.equal('#ff0000');
             expect(zoomview._playheadLayer._playheadColor).to.equal('#00ff00');
@@ -239,8 +239,8 @@ describe('Peaks', function() {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
 
-            var overview = instance.views.getView('overview');
-            var zoomview = instance.views.getView('zoomview');
+            const overview = instance.views.getView('overview');
+            const zoomview = instance.views.getView('zoomview');
 
             expect(overview._playheadLayer._playheadColor).to.equal('#ff0000');
             expect(zoomview._playheadLayer._playheadColor).to.equal('#ff0000');
@@ -275,8 +275,8 @@ describe('Peaks', function() {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
 
-            var overview = instance.views.getView('overview');
-            var zoomview = instance.views.getView('zoomview');
+            const overview = instance.views.getView('overview');
+            const zoomview = instance.views.getView('zoomview');
 
             expect(overview._playheadLayer._playheadColor).to.equal('#111111');
             expect(zoomview._playheadLayer._playheadColor).to.equal('#111111');
@@ -420,7 +420,7 @@ describe('Peaks', function() {
 
       context('with audioBuffer', function() {
         it('should initialise correctly', function(done) {
-          var audioContext = new TestAudioContext();
+          const audioContext = new TestAudioContext();
 
           fetch('/base/test_data/sample.mp3')
             .then(function(response) {
@@ -724,10 +724,10 @@ describe('Peaks', function() {
       });
 
       it('should invoke callback with an error if the zoomview container element has zero width', function(done) {
-        var container = document.getElementById('zoomview-container');
+        const container = document.getElementById('zoomview-container');
         container.style.width = '0px';
 
-        var options = {
+        const options = {
           zoomview: {
             container: container
           },
@@ -746,10 +746,10 @@ describe('Peaks', function() {
       });
 
       it('should invoke callback with an error if the zoomview container element has zero height', function(done) {
-        var container = document.getElementById('zoomview-container');
+        const container = document.getElementById('zoomview-container');
         container.style.height = '0px';
 
-        var options = {
+        const options = {
           zoomview: {
             container: container
           },
@@ -768,10 +768,10 @@ describe('Peaks', function() {
       });
 
       it('should invoke callback with an error if the overview container element has zero width', function(done) {
-        var container = document.getElementById('overview-container');
+        const container = document.getElementById('overview-container');
         container.style.width = '0px';
 
-        var options = {
+        const options = {
           overview: {
             container: container
           },
@@ -790,10 +790,10 @@ describe('Peaks', function() {
       });
 
       it('should invoke callback with an error if the overview container element has zero height', function(done) {
-        var container = document.getElementById('overview-container');
+        const container = document.getElementById('overview-container');
         container.style.height = '0px';
 
-        var options = {
+        const options = {
           overview: {
             container: container
           },
@@ -814,10 +814,10 @@ describe('Peaks', function() {
   });
 
   describe('setSource', function() {
-    var waveformLayerDraw;
+    let waveformLayerDraw;
 
     beforeEach(function(done) {
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -834,7 +834,7 @@ describe('Peaks', function() {
 
         p = instance;
 
-        var zoomview = instance.views.getView('zoomview');
+        const zoomview = instance.views.getView('zoomview');
         expect(zoomview).to.be.ok;
         waveformLayerDraw = sinon.spy(zoomview, '_drawWaveformLayer');
 
@@ -844,7 +844,7 @@ describe('Peaks', function() {
 
     context('with invalid media url', function() {
       it('should return an error', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/unknown.mp3',
           dataUri: {
             arraybuffer: '/base/test_data/unknown.dat'
@@ -858,7 +858,7 @@ describe('Peaks', function() {
       });
 
       it('should preserve existing event handlers', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/unknown.mp3',
           dataUri: {
             arraybuffer: '/base/test_data/unknown.dat'
@@ -881,7 +881,7 @@ describe('Peaks', function() {
 
     context('with invalid json waveform data', function() {
       it('should return an error', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/sample.mp3',
           waveformData: {
             json: { data: 'foo' }
@@ -897,7 +897,7 @@ describe('Peaks', function() {
 
     context('with valid json waveform data', function() {
       it('should update the waveform', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/sample.mp3',
           waveformData: {
             json: sampleJsonData
@@ -914,7 +914,7 @@ describe('Peaks', function() {
 
     context('with waveform data url', function() {
       it('should update the waveform', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/sample.mp3',
           dataUri: {
             arraybuffer: '/base/test_data/sample.dat'
@@ -931,7 +931,7 @@ describe('Peaks', function() {
 
     context('with audioContext', function() {
       it('should update the waveform', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/sample.mp3',
           webAudio: {
             audioContext: new TestAudioContext()
@@ -948,7 +948,7 @@ describe('Peaks', function() {
 
     context('with audioBuffer', function() {
       it('should update the waveform', function(done) {
-        var audioContext = new TestAudioContext();
+        const audioContext = new TestAudioContext();
 
         fetch('/base/test_data/sample.mp3')
           .then(function(response) {
@@ -958,7 +958,7 @@ describe('Peaks', function() {
             return audioContext.decodeAudioData(buffer);
           })
           .then(function(audioBuffer) {
-            var options = {
+            const options = {
               mediaUrl: '/base/test_data/sample.mp3',
               webAudio: {
                 audioBuffer: audioBuffer,
@@ -982,7 +982,7 @@ describe('Peaks', function() {
             return response.arrayBuffer();
           })
           .then(function(buffer) {
-            var options = {
+            const options = {
               mediaUrl: '/base/test_data/sample.mp3',
               waveformData: {
                 arraybuffer: buffer
@@ -1005,7 +1005,7 @@ describe('Peaks', function() {
             return response.arrayBuffer();
           })
           .then(function(buffer) {
-            var options = {
+            const options = {
               mediaUrl: '/base/test_data/sample.mp3',
               waveformData: {
                 arraybuffer: buffer
@@ -1022,7 +1022,7 @@ describe('Peaks', function() {
 
     context('with zoom levels', function() {
       it('should update the instance zoom levels', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/sample.mp3',
           webAudio: {
             audioContext: new TestAudioContext()
@@ -1041,7 +1041,7 @@ describe('Peaks', function() {
 
     context('with stereo waveform', function() {
       it('should update the waveform', function(done) {
-        var options = {
+        const options = {
           mediaUrl: '/base/test_data/07023003.mp3',
           dataUri: {
             arraybuffer: '/base/test_data/07023003-2channel.dat'
@@ -1060,7 +1060,7 @@ describe('Peaks', function() {
 
     context('with missing mediaUrl', function() {
       it('should return an error', function(done) {
-        var options = {
+        const options = {
           webAudio: {
             audioContext: new TestAudioContext()
           }
@@ -1077,8 +1077,8 @@ describe('Peaks', function() {
 
   describe('destroy', function() {
     it('should clean up event listeners', function(done) {
-      var errorSpy = sinon.spy().named('window.onerror');
-      var oldOnError = window.onerror;
+      const errorSpy = sinon.spy().named('window.onerror');
+      const oldOnError = window.onerror;
       window.onerror = errorSpy;
 
       Peaks.init({
@@ -1100,7 +1100,7 @@ describe('Peaks', function() {
           instance.destroy();
 
           // Fire a resize event, which would normally cause peaks to redraw
-          var e = document.createEvent('HTMLEvents');
+          const e = document.createEvent('HTMLEvents');
           e.initEvent('resize', true, false);
           window.dispatchEvent(e);
 

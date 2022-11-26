@@ -11,7 +11,7 @@ import {
   isString, isValidTime, objectHasProperty
 } from './utils';
 
-var segmentOptions = [
+const segmentOptions = [
   'peaks', 'id', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
 ];
 
@@ -100,7 +100,7 @@ function Segment(options) {
 }
 
 Segment.prototype._setUserData = function(options) {
-  for (var key in options) {
+  for (let key in options) {
     if (objectHasProperty(options, key) && segmentOptions.indexOf(key) === -1) {
       this[key] = options[key];
     }
@@ -153,7 +153,7 @@ Object.defineProperties(Segment.prototype, {
 });
 
 Segment.prototype.update = function(options) {
-  var opts = {
+  const opts = {
     startTime:   this.startTime,
     endTime:     this.endTime,
     labelText:   this.labelText,

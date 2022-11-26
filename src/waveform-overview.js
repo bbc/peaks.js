@@ -28,7 +28,7 @@ import Konva from 'konva/lib/Core';
  */
 
 function WaveformOverview(waveformData, container, peaks) {
-  var self = this;
+  const self = this;
 
   self._originalWaveformData = waveformData;
   self._container = container;
@@ -122,7 +122,7 @@ function WaveformOverview(waveformData, container, peaks) {
 
   self._playheadLayer.addToStage(self._stage);
 
-  var time = self._peaks.player.getCurrentTime();
+  const time = self._peaks.player.getCurrentTime();
 
   this._playheadLayer.updatePlayheadTime(time);
 
@@ -138,7 +138,7 @@ function WaveformOverview(waveformData, container, peaks) {
 }
 
 WaveformOverview.prototype._createMouseDragHandler = function() {
-  var self = this;
+  const self = this;
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
@@ -156,8 +156,8 @@ WaveformOverview.prototype._createMouseDragHandler = function() {
 
       mousePosX = clamp(mousePosX, 0, self._width);
 
-      var time = self.pixelsToTime(mousePosX);
-      var duration = self._getDuration();
+      let time = self.pixelsToTime(mousePosX);
+      const duration = self._getDuration();
 
       // Prevent the playhead position from jumping by limiting click
       // handling to the waveform duration.
@@ -191,8 +191,8 @@ WaveformOverview.prototype._onContextMenu = function(event) {
 };
 
 WaveformOverview.prototype._clickHandler = function(event, eventName) {
-  var pixelIndex = event.evt.layerX;
-  var time = this.pixelsToTime(pixelIndex);
+  const pixelIndex = event.evt.layerX;
+  const time = this.pixelsToTime(pixelIndex);
 
   this._peaks.emit(eventName, {
     time: time,
@@ -229,7 +229,7 @@ WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
 };
 
 WaveformOverview.prototype._onWindowResize = function() {
-  var self = this;
+  const self = this;
 
   if (self._resizeTimeoutId) {
     clearTimeout(self._resizeTimeoutId);
@@ -398,7 +398,7 @@ WaveformOverview.prototype._createWaveformShapes = function() {
   }
 
   if (this._playedWaveformColor && !this._playedWaveformShape) {
-    var time = this._peaks.player.getCurrentTime();
+    const time = this._peaks.player.getCurrentTime();
 
     this._playedSegment = {
       startTime: 0,
@@ -456,14 +456,14 @@ WaveformOverview.prototype._updateWaveform = function() {
   this._waveformLayer.draw();
   this._axisLayer.draw();
 
-  var playheadTime = this._peaks.player.getCurrentTime();
+  const playheadTime = this._peaks.player.getCurrentTime();
 
   this._playheadLayer.updatePlayheadTime(playheadTime);
 
   this._highlightLayer.updateHighlight();
 
-  var frameStartTime = 0;
-  var frameEndTime   = this.pixelsToTime(this._width);
+  const frameStartTime = 0;
+  const frameEndTime   = this.pixelsToTime(this._width);
 
   this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
   this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
@@ -519,7 +519,7 @@ WaveformOverview.prototype.fitToContainer = function() {
     return;
   }
 
-  var updateWaveform = false;
+  let updateWaveform = false;
 
   if (this._container.clientWidth !== this._width) {
     this._width = this._container.clientWidth;

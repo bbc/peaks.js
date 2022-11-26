@@ -17,12 +17,12 @@ function zeroPad(number, precision) {
  */
 
 export function formatTime(time, precision) {
-  var result = [];
+  let result = [];
 
-  var fractionSeconds = Math.floor((time % 1) * Math.pow(10, precision));
-  var seconds = Math.floor(time);
-  var minutes = Math.floor(seconds / 60);
-  var hours = Math.floor(minutes / 60);
+  const fractionSeconds = Math.floor((time % 1) * Math.pow(10, precision));
+  const seconds = Math.floor(time);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
 
   if (hours > 0) {
     result.push(hours); // Hours
@@ -30,7 +30,7 @@ export function formatTime(time, precision) {
   result.push(minutes % 60); // Mins
   result.push(seconds % 60); // Seconds
 
-  for (var i = 0; i < result.length; i++) {
+  for (let i = 0; i < result.length; i++) {
     result[i] = zeroPad(result[i], 2);
   }
 
@@ -61,14 +61,14 @@ export function roundUpToNearest(value, multiple) {
     return 0;
   }
 
-  var multiplier = 1;
+  let multiplier = 1;
 
   if (value < 0.0) {
     multiplier = -1;
     value = -value;
   }
 
-  var roundedUp = Math.ceil(value);
+  const roundedUp = Math.ceil(value);
 
   return multiplier * (((roundedUp + multiple - 1) / multiple) | 0) * multiple;
 }
@@ -90,7 +90,7 @@ export function objectHasProperty(object, field) {
 }
 
 export function extend(to, from) {
-  for (var key in from) {
+  for (let key in from) {
     if (objectHasProperty(from, key)) {
       to[key] = from[key];
     }
@@ -111,9 +111,9 @@ export function isInAscendingOrder(array) {
     return true;
   }
 
-  var value = array[0];
+  let value = array[0];
 
-  for (var i = 1; i < array.length; i++) {
+  for (let i = 1; i < array.length; i++) {
     if (value >= array[i]) {
       return false;
     }

@@ -1,10 +1,10 @@
 import Peaks from '../../src/main';
 
 describe('WaveformOverview', function() {
-  var p = null;
+  let p = null;
 
   beforeEach(function() {
-    var mediaElement = document.createElement('audio');
+    const mediaElement = document.createElement('audio');
     mediaElement.id = 'audio';
     mediaElement.src = '/base/test_data/STAT3S3.mp3';
     mediaElement.muted = true;
@@ -21,9 +21,9 @@ describe('WaveformOverview', function() {
   describe('constructor', function() {
     context('with waveform longer than the container width', function() {
       it('should rescale the waveform to fit the container width', function(done) {
-        var container = document.getElementById('overview-container');
+        const container = document.getElementById('overview-container');
 
-        var options = {
+        const options = {
           overview: {
             container: container
           },
@@ -39,11 +39,11 @@ describe('WaveformOverview', function() {
 
           p = instance;
 
-          var overview = instance.views.getView('overview');
+          const overview = instance.views.getView('overview');
           expect(overview._data).to.be.ok;
 
           // TODO: Resampling by width isn't precise
-          var diff = Math.abs(overview._data.length - container.offsetWidth);
+          const diff = Math.abs(overview._data.length - container.offsetWidth);
           expect(diff).to.be.lessThan(2);
 
           done();
@@ -53,7 +53,7 @@ describe('WaveformOverview', function() {
 
     context('with waveform shorter than the container width', function() {
       it('should use default waveform scale', function(done) {
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -69,7 +69,7 @@ describe('WaveformOverview', function() {
 
           p = instance;
 
-          var view = instance.views.getView();
+          const view = instance.views.getView();
           expect(view._data).to.be.ok;
           expect(view._data.scale).to.equal(32);
           done();

@@ -9,7 +9,7 @@
 import Cue from './cue';
 import { objectHasProperty } from './utils';
 
-var isHeadless = /HeadlessChrome/.test(navigator.userAgent);
+const isHeadless = /HeadlessChrome/.test(navigator.userAgent);
 
 function windowIsVisible() {
   if (isHeadless || navigator.webdriver) {
@@ -21,26 +21,26 @@ function windowIsVisible() {
     (document.visibilityState === 'visible');
 }
 
-var requestAnimationFrame =
+const requestAnimationFrame =
   window.requestAnimationFrame ||
   window.mozRequestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
-var cancelAnimationFrame =
+const cancelAnimationFrame =
   window.cancelAnimationFrame ||
   window.mozCancelAnimationFrame ||
   window.webkitCancelAnimationFrame ||
   window.msCancelAnimationFrame;
 
-var eventTypes = {
+const eventTypes = {
   forward: {},
   reverse: {}
 };
 
-var EVENT_TYPE_POINT = 0;
-var EVENT_TYPE_SEGMENT_ENTER = 1;
-var EVENT_TYPE_SEGMENT_EXIT = 2;
+const EVENT_TYPE_POINT = 0;
+const EVENT_TYPE_SEGMENT_ENTER = 1;
+const EVENT_TYPE_SEGMENT_EXIT = 2;
 
 eventTypes.forward[Cue.POINT] = EVENT_TYPE_POINT;
 eventTypes.forward[Cue.SEGMENT_START] = EVENT_TYPE_SEGMENT_ENTER;
@@ -50,7 +50,7 @@ eventTypes.reverse[Cue.POINT] = EVENT_TYPE_POINT;
 eventTypes.reverse[Cue.SEGMENT_START] = EVENT_TYPE_SEGMENT_EXIT;
 eventTypes.reverse[Cue.SEGMENT_END] = EVENT_TYPE_SEGMENT_ENTER;
 
-var eventNames = {};
+const eventNames = {};
 
 eventNames[EVENT_TYPE_POINT] = 'points.enter';
 eventNames[EVENT_TYPE_SEGMENT_ENTER] = 'segments.enter';
@@ -114,10 +114,10 @@ function CueEmitter(peaks) {
  */
 
 CueEmitter.prototype._updateCues = function() {
-  var self = this;
+  const self = this;
 
-  var points = self._peaks.points.getPoints();
-  var segments = self._peaks.segments.getSegments();
+  const points = self._peaks.points.getPoints();
+  const segments = self._peaks.segments.getSegments();
 
   self._cues.length = 0;
 
@@ -132,7 +132,7 @@ CueEmitter.prototype._updateCues = function() {
 
   self._cues.sort(Cue.sorter);
 
-  var time = self._peaks.player.getCurrentTime();
+  const time = self._peaks.player.getCurrentTime();
 
   self._updateActiveSegments(time);
 };
@@ -146,10 +146,10 @@ CueEmitter.prototype._updateCues = function() {
  */
 
 CueEmitter.prototype._onUpdate = function(time, previousTime) {
-  var isForward = time > previousTime;
-  var start;
-  var end;
-  var step;
+  const isForward = time > previousTime;
+  let start;
+  let end;
+  let step;
 
   if (isForward) {
     start = 0;
@@ -163,8 +163,8 @@ CueEmitter.prototype._onUpdate = function(time, previousTime) {
   }
 
   // Cues are sorted
-  for (var i = start; isForward ? i < end : i > end; i += step) {
-    var cue = this._cues[i];
+  for (let i = start; isForward ? i < end : i > end; i += step) {
+    const cue = this._cues[i];
 
     if (isForward ? cue.time > previousTime : cue.time < previousTime) {
       if (isForward ? cue.time > time : cue.time < time) {
@@ -173,10 +173,10 @@ CueEmitter.prototype._onUpdate = function(time, previousTime) {
 
       // Cue falls between time and previousTime
 
-      var marker = getPointOrSegment(this._peaks, cue);
+      const marker = getPointOrSegment(this._peaks, cue);
 
-      var eventType = isForward ? eventTypes.forward[cue.type] :
-                                  eventTypes.reverse[cue.type];
+      const eventType = isForward ? eventTypes.forward[cue.type] :
+                                    eventTypes.reverse[cue.type];
 
       if (eventType === EVENT_TYPE_SEGMENT_ENTER) {
         this._activeSegments[marker.id] = marker;
@@ -207,7 +207,7 @@ CueEmitter.prototype.onTimeUpdate = function(time) {
 };
 
 CueEmitter.prototype.onAnimationFrame = function() {
-  var time = this._peaks.player.getCurrentTime();
+  const time = this._peaks.player.getCurrentTime();
 
   if (!this._peaks.player.isSeeking()) {
     this._onUpdate(time, this._previousTime);
@@ -244,15 +244,15 @@ function getSegmentIdComparator(id) {
  */
 
 CueEmitter.prototype._updateActiveSegments = function(time) {
-  var self = this;
+  const self = this;
 
-  var activeSegments = self._peaks.segments.getSegmentsAtTime(time);
+  const activeSegments = self._peaks.segments.getSegmentsAtTime(time);
 
   // Remove any segments no longer active.
 
-  for (var id in self._activeSegments) {
+  for (let id in self._activeSegments) {
     if (objectHasProperty(self._activeSegments, id)) {
-      var segment = activeSegments.find(getSegmentIdComparator(id));
+      const segment = activeSegments.find(getSegmentIdComparator(id));
 
       if (!segment) {
         self._peaks.emit('segments.exit', self._activeSegments[id]);
@@ -271,7 +271,7 @@ CueEmitter.prototype._updateActiveSegments = function(time) {
   });
 };
 
-var triggerUpdateOn = Array(
+const events = [
   'points.update',
   'points.dragmove',
   'points.add',
@@ -282,15 +282,15 @@ var triggerUpdateOn = Array(
   'segments.add',
   'segments.remove',
   'segments.remove_all'
-);
+];
 
 CueEmitter.prototype._attachEventHandlers = function() {
   this._peaks.on('player.timeupdate', this._onTimeUpdate);
   this._peaks.on('player.playing', this._onPlaying);
   this._peaks.on('player.seeked', this._onSeeked);
 
-  for (var i = 0; i < triggerUpdateOn.length; i++) {
-    this._peaks.on(triggerUpdateOn[i], this._updateCues);
+  for (let i = 0; i < events.length; i++) {
+    this._peaks.on(events[i], this._updateCues);
   }
 
   this._updateCues();
@@ -301,8 +301,8 @@ CueEmitter.prototype._detachEventHandlers = function() {
   this._peaks.off('player.playing', this._onPlaying);
   this._peaks.off('player.seeked', this._onSeeked);
 
-  for (var i = 0; i < triggerUpdateOn.length; i++) {
-    this._peaks.off(triggerUpdateOn[i], this._updateCues);
+  for (var i = 0; i < events.length; i++) {
+    this._peaks.off(events[i], this._updateCues);
   }
 };
 

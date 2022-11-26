@@ -1,11 +1,11 @@
 import Peaks from '../../src/main';
 
 describe('Peaks.zoom', function() {
-  var p;
+  let p;
 
   context('with overview and zoomview', function() {
     beforeEach(function(done) {
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -46,7 +46,7 @@ describe('Peaks.zoom', function() {
       });
 
       it('should emit a zoom.update event with the new zoom level index', function() {
-        var spy = sinon.spy();
+        const spy = sinon.spy();
 
         p.on('zoom.update', spy);
         p.zoom.setZoom(1);
@@ -75,7 +75,7 @@ describe('Peaks.zoom', function() {
 
     describe('zoomOut', function() {
       it('should call setZoom with a bigger zoom level', function() {
-        var spy = sinon.spy();
+        const spy = sinon.spy();
 
         p.on('zoom.update', spy);
         p.zoom.zoomOut();
@@ -88,7 +88,7 @@ describe('Peaks.zoom', function() {
       it('should call setZoom with a smaller zoom level', function() {
         p.zoom.setZoom(1);
 
-        var spy = sinon.spy();
+        const spy = sinon.spy();
 
         p.on('zoom.update', spy);
         p.zoom.zoomIn();
@@ -100,7 +100,7 @@ describe('Peaks.zoom', function() {
 
   context('with overview only', function() {
     beforeEach(function(done) {
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -132,7 +132,7 @@ describe('Peaks.zoom', function() {
       });
 
       it('should not try to update the zoomview', function() {
-        var spy = sinon.spy();
+        const spy = sinon.spy();
 
         p.on('zoom.update', spy);
         p.zoom.setZoom(1);

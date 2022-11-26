@@ -13,9 +13,9 @@ import SegmentMarker from './segment-marker';
 import WaveformShape from './waveform-shape';
 import { clamp } from './utils';
 
-var defaultFontFamily = 'sans-serif';
-var defaultFontSize = 10;
-var defaultFontShape = 'normal';
+const defaultFontFamily = 'sans-serif';
+const defaultFontSize = 10;
+const defaultFontShape = 'normal';
 
 /**
  * Creates a waveform segment shape with optional start and end markers.
@@ -42,11 +42,11 @@ function SegmentShape(segment, peaks, layer, view) {
   this._draggable   = this._segment.editable && this._view._isSegmentDraggingEnabled();
   this._dragging    = false;
 
-  var segmentOptions = view.getViewOptions().segmentOptions;
+  const segmentOptions = view.getViewOptions().segmentOptions;
 
   this._overlayOffset = segmentOptions.overlayOffset;
 
-  var hasOverlay = segmentOptions.style === 'overlay';
+  const hasOverlay = segmentOptions.style === 'overlay';
 
   if (!hasOverlay) {
     this._waveformShape = new WaveformShape({
@@ -87,10 +87,10 @@ function SegmentShape(segment, peaks, layer, view) {
   }
 
   // Create with default y and height, the real values are set in fitToView().
-  var segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
-  var segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
+  const segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
+  const segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
 
-  var overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
+  const overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
 
   this._overlay = new Konva.Group({
     x:             segmentStartOffset,
@@ -105,7 +105,7 @@ function SegmentShape(segment, peaks, layer, view) {
     dragBoundFunc: this._dragBoundFunc
   });
 
-  var overlayBorderColor, overlayBorderWidth, overlayColor, overlayOpacity, overlayCornerRadius;
+  let overlayBorderColor, overlayBorderWidth, overlayColor, overlayOpacity, overlayCornerRadius;
 
   if (hasOverlay) {
     overlayBorderColor  = this._borderColor || segmentOptions.overlayBorderColor;
@@ -143,7 +143,8 @@ function SegmentShape(segment, peaks, layer, view) {
       width:         segmentEndOffset - segmentStartOffset,
       verticalAlign: segmentOptions.overlayLabelVerticalAlign,
       height:        overlayRectHeight,
-      padding:       segmentOptions.overlayLabelPadding
+      padding:       segmentOptions.overlayLabelPadding,
+      wrap:          'none'
     });
 
     this._overlay.add(this._overlayText);
@@ -176,10 +177,10 @@ SegmentShape.prototype._dragBoundFunc = function(pos) {
 };
 
 SegmentShape.prototype.updatePosition = function() {
-  var segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
-  var segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
-  var width = segmentEndOffset - segmentStartOffset;
-  var marker;
+  const segmentStartOffset = this._view.timeToPixelOffset(this._segment.startTime);
+  const segmentEndOffset   = this._view.timeToPixelOffset(this._segment.endTime);
+  const width = segmentEndOffset - segmentStartOffset;
+  let marker;
 
   if ((marker = this.getStartMarker())) {
     marker.setX(segmentStartOffset - marker.getWidth());
@@ -252,19 +253,19 @@ function createOverlayMarker(options) {
 }
 
 SegmentShape.prototype._createMarkers = function() {
-  var editable = this._layer.isEditingEnabled() && this._segment.editable;
+  const editable = this._layer.isEditingEnabled() && this._segment.editable;
 
   if (!editable) {
     return;
   }
 
-  var segmentOptions = this._view.getViewOptions().segmentOptions;
+  const segmentOptions = this._view.getViewOptions().segmentOptions;
 
-  var createSegmentMarker = segmentOptions.style === 'markers' ?
+  const createSegmentMarker = segmentOptions.style === 'markers' ?
     this._peaks.options.createSegmentMarker :
     createOverlayMarker;
 
-  var startMarker = createSegmentMarker({
+  const startMarker = createSegmentMarker({
     segment:      this._segment,
     draggable:    editable,
     startMarker:  true,
@@ -290,7 +291,7 @@ SegmentShape.prototype._createMarkers = function() {
     });
   }
 
-  var endMarker = createSegmentMarker({
+  const endMarker = createSegmentMarker({
     segment:      this._segment,
     draggable:    editable,
     startMarker:  false,
@@ -402,9 +403,9 @@ SegmentShape.prototype._onSegmentDragStart = function() {
 };
 
 SegmentShape.prototype._onSegmentDragMove = function(event) {
-  var x = this._overlay.getX();
-  var offsetX = x - this._dragStartX;
-  var timeOffset = this._view.pixelsToTime(offsetX);
+  const x = this._overlay.getX();
+  const offsetX = x - this._dragStartX;
+  const timeOffset = this._view.pixelsToTime(offsetX);
 
   // The WaveformShape for a segment fills the canvas width
   // but only draws a subset of the horizontal range. When dragged
@@ -416,12 +417,12 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   // correct this later based on the drag mode, to prevent overlapping
   // segments or to compress the adjacent segment.
 
-  var startTime = this._dragStartTime + timeOffset;
-  var endTime = this._dragEndTime + timeOffset;
-  var segmentDuration = this._segment.endTime - this._segment.startTime;
-  var dragMode;
-  var minSegmentWidth = 50;
-  var minSegmentDuration = this._view.pixelsToTime(minSegmentWidth);
+  let startTime = this._dragStartTime + timeOffset;
+  let endTime = this._dragEndTime + timeOffset;
+  const segmentDuration = this._segment.endTime - this._segment.startTime;
+  let dragMode;
+  const minSegmentWidth = 50;
+  const minSegmentDuration = this._view.pixelsToTime(minSegmentWidth);
 
   // Prevent the segment from being dragged beyond the start of the waveform.
 
@@ -434,7 +435,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   // Adjust segment position if it now overlaps the previous segment?
 
   if (this._previousSegment) {
-    var previousSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
+    let previousSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
     if (startTime < this._previousSegment.endTime) {
       dragMode = this._view.getSegmentDragMode();
@@ -446,8 +447,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
         this._overlay.setX(previousSegmentEndX);
       }
       else if (dragMode === 'compress') {
-        var previousSegmentEndTime = this._view.pixelOffsetToTime(x);
-        var minPreviousSegmentEndTime = this._previousSegment.startTime + minSegmentDuration;
+        let previousSegmentEndTime = this._view.pixelOffsetToTime(x);
+        const minPreviousSegmentEndTime = this._previousSegment.startTime + minSegmentDuration;
 
         if (previousSegmentEndTime < minPreviousSegmentEndTime) {
           previousSegmentEndTime = minPreviousSegmentEndTime;
@@ -468,9 +469,9 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   // Adjust segment position if it now overlaps the following segment?
 
   if (this._nextSegment) {
-    var nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
+    let nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
-    var endX = this._overlay.getX() + this._overlay.getWidth();
+    const endX = this._overlay.getX() + this._overlay.getWidth();
 
     if (endTime > this._nextSegment.startTime) {
       dragMode = this._view.getSegmentDragMode();
@@ -482,8 +483,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
         this._overlay.setX(nextSegmentStartX - this._overlay.getWidth());
       }
       else if (dragMode === 'compress') {
-        var nextSegmentStartTime = this._view.pixelOffsetToTime(endX);
-        var maxNextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
+        let nextSegmentStartTime = this._view.pixelOffsetToTime(endX);
+        const maxNextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
 
         if (nextSegmentStartTime > maxNextSegmentStartTime) {
           nextSegmentStartTime = maxNextSegmentStartTime;
@@ -537,22 +538,22 @@ SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker, event
  */
 
 SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event) {
-  var isStartMarker = segmentMarker.isStartMarker();
+  const isStartMarker = segmentMarker.isStartMarker();
 
-  var startMarkerX = this._startMarker.getX();
-  var endMarkerX   = this._endMarker.getX();
+  const startMarkerX = this._startMarker.getX();
+  const endMarkerX   = this._endMarker.getX();
 
-  var lowerLimit;
-  var upperLimit;
-  var dragMode;
-  var minSegmentDuration = this._view.pixelsToTime(50);
-  var segmentDuration;
+  let lowerLimit;
+  let upperLimit;
+  let dragMode;
+  let minSegmentDuration = this._view.pixelsToTime(50);
+  let segmentDuration;
 
   if (isStartMarker) {
     upperLimit = this._endMarker.getX() - this._endMarker.getWidth();
 
-    var startMarkerOffset = startMarkerX +
-                            this._startMarker.getWidth();
+    const startMarkerOffset = startMarkerX +
+                              this._startMarker.getWidth();
 
     if (this._previousSegment) {
       dragMode = this._view.getSegmentDragMode();
@@ -595,7 +596,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
       segmentMarker.timeUpdated(this._segment.startTime);
 
       if (this._previousSegment) {
-        var prevSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
+        const prevSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
         if (startMarkerX < prevSegmentEndX) {
           this._previousSegment.update({
@@ -617,7 +618,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
   else {
     lowerLimit = this._startMarker.getX() + this._startMarker.getWidth();
 
-    var width = this._view.getWidth();
+    const width = this._view.getWidth();
 
     if (this._nextSegment) {
       dragMode = this._view.getSegmentDragMode();
@@ -715,9 +716,9 @@ SegmentShape.prototype.fitToView = function() {
   }
 
   if (this._overlay) {
-    var height = this._view.getHeight();
+    const height = this._view.getHeight();
 
-    var overlayRectHeight = clamp(0, height - (this._overlayOffset * 2));
+    const overlayRectHeight = clamp(0, height - (this._overlayOffset * 2));
 
     this._overlay.setAttrs({
       y:          0,

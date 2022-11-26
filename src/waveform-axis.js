@@ -92,12 +92,12 @@ WaveformAxis.prototype.showAxisLabels = function(show) {
  */
 
 WaveformAxis.prototype._getAxisLabelScale = function(view) {
-  var baseSecs   = 1; // seconds
-  var steps      = [1, 2, 5, 10, 20, 30];
-  var minSpacing = 60;
-  var index      = 0;
+  let baseSecs = 1; // seconds
+  const steps = [1, 2, 5, 10, 20, 30];
+  const minSpacing = 60;
+  let index = 0;
 
-  var secs;
+  let secs;
 
   for (;;) {
     secs = baseSecs * steps[index];
@@ -125,22 +125,22 @@ WaveformAxis.prototype._getAxisLabelScale = function(view) {
  */
 
 WaveformAxis.prototype._drawAxis = function(context, view) {
-  var currentFrameStartTime = view.getStartTime();
+  const currentFrameStartTime = view.getStartTime();
 
   // Draw axis markers
-  var markerHeight = 10;
+  const markerHeight = 10;
 
   // Time interval between axis markers (seconds)
-  var axisLabelIntervalSecs = this._getAxisLabelScale(view);
+  const axisLabelIntervalSecs = this._getAxisLabelScale(view);
 
   // Time of first axis marker (seconds)
-  var firstAxisLabelSecs = roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
+  const firstAxisLabelSecs = roundUpToNearest(currentFrameStartTime, axisLabelIntervalSecs);
 
   // Distance between waveform start time and first axis marker (seconds)
-  var axisLabelOffsetSecs = firstAxisLabelSecs - currentFrameStartTime;
+  const axisLabelOffsetSecs = firstAxisLabelSecs - currentFrameStartTime;
 
   // Distance between waveform start time and first axis marker (pixels)
-  var axisLabelOffsetPixels = view.timeToPixels(axisLabelOffsetSecs);
+  const axisLabelOffsetPixels = view.timeToPixels(axisLabelOffsetSecs);
 
   context.setAttr('strokeStyle', this._axisGridlineColor);
   context.setAttr('lineWidth', 1);
@@ -151,15 +151,15 @@ WaveformAxis.prototype._drawAxis = function(context, view) {
   context.setAttr('textAlign', 'left');
   context.setAttr('textBaseline', 'bottom');
 
-  var secs = firstAxisLabelSecs;
-  var x;
+  const width  = view.getWidth();
+  const height = view.getHeight();
 
-  var width  = view.getWidth();
-  var height = view.getHeight();
+  let secs = firstAxisLabelSecs;
 
   for (;;) {
     // Position of axis marker (pixels)
-    x = axisLabelOffsetPixels + view.timeToPixels(secs - firstAxisLabelSecs);
+    const x = axisLabelOffsetPixels + view.timeToPixels(secs - firstAxisLabelSecs);
+
     if (x >= width) {
       break;
     }
@@ -172,10 +172,10 @@ WaveformAxis.prototype._drawAxis = function(context, view) {
     context.stroke();
 
     if (this._showAxisLabels) {
-      var label      = this._formatAxisTime(secs);
-      var labelWidth = context.measureText(label).width;
-      var labelX     = x - labelWidth / 2;
-      var labelY     = height - 1 - markerHeight;
+      const label      = this._formatAxisTime(secs);
+      const labelWidth = context.measureText(label).width;
+      const labelX     = x - labelWidth / 2;
+      const labelY     = height - 1 - markerHeight;
 
       if (labelX >= 0) {
         context.fillText(label, labelX, labelY);

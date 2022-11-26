@@ -11,7 +11,7 @@ import {
   isValidTime, objectHasProperty
 } from './utils';
 
-var pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
+const pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
 
 function validatePoint(options, context) {
   if (!isValidTime(options.time)) {
@@ -74,7 +74,7 @@ function Point(options) {
 }
 
 Point.prototype._setUserData = function(options) {
-  for (var key in options) {
+  for (let key in options) {
     if (objectHasProperty(options, key) && pointOptions.indexOf(key) === -1) {
       this[key] = options[key];
     }
@@ -114,7 +114,7 @@ Object.defineProperties(Point.prototype, {
 });
 
 Point.prototype.update = function(options) {
-  var opts = {
+  const opts = {
     time:      this.time,
     labelText: this.labelText,
     color:     this.color,

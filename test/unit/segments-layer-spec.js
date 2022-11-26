@@ -1,10 +1,10 @@
 import Peaks from '../../src/main';
 
 describe('SegmentsLayer', function() {
-  var p;
+  let p;
 
   beforeEach(function(done) {
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -33,10 +33,10 @@ describe('SegmentsLayer', function() {
 
   context('when adding a segment', function() {
     it('should redraw the view if the segment is visible', function() {
-      var zoomview = p.views.getView('zoomview');
+      const zoomview = p.views.getView('zoomview');
       expect(zoomview).to.be.ok;
 
-      var spy = sinon.spy(zoomview._segmentsLayer, '_createSegmentShape');
+      const spy = sinon.spy(zoomview._segmentsLayer, '_createSegmentShape');
 
       p.segments.add({ startTime: 0, endTime: 10, editable: true, id: 'segment1' });
 
@@ -44,10 +44,10 @@ describe('SegmentsLayer', function() {
     });
 
     it('should not redraw the view if the segment is not visible', function() {
-      var zoomview = p.views.getView('zoomview');
+      const zoomview = p.views.getView('zoomview');
       expect(zoomview).to.be.ok;
 
-      var spy = sinon.spy(zoomview._segmentsLayer, '_createSegmentShape');
+      const spy = sinon.spy(zoomview._segmentsLayer, '_createSegmentShape');
 
       p.segments.add({ startTime: 28, endTime: 32, editable: true, id: 'segment2' });
 

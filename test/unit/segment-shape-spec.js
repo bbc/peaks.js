@@ -4,10 +4,10 @@ import { extend } from '../../src/utils';
 import WaveformShape from '../../src/waveform-shape';
 
 describe('SegmentShape', function() {
-  var p;
+  let p;
 
   function createPeaksInstance(options, done) {
-    var opts = {
+    const opts = {
       overview: {
         container: document.getElementById('overview-container'),
         segmentOptions: {}
@@ -56,7 +56,7 @@ describe('SegmentShape', function() {
           }
         },
         function() {
-          var spy = sinon.spy(p.options, 'createSegmentMarker');
+          const spy = sinon.spy(p.options, 'createSegmentMarker');
 
           p.segments.add({
             startTime: 0,
@@ -68,7 +68,7 @@ describe('SegmentShape', function() {
           // 2 for zoomview, as overview forces segments to be non-editable by default.
           expect(spy.callCount).to.equal(2);
 
-          var call = spy.getCall(0);
+          const call = spy.getCall(0);
 
           expect(call.args).to.have.lengthOf(1);
           expect(call.args[0].segment.startTime).to.equal(0);
@@ -93,7 +93,7 @@ describe('SegmentShape', function() {
           }
         },
         function() {
-          var spy = sinon.spy(p.options, 'createSegmentMarker');
+          const spy = sinon.spy(p.options, 'createSegmentMarker');
 
           p.segments.add({ startTime: 0, endTime: 10, editable: false, id: 'segment1' });
 
@@ -118,10 +118,10 @@ describe('SegmentShape', function() {
             id:        'segment1'
           });
 
-          var zoomview = p.views.getView('zoomview');
+          const zoomview = p.views.getView('zoomview');
 
           // eslint-disable-next-line dot-notation
-          var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+          const segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
           expect(segmentShape).to.be.an.instanceOf(SegmentShape);
 
@@ -149,10 +149,10 @@ describe('SegmentShape', function() {
             color:     '#0f0'
           });
 
-          var zoomview = p.views.getView('zoomview');
+          const zoomview = p.views.getView('zoomview');
 
           // eslint-disable-next-line dot-notation
-          var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+          const segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
           expect(segmentShape).to.be.an.instanceOf(SegmentShape);
           expect(segmentShape._waveformShape).to.be.an.instanceOf(WaveformShape);
@@ -182,10 +182,10 @@ describe('SegmentShape', function() {
           id:          'segment1'
         });
 
-        var zoomview = p.views.getView('zoomview');
+        const zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+        const segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._startMarker._marker._options.color).to.equal('#0f0');
@@ -206,7 +206,7 @@ describe('SegmentShape', function() {
         }
       },
       function() {
-        var spy = sinon.spy(p.options, 'createSegmentMarker');
+        const spy = sinon.spy(p.options, 'createSegmentMarker');
 
         p.segments.add({
           startTime: 0,
@@ -235,10 +235,10 @@ describe('SegmentShape', function() {
           id:        'segment1'
         });
 
-        var zoomview = p.views.getView('zoomview');
+        const zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+        const segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._waveformShape).to.equal(undefined);
@@ -260,10 +260,10 @@ describe('SegmentShape', function() {
           id:        'segment1'
         });
 
-        var zoomview = p.views.getView('zoomview');
+        const zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+        const segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._overlayRect.getStroke()).to.equal('#ff0000');
@@ -291,10 +291,10 @@ describe('SegmentShape', function() {
           borderColor: '#00ff00'
         });
 
-        var zoomview = p.views.getView('zoomview');
+        const zoomview = p.views.getView('zoomview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+        const segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._overlayRect.getStroke()).to.equal('#00ff00');
@@ -330,11 +330,11 @@ describe('SegmentShape', function() {
           id:          'segment1'
         });
 
-        var zoomview = p.views.getView('zoomview');
-        var overview = p.views.getView('overview');
+        const zoomview = p.views.getView('zoomview');
+        const overview = p.views.getView('overview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+        let segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._overlayOffset).to.equal(20);
@@ -376,11 +376,11 @@ describe('SegmentShape', function() {
           id:          'segment1'
         });
 
-        var zoomview = p.views.getView('zoomview');
-        var overview = p.views.getView('overview');
+        const zoomview = p.views.getView('zoomview');
+        const overview = p.views.getView('overview');
 
         // eslint-disable-next-line dot-notation
-        var segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
+        let segmentShape = zoomview._segmentsLayer._segmentShapes['segment1'];
 
         expect(segmentShape).to.be.an.instanceOf(SegmentShape);
         expect(segmentShape._overlayRect.getStroke()).to.equal('#222');

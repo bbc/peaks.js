@@ -3,10 +3,10 @@ import Point from '../../src/point';
 
 describe('Point', function() {
   describe('update', function() {
-    var p;
+    let p;
 
     beforeEach(function(done) {
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -38,9 +38,9 @@ describe('Point', function() {
         labelText: 'A point'
       });
 
-      var emit = sinon.spy(p, 'emit');
+      const emit = sinon.spy(p, 'emit');
 
-      var point = p.points.getPoints()[0];
+      const point = p.points.getPoints()[0];
 
       point.update({
         time: 12,
@@ -66,7 +66,7 @@ describe('Point', function() {
         labelText: 'A point'
       });
 
-      var point = p.points.getPoints()[0];
+      const point = p.points.getPoints()[0];
 
       expect(function() {
         point.update({ time: NaN });
@@ -88,9 +88,9 @@ describe('Point', function() {
         labelText: 'A point'
       });
 
-      var emit = sinon.spy(p, 'emit');
+      const emit = sinon.spy(p, 'emit');
 
-      var point = p.points.getPoints()[0];
+      const point = p.points.getPoints()[0];
 
       expect(function() {
         point.update({
@@ -110,8 +110,8 @@ describe('Point', function() {
     });
 
     it('should allow a user data attribute to be created', function() {
-      var peaks = { emit: function() {} };
-      var point = new Point({
+      const peaks = { emit: function() {} };
+      const point = new Point({
         peaks: peaks,
         id: 'point.1',
         time: 0.0,
@@ -126,8 +126,8 @@ describe('Point', function() {
     });
 
     it('should allow a user data attribute to be updated', function() {
-      var peaks = { emit: function() {} };
-      var point = new Point({
+      const peaks = { emit: function() {} };
+      const point = new Point({
         peaks: peaks,
         id: 'point.1',
         time: 0.0,
@@ -145,7 +145,7 @@ describe('Point', function() {
 
   describe('isVisible', function() {
     it('should return false if point is before visible range', function() {
-      var point = new Point({
+      const point = new Point({
         peaks: null,
         id: 'point.1',
         labelText: '',
@@ -157,7 +157,7 @@ describe('Point', function() {
     });
 
     it('should return false if point is after visible range', function() {
-      var point = new Point({
+      const point = new Point({
         peaks: null,
         id: 'point.1',
         labelText: '',
@@ -169,7 +169,7 @@ describe('Point', function() {
     });
 
     it('should return true if point is within visible range', function() {
-      var point = new Point({
+      const point = new Point({
         peaks: null,
         id: 'point.1',
         labelText: '',

@@ -6,14 +6,14 @@
  * @module keyboard-handler
  */
 
-var nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
+const nodes = ['OBJECT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION'];
 
-var SPACE = 32,
+const SPACE = 32,
     TAB = 9,
     LEFT_ARROW = 37,
     RIGHT_ARROW = 39;
 
-var keys = [SPACE, TAB, LEFT_ARROW, RIGHT_ARROW];
+const keys = [SPACE, TAB, LEFT_ARROW, RIGHT_ARROW];
 
 /**
  * Configures keyboard event handling.

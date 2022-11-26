@@ -7,7 +7,7 @@ import {
 describe('Utils', function() {
   describe('formatTime', function() {
     context('with hundredths', function() {
-      var tests = [
+      const tests = [
         { input: 0,            output:    '00:00.00' },
         { input: 1,            output:    '00:01.00' },
         { input: 60,           output:    '01:00.00' },
@@ -26,7 +26,7 @@ describe('Utils', function() {
     });
 
     context('with thousandths', function() {
-      var tests = [
+      const tests = [
         { input: 0,            output:    '00:00.000' },
         { input: 1,            output:    '00:01.000' },
         { input: 60,           output:    '01:00.000' },
@@ -47,7 +47,7 @@ describe('Utils', function() {
     });
 
     context('without fraction seconds', function() {
-      var tests = [
+      const tests = [
         { input: 0,            output:    '00:00' },
         { input: 1,            output:    '00:01' },
         { input: 60,           output:    '01:00' },
@@ -105,13 +105,13 @@ describe('Utils', function() {
 
   describe('extend', function() {
     it('should add properties to an object', function() {
-      var obj = { a: 1 };
+      const obj = { a: 1 };
       extend(obj, { b: 2 });
       expect(obj).to.deep.equal({ a: 1, b: 2 });
     });
 
     it("should replace an object's existing properties", function() {
-      var obj = { a: 1, b: 2 };
+      const obj = { a: 1, b: 2 };
       extend(obj, { b: 3 });
       expect(obj).to.deep.equal({ a: 1, b: 3 });
     });

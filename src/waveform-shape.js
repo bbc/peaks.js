@@ -191,11 +191,11 @@ WaveformShape.prototype._drawWaveform = function(context, waveformData,
 
 WaveformShape.prototype._drawChannel = function(context, channel,
     frameOffset, startPixels, endPixels, top, height) {
-  var x, amplitude;
+  let x, amplitude;
 
-  var amplitudeScale = this._view.getAmplitudeScale();
+  const amplitudeScale = this._view.getAmplitudeScale();
 
-  var lineX, lineY;
+  let lineX, lineY;
 
   context.beginPath();
 
@@ -253,7 +253,7 @@ WaveformShape.prototype.off = function(event, handler) {
  */
 
 WaveformShape.scaleY = function(amplitude, height, scale) {
-  var y = -(height - 1) * (amplitude * scale + 128) / 255 + (height - 1);
+  const y = -(height - 1) * (amplitude * scale + 128) / 255 + (height - 1);
 
   return clamp(Math.floor(y), 0, height - 1);
 };

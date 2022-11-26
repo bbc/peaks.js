@@ -132,8 +132,8 @@ Scrollbar.prototype._onScrollboxDragEnd = function() {
 };
 
 Scrollbar.prototype._onScrollboxDragMove = function() {
-  var x = this._scrollbox.x();
-  var range = this._getScrollbarRange();
+  const range = this._getScrollbarRange();
+  let x = this._scrollbox.x();
 
   x = clamp(x, 0, range);
 
@@ -158,11 +158,11 @@ Scrollbar.prototype._updateScrollbarWidthAndPosition = function() {
   this._setScrollboxWidth();
 
   if (this._zoomview) {
-    var startTime = this._zoomview.getStartTime();
+    const startTime = this._zoomview.getStartTime();
 
-    var zoomviewRange = this._zoomview.getPixelLength() - this._zoomview.getWidth();
+    const zoomviewRange = this._zoomview.getPixelLength() - this._zoomview.getWidth();
 
-    var scrollBoxPos = Math.floor(
+    const scrollBoxPos = Math.floor(
       this._zoomview.timeToPixels(startTime) * this._getScrollbarRange() / zoomviewRange
     );
 
@@ -175,7 +175,7 @@ Scrollbar.prototype._onScrollbarClick = function(event) {
   // Handle clicks on the scrollbar outside the scrollbox.
   if (event.target === this._stage) {
     if (this._zoomview) {
-      var x = event.evt.layerX;
+      let x = event.evt.layerX;
 
       // Centre the scrollbox where the user clicked.
       x = Math.floor(x - this._scrollboxWidth / 2);
@@ -194,7 +194,7 @@ Scrollbar.prototype._onScrollbarClick = function(event) {
  */
 
 Scrollbar.prototype._updateWaveform = function(x) {
-  var offset = Math.floor(
+  const offset = Math.floor(
     (this._zoomview.getPixelLength() - this._zoomview.getWidth()) * x / this._getScrollbarRange()
   );
 

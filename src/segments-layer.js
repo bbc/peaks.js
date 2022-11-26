@@ -61,7 +61,7 @@ SegmentsLayer.prototype.isEditingEnabled = function() {
 };
 
 SegmentsLayer.prototype.enableSegmentDragging = function(enable) {
-  for (var segmentId in this._segmentShapes) {
+  for (let segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
       this._segmentShapes[segmentId].enableSegmentDragging(enable);
     }
@@ -73,10 +73,10 @@ SegmentsLayer.prototype.formatTime = function(time) {
 };
 
 SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
-  var redraw = false;
-  var segmentShape = this._segmentShapes[segment.id];
-  var frameStartTime = this._view.getStartTime();
-  var frameEndTime = this._view.getEndTime();
+  let redraw = false;
+  const segmentShape = this._segmentShapes[segment.id];
+  const frameStartTime = this._view.getStartTime();
+  const frameEndTime = this._view.getEndTime();
 
   if (segmentShape) {
     this._removeSegment(segment);
@@ -94,10 +94,10 @@ SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
 };
 
 SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
-  var self = this;
+  const self = this;
 
-  var frameStartTime = self._view.getStartTime();
-  var frameEndTime   = self._view.getEndTime();
+  const frameStartTime = self._view.getStartTime();
+  const frameEndTime   = self._view.getEndTime();
 
   segments.forEach(function(segment) {
     if (segment.isVisible(frameStartTime, frameEndTime)) {
@@ -109,7 +109,7 @@ SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
 };
 
 SegmentsLayer.prototype._onSegmentsRemove = function(segments) {
-  var self = this;
+  const self = this;
 
   segments.forEach(function(segment) {
     self._removeSegment(segment);
@@ -146,7 +146,7 @@ SegmentsLayer.prototype._createSegmentShape = function(segment) {
  */
 
 SegmentsLayer.prototype._addSegmentShape = function(segment) {
-  var segmentShape = this._createSegmentShape(segment);
+  const segmentShape = this._createSegmentShape(segment);
 
   segmentShape.addToLayer(this._layer);
 
@@ -166,9 +166,9 @@ SegmentsLayer.prototype._addSegmentShape = function(segment) {
 
 SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
   // Update segments in visible time range.
-  var segments = this._peaks.segments.find(startTime, endTime);
+  const segments = this._peaks.segments.find(startTime, endTime);
 
-  var count = segments.length;
+  let count = segments.length;
 
   segments.forEach(this._updateSegment.bind(this));
 
@@ -186,7 +186,7 @@ SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
  */
 
 SegmentsLayer.prototype._updateSegment = function(segment) {
-  var segmentShape = this._findOrAddSegmentShape(segment);
+  const segmentShape = this._findOrAddSegmentShape(segment);
 
   segmentShape.updatePosition();
 };
@@ -197,7 +197,7 @@ SegmentsLayer.prototype._updateSegment = function(segment) {
  */
 
 SegmentsLayer.prototype._findOrAddSegmentShape = function(segment) {
-  var segmentShape = this._segmentShapes[segment.id];
+  let segmentShape = this._segmentShapes[segment.id];
 
   if (!segmentShape) {
     segmentShape = this._addSegmentShape(segment);
@@ -217,11 +217,11 @@ SegmentsLayer.prototype._findOrAddSegmentShape = function(segment) {
  */
 
 SegmentsLayer.prototype._removeInvisibleSegments = function(startTime, endTime) {
-  var count = 0;
+  let count = 0;
 
-  for (var segmentId in this._segmentShapes) {
+  for (let segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
-      var segment = this._segmentShapes[segmentId].getSegment();
+      const segment = this._segmentShapes[segmentId].getSegment();
 
       if (!segment.isVisible(startTime, endTime)) {
         this._removeSegment(segment);
@@ -240,7 +240,7 @@ SegmentsLayer.prototype._removeInvisibleSegments = function(startTime, endTime) 
  */
 
 SegmentsLayer.prototype._removeSegment = function(segment) {
-  var segmentShape = this._segmentShapes[segment.id];
+  const segmentShape = this._segmentShapes[segment.id];
 
   if (segmentShape) {
     segmentShape.destroy();
@@ -267,9 +267,9 @@ SegmentsLayer.prototype.destroy = function() {
 };
 
 SegmentsLayer.prototype.fitToView = function() {
-  for (var segmentId in this._segmentShapes) {
+  for (let segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
-      var segmentShape = this._segmentShapes[segmentId];
+      const segmentShape = this._segmentShapes[segmentId];
 
       segmentShape.fitToView();
     }

@@ -31,7 +31,7 @@ import Konva from 'konva/lib/Core';
  */
 
 function WaveformZoomView(waveformData, container, peaks) {
-  var self = this;
+  const self = this;
 
   self._container = container;
   self._peaks = peaks;
@@ -82,7 +82,7 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._data = null;
   self._pixelLength = 0;
 
-  var initialZoomLevel = peaks.zoom.getZoomLevel();
+  const initialZoomLevel = peaks.zoom.getZoomLevel();
 
   self._zoomLevelAuto = false;
   self._zoomLevelSeconds = null;
@@ -128,7 +128,7 @@ function WaveformZoomView(waveformData, container, peaks) {
 
   self._playheadLayer.addToStage(self._stage);
 
-  var time = self._peaks.player.getCurrentTime();
+  const time = self._peaks.player.getCurrentTime();
 
   self._syncPlayhead(time);
 
@@ -156,13 +156,13 @@ WaveformZoomView.prototype._initWaveformCache = function() {
 };
 
 WaveformZoomView.prototype._createMouseDragHandler = function() {
-  var self = this;
+  const self = this;
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX) {
       this._seeking = false;
 
-      var playheadOffset = self._playheadLayer.getPlayheadOffset();
+      const playheadOffset = self._playheadLayer.getPlayheadOffset();
 
       if (self._enableSeek &&
           Math.abs(mousePosX - playheadOffset) <= self._playheadClickTolerance) {
@@ -185,8 +185,8 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
       else {
         // Moving the mouse to the left increases the time position of the
         // left-hand edge of the visible waveform.
-        var diff = this.mouseDownX - mousePosX;
-        var newFrameOffset = this.initialFrameOffset + diff;
+        const diff = this.mouseDownX - mousePosX;
+        const newFrameOffset = this.initialFrameOffset + diff;
 
         if (newFrameOffset !== this.initialFrameOffset) {
           self.updateWaveform(newFrameOffset);
@@ -198,8 +198,8 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
       if (!this._seeking) {
         // Set playhead position only on click release, when not dragging.
         if (self._enableSeek && !self._mouseDragHandler.isDragging()) {
-          var time = self.pixelOffsetToTime(this.mouseDownX);
-          var duration = self._getDuration();
+          let time = self.pixelOffsetToTime(this.mouseDownX);
+          const duration = self._getDuration();
 
           // Prevent the playhead position from jumping by limiting click
           // handling to the waveform duration.
@@ -217,8 +217,8 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
     _seek: function(mousePosX) {
       mousePosX = clamp(mousePosX, 0, self._width);
 
-      var time = self.pixelsToTime(mousePosX + self._frameOffset);
-      var duration = self._getDuration();
+      let time = self.pixelsToTime(mousePosX + self._frameOffset);
+      const duration = self._getDuration();
 
       // Prevent the playhead position from jumping by limiting click
       // handling to the waveform duration.
@@ -252,8 +252,8 @@ WaveformZoomView.prototype._onContextMenu = function(event) {
 };
 
 WaveformZoomView.prototype._clickHandler = function(event, eventName) {
-  var mousePosX = event.evt.layerX;
-  var time = this.pixelOffsetToTime(mousePosX);
+  const mousePosX = event.evt.layerX;
+  const time = this.pixelOffsetToTime(mousePosX);
 
   this._peaks.emit(eventName, {
     time: time,
@@ -287,8 +287,8 @@ WaveformZoomView.prototype.setWheelMode = function(mode, options) {
 };
 
 WaveformZoomView.prototype._onWheel = function(event) {
-  var wheelEvent = event.evt;
-  var delta;
+  const wheelEvent = event.evt;
+  let delta;
 
   if (wheelEvent.shiftKey) {
     if (wheelEvent.deltaY !== 0) {
@@ -317,7 +317,7 @@ WaveformZoomView.prototype._onWheel = function(event) {
 
   wheelEvent.preventDefault();
 
-  var newFrameOffset = clamp(
+  const newFrameOffset = clamp(
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
   );
 
@@ -325,14 +325,14 @@ WaveformZoomView.prototype._onWheel = function(event) {
 };
 
 WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
-  var wheelEvent = event.evt;
+  const wheelEvent = event.evt;
 
-  var delta = Math.abs(wheelEvent.deltaX) < Math.abs(wheelEvent.deltaY) ?
+  const delta = Math.abs(wheelEvent.deltaX) < Math.abs(wheelEvent.deltaY) ?
     wheelEvent.deltaY : wheelEvent.deltaX;
 
   wheelEvent.preventDefault();
 
-  var newFrameOffset = clamp(
+  const newFrameOffset = clamp(
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
   );
 
@@ -379,9 +379,9 @@ WaveformZoomView.prototype._onPause = function(time) {
 };
 
 WaveformZoomView.prototype._onWindowResize = function() {
-  var self = this;
+  const self = this;
 
-  var width = self._container.clientWidth;
+  const width = self._container.clientWidth;
 
   if (!self._zoomLevelAuto) {
     self._width = width;
@@ -427,7 +427,7 @@ WaveformZoomView.prototype._onKeyboardShiftRight = function() {
 };
 
 WaveformZoomView.prototype._keyboardScroll = function(direction, large) {
-  var increment;
+  let increment;
 
   if (large) {
     increment = direction * this._width;
@@ -462,12 +462,12 @@ WaveformZoomView.prototype._syncPlayhead = function(time) {
   if (this._enableAutoScroll) {
     // Check for the playhead reaching the right-hand side of the window.
 
-    var pixelIndex = this.timeToPixels(time);
+    const pixelIndex = this.timeToPixels(time);
 
     // TODO: move this code to animation function?
     // TODO: don't scroll if user has positioned view manually (e.g., using
     // the keyboard)
-    var endThreshold = this._frameOffset + this._width - 100;
+    const endThreshold = this._frameOffset + this._width - 100;
 
     if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
       // Put the playhead at 100 pixels from the left edge
@@ -510,10 +510,10 @@ function isAutoScale(options) {
  */
 
 WaveformZoomView.prototype.setZoom = function(options) {
-  var scale;
+  let scale;
 
   if (isAutoScale(options)) {
-    var seconds = this._peaks.player.getDuration();
+    const seconds = this._peaks.player.getDuration();
 
     if (!isValidTime(seconds)) {
       return false;
@@ -546,9 +546,9 @@ WaveformZoomView.prototype.setZoom = function(options) {
     scale = this._originalWaveformData.scale;
   }
 
-  var currentTime = this._peaks.player.getCurrentTime();
-  var apexTime;
-  var playheadOffsetPixels = this._playheadLayer.getPlayheadOffset();
+  const currentTime = this._peaks.player.getCurrentTime();
+  let apexTime;
+  let playheadOffsetPixels = this._playheadLayer.getPlayheadOffset();
 
   if (playheadOffsetPixels >= 0 && playheadOffsetPixels < this._width) {
     // Playhead is visible. Change the zoom level while keeping the
@@ -562,11 +562,11 @@ WaveformZoomView.prototype.setZoom = function(options) {
     apexTime = this.pixelOffsetToTime(playheadOffsetPixels);
   }
 
-  var prevScale = this._scale;
+  const prevScale = this._scale;
 
   this._resampleData({ scale: scale });
 
-  var apexPixel = this.timeToPixels(apexTime);
+  const apexPixel = this.timeToPixels(apexTime);
 
   this._frameOffset = apexPixel - playheadOffsetPixels;
 
@@ -577,7 +577,7 @@ WaveformZoomView.prototype.setZoom = function(options) {
   // Update the playhead position after zooming.
   this._playheadLayer.updatePlayheadTime(currentTime);
 
-  // var adapter = this.createZoomAdapter(currentScale, previousScale);
+  // const adapter = this.createZoomAdapter(currentScale, previousScale);
 
   // adapter.start(relativePosition);
 
@@ -587,15 +587,15 @@ WaveformZoomView.prototype.setZoom = function(options) {
 };
 
 WaveformZoomView.prototype._resampleData = function(options) {
-  var scale = options.scale;
+  const scale = options.scale;
 
   if (this._enableWaveformCache) {
     if (!this._waveformData.has(scale)) {
-      var sourceWaveform = this._originalWaveformData;
+      let sourceWaveform = this._originalWaveformData;
 
       // Resample from the next lowest available zoom level
 
-      for (var  i = 0; i < this._waveformScales.length; i++) {
+      for (let i = 0; i < this._waveformScales.length; i++) {
         if (this._waveformScales[i] < scale) {
           sourceWaveform = this._waveformData.get(this._waveformScales[i]);
         }
@@ -673,7 +673,7 @@ WaveformZoomView.prototype.pixelsToTime = function(pixels) {
  */
 
 WaveformZoomView.prototype.pixelOffsetToTime = function(offset) {
-  var pixels = this._frameOffset + offset;
+  const pixels = this._frameOffset + offset;
 
   return pixels * this._data.scale / this._data.sample_rate;
 };
@@ -682,7 +682,7 @@ WaveformZoomView.prototype.timeToPixelOffset = function(time) {
   return Math.floor(time * this._data.sample_rate / this._data.scale) - this._frameOffset;
 };
 
-/* var zoomAdapterMap = {
+/* const zoomAdapterMap = {
   'animated': AnimatedZoomAdapter,
   'static': StaticZoomAdapter
 };
@@ -778,7 +778,7 @@ WaveformZoomView.prototype._createWaveformShapes = function() {
   }
 
   if (this._playedWaveformColor && !this._playedWaveformShape) {
-    var time = this._peaks.player.getCurrentTime();
+    const time = this._peaks.player.getCurrentTime();
 
     this._playedSegment = {
       startTime: 0,
@@ -837,7 +837,7 @@ WaveformZoomView.prototype._createAxisLabels = function() {
  */
 
 WaveformZoomView.prototype.scrollWaveform = function(options) {
-  var scrollAmount;
+  let scrollAmount;
 
   if (objectHasProperty(options, 'pixels')) {
     scrollAmount = Math.floor(options.pixels);
@@ -859,7 +859,7 @@ WaveformZoomView.prototype.scrollWaveform = function(options) {
  */
 
 WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
-  var upperLimit;
+  let upperLimit;
 
   if (this._pixelLength < this._width) {
     // Total waveform is shorter than viewport, so reset the offset to 0.
@@ -876,15 +876,15 @@ WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
   this._frameOffset = frameOffset;
 
   // Display playhead if it is within the zoom frame width.
-  var playheadPixel = this._playheadLayer.getPlayheadPixel();
+  const playheadPixel = this._playheadLayer.getPlayheadPixel();
 
   this._playheadLayer.updatePlayheadTime(this.pixelsToTime(playheadPixel));
 
   this._drawWaveformLayer();
   this._axisLayer.draw();
 
-  var frameStartTime = this.getStartTime();
-  var frameEndTime   = this.getEndTime();
+  const frameStartTime = this.getStartTime();
+  const frameEndTime   = this.getEndTime();
 
   this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
   this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
@@ -950,14 +950,14 @@ WaveformZoomView.prototype.fitToContainer = function() {
     return;
   }
 
-  var updateWaveform = false;
+  let updateWaveform = false;
 
   if (this._container.clientWidth !== this._width) {
     this._width = this._container.clientWidth;
     this._stage.width(this._width);
 
-    var resample = false;
-    var resampleOptions;
+    let resample = false;
+    let resampleOptions;
 
     if (this._zoomLevelAuto) {
       resample = true;
@@ -1020,7 +1020,7 @@ WaveformZoomView.prototype.endZoom = function() {
     this._segmentsLayer.setVisible(true);
   }
 
-  var time = this._peaks.player.getCurrentTime();
+  const time = this._peaks.player.getCurrentTime();
 
   this.seekFrame(this.timeToPixels(time));
 }; */

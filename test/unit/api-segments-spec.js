@@ -2,12 +2,12 @@ import Peaks from '../../src/main';
 import Segment from '../../src/segment';
 
 describe('Peaks.segments', function() {
-  var p, logger;
+  let p, logger;
 
   beforeEach(function(done) {
     logger = sinon.spy();
 
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -43,7 +43,7 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
       p.segments.add({ startTime: 2, endTime: 12 });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments).to.have.lengthOf(2);
       expect(segments[0]).to.be.an.instanceOf(Segment);
@@ -60,7 +60,7 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 0, endTime: 10, id: 'segment1' });
       p.segments.add({ startTime: 2, endTime: 12, id: 'segment2' });
 
-      var segment = p.segments.getSegment('segment2');
+      const segment = p.segments.getSegment('segment2');
 
       expect(segment).to.be.ok;
       expect(segment).to.be.an.instanceOf(Segment);
@@ -73,7 +73,7 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 0, endTime: 10, id: 'segment1' });
       p.segments.add({ startTime: 2, endTime: 12, id: 'segment2' });
 
-      var segment = p.segments.getSegment('segment3');
+      const segment = p.segments.getSegment('segment3');
 
       expect(segment).to.equal(null);
     });
@@ -83,7 +83,7 @@ describe('Peaks.segments', function() {
     it('should accept a single segment object', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments).to.have.lengthOf(1);
       expect(segments[0]).to.be.an.instanceOf(Segment);
@@ -196,7 +196,7 @@ describe('Peaks.segments', function() {
     });
 
     it('should accept an array of segment objects', function() {
-      var segments = [{ startTime: 0, endTime: 10 }, { startTime: 5, endTime: 10 }];
+      const segments = [{ startTime: 0, endTime: 10 }, { startTime: 5, endTime: 10 }];
 
       p.segments.add(segments);
 
@@ -238,7 +238,7 @@ describe('Peaks.segments', function() {
     });
 
     it('should return the new segment', function() {
-      var result = p.segments.add({ startTime: 0, endTime: 10 });
+      const result = p.segments.add({ startTime: 0, endTime: 10 });
 
       expect(result).to.be.an.instanceOf(Segment);
       expect(result.startTime).to.equal(0);
@@ -247,7 +247,7 @@ describe('Peaks.segments', function() {
     });
 
     it('should return multiple segments when passing an array', function() {
-      var result = p.segments.add([
+      const result = p.segments.add([
         { startTime: 0, endTime: 10 },
         { startTime: 30, endTime: 40 }
       ]);
@@ -297,7 +297,7 @@ describe('Peaks.segments', function() {
     it('should allow the startTime to equal the endTime', function() {
       p.segments.add({ startTime: 1.0, endTime: 1.0 });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments[0].startTime).to.equal(1.0);
       expect(segments[0].endTime).to.equal(1.0);
@@ -316,7 +316,7 @@ describe('Peaks.segments', function() {
       p.segments.removeById('segment1');
       p.segments.add({ startTime: 20, endTime: 30, id: 'segment1' });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments).to.have.lengthOf(1);
       expect(segments[0].startTime).to.equal(20);
@@ -333,7 +333,7 @@ describe('Peaks.segments', function() {
 
       expect(p.segments.getSegments()).to.have.lengthOf(3);
 
-      var segmentsToAdd = [
+      const segmentsToAdd = [
         { startTime: 30, endTime: 40 },
         { startTime: 40, endTime: 35 },
         { startTime: 40, endTime: 50 }
@@ -343,7 +343,7 @@ describe('Peaks.segments', function() {
         p.segments.add(segmentsToAdd);
       }).to.throw(Error, /startTime/);
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments).to.have.lengthOf(3);
       expect(segments[0].startTime).to.equal(0);
@@ -364,33 +364,33 @@ describe('Peaks.segments', function() {
     });
 
     it('should return an empty array if no overlapping segments', function() {
-      var segments = p.segments.getSegmentsAtTime(5);
+      const segments = p.segments.getSegmentsAtTime(5);
       expect(segments).to.be.an.instanceOf(Array);
       expect(segments).to.have.lengthOf(0);
     });
 
     it('should return segment with time at the start of the segment', function() {
-      var segments = p.segments.getSegmentsAtTime(10);
+      const segments = p.segments.getSegmentsAtTime(10);
       expect(segments).to.be.an.instanceOf(Array);
       expect(segments).to.have.lengthOf(1);
       expect(segments[0].id).to.equal('segment1');
     });
 
     it('should not return segment with time at the end of the segment', function() {
-      var segments = p.segments.getSegmentsAtTime(12);
+      const segments = p.segments.getSegmentsAtTime(12);
       expect(segments).to.be.an.instanceOf(Array);
       expect(segments).to.have.lengthOf(0);
     });
 
     it('should return segment with time within the segment', function() {
-      var segments = p.segments.getSegmentsAtTime(11);
+      const segments = p.segments.getSegmentsAtTime(11);
       expect(segments).to.be.an.instanceOf(Array);
       expect(segments).to.have.lengthOf(1);
       expect(segments[0].id).to.equal('segment1');
     });
 
     it('should return all overlapping segments', function() {
-      var segments = p.segments.getSegmentsAtTime(17);
+      const segments = p.segments.getSegmentsAtTime(17);
       expect(segments).to.be.an.instanceOf(Array);
       expect(segments).to.have.lengthOf(2);
       expect(segments[0].id).to.equal('segment3');
@@ -407,17 +407,17 @@ describe('Peaks.segments', function() {
     });
 
     it('should return the previous segment', function() {
-      var segment = p.segments.getSegment('segment_id.1');
+      const segment = p.segments.getSegment('segment_id.1');
 
-      var previous = p.segments.findPreviousSegment(segment);
+      const previous = p.segments.findPreviousSegment(segment);
 
       expect(previous.id).to.equal('segment_id.2');
     });
 
     it('should return undefined when given the first segment', function() {
-      var segment = p.segments.getSegment('segment_id.2');
+      const segment = p.segments.getSegment('segment_id.2');
 
-      var previous = p.segments.findPreviousSegment(segment);
+      const previous = p.segments.findPreviousSegment(segment);
 
       expect(previous).to.equal(undefined);
     });
@@ -432,17 +432,17 @@ describe('Peaks.segments', function() {
     });
 
     it('should return the next segment', function() {
-      var segment = p.segments.getSegment('segment_id.2');
+      const segment = p.segments.getSegment('segment_id.2');
 
-      var next = p.segments.findNextSegment(segment);
+      const next = p.segments.findNextSegment(segment);
 
       expect(next.id).to.equal('segment_id.1');
     });
 
     it('should return undefined when given the last segment', function() {
-      var segment = p.segments.getSegment('segment_id.1');
+      const segment = p.segments.getSegment('segment_id.1');
 
-      var next = p.segments.findNextSegment(segment);
+      const next = p.segments.findNextSegment(segment);
 
       expect(next).to.equal(undefined);
     });
@@ -456,9 +456,9 @@ describe('Peaks.segments', function() {
     });
 
     it('should remove the given segment object', function() {
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
-      var removed = p.segments.remove(segments[0]);
+      const removed = p.segments.remove(segments[0]);
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed).to.have.lengthOf(1);
@@ -466,11 +466,11 @@ describe('Peaks.segments', function() {
     });
 
     it('should remove the segment from the segments array', function() {
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       p.segments.remove(segments[0]);
 
-      var remainingSegments = p.segments.getSegments();
+      const remainingSegments = p.segments.getSegments();
 
       expect(remainingSegments).to.have.lengthOf(2);
       expect(remainingSegments[0].id).to.equal('segment2');
@@ -486,13 +486,13 @@ describe('Peaks.segments', function() {
         done();
       });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       p.segments.remove(segments[1]);
     });
 
     it('should return an empty array if the segment is not found', function() {
-      var removed = p.segments.remove({});
+      const removed = p.segments.remove({});
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed).to.be.empty;
@@ -523,7 +523,7 @@ describe('Peaks.segments', function() {
     it('should remove the only segment matching the startTime', function() {
       p.segments.removeByTime(5);
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments).to.have.a.lengthOf(3);
       expect(segments[0].startTime).to.equal(10);
@@ -532,7 +532,7 @@ describe('Peaks.segments', function() {
     });
 
     it('should return the removed segments', function() {
-      var segments = p.segments.removeByTime(3);
+      const segments = p.segments.removeByTime(3);
 
       expect(segments).to.be.an.instanceOf(Array);
       expect(segments).to.have.lengthOf(2);
@@ -585,7 +585,7 @@ describe('Peaks.segments', function() {
     it('should remove the segment with the given id', function() {
       p.segments.removeById('segment_id.1');
 
-      var remainingSegments = p.segments.getSegments();
+      const remainingSegments = p.segments.getSegments();
 
       expect(remainingSegments).to.have.a.lengthOf(1);
       expect(remainingSegments[0].id).to.equal('segment_id.2');
@@ -594,7 +594,7 @@ describe('Peaks.segments', function() {
     });
 
     it('should return the removed segments', function() {
-      var removed = p.segments.removeById('segment_id.1');
+      const removed = p.segments.removeById('segment_id.1');
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed.length).to.equal(1);
@@ -622,7 +622,7 @@ describe('Peaks.segments', function() {
 
       p.segments.add({ startTime: 6, endTime: 7, id: 'segment_id.1' });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments.length).to.equal(2);
       expect(segments[0].startTime).to.equal(15);
@@ -641,7 +641,7 @@ describe('Peaks.segments', function() {
     it('should remove all segment objects', function() {
       p.segments.removeAll();
 
-      var remainingSegments = p.segments.getSegments();
+      const remainingSegments = p.segments.getSegments();
 
       expect(remainingSegments).to.be.empty;
     });
@@ -650,7 +650,7 @@ describe('Peaks.segments', function() {
       p.on('segments.remove_all', function(param) {
         expect(param).to.be.undefined;
 
-        var remainingSegments = p.segments.getSegments();
+        const remainingSegments = p.segments.getSegments();
 
         expect(remainingSegments).to.be.empty;
         done();
@@ -660,7 +660,7 @@ describe('Peaks.segments', function() {
     });
 
     it('should return undefined', function() {
-      var result = p.segments.removeAll();
+      const result = p.segments.removeAll();
 
       expect(result).to.be.undefined;
     });
@@ -671,7 +671,7 @@ describe('Peaks.segments', function() {
       p.segments.add({ startTime: 6, endTime: 7, id: 'segment_id.1' });
       p.segments.add({ startTime: 8, endTime: 9, id: 'segment_id.2' });
 
-      var segments = p.segments.getSegments();
+      const segments = p.segments.getSegments();
 
       expect(segments.length).to.equal(2);
       expect(segments[0].startTime).to.equal(6);

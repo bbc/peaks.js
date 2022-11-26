@@ -62,7 +62,7 @@ function PointMarker(options) {
 }
 
 PointMarker.prototype._bindDefaultEventHandlers = function() {
-  var self = this;
+  const self = this;
 
   self._group.on('dragstart', function(event) {
     self._onDragStart(event, self._point);

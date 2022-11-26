@@ -71,7 +71,7 @@ MouseDragHandler.prototype._mouseDown = function(event) {
     return;
   }
 
-  var marker = getMarkerObject(event.target);
+  const marker = getMarkerObject(event.target);
 
   // Avoid interfering with drag/drop of point and segment markers.
   if (marker && marker.attrs.draggable) {
@@ -83,7 +83,7 @@ MouseDragHandler.prototype._mouseDown = function(event) {
   );
 
   if (this._handlers.onMouseDown) {
-    var mouseDownPosX = this._getMousePosX(this._lastMouseClientX);
+    const mouseDownPosX = this._getMousePosX(this._lastMouseClientX);
 
     this._handlers.onMouseDown(mouseDownPosX);
   }
@@ -105,7 +105,7 @@ MouseDragHandler.prototype._mouseDown = function(event) {
  */
 
 MouseDragHandler.prototype._mouseMove = function(event) {
-  var clientX = Math.floor(
+  const clientX = Math.floor(
     event.type === 'touchmove' ? event.changedTouches[0].clientX : event.clientX
   );
 
@@ -119,7 +119,7 @@ MouseDragHandler.prototype._mouseMove = function(event) {
   this._dragging = true;
 
   if (this._handlers.onMouseMove) {
-    var mousePosX = this._getMousePosX(clientX);
+    const mousePosX = this._getMousePosX(clientX);
 
     this._handlers.onMouseMove(mousePosX);
   }
@@ -132,7 +132,7 @@ MouseDragHandler.prototype._mouseMove = function(event) {
  */
 
 MouseDragHandler.prototype._mouseUp = function(event) {
-  var clientX;
+  let clientX;
 
   if (event.type === 'touchend') {
     clientX = Math.floor(event.changedTouches[0].clientX);
@@ -169,7 +169,7 @@ MouseDragHandler.prototype._mouseUp = function(event) {
  */
 
 MouseDragHandler.prototype._getMousePosX = function(clientX) {
-  var containerPos = this._stage.getContainer().getBoundingClientRect();
+  const containerPos = this._stage.getContainer().getBoundingClientRect();
 
   return clientX - containerPos.left;
 };

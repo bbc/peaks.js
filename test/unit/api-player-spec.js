@@ -3,9 +3,9 @@ import Player from '../../src/player';
 
 describe('Player', function() {
   context('with stub player', function() {
-    var p;
-    var player;
-    var logger;
+    let p;
+    let player;
+    let logger;
 
     beforeEach(function(done) {
       logger = sinon.spy();
@@ -22,7 +22,7 @@ describe('Player', function() {
         getDuration: sinon.spy(function() { return 123; })
       };
 
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -53,7 +53,7 @@ describe('Player', function() {
 
     describe('constructor', function() {
       it('should throw a type error if an adapter property is missing', function() {
-        var adapter = {
+        const adapter = {
           init: function() {}
         };
 
@@ -63,7 +63,7 @@ describe('Player', function() {
       });
 
       it('should throw a type error if an adapter property is not a function', function() {
-        var adapter = {
+        const adapter = {
           init: 'wrong: this should be a function',
           destroy: sinon.spy(),
           play: sinon.spy(),
@@ -105,7 +105,7 @@ describe('Player', function() {
       });
 
       it("should return the value from the player's play() method", function() {
-        var result = p.player.play();
+        const result = p.player.play();
 
         expect(result).to.be.an.instanceOf(Promise);
       });
@@ -136,7 +136,7 @@ describe('Player', function() {
 
     describe('getCurrentTime', function() {
       it("should call the player's getCurrentTime() method and return its value", function() {
-        var count = player.getCurrentTime.callCount;
+        const count = player.getCurrentTime.callCount;
         expect(p.player.getCurrentTime()).to.equal(111);
         expect(player.getCurrentTime.callCount).to.equal(count + 1);
       });
@@ -168,14 +168,14 @@ describe('Player', function() {
 
     describe('playSegment', function() {
       it('should return a rejected promise if a segment id is given', function() {
-        var result = p.player.playSegment('peaks.segment.0');
+        const result = p.player.playSegment('peaks.segment.0');
 
         // TODO: check promise is rejected
         expect(result).to.be.an.instanceOf(Promise);
       });
 
       it("should call the player's seek() and play() methods", function(done) {
-        var segment = { startTime: 10, endTime: 20, editable: true };
+        const segment = { startTime: 10, endTime: 20, editable: true };
 
         p.player.playSegment(segment).then(function() {
           expect(logger.notCalled).to.equal(true);
@@ -190,7 +190,7 @@ describe('Player', function() {
       });
 
       it("should return the value from the player's play() method", function() {
-        var result = p.player.playSegment({ startTime: 10, endTime: 20 });
+        const result = p.player.playSegment({ startTime: 10, endTime: 20 });
 
         expect(result).to.be.an.instanceOf(Promise);
       });
@@ -198,13 +198,13 @@ describe('Player', function() {
   });
 
   context('with media element player', function() {
-    var p;
-    var logger;
+    let p;
+    let logger;
 
     beforeEach(function(done) {
       logger = sinon.spy();
 
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -250,7 +250,7 @@ describe('Player', function() {
     });
 
     describe('getCurrentTime', function() {
-      var newTime = 6.0;
+      const newTime = 6.0;
 
       it('should return the actual value of the audio element', function() {
         expect(p.player.getCurrentTime()).to.equal(0);
@@ -260,7 +260,7 @@ describe('Player', function() {
         p.on('player.seeked', function(currentTime) {
           expect(currentTime).to.equal(p.player.getCurrentTime());
 
-          var diff = Math.abs(currentTime - newTime);
+          const diff = Math.abs(currentTime - newTime);
           expect(diff).to.be.lessThan(0.2);
 
           done();
@@ -276,11 +276,11 @@ describe('Player', function() {
       });
 
       it('should change the currentTime value of the audio element', function() {
-        var newTime = 6.0;
+        const newTime = 6.0;
 
         p.player.seek(newTime);
 
-        var diff = Math.abs(p.player.getCurrentTime() - newTime);
+        const diff = Math.abs(p.player.getCurrentTime() - newTime);
         expect(diff).to.be.lessThan(0.2);
       });
 
@@ -294,7 +294,7 @@ describe('Player', function() {
 
     describe('playSegment', function() {
       it('should return a rejected promise if a segment id is given', function() {
-        var result = p.player.playSegment('peaks.segment.0');
+        const result = p.player.playSegment('peaks.segment.0');
 
         // TODO: check promise is rejected
         expect(result).to.be.an.instanceOf(Promise);
@@ -303,7 +303,7 @@ describe('Player', function() {
       it('should play a given segment', function() {
         p.segments.add({ startTime: 10, endTime: 20, editable: true });
 
-        var segments = p.segments.getSegments();
+        const segments = p.segments.getSegments();
         expect(segments.length).to.equal(1);
 
         p.player.playSegment(segments[0]);
@@ -313,18 +313,18 @@ describe('Player', function() {
       });
 
       it('should play a segment if an object with startTime and endTime values is given', function(done) {
-        var expectedStart = 1;
-        var expectedEnd = 2;
+        const expectedStart = 1;
+        const expectedEnd = 2;
 
         p.player.playSegment({ startTime: expectedStart, endTime: expectedEnd });
 
         p.on('player.playing', function(currentTime) {
-          var diff = Math.abs(currentTime - expectedStart);
+          const diff = Math.abs(currentTime - expectedStart);
           expect(diff).to.be.lessThan(0.05);
         });
 
         p.on('player.pause', function() {
-          var diff = Math.abs(p.player.getCurrentTime() - expectedEnd);
+          const diff = Math.abs(p.player.getCurrentTime() - expectedEnd);
           expect(diff).to.be.lessThan(0.05);
           done();
         });
@@ -341,7 +341,7 @@ describe('Player', function() {
   });
 
   context('with custom player that fails to initialize', function() {
-    var p;
+    let p;
 
     afterEach(function() {
       if (p) {
@@ -352,7 +352,7 @@ describe('Player', function() {
 
     describe('init', function() {
       it('should cause Peaks.init() to return an error', function(done) {
-        var player = {
+        const player = {
           init: sinon.spy(function() { return Promise.reject(new Error('failed')); }),
           destroy: sinon.spy(),
           play: sinon.spy(function() { return Promise.resolve(); }),
@@ -364,7 +364,7 @@ describe('Player', function() {
           getDuration: sinon.spy(function() { return 123; })
         };
 
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },

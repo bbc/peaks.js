@@ -144,10 +144,11 @@ WaveformBuilder.prototype.init = function(options, callback) {
 /* eslint-enable max-len */
 
 WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
-  var self = this;
-  var dataUri = null;
-  var requestType = null;
-  var url;
+  const self = this;
+
+  let dataUri = null;
+  let requestType = null;
+  let url;
 
   if (isObject(options.dataUri)) {
     dataUri = options.dataUri;
@@ -177,7 +178,7 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
     return;
   }
 
-  var xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
+  const xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
     if (this.readyState !== 4) {
       return;
     }
@@ -190,7 +191,7 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
       return;
     }
 
-    var waveformData = WaveformData.create(event.target.response);
+    const waveformData = WaveformData.create(event.target.response);
 
     if (waveformData.channels !== 1 && waveformData.channels !== 2) {
       callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
@@ -229,8 +230,8 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
 /* eslint-enable max-len */
 
 WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callback) {
-  var waveformData = null;
-  var data = null;
+  let waveformData = null;
+  let data = null;
 
   if (isObject(options.waveformData)) {
     waveformData = options.waveformData;
@@ -254,7 +255,7 @@ WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callba
   }
 
   try {
-    var createdWaveformData = WaveformData.create(data);
+    const createdWaveformData = WaveformData.create(data);
 
     if (createdWaveformData.channels !== 1 && createdWaveformData.channels !== 2) {
       callback(new Error('Peaks.init(): Only mono or stereo waveforms are currently supported'));
@@ -283,9 +284,9 @@ WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callba
  */
 
 WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, callback) {
-  var self = this;
+  const self = this;
 
-  var audioContext = window.AudioContext || window.webkitAudioContext;
+  const audioContext = window.AudioContext || window.webkitAudioContext;
 
   if (!(options.webAudio.audioContext instanceof audioContext)) {
     // eslint-disable-next-line max-len
@@ -293,7 +294,7 @@ WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, ca
     return;
   }
 
-  var webAudioOptions = options.webAudio;
+  const webAudioOptions = options.webAudio;
 
   if (webAudioOptions.scale !== options.zoomLevels[0]) {
     webAudioOptions.scale = options.zoomLevels[0];
@@ -303,7 +304,7 @@ WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, ca
   // currentSrc attribute will contain the source media URL. Otherwise,
   // we wait for a canplay event to tell us when the media is ready.
 
-  var mediaSourceUrl = self._peaks.options.mediaElement.currentSrc;
+  const mediaSourceUrl = self._peaks.options.mediaElement.currentSrc;
 
   if (mediaSourceUrl) {
     self._requestAudioAndBuildWaveformData(
@@ -326,13 +327,13 @@ WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, ca
 };
 
 WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function(options, callback) {
-  var webAudioOptions = options.webAudio;
+  const webAudioOptions = options.webAudio;
 
   if (webAudioOptions.scale !== options.zoomLevels[0]) {
     webAudioOptions.scale = options.zoomLevels[0];
   }
 
-  var webAudioBuilderOptions = {
+  const webAudioBuilderOptions = {
     audio_buffer: webAudioOptions.audioBuffer,
     split_channels: webAudioOptions.multiChannel,
     scale: webAudioOptions.scale
@@ -354,14 +355,14 @@ WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function(options, 
 
 WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
     webAudio, withCredentials, callback) {
-  var self = this;
+  const self = this;
 
   if (!url) {
     self._peaks._logger('Peaks.init(): The mediaElement src is invalid');
     return;
   }
 
-  var xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(event) {
+  const xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(event) {
     if (this.readyState !== 4) {
       return;
     }
@@ -374,7 +375,7 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
       return;
     }
 
-    var webAudioBuilderOptions = {
+    const webAudioBuilderOptions = {
       audio_context: webAudio.audioContext,
       array_buffer: event.target.response,
       split_channels: webAudio.multiChannel,
@@ -403,7 +404,7 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
 
 WaveformBuilder.prototype._createXHR = function(url, requestType,
     withCredentials, onLoad, onError) {
-  var xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
 
   // open an XHR request to the data source file
   xhr.open('GET', url, true);

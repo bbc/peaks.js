@@ -2,10 +2,10 @@ import Peaks from '../../src/main';
 import Point from '../../src/point';
 
 describe('Peaks.points', function() {
-  var p;
+  let p;
 
   beforeEach(function(done) {
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -38,7 +38,7 @@ describe('Peaks.points', function() {
       p.points.add({ time: 10 });
       p.points.add({ time: 12 });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.lengthOf(2);
       expect(points[0]).to.be.an.instanceOf(Point);
@@ -54,14 +54,14 @@ describe('Peaks.points', function() {
     });
 
     it('should return a point given a valid id', function() {
-      var point = p.points.getPoint('point1');
+      const point = p.points.getPoint('point1');
 
       expect(point).to.be.an.instanceOf(Point);
       expect(point.id).to.equal('point1');
     });
 
     it('should return null if point not found', function() {
-      var point = p.points.getPoint('point2');
+      const point = p.points.getPoint('point2');
 
       expect(point).to.equal(null);
     });
@@ -71,7 +71,7 @@ describe('Peaks.points', function() {
     it('should create a point from the supplied object', function() {
       p.points.add({ time: 10, editable: true, color: '#ff0000', labelText: 'A point' });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.a.lengthOf(1);
       expect(points[0]).to.be.an.instanceOf(Point);
@@ -82,7 +82,7 @@ describe('Peaks.points', function() {
     });
 
     it('should accept an array of point objects', function() {
-      var points = [
+      const points = [
         { time: 10, editable: true, color: '#ff0000', labelText: 'A point' },
         { time: 12, editable: true, color: '#ff0000', labelText: 'Another point' }
       ];
@@ -110,7 +110,7 @@ describe('Peaks.points', function() {
     it('should accept an optional id', function() {
       p.points.add({ time: 10, id: '500' });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.lengthOf(1);
       expect(points[0]).to.be.an.instanceOf(Point);
@@ -120,7 +120,7 @@ describe('Peaks.points', function() {
     it('should allow 0 for a point id', function() {
       p.points.add({ time: 10, id: 0 });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.lengthOf(1);
       expect(points[0]).to.be.an.instanceOf(Point);
@@ -197,7 +197,7 @@ describe('Peaks.points', function() {
     });
 
     it('should return the new point', function() {
-      var result = p.points.add({ time: 0 });
+      const result = p.points.add({ time: 0 });
 
       expect(result).to.be.an.instanceOf(Point);
       expect(result.time).to.equal(0);
@@ -205,7 +205,7 @@ describe('Peaks.points', function() {
     });
 
     it('should return multiple points when passing an array', function() {
-      var result = p.points.add([{ time: 0 }, { time: 10 }]);
+      const result = p.points.add([{ time: 0 }, { time: 10 }]);
 
       expect(result).to.be.an.instanceOf(Array);
       expect(result[0].time).to.equal(0);
@@ -253,7 +253,7 @@ describe('Peaks.points', function() {
       p.points.removeById('point1');
       p.points.add({ time: 20, id: 'point1' });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.lengthOf(1);
       expect(points[0].time).to.equal(20);
@@ -269,7 +269,7 @@ describe('Peaks.points', function() {
 
       expect(p.points.getPoints()).to.have.lengthOf(3);
 
-      var pointsToAdd = [
+      const pointsToAdd = [
         { time: 30, id: 'point4' },
         { time: 40, id: 'point1' },
         { time: 40, id: 'point6' }
@@ -279,7 +279,7 @@ describe('Peaks.points', function() {
         p.points.add(pointsToAdd);
       }).to.throw(Error, /duplicate id/);
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.lengthOf(3);
       expect(points[0].time).to.equal(0);
@@ -299,9 +299,9 @@ describe('Peaks.points', function() {
     });
 
     it('should remove the given point object', function() {
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
-      var removed = p.points.remove(points[0]);
+      const removed = p.points.remove(points[0]);
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed).to.have.lengthOf(1);
@@ -309,11 +309,11 @@ describe('Peaks.points', function() {
     });
 
     it('should remove the point from the points array', function() {
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       p.points.remove(points[0]);
 
-      var remainingPoints = p.points.getPoints();
+      const remainingPoints = p.points.getPoints();
 
       expect(remainingPoints).to.have.lengthOf(2);
       expect(remainingPoints[0].id).to.equal('point2');
@@ -330,13 +330,13 @@ describe('Peaks.points', function() {
         done();
       });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       p.points.remove(points[1]);
     });
 
     it('should return an empty array if the point is not found', function() {
-      var removed = p.points.remove({});
+      const removed = p.points.remove({});
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed).to.be.empty;
@@ -360,7 +360,7 @@ describe('Peaks.points', function() {
     it('should remove the only points matching the time', function() {
       p.points.removeByTime(5);
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points).to.have.a.lengthOf(3);
       expect(points[0].time).to.equal(10);
@@ -369,7 +369,7 @@ describe('Peaks.points', function() {
     });
 
     it('should return the removed points', function() {
-      var points = p.points.removeByTime(3);
+      const points = p.points.removeByTime(3);
 
       expect(points).to.be.an.instanceOf(Array);
       expect(points).to.have.lengthOf(2);
@@ -406,14 +406,14 @@ describe('Peaks.points', function() {
     it('should remove the point with the given id', function() {
       p.points.removeById('point_id.1');
 
-      var remainingPoints = p.points.getPoints();
+      const remainingPoints = p.points.getPoints();
 
       expect(remainingPoints).to.have.a.lengthOf(1);
       expect(remainingPoints[0].id).to.eq('point_id.2');
     });
 
     it('should return the removed points', function() {
-      var removed = p.points.removeById('point_id.1');
+      const removed = p.points.removeById('point_id.1');
 
       expect(removed).to.be.an.instanceOf(Array);
       expect(removed.length).to.equal(1);
@@ -440,7 +440,7 @@ describe('Peaks.points', function() {
 
       p.points.add({ time: 6, id: 'point_id.1' });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points.length).to.equal(2);
       expect(points[0].time).to.equal(15);
@@ -457,7 +457,7 @@ describe('Peaks.points', function() {
     it('should remove all point objects', function() {
       p.points.removeAll();
 
-      var remainingPoints = p.points.getPoints();
+      const remainingPoints = p.points.getPoints();
 
       expect(remainingPoints).to.be.empty;
     });
@@ -466,7 +466,7 @@ describe('Peaks.points', function() {
       p.on('points.remove_all', function(param) {
         expect(param).to.be.undefined;
 
-        var remainingPoints = p.points.getPoints();
+        const remainingPoints = p.points.getPoints();
 
         expect(remainingPoints).to.be.empty;
         done();
@@ -476,7 +476,7 @@ describe('Peaks.points', function() {
     });
 
     it('should return undefined', function() {
-      var result = p.points.removeAll();
+      const result = p.points.removeAll();
 
       expect(result).to.be.undefined;
     });
@@ -487,7 +487,7 @@ describe('Peaks.points', function() {
       p.points.add({ time: 6, id: 'point_id.1' });
       p.points.add({ time: 7, id: 'point_id.2' });
 
-      var points = p.points.getPoints();
+      const points = p.points.getPoints();
 
       expect(points.length).to.equal(2);
       expect(points[0].time).to.equal(6);

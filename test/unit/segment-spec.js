@@ -3,10 +3,10 @@ import Segment from '../../src/segment';
 
 describe('Segment', function() {
   describe('update', function() {
-    var p;
+    let p;
 
     beforeEach(function(done) {
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -40,9 +40,9 @@ describe('Segment', function() {
         editable: true
       });
 
-      var emit = sinon.spy(p, 'emit');
+      const emit = sinon.spy(p, 'emit');
 
-      var segment = p.segments.getSegments()[0];
+      const segment = p.segments.getSegments()[0];
 
       segment.update({
         startTime: 2,
@@ -67,7 +67,7 @@ describe('Segment', function() {
     it('should not allow invalid updates', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
 
-      var segment = p.segments.getSegments()[0];
+      const segment = p.segments.getSegments()[0];
 
       expect(function() {
         segment.update({ startTime: NaN });
@@ -92,9 +92,9 @@ describe('Segment', function() {
         labelText: 'A segment'
       });
 
-      var emit = sinon.spy(p, 'emit');
+      const emit = sinon.spy(p, 'emit');
 
-      var segment = p.segments.getSegments()[0];
+      const segment = p.segments.getSegments()[0];
 
       expect(function() {
         segment.update({
@@ -118,8 +118,8 @@ describe('Segment', function() {
     });
 
     it('should allow a user data attribute to be created', function() {
-      var peaks = { emit: function() {} };
-      var segment = new Segment({
+      const peaks = { emit: function() {} };
+      const segment = new Segment({
         peaks: peaks,
         id: 'segment.1',
         startTime: 0.0,
@@ -134,8 +134,8 @@ describe('Segment', function() {
     });
 
     it('should allow a user data attribute to be updated', function() {
-      var peaks = { emit: function() {} };
-      var segment = new Segment({
+      const peaks = { emit: function() {} };
+      const segment = new Segment({
         peaks: peaks,
         id: 'segment.1',
         startTime: 0.0,
@@ -153,7 +153,7 @@ describe('Segment', function() {
 
   describe('isVisible', function() {
     it('should return false if segment is before visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -166,7 +166,7 @@ describe('Segment', function() {
     });
 
     it('should return false if segment is after visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -179,7 +179,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment is within visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -192,7 +192,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts before and ends within visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -205,7 +205,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts before and ends at end of visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -218,7 +218,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts after and ends after visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -231,7 +231,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts after and ends at the end of visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -244,7 +244,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment is same as visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',
@@ -257,7 +257,7 @@ describe('Segment', function() {
     });
 
     it('should return true if segment contains visible range', function() {
-      var segment = new Segment({
+      const segment = new Segment({
         peaks: null,
         id: 'segment.1',
         labelText: '',

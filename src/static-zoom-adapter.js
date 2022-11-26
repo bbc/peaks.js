@@ -16,8 +16,8 @@ export default {
         view.segmentLayer.draw();
         view.pointLayer.draw();
 
-        var time = view.peaks.player.getCurrentTime();
-        var index = view.timeToPixels(time);
+        const time = view.peaks.player.getCurrentTime();
+        const index = view.timeToPixels(time);
 
         view.seekFrame(index, relativePosition);
       }

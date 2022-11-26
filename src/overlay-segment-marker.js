@@ -23,14 +23,14 @@ function OverlaySegmentMarker(options) {
 }
 
 OverlaySegmentMarker.prototype.init = function(group) {
-  var handleWidth  = 10;
-  var handleHeight = 20;
-  var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
+  const handleWidth  = 10;
+  const handleHeight = 20;
+  const handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
-  var xPosition = this._options.startMarker ? -24 : 24;
+  const xPosition = this._options.startMarker ? -24 : 24;
 
-  var time = this._options.startMarker ? this._options.segment.startTime :
-                                         this._options.segment.endTime;
+  const time = this._options.startMarker ? this._options.segment.startTime :
+                                           this._options.segment.endTime;
 
   // Label - create with default y, the real value is set in fitToView().
   this._label = new Text({
@@ -63,9 +63,9 @@ OverlaySegmentMarker.prototype.init = function(group) {
 };
 
 OverlaySegmentMarker.prototype.bindEventHandlers = function(group) {
-  var self = this;
+  const self = this;
 
-  var xPosition = self._options.startMarker ? -24 : 24;
+  const xPosition = self._options.startMarker ? -24 : 24;
 
   if (self._options.draggable) {
     group.on('dragstart', function() {
@@ -99,7 +99,7 @@ OverlaySegmentMarker.prototype.bindEventHandlers = function(group) {
 };
 
 OverlaySegmentMarker.prototype.fitToView = function() {
-  var height = this._options.layer.getHeight();
+  const height = this._options.layer.getHeight();
 
   this._label.y(height / 2 - 5);
   this._handle.y(height / 2 - 10.5);

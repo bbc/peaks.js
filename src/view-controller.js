@@ -53,7 +53,7 @@ ViewController.prototype.createZoomview = function(container) {
     return this._zoomview;
   }
 
-  var waveformData = this._peaks.getWaveformData();
+  const waveformData = this._peaks.getWaveformData();
 
   this._zoomview = new WaveformZoomView(
     waveformData,

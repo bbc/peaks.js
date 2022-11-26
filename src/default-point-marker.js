@@ -24,9 +24,9 @@ function DefaultPointMarker(options) {
 }
 
 DefaultPointMarker.prototype.init = function(group) {
-  var handleWidth  = 10;
-  var handleHeight = 20;
-  var handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
+  const handleWidth  = 10;
+  const handleHeight = 20;
+  const handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
   // Label
 
@@ -103,7 +103,7 @@ DefaultPointMarker.prototype.init = function(group) {
 };
 
 DefaultPointMarker.prototype.bindEventHandlers = function(group) {
-  var self = this;
+  const self = this;
 
   if (self._handle) {
     self._handle.on('mouseover touchstart', function() {
@@ -128,7 +128,7 @@ DefaultPointMarker.prototype.bindEventHandlers = function(group) {
 };
 
 DefaultPointMarker.prototype.fitToView = function() {
-  var height = this._options.layer.getHeight();
+  const height = this._options.layer.getHeight();
 
   this._line.points([0.5, 0, 0.5, height]);
 

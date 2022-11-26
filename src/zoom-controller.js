@@ -66,7 +66,7 @@ ZoomController.prototype.setZoom = function(zoomLevelIndex, forceUpdate) {
 
   this._zoomLevelIndex = zoomLevelIndex;
 
-  var zoomview = this._peaks.views.getView('zoomview');
+  const zoomview = this._peaks.views.getView('zoomview');
 
   if (!zoomview) {
     return;

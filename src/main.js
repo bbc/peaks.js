@@ -68,7 +68,7 @@ function Peaks() {
 
 Peaks.prototype = Object.create(EventEmitter.prototype);
 
-var defaultViewOptions = {
+const defaultViewOptions = {
   playheadColor:       '#111111',
   playheadTextColor:   '#aaaaaa',
   axisGridlineColor:   '#cccccc',
@@ -80,7 +80,7 @@ var defaultViewOptions = {
   timeLabelPrecision:  2
 };
 
-var defaultZoomviewOptions = {
+const defaultZoomviewOptions = {
   // showPlayheadTime:    true,
   playheadClickTolerance: 3,
   waveformColor:          'rgba(0, 225, 128, 1)',
@@ -88,7 +88,7 @@ var defaultZoomviewOptions = {
   // zoomAdapter:         'static'
 };
 
-var defaultOverviewOptions = {
+const defaultOverviewOptions = {
   // showPlayheadTime:    false,
   waveformColor:          'rgba(0, 0, 0, 0.2)',
   highlightColor:         '#aaaaaa',
@@ -98,7 +98,7 @@ var defaultOverviewOptions = {
   highlightCornerRadius:  2
 };
 
-var defaultSegmentOptions = {
+const defaultSegmentOptions = {
   style:                     'markers',
   startMarkerColor:          '#aaaaaa',
   endMarkerColor:            '#aaaaaa',
@@ -118,19 +118,19 @@ var defaultSegmentOptions = {
   overlayFontStyle:          'normal'
 };
 
-var defaultScrollbarOptions = {
+const defaultScrollbarOptions = {
   color: '#888888',
   minWidth: 50
 };
 
 function getOverviewOptions(opts) {
-  var overviewOptions = {};
+  const overviewOptions = {};
 
   if (opts.overview && opts.overview.showPlayheadTime) {
     overviewOptions.showPlayheadTime = opts.overview.showPlayheadTime;
   }
 
-  var optNames = [
+  const optNames = [
     'container',
     'waveformColor',
     'playedWaveformColor',
@@ -173,7 +173,7 @@ function getOverviewOptions(opts) {
 }
 
 function getZoomviewOptions(opts) {
-  var zoomviewOptions = {};
+  const zoomviewOptions = {};
 
   if (opts.showPlayheadTime) {
     zoomviewOptions.showPlayheadTime = opts.showPlayheadTime;
@@ -182,7 +182,7 @@ function getZoomviewOptions(opts) {
     zoomviewOptions.showPlayheadTime = opts.zoomview.showPlayheadTime;
   }
 
-  var optNames = [
+  const optNames = [
     'container',
     'waveformColor',
     'playedWaveformColor',
@@ -226,9 +226,9 @@ function getScrollbarOptions(opts) {
     return null;
   }
 
-  var scrollbarOptions = {};
+  const scrollbarOptions = {};
 
-  var optNames = [
+  const optNames = [
     'container',
     'color',
     'minWidth'
@@ -247,7 +247,7 @@ function getScrollbarOptions(opts) {
 }
 
 function extendOptions(to, from) {
-  for (var key in from) {
+  for (let key in from) {
     if (objectHasProperty(from, key) &&
         objectHasProperty(to, key)) {
       to[key] = from[key];
@@ -290,17 +290,17 @@ function addSegmentOptions(options, opts) {
  */
 
 Peaks.init = function(opts, callback) {
-  var instance = new Peaks();
+  const instance = new Peaks();
 
-  var err = instance._setOptions(opts);
+  const err = instance._setOptions(opts);
 
   if (err) {
     callback(err);
     return;
   }
 
-  var zoomviewContainer = instance.options.zoomview.container;
-  var overviewContainer = instance.options.overview.container;
+  const zoomviewContainer = instance.options.zoomview.container;
+  const overviewContainer = instance.options.overview.container;
 
   if (!isHTMLElement(zoomviewContainer) &&
       !isHTMLElement(overviewContainer)) {
@@ -325,7 +325,7 @@ Peaks.init = function(opts, callback) {
     return;
   }
 
-  var scrollbarContainer = null;
+  let scrollbarContainer = null;
 
   if (instance.options.scrollbar) {
     scrollbarContainer = instance.options.scrollbar.container;
@@ -347,7 +347,7 @@ Peaks.init = function(opts, callback) {
     instance._keyboardHandler = new KeyboardHandler(instance);
   }
 
-  var player = opts.player ?
+  const player = opts.player ?
     opts.player :
     new MediaElementPlayer(instance.options.mediaElement);
 
@@ -358,7 +358,7 @@ Peaks.init = function(opts, callback) {
   instance.views = new ViewController(instance);
 
   // Setup the UI components
-  var waveformBuilder = new WaveformBuilder(instance);
+  const waveformBuilder = new WaveformBuilder(instance);
 
   player.init(instance)
     .then(function() {
@@ -523,7 +523,7 @@ Peaks.prototype._setOptions = function(opts) {
  */
 
 Peaks.prototype.setSource = function(options, callback) {
-  var self = this;
+  const self = this;
 
   this.player._setSource(options)
     .then(function() {
@@ -531,7 +531,7 @@ Peaks.prototype.setSource = function(options, callback) {
         options.zoomLevels = self.options.zoomLevels;
       }
 
-      var waveformBuilder = new WaveformBuilder(self);
+      const waveformBuilder = new WaveformBuilder(self);
 
       waveformBuilder.init(options, function(err, waveformData) {
         if (err) {
@@ -542,7 +542,7 @@ Peaks.prototype.setSource = function(options, callback) {
         self._waveformData = waveformData;
 
         ['overview', 'zoomview'].forEach(function(viewName) {
-          var view = self.views.getView(viewName);
+          const view = self.views.getView(viewName);
 
           if (view) {
             view.setWaveformData(waveformData);
@@ -564,7 +564,7 @@ Peaks.prototype.getWaveformData = function() {
 };
 
 Peaks.prototype.createScrollbar = function(container) {
-  var waveformData = this.getWaveformData();
+  const waveformData = this.getWaveformData();
 
   this._scrollbar = new Scrollbar(
     waveformData,

@@ -76,8 +76,7 @@ PlayheadLayer.prototype.addToStage = function(stage) {
  */
 
 PlayheadLayer.prototype.zoomLevelChanged = function() {
-  var pixelsPerSecond = this._view.timeToPixels(1.0);
-  var time;
+  const pixelsPerSecond = this._view.timeToPixels(1.0);
 
   this._useAnimation = pixelsPerSecond >= 5;
 
@@ -90,7 +89,7 @@ PlayheadLayer.prototype.zoomLevelChanged = function() {
   else {
     if (this._playheadLineAnimation) {
       // Stop the animation
-      time = this._player.getCurrentTime();
+      const time = this._player.getCurrentTime();
 
       this.stop(time);
     }
@@ -103,7 +102,7 @@ PlayheadLayer.prototype.zoomLevelChanged = function() {
  */
 
 PlayheadLayer.prototype.fitToView = function() {
-  var height = this._view.getHeight();
+  const height = this._view.getHeight();
 
   this._playheadLine.points([0.5, 0, 0.5, height]);
 
@@ -136,8 +135,8 @@ PlayheadLayer.prototype._createPlayhead = function(color) {
 };
 
 PlayheadLayer.prototype._createPlayheadText = function(color) {
-  var time = this._player.getCurrentTime();
-  var text = this._view.formatTime(time);
+  const time = this._player.getCurrentTime();
+  const text = this._view.formatTime(time);
 
   // Create with default y, the real value is set in fitToView().
   this._playheadText = new Text({
@@ -176,18 +175,18 @@ PlayheadLayer.prototype.updatePlayheadTime = function(time) {
  */
 
 PlayheadLayer.prototype._syncPlayhead = function(time) {
-  var pixelIndex = this._view.timeToPixels(time);
+  const pixelIndex = this._view.timeToPixels(time);
 
-  var frameOffset = this._view.getFrameOffset();
-  var width = this._view.getWidth();
+  const frameOffset = this._view.getFrameOffset();
+  const width = this._view.getWidth();
 
-  var isVisible = (pixelIndex >= frameOffset) &&
-                  (pixelIndex <= frameOffset + width);
+  const isVisible = (pixelIndex >= frameOffset) &&
+                    (pixelIndex <= frameOffset + width);
 
   this._playheadPixel = pixelIndex;
 
   if (isVisible) {
-    var playheadX = this._playheadPixel - frameOffset;
+    const playheadX = this._playheadPixel - frameOffset;
 
     if (!this._playheadVisible) {
       this._playheadVisible = true;
@@ -197,8 +196,8 @@ PlayheadLayer.prototype._syncPlayhead = function(time) {
     this._playheadGroup.setX(playheadX);
 
     if (this._playheadText) {
-      var text = this._view.formatTime(time);
-      var playheadTextWidth = this._playheadText.getTextWidth();
+      const text = this._view.formatTime(time);
+      const playheadTextWidth = this._playheadText.getTextWidth();
 
       this._playheadText.setText(text);
 
@@ -229,7 +228,7 @@ PlayheadLayer.prototype._syncPlayhead = function(time) {
  */
 
 PlayheadLayer.prototype._start = function() {
-  var self = this;
+  const self = this;
 
   if (self._playheadLineAnimation) {
     self._playheadLineAnimation.stop();
@@ -240,11 +239,11 @@ PlayheadLayer.prototype._start = function() {
     return;
   }
 
-  var lastPlayheadPosition = null;
+  let lastPlayheadPosition = null;
 
   self._playheadLineAnimation = new Animation(function() {
-    var time = self._player.getCurrentTime();
-    var playheadPosition = self._view.timeToPixels(time);
+    const time = self._player.getCurrentTime();
+    const playheadPosition = self._view.timeToPixels(time);
 
     if (playheadPosition !== lastPlayheadPosition) {
       self._syncPlayhead(time);
@@ -298,8 +297,8 @@ PlayheadLayer.prototype.showPlayheadTime = function(show) {
 
 PlayheadLayer.prototype.updatePlayheadText = function() {
   if (this._playheadText) {
-    var time = this._player.getCurrentTime();
-    var text = this._view.formatTime(time);
+    const time = this._player.getCurrentTime();
+    const text = this._view.formatTime(time);
 
     this._playheadText.setText(text);
   }

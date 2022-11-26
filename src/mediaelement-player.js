@@ -35,7 +35,7 @@ MediaElementPlayer.prototype._addMediaListener = function(type, callback) {
 };
 
 MediaElementPlayer.prototype.init = function(eventEmitter) {
-  var self = this;
+  const self = this;
 
   self._eventEmitter = eventEmitter;
   self._listeners = [];
@@ -105,8 +105,8 @@ MediaElementPlayer.prototype.init = function(eventEmitter) {
  */
 
 MediaElementPlayer.prototype.destroy = function() {
-  for (var i = 0; i < this._listeners.length; i++) {
-    var listener = this._listeners[i];
+  for (let i = 0; i < this._listeners.length; i++) {
+    const listener = this._listeners[i];
 
     this._mediaElement.removeEventListener(
       listener.type,
@@ -155,7 +155,7 @@ function SetSourceHandler(eventEmitter, mediaElement) {
 }
 
 SetSourceHandler.prototype.setSource = function(options, callback) {
-  var self = this;
+  const self = this;
 
   self._options = options;
   self._callback = callback;
@@ -198,7 +198,7 @@ MediaElementPlayer.prototype.setSource = function(options) {
     return Promise.reject(new Error('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
   }
 
-  var setSourceHandler = new SetSourceHandler(this._eventEmitter, this._mediaElement);
+  const setSourceHandler = new SetSourceHandler(this._eventEmitter, this._mediaElement);
 
   return setSourceHandler.setSource(options);
 };

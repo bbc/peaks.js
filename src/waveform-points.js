@@ -75,7 +75,7 @@ WaveformPoints.prototype._addPoint = function(point) {
  */
 
 WaveformPoints.prototype._createPoint = function(options) {
-  var pointOptions = {
+  const pointOptions = {
     peaks: this._peaks
   };
 
@@ -140,15 +140,15 @@ WaveformPoints.prototype.find = function(startTime, endTime) {
  */
 
 WaveformPoints.prototype.add = function(/* pointOrPoints */) {
-  var self = this;
+  const self = this;
 
-  var arrayArgs = Array.isArray(arguments[0]);
-  var points = arrayArgs ?
+  const arrayArgs = Array.isArray(arguments[0]);
+  let points = arrayArgs ?
                arguments[0] :
                Array.prototype.slice.call(arguments);
 
   points = points.map(function(pointOptions) {
-    var point = self._createPoint(pointOptions);
+    const point = self._createPoint(pointOptions);
 
     if (objectHasProperty(self._pointsById, point.id)) {
       throw new Error('peaks.points.add(): duplicate id');
@@ -176,9 +176,9 @@ WaveformPoints.prototype.add = function(/* pointOrPoints */) {
  */
 
 WaveformPoints.prototype._findPoint = function(predicate) {
-  var indexes = [];
+  const indexes = [];
 
-  for (var i = 0, length = this._points.length; i < length; i++) {
+  for (let i = 0, length = this._points.length; i < length; i++) {
     if (predicate(this._points[i])) {
       indexes.push(i);
     }
@@ -196,12 +196,12 @@ WaveformPoints.prototype._findPoint = function(predicate) {
  */
 
 WaveformPoints.prototype._removeIndexes = function(indexes) {
-  var removed = [];
+  const removed = [];
 
-  for (var i = 0; i < indexes.length; i++) {
-    var index = indexes[i] - removed.length;
+  for (let i = 0; i < indexes.length; i++) {
+    const index = indexes[i] - removed.length;
 
-    var itemRemoved = this._points.splice(index, 1)[0];
+    const itemRemoved = this._points.splice(index, 1)[0];
 
     delete this._pointsById[itemRemoved.id];
 
@@ -225,9 +225,9 @@ WaveformPoints.prototype._removeIndexes = function(indexes) {
  */
 
 WaveformPoints.prototype._removePoints = function(predicate) {
-  var indexes = this._findPoint(predicate);
+  const indexes = this._findPoint(predicate);
 
-  var removed = this._removeIndexes(indexes);
+  const removed = this._removeIndexes(indexes);
 
   this._peaks.emit('points.remove', removed);
 

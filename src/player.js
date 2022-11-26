@@ -10,8 +10,8 @@
 import { isValidTime } from './utils';
 
 function getAllPropertiesFrom(adapter) {
-  var allProperties = [];
-  var obj = adapter;
+  const allProperties = [];
+  let obj = adapter;
 
   while (obj) {
     Object.getOwnPropertyNames(obj).forEach(function(p) {
@@ -25,7 +25,7 @@ function getAllPropertiesFrom(adapter) {
 }
 
 function validateAdapter(adapter) {
-  var publicAdapterMethods = [
+  const publicAdapterMethods = [
     'init',
     'destroy',
     'play',
@@ -37,7 +37,7 @@ function validateAdapter(adapter) {
     'seek'
   ];
 
-  var allProperties = getAllPropertiesFrom(adapter);
+  const allProperties = getAllPropertiesFrom(adapter);
 
   publicAdapterMethods.forEach(function(method) {
     if (!allProperties.includes(method)) {
@@ -161,7 +161,7 @@ Player.prototype.seek = function(time) {
  */
 
 Player.prototype.playSegment = function(segment, loop) {
-  var self = this;
+  const self = this;
 
   if (!segment ||
     !isValidTime(segment.startTime) ||

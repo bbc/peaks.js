@@ -3,7 +3,7 @@ import WaveformOverview from '../../src/waveform-overview';
 import WaveformZoomView from '../../src/waveform-zoomview';
 
 describe('Peaks.views', function() {
-  var p;
+  let p;
 
   afterEach(function() {
     if (p) {
@@ -14,7 +14,7 @@ describe('Peaks.views', function() {
   describe('createZoomview', function() {
     context('with existing zoomview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -32,11 +32,11 @@ describe('Peaks.views', function() {
       });
 
       it('should return the existing zoomview instance', function() {
-        var view = p.views.getView('zoomview');
+        const view = p.views.getView('zoomview');
 
         expect(view).to.be.an.instanceOf(WaveformZoomView);
 
-        var zoomviewContainer = document.getElementById('zoomview-container');
+        const zoomviewContainer = document.getElementById('zoomview-container');
 
         expect(p.views.createZoomview(zoomviewContainer)).to.equal(view);
       });
@@ -44,7 +44,7 @@ describe('Peaks.views', function() {
 
     context('without existing zoomview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -64,9 +64,9 @@ describe('Peaks.views', function() {
       it('should return a new zoomview instance', function() {
         expect(p.views.getView('zoomview')).to.equal(null);
 
-        var zoomviewContainer = document.getElementById('zoomview-container');
+        const zoomviewContainer = document.getElementById('zoomview-container');
 
-        var view = p.views.createZoomview(zoomviewContainer);
+        const view = p.views.createZoomview(zoomviewContainer);
 
         expect(view).to.be.an.instanceOf(WaveformZoomView);
 
@@ -78,7 +78,7 @@ describe('Peaks.views', function() {
   describe('createOverview', function() {
     context('with existing overview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -96,11 +96,11 @@ describe('Peaks.views', function() {
       });
 
       it('should return the existing overview instance', function() {
-        var view = p.views.getView('overview');
+        const view = p.views.getView('overview');
 
         expect(view).to.be.an.instanceOf(WaveformOverview);
 
-        var overviewContainer = document.getElementById('overview-container');
+        const overviewContainer = document.getElementById('overview-container');
 
         expect(p.views.createOverview(overviewContainer)).to.equal(view);
       });
@@ -108,7 +108,7 @@ describe('Peaks.views', function() {
 
     context('without existing overview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -128,9 +128,9 @@ describe('Peaks.views', function() {
       it('should return a new overview instance', function() {
         expect(p.views.getView('overview')).to.equal(null);
 
-        var overviewContainer = document.getElementById('overview-container');
+        const overviewContainer = document.getElementById('overview-container');
 
-        var view = p.views.createOverview(overviewContainer);
+        const view = p.views.createOverview(overviewContainer);
 
         expect(view).to.be.an.instanceOf(WaveformOverview);
 
@@ -142,7 +142,7 @@ describe('Peaks.views', function() {
   describe('getView', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -163,29 +163,29 @@ describe('Peaks.views', function() {
       });
 
       it('should return the zoomview', function() {
-        var view = p.views.getView('zoomview');
+        const view = p.views.getView('zoomview');
         expect(view).to.be.an.instanceOf(WaveformZoomView);
       });
 
       it('should return the overview', function() {
-        var view = p.views.getView('overview');
+        const view = p.views.getView('overview');
         expect(view).to.be.an.instanceOf(WaveformOverview);
       });
 
       it('should return null if given no view name', function() {
-        var view = p.views.getView();
+        const view = p.views.getView();
         expect(view).to.equal(null);
       });
 
       it('should return null if given an invalid view name', function() {
-        var view = p.views.getView('unknown');
+        const view = p.views.getView('unknown');
         expect(view).to.equal(null);
       });
     });
 
     context('with only a zoomview container', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -203,29 +203,29 @@ describe('Peaks.views', function() {
       });
 
       it('should return the zoomview', function() {
-        var view = p.views.getView('zoomview');
+        const view = p.views.getView('zoomview');
         expect(view).to.be.an.instanceOf(WaveformZoomView);
       });
 
       it('should return null if given the overview view name', function() {
-        var view = p.views.getView('overview');
+        const view = p.views.getView('overview');
         expect(view).to.equal(null);
       });
 
       it('should return the zoomview if given no view name', function() {
-        var view = p.views.getView();
+        const view = p.views.getView();
         expect(view).to.be.an.instanceOf(WaveformZoomView);
       });
 
       it('should return null if given an invalid view name', function() {
-        var view = p.views.getView('unknown');
+        const view = p.views.getView('unknown');
         expect(view).to.equal(null);
       });
     });
 
     context('with only an overview container', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -243,22 +243,22 @@ describe('Peaks.views', function() {
       });
 
       it('should return null if given the zoomview view name', function() {
-        var view = p.views.getView('zoomview');
+        const view = p.views.getView('zoomview');
         expect(view).to.equal(null);
       });
 
       it('should return the overview', function() {
-        var view = p.views.getView('overview');
+        const view = p.views.getView('overview');
         expect(view).to.be.an.instanceOf(WaveformOverview);
       });
 
       it('should return the overview if given no view name', function() {
-        var view = p.views.getView();
+        const view = p.views.getView();
         expect(view).to.be.an.instanceOf(WaveformOverview);
       });
 
       it('should return null if given an invalid view name', function() {
-        var view = p.views.getView('unknown');
+        const view = p.views.getView('unknown');
         expect(view).to.equal(null);
       });
     });
@@ -267,7 +267,7 @@ describe('Peaks.views', function() {
   describe('destroyZoomview', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -288,8 +288,8 @@ describe('Peaks.views', function() {
       });
 
       it('should destroy the zoomview', function() {
-        var view = p.views.getView('zoomview');
-        var spy = sinon.spy(view, 'destroy');
+        const view = p.views.getView('zoomview');
+        const spy = sinon.spy(view, 'destroy');
 
         p.views.destroyZoomview();
 
@@ -300,7 +300,7 @@ describe('Peaks.views', function() {
 
     context('with only a zoomview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -326,7 +326,7 @@ describe('Peaks.views', function() {
 
     context('with no zoomview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -354,7 +354,7 @@ describe('Peaks.views', function() {
   describe('destroyOverview', function() {
     context('with zoomview and overview containers', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
@@ -375,8 +375,8 @@ describe('Peaks.views', function() {
       });
 
       it('should destroy the overview', function() {
-        var view = p.views.getView('overview');
-        var spy = sinon.spy(view, 'destroy');
+        const view = p.views.getView('overview');
+        const spy = sinon.spy(view, 'destroy');
 
         p.views.destroyOverview();
 
@@ -387,7 +387,7 @@ describe('Peaks.views', function() {
 
     context('with only an overview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           overview: {
             container: document.getElementById('overview-container')
           },
@@ -413,7 +413,7 @@ describe('Peaks.views', function() {
 
     context('with no overview', function() {
       beforeEach(function(done) {
-        var options = {
+        const options = {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },

@@ -3,17 +3,17 @@ import CueEmitter from '../../src/cue-emitter';
 import Cue from '../../src/cue';
 
 describe('CueEmitter', function() {
-  var p;
-  var cueEmitter;
+  let p;
+  let cueEmitter;
 
-  var event = {
+  const event = {
     POINT: 'points.enter',
     SEGMENT_IN: 'segments.enter',
     SEGMENT_OUT: 'segments.exit'
   };
 
   beforeEach(function(done) {
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -51,7 +51,7 @@ describe('CueEmitter', function() {
   });
 
   it('should initialise with already existing points', function(done) {
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -75,7 +75,7 @@ describe('CueEmitter', function() {
   });
 
   it('should be destroyed when the Peaks instance is destroyed', function(done) {
-    var options = {
+    const options = {
       overview: {
         container: document.getElementById('overview-container')
       },
@@ -119,7 +119,7 @@ describe('CueEmitter', function() {
     });
 
     it('should update cues when point is updated', function() {
-      var id = 'mypoint';
+      const id = 'mypoint';
 
       p.points.add({ time: 1.1, id: id });
       p.points.add({ time: 9.1, id: 'other' });
@@ -207,7 +207,7 @@ describe('CueEmitter', function() {
     }
 
     it('should emit point events during forward playback', function(done) {
-      var emitted = [];
+      const emitted = [];
 
       p.points.add({ time: 1.05, id: 'p1' });
       p.points.add({ time: 1.07, id: 'p2' });
@@ -226,7 +226,7 @@ describe('CueEmitter', function() {
     });
 
     it('should emit point events during reverse playback', function(done) {
-      var emitted = [];
+      const emitted = [];
 
       p.points.add({ time: 1.05, id: 'p1' });
       p.points.add({ time: 1.07, id: 'p2' });
@@ -245,7 +245,7 @@ describe('CueEmitter', function() {
     });
 
     it('should emit segment events during forward playback', function(done) {
-      var emitted = [];
+      const emitted = [];
 
       p.segments.add({ startTime: 1.05, endTime: 1.09, id: 'seg1' });
 
@@ -265,7 +265,7 @@ describe('CueEmitter', function() {
     });
 
     it('should emit segment events during reverse playback', function(done) {
-      var emitted = [];
+      const emitted = [];
 
       p.segments.add({ startTime: 1.05, endTime: 1.09, id: 'seg1' });
 
@@ -287,7 +287,7 @@ describe('CueEmitter', function() {
     it('should emit events on seeking', function(done) {
       // This test uses a custom player object as sometimes
       // the test would timeout waiting for the media element to seek.
-      var player = {
+      const player = {
         init: function(eventEmitter) {
           this._eventEmitter = eventEmitter;
           this._currentTime = 0;
@@ -326,7 +326,7 @@ describe('CueEmitter', function() {
         }
       };
 
-      var options = {
+      const options = {
         overview: {
           container: document.getElementById('overview-container')
         },
@@ -346,11 +346,11 @@ describe('CueEmitter', function() {
         peaks.segments.add({ startTime: 6, endTime: 8, id: 'segment.2' });
         peaks.segments.add({ startTime: 10, endTime: 12, id: 'segment.3' });
 
-        var events = [];
-        var seekTimes = [3, 11]; // Seek to segment.1 then segment.3
+        const events = [];
+        const seekTimes = [3, 11]; // Seek to segment.1 then segment.3
 
         peaks.on('player.seeked', function() {
-          var time = seekTimes.shift();
+          const time = seekTimes.shift();
 
           if (time) {
             peaks.player.seek(time);
@@ -375,7 +375,7 @@ describe('CueEmitter', function() {
           events.push({ type: 'segments.exit', segment: segment });
         });
 
-        var time = seekTimes.shift();
+        const time = seekTimes.shift();
         peaks.player.seek(time);
       });
     });

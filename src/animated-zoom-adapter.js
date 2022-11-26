@@ -18,33 +18,33 @@ export default {
    */
 
   create: function(view, currentScale, previousScale) {
-    var currentTime = view.peaks.player.getCurrentTime();
-    var frameData = [];
+    const currentTime = view.peaks.player.getCurrentTime();
+    const frameData = [];
 
-    var inputIndex;
-    var outputIndex;
-    var lastFrameOffsetTime;
+    let inputIndex;
+    let outputIndex;
+    let lastFrameOffsetTime;
 
-    var rootData = view.originalWaveformData;
+    const rootData = view.originalWaveformData;
 
     view.beginZoom();
 
     // Determine whether zooming in or out
-    var frameCount = (previousScale < currentScale) ? 15 : 30;
+    const frameCount = (previousScale < currentScale) ? 15 : 30;
 
     // Create array with resampled data for each animation frame (need to
     // know duration, resample points per frame)
-    for (var i = 0; i < frameCount; i++) {
+    for (let i = 0; i < frameCount; i++) {
       // Work out interpolated resample scale using currentScale
       // and previousScale
-      var frameScale = Math.floor(
+      const frameScale = Math.floor(
         previousScale +
         i * (currentScale - previousScale) / frameCount
       );
 
       // Determine the timeframe for the zoom animation (start and end of
       // dataset for zooming animation)
-      var newWidthSeconds = view.width * frameScale / rootData.adapter.sample_rate;
+      const newWidthSeconds = view.width * frameScale / rootData.adapter.sample_rate;
 
       if (currentTime >= 0 && currentTime <= newWidthSeconds / 2) {
         inputIndex = 0;
@@ -61,8 +61,8 @@ export default {
         // This way calculates the index of the start time at the scale we
         // are coming from and the scale we are going to
 
-        var oldPixelIndex = currentTime * rootData.adapter.sample_rate / previousScale;
-        var newPixelIndex = currentTime * rootData.adapter.sample_rate / frameScale;
+        const oldPixelIndex = currentTime * rootData.adapter.sample_rate / previousScale;
+        const newPixelIndex = currentTime * rootData.adapter.sample_rate / frameScale;
 
         inputIndex  = oldPixelIndex - view.width / 2;
         outputIndex = newPixelIndex - view.width / 2;
@@ -73,7 +73,7 @@ export default {
       }
 
       // rootData should be swapped for your resampled dataset:
-      var resampled = rootData.resample({
+      const resampled = rootData.resample({
         scale:        frameScale,
         input_index:  Math.floor(inputIndex),
         output_index: Math.floor(outputIndex),
@@ -83,14 +83,14 @@ export default {
       frameData.push(resampled);
     }
 
-    var animationFrameFunction =
+    const animationFrameFunction =
       this.createAnimationFrameFunction(view, frameData);
 
     return new Animation(animationFrameFunction, view);
   },
 
   createAnimationFrameFunction: function(view, frameData) {
-    var index = 0;
+    let index = 0;
 
     view.intermediateData = null;
 
