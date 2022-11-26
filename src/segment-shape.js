@@ -143,8 +143,7 @@ function SegmentShape(segment, peaks, layer, view) {
       width:         segmentEndOffset - segmentStartOffset,
       verticalAlign: segmentOptions.overlayLabelVerticalAlign,
       height:        overlayRectHeight,
-      padding:       segmentOptions.overlayLabelPadding,
-      wrap:          'none'
+      padding:       segmentOptions.overlayLabelPadding
     });
 
     this._overlay.add(this._overlayText);
