@@ -55,7 +55,7 @@
     "build-demo": "cd demo/custom-markers && rollup -c",
     "copy-demo-files": "copyfiles --up 1 test_data/sample.mp3 test_data/07023003.mp3 test_data/07023003-2channel.dat demo",
     "prestart": "npm run build && npm run build-demo && npm run copy-demo-files",
-    "start": "serve --listen 8080 --no-clipboard demo",
+    "start": "serve --listen 8080 --no-clipboard --no-request-logging demo",
     "prepack": "npm run build"
   },
   "devDependencies": {
