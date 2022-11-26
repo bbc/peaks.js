@@ -1393,7 +1393,7 @@ instance.segments.add([
   { startTime: 10, endTime: 20 }
 ]);
 
-// Remove both segments as they start at `10`
+// Remove both segments as they start at 10
 instance.segments.removeByTime(10);
 
 // Remove only the first segment
