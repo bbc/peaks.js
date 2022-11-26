@@ -39,7 +39,7 @@ function SegmentShape(segment, peaks, layer, view) {
   this._endMarker   = null;
   this._color       = segment.color;
   this._borderColor = segment.borderColor;
-  this._draggable   = this._segment.editable && this._view._isSegmentDraggingEnabled();
+  this._draggable   = this._segment.editable && this._view.isSegmentDraggingEnabled();
   this._dragging    = false;
 
   const segmentOptions = view.getViewOptions().segmentOptions;

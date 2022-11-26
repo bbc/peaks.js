@@ -200,7 +200,7 @@ WaveformOverview.prototype._clickHandler = function(event, eventName) {
   });
 };
 
-WaveformOverview.prototype._isSegmentDraggingEnabled = function() {
+WaveformOverview.prototype.isSegmentDraggingEnabled = function() {
   return false;
 };
 

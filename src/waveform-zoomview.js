@@ -346,7 +346,7 @@ WaveformZoomView.prototype.enableSegmentDragging = function(enable) {
   this._segmentsLayer.enableSegmentDragging(enable);
 };
 
-WaveformZoomView.prototype._isSegmentDraggingEnabled = function() {
+WaveformZoomView.prototype.isSegmentDraggingEnabled = function() {
   return this._enableSegmentDragging;
 };
 
