@@ -658,7 +658,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
       segmentMarker.timeUpdated(this._segment.endTime);
 
       if (this._nextSegment) {
-        var nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
+        const nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
         if (endMarkerX > nextSegmentStartX) {
           this._nextSegment.update({
@@ -687,7 +687,7 @@ SegmentShape.prototype._onSegmentHandleDragEnd = function(segmentMarker, event) 
   this._nextSegment = null;
   this._previousSegment = null;
 
-  var startMarker = segmentMarker.isStartMarker();
+  const startMarker = segmentMarker.isStartMarker();
 
   this._peaks.emit('segments.dragend', {
     segment: this._segment,

@@ -34,14 +34,14 @@ import Konva from 'konva/lib/Core';
 function WaveformShape(options) {
   this._color = options.color;
 
-  var shapeOptions = {};
+  const shapeOptions = {};
 
   if (isString(options.color)) {
     shapeOptions.fill = options.color;
   }
   else if (isLinearGradientColor(options.color)) {
-    var startY = options.view._height * (options.color.linearGradientStart / 100);
-    var endY = options.view._height * (options.color.linearGradientEnd / 100);
+    const startY = options.view._height * (options.color.linearGradientStart / 100);
+    const endY = options.view._height * (options.color.linearGradientEnd / 100);
 
     shapeOptions.fillLinearGradientStartPointY = startY;
     shapeOptions.fillLinearGradientEndPointY = endY;
@@ -84,8 +84,8 @@ WaveformShape.prototype.setWaveformColor = function(color) {
   else if (isLinearGradientColor(color)) {
     this._shape.fill(null);
 
-    var startY = this._view._height * (color.linearGradientStart / 100);
-    var endY = this._view._height * (color.linearGradientEnd / 100);
+    const startY = this._view._height * (color.linearGradientStart / 100);
+    const endY = this._view._height * (color.linearGradientEnd / 100);
 
     this._shape.fillLinearGradientStartPointY(startY);
     this._shape.fillLinearGradientEndPointY(endY);
@@ -104,9 +104,9 @@ WaveformShape.prototype.fitToView = function() {
 };
 
 WaveformShape.prototype._sceneFunc = function(context) {
-  var frameOffset = this._view.getFrameOffset();
-  var width = this._view.getWidth();
-  var height = this._view.getHeight();
+  const frameOffset = this._view.getFrameOffset();
+  const width = this._view.getWidth();
+  const height = this._view.getHeight();
 
   this._drawWaveform(
     context,
@@ -140,7 +140,7 @@ WaveformShape.prototype._drawWaveform = function(context, waveformData,
     startPixels = frameOffset;
   }
 
-  var limit = frameOffset + width;
+  const limit = frameOffset + width;
 
   if (endPixels > limit) {
     endPixels = limit;
@@ -150,12 +150,12 @@ WaveformShape.prototype._drawWaveform = function(context, waveformData,
     endPixels = waveformData.length - 1;
   }
 
-  var channels = waveformData.channels;
+  const channels = waveformData.channels;
 
-  var waveformTop = 0;
-  var waveformHeight = Math.floor(height / channels);
+  let waveformTop = 0;
+  let waveformHeight = Math.floor(height / channels);
 
-  for (var i = 0; i < channels; i++) {
+  for (let i = 0; i < channels; i++) {
     if (i === channels - 1) {
       waveformHeight = height - (channels - 1) * waveformHeight;
     }

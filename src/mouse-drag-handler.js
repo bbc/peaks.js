@@ -146,7 +146,7 @@ MouseDragHandler.prototype._mouseUp = function(event) {
   }
 
   if (this._handlers.onMouseUp) {
-    var mousePosX = this._getMousePosX(clientX);
+    const mousePosX = this._getMousePosX(clientX);
 
     this._handlers.onMouseUp(mousePosX);
   }

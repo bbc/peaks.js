@@ -84,7 +84,7 @@ WaveformSegments.prototype._createSegment = function(options) {
     throw new TypeError('peaks.segments.add(): expected a Segment object parameter');
   }
 
-  var segmentOptions = {
+  const segmentOptions = {
     peaks: this._peaks
   };
 

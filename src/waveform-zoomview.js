@@ -688,7 +688,7 @@ WaveformZoomView.prototype.timeToPixelOffset = function(time) {
 };
 
 WaveformZoomView.prototype.createZoomAdapter = function(currentScale, previousScale) {
-  var ZoomAdapter = zoomAdapterMap[this._viewOptions.zoomAdapter];
+  const ZoomAdapter = zoomAdapterMap[this._viewOptions.zoomAdapter];
 
   if (!ZoomAdapter) {
     throw new Error('Invalid zoomAdapter: ' + this._viewOptions.zoomAdapter);

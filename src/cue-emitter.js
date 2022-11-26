@@ -301,7 +301,7 @@ CueEmitter.prototype._detachEventHandlers = function() {
   this._peaks.off('player.playing', this._onPlaying);
   this._peaks.off('player.seeked', this._onSeeked);
 
-  for (var i = 0; i < events.length; i++) {
+  for (let i = 0; i < events.length; i++) {
     this._peaks.off(events[i], this._updateCues);
   }
 };

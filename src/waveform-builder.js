@@ -9,7 +9,7 @@
 import { isArrayBuffer, isObject, isString } from './utils';
 import WaveformData from 'waveform-data';
 
-var isXhr2 = ('withCredentials' in new XMLHttpRequest());
+const isXhr2 = ('withCredentials' in new XMLHttpRequest());
 
 /**
  * Creates and returns a WaveformData object, either by requesting the

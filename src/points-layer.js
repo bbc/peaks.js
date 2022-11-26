@@ -10,9 +10,9 @@ import PointMarker from './point-marker';
 import { clamp, objectHasProperty } from './utils';
 import Konva from 'konva/lib/Core';
 
-var defaultFontFamily = 'sans-serif';
-var defaultFontSize = 10;
-var defaultFontShape = 'normal';
+const defaultFontFamily = 'sans-serif';
+const defaultFontSize = 10;
+const defaultFontShape = 'normal';
 
 /**
  * Creates a Konva.Layer that displays point markers against the audio

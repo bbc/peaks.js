@@ -121,7 +121,7 @@ describe('Player', function() {
 
     describe('isPlaying', function() {
       it("should call the player's isPlaying() method and return its value", function() {
-        var count = player.isPlaying.callCount;
+        const count = player.isPlaying.callCount;
         expect(p.player.isPlaying()).to.equal(true);
         expect(player.isPlaying.callCount).to.equal(count + 1);
       });
