@@ -1,10 +1,10 @@
 'use strict';
 /* eslint-env node */
 
-var commonjs = require('@rollup/plugin-commonjs');
-var resolve = require('@rollup/plugin-node-resolve').nodeResolve;
-var babel = require('@rollup/plugin-babel');
-var json = require('@rollup/plugin-json');
+const commonjs = require('@rollup/plugin-commonjs');
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve;
+const babel = require('@rollup/plugin-babel');
+const json = require('@rollup/plugin-json');
 
 module.exports = function(config) {
   // Karma configuration

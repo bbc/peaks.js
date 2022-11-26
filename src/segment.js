@@ -100,7 +100,7 @@ function Segment(options) {
 }
 
 Segment.prototype._setUserData = function(options) {
-  for (let key in options) {
+  for (const key in options) {
     if (objectHasProperty(options, key) && segmentOptions.indexOf(key) === -1) {
       this[key] = options[key];
     }

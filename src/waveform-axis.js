@@ -27,7 +27,7 @@ import Konva from 'konva/lib/Core';
  */
 
 function WaveformAxis(view, options) {
-  var self = this;
+  const self = this;
 
   self._axisGridlineColor = options.axisGridlineColor;
   self._axisLabelColor    = options.axisLabelColor;
@@ -101,7 +101,7 @@ WaveformAxis.prototype._getAxisLabelScale = function(view) {
 
   for (;;) {
     secs = baseSecs * steps[index];
-    var pixels = view.timeToPixels(secs);
+    const pixels = view.timeToPixels(secs);
 
     if (pixels < minSpacing) {
       if (++index === steps.length) {

@@ -74,7 +74,7 @@ function Point(options) {
 }
 
 Point.prototype._setUserData = function(options) {
-  for (let key in options) {
+  for (const key in options) {
     if (objectHasProperty(options, key) && pointOptions.indexOf(key) === -1) {
       this[key] = options[key];
     }

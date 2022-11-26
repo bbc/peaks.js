@@ -247,7 +247,7 @@ function getScrollbarOptions(opts) {
 }
 
 function extendOptions(to, from) {
-  for (let key in from) {
+  for (const key in from) {
     if (objectHasProperty(from, key) &&
         objectHasProperty(to, key)) {
       to[key] = from[key];

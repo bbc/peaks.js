@@ -250,7 +250,7 @@ CueEmitter.prototype._updateActiveSegments = function(time) {
 
   // Remove any segments no longer active.
 
-  for (let id in self._activeSegments) {
+  for (const id in self._activeSegments) {
     if (objectHasProperty(self._activeSegments, id)) {
       const segment = activeSegments.find(getSegmentIdComparator(id));
 

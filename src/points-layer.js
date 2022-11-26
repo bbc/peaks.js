@@ -363,7 +363,7 @@ PointsLayer.prototype._findOrAddPointMarker = function(point) {
 PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
   let count = 0;
 
-  for (let pointId in this._pointMarkers) {
+  for (const pointId in this._pointMarkers) {
     if (objectHasProperty(this._pointMarkers, pointId)) {
       const point = this._pointMarkers[pointId].getPoint();
 
@@ -414,7 +414,7 @@ PointsLayer.prototype.destroy = function() {
 };
 
 PointsLayer.prototype.fitToView = function() {
-  for (let pointId in this._pointMarkers) {
+  for (const pointId in this._pointMarkers) {
     if (objectHasProperty(this._pointMarkers, pointId)) {
       const pointMarker = this._pointMarkers[pointId];
 

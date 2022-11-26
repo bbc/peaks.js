@@ -90,7 +90,7 @@ export function objectHasProperty(object, field) {
 }
 
 export function extend(to, from) {
-  for (let key in from) {
+  for (const key in from) {
     if (objectHasProperty(from, key)) {
       to[key] = from[key];
     }

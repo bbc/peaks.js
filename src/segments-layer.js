@@ -61,7 +61,7 @@ SegmentsLayer.prototype.isEditingEnabled = function() {
 };
 
 SegmentsLayer.prototype.enableSegmentDragging = function(enable) {
-  for (let segmentId in this._segmentShapes) {
+  for (const segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
       this._segmentShapes[segmentId].enableSegmentDragging(enable);
     }
@@ -219,7 +219,7 @@ SegmentsLayer.prototype._findOrAddSegmentShape = function(segment) {
 SegmentsLayer.prototype._removeInvisibleSegments = function(startTime, endTime) {
   let count = 0;
 
-  for (let segmentId in this._segmentShapes) {
+  for (const segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
       const segment = this._segmentShapes[segmentId].getSegment();
 
@@ -267,7 +267,7 @@ SegmentsLayer.prototype.destroy = function() {
 };
 
 SegmentsLayer.prototype.fitToView = function() {
-  for (let segmentId in this._segmentShapes) {
+  for (const segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
       const segmentShape = this._segmentShapes[segmentId];
 
