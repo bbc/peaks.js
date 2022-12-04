@@ -360,7 +360,7 @@ Peaks.init = function(opts, callback) {
   // Setup the UI components
   const waveformBuilder = new WaveformBuilder(instance);
 
-  player.init(instance)
+  instance.player.init(instance)
     .then(function() {
       waveformBuilder.init(instance.options, function(err, waveformData) {
         if (err) {
