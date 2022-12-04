@@ -3,8 +3,25 @@
  *
  * Implementation of {@link Player} adapter based on the HTML5 media element.
  *
- * @module player-medialement
+ * @module medialement-player
  */
+
+/**
+ * Checks whether the given HTMLMediaElement has either a src attribute
+ * or any child <code>&lt;source&gt;</code> nodes
+ */
+
+function mediaElementHasSource(mediaElement) {
+  if (mediaElement.src) {
+    return true;
+  }
+
+  if (mediaElement.querySelectorAll('source').length > 0) {
+    return true;
+  }
+
+  return false;
+}
 
 /**
  * A wrapper for interfacing with the HTML5 media element API.
@@ -70,6 +87,10 @@ MediaElementPlayer.prototype.init = function(eventEmitter) {
   });
 
   self._interval = null;
+
+  if (!mediaElementHasSource(self._mediaElement)) {
+    return Promise.resolve();
+  }
 
   return new Promise(function(resolve, reject) {
     function eventHandler(event) {
