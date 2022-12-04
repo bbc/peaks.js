@@ -44,15 +44,21 @@
 
     <div id="demo-controls">
       <div id="controls">
-        <button data-action="play">Play</button>
-        <button data-action="pause">Pause</button>
-        <input type="text" id="seek-time" value="0.0">
-        <button data-action="seek">Seek</button>
-        <button data-action="zoom-in">Zoom in</button>
-        <button data-action="zoom-out">Zoom out</button>
-        <input type="text" id="segment-start" value="2.0">
-        <input type="text" id="segment-end" value="5.0">
-        <button data-action="play-segment">Play segment</button>
+        <div>
+          <button data-action="play">Play</button>
+          <button data-action="pause">Pause</button>
+          <input type="text" id="seek-time" value="0.0">
+          <button data-action="seek">Seek</button>
+          <button data-action="zoom-in">Zoom in</button>
+          <button data-action="zoom-out">Zoom out</button>
+          <input type="text" id="segment-start" value="2.0">
+          <input type="text" id="segment-end" value="5.0">
+          <button data-action="play-segment">Play segment</button>
+        </div>
+        <div>
+          <label for="select-audio">Select audio:</label>
+          <select id="select-audio"></select>
+        </div>
       </div>
     </div>
 
@@ -60,6 +66,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
 
     <script>
+      function getSources() {
+        return [
+          {
+            title: 'Tree of Life',
+            mediaUrl: '/TOL_6min_720p_download.mp3',
+          },
+          {
+            title: 'Desert Island Discs',
+            mediaUrl: '/sample.mp3',
+          },
+          {
+            title: 'BBC Sound Effect (Cars)',
+            mediaUrl: '/07023003.mp3',
+          }
+        ];
+      }
+
       function fetchAndDecode(audioContext, url) {
         // Load audio file into an AudioBuffer
         return fetch(url)
@@ -68,6 +91,26 @@
           })
           .then(function(buffer) {
             return audioContext.decodeAudioData(buffer);
+          });
+      }
+
+      function fetchAndUpdateWaveform(peaksInstance, audioContext, source) {
+        return fetchAndDecode(audioContext, source.mediaUrl)
+          .then(function(audioBuffer) {
+            // Update the Peaks.js waveform view with the new AudioBuffer.
+            // The AudioBuffer is passed through to the external player's setSource()
+            // method, to update the player.
+            peaksInstance.setSource({
+              webAudio: {
+                audioBuffer: audioBuffer,
+                scale: 128,
+                multiChannel: false
+              }
+            }, function(error) {
+              if (error) {
+                console.error('setSource error', error);
+              }
+            });
           });
       }
 
@@ -103,6 +146,17 @@
 
                 this.externalPlayer = null;
                 this.eventEmitter = null;
+              },
+
+              setSource: function(opts) {
+                if (this.isPlaying()) {
+                  this.pause();
+                }
+
+                // Update the Tone.js Player object with the new AudioBuffer
+                this.externalPlayer.buffer.set(opts.webAudio.audioBuffer);
+
+                return Promise.resolve();
               },
 
               play: function() {
@@ -195,13 +249,27 @@
               });
 
               document.querySelector('[data-action="play-segment"]').addEventListener('click', function () {
-                var start = document.getElementById('segment-start').value;
-                var startInSeconds = parseFloat(start);
+                const start = document.getElementById('segment-start').value;
+                const startInSeconds = parseFloat(start);
 
-                var end = document.getElementById('segment-end').value;
-                var endInSeconds = parseFloat(end);
+                const end = document.getElementById('segment-end').value;
+                const endInSeconds = parseFloat(end);
 
                 peaksInstance.player.playSegment({ startTime: startInSeconds, endTime: endInSeconds, editable: true });
+              });
+
+              const select = document.getElementById('select-audio');
+
+              const sources = getSources();
+
+              for (let i = 0; i < sources.length; i++) {
+                select.options[i] = new Option(sources[i].title, i);
+              }
+
+              select.addEventListener('change', function(event) {
+                const source = sources[event.target.value];
+
+                fetchAndUpdateWaveform(peaksInstance, audioContext, source);
               });
             });
           });
