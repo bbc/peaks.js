@@ -60,17 +60,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
 
     <script>
-      (async function(Peaks) {
-        const audioContext = Tone.context;
-
-        // Load audio file into audio buffer
-        fetch("/TOL_6min_720p_download.mp3")
+      function fetchAndDecode(audioContext, url) {
+        // Load audio file into an AudioBuffer
+        return fetch(url)
           .then(function(response) {
             return response.arrayBuffer();
           })
           .then(function(buffer) {
             return audioContext.decodeAudioData(buffer);
-          })
+          });
+      }
+
+      (async function(Peaks) {
+        const audioContext = Tone.context;
+
+        fetchAndDecode(audioContext, "/TOL_6min_720p_download.mp3")
           .then(function(audioBuffer) {
             const player = {
               externalPlayer: new Tone.Player(audioBuffer).toDestination(),
