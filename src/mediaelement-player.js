@@ -171,6 +171,12 @@ SetSourceHandler.prototype.setSource = function(options, callback) {
     self._eventEmitter.on('player.error', self._playerErrorHandler);
 
     self._mediaElement.setAttribute('src', options.mediaUrl);
+
+    // Force the media element to load, in case the media element
+    // has preload="none".
+    if (self._mediaElement.readyState === HTMLMediaElement.HAVE_NOTHING) {
+      self._mediaElement.load();
+    }
   });
 };
 
