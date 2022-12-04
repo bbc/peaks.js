@@ -336,7 +336,8 @@ WaveformBuilder.prototype._buildWaveformDataFromAudioBuffer = function(options, 
   const webAudioBuilderOptions = {
     audio_buffer: webAudioOptions.audioBuffer,
     split_channels: webAudioOptions.multiChannel,
-    scale: webAudioOptions.scale
+    scale: webAudioOptions.scale,
+    disable_worker: true
   };
 
   WaveformData.createFromAudio(webAudioBuilderOptions, callback);

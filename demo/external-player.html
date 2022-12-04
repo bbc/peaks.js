@@ -57,7 +57,7 @@
     </div>
 
     <script src="/peaks.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
 
     <script>
       (async function(Peaks) {
@@ -73,7 +73,7 @@
           })
           .then(function(audioBuffer) {
             const player = {
-              externalPlayer: new Tone.Player(audioBuffer),
+              externalPlayer: new Tone.Player(audioBuffer).toDestination(),
               eventEmitter: null,
 
               init: function(eventEmitter) {
@@ -82,10 +82,8 @@
                 this.externalPlayer.sync();
                 this.externalPlayer.start();
 
-                Tone.connectSeries(this.externalPlayer, Tone.Master);
-
                 Tone.Transport.scheduleRepeat(() => {
-                  var time = this.getCurrentTime();
+                  const time = this.getCurrentTime();
                   eventEmitter.emit('player.timeupdate', time);
 
                   if (time >= this.getDuration()) {
@@ -98,17 +96,17 @@
 
               destroy: function() {
                 Tone.context.dispose();
+
                 this.externalPlayer = null;
                 this.eventEmitter = null;
               },
 
               play: function() {
-                Tone.Transport.start(
-                  Tone.now(),
-                  this.getCurrentTime()
-                );
+                Tone.Transport.start();
 
                 this.eventEmitter.emit('player.playing', this.getCurrentTime());
+
+                return Promise.resolve();
               },
 
               pause: function() {
@@ -133,7 +131,7 @@
               },
 
               getCurrentTime: function() {
-                return this.externalPlayer.buffer.toSeconds(Tone.Transport.position);
+                return Tone.Transport.seconds;
               },
 
               getDuration: function() {
