@@ -27,7 +27,7 @@ body {
   margin: 0 auto 24px auto;
   width: 1000px;
   display: flex;
-  align-items: top;
+  align-items: start;
 }
 
 #demo-controls button {
