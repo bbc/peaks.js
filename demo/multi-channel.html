@@ -64,12 +64,16 @@
       </audio>
 
       <div id="controls">
-        <button data-action="zoom-in">Zoom in</button>
-        <button data-action="zoom-out">Zoom out</button>
-        <label for="amplitude-scale">Amplitude scale</label>
-        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
-        <label for="select-source">Select source:</label>
-        <select id="select-source"></select>
+        <div>
+          <button data-action="zoom-in">Zoom in</button>
+          <button data-action="zoom-out">Zoom out</button>
+          <label for="amplitude-scale">Amplitude scale</label>
+          <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+        </div>
+        <div>
+          <label for="select-source">Select source:</label>
+          <select id="select-source"></select>
+        </div>
         <div>
           <label for="zoomview-color">Zoomview color</label>
           <input type="color" id="zoomview-color" value="#00e180">

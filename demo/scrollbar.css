@@ -30,7 +30,7 @@ body {
   margin: 0 auto 24px auto;
   width: 1000px;
   display: flex;
-  align-items: center;
+  align-items: top;
 }
 
 #demo-controls button {
@@ -40,12 +40,19 @@ body {
 }
 
 #audio {
-  flex: 0 0 30%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 30%;
 }
 
 #controls {
   flex: 1;
   margin-left: 1em;
+}
+
+#controls div {
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
 #seek-time {
