@@ -3,7 +3,7 @@
  *
  * Implementation of {@link Player} adapter based on the HTML5 media element.
  *
- * @module medialement-player
+ * @module mediaelement-player
  */
 
 /**
@@ -16,7 +16,7 @@ function mediaElementHasSource(mediaElement) {
     return true;
   }
 
-  if (mediaElement.querySelectorAll('source').length > 0) {
+  if (mediaElement.querySelector('source')) {
     return true;
   }
 
