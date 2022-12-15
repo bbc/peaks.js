@@ -236,6 +236,7 @@ declare module 'peaks.js' {
     fontFamily: string;
     fontSize: number;
     fontStyle: string;
+    segmentOptions: SegmentDisplayOptions;
   }
 
   export interface CreateSegmentLabelOptions {

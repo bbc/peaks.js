@@ -18,6 +18,28 @@ const defaultFontSize = 10;
 const defaultFontShape = 'normal';
 
 /**
+ * Options that control segments' visual appearance
+ *
+ * @typedef {Object} SegmentDisplayOptions
+ * @global
+ * @property {String} style
+ * @property {String} startMarkerColor
+ * @property {String} endMarkerColor
+ * @property {Number} overlayOpacity
+ * @property {String} overlayBorderColor
+ * @property {Number} overlayBorderWidth
+ * @property {Number} overlayCornerRadius
+ * @property {Number} overlayOffset
+ * @property {String} overlayLabelAlign
+ * @property {String} overlayLabelVerticalAlign
+ * @property {Number} overlayLabelPadding
+ * @property {String} overlayLabelColor
+ * @property {String} overlayFontFamily
+ * @property {Number} overlayFontSize
+ * @property {String} overlayFontStyle
+ */
+
+/**
  * Creates a waveform segment shape with optional start and end markers.
  *
  * @class
@@ -265,15 +287,16 @@ SegmentShape.prototype._createMarkers = function() {
     createOverlayMarker;
 
   const startMarker = createSegmentMarker({
-    segment:      this._segment,
-    draggable:    editable,
-    startMarker:  true,
-    color:        segmentOptions.startMarkerColor,
-    fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:     this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
-    layer:        this._layer,
-    view:         this._view.getName()
+    segment:        this._segment,
+    draggable:      editable,
+    startMarker:    true,
+    color:          segmentOptions.startMarkerColor,
+    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
+    fontSize:       this._peaks.options.fontSize || defaultFontSize,
+    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+    layer:          this._layer,
+    view:           this._view.getName(),
+    segmentOptions: this._view.getViewOptions().segmentOptions
   });
 
   if (startMarker) {
@@ -291,15 +314,16 @@ SegmentShape.prototype._createMarkers = function() {
   }
 
   const endMarker = createSegmentMarker({
-    segment:      this._segment,
-    draggable:    editable,
-    startMarker:  false,
-    color:        segmentOptions.endMarkerColor,
-    fontFamily:   this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:     this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:    this._peaks.options.fontStyle || defaultFontShape,
-    layer:        this._layer,
-    view:         this._view.getName()
+    segment:        this._segment,
+    draggable:      editable,
+    startMarker:    false,
+    color:          segmentOptions.endMarkerColor,
+    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
+    fontSize:       this._peaks.options.fontSize || defaultFontSize,
+    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+    layer:          this._layer,
+    view:           this._view.getName(),
+    segmentOptions: this._view.getViewOptions().segmentOptions
   });
 
   if (endMarker) {

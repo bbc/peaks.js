@@ -3,11 +3,13 @@
  *
  * Defines the {@link OverlaySegmentMarker} class.
  *
- * @module default-segment-marker
+ * @module overlay-segment-marker
  */
 
 import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
+
+import { clamp } from './utils';
 
 /**
  * Creates a segment marker handle.
@@ -23,7 +25,7 @@ function OverlaySegmentMarker(options) {
 }
 
 OverlaySegmentMarker.prototype.init = function(group) {
-  const handleWidth  = 10;
+  const handleWidth  = 40;
   const handleHeight = 20;
   const handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
@@ -99,10 +101,14 @@ OverlaySegmentMarker.prototype.bindEventHandlers = function(group) {
 };
 
 OverlaySegmentMarker.prototype.fitToView = function() {
-  const height = this._options.layer.getHeight();
+  const viewHeight = this._options.layer.getHeight();
 
-  this._label.y(height / 2 - 5);
-  this._handle.y(height / 2 - 10.5);
+  const overlayOffset = this._options.segmentOptions.overlayOffset;
+  const overlayRectHeight = clamp(0, viewHeight - 2 * overlayOffset);
+
+  this._label.y(viewHeight / 2 - 5);
+  this._handle.y(overlayOffset);
+  this._handle.height(overlayRectHeight);
 };
 
 OverlaySegmentMarker.prototype.timeUpdated = function(time) {

@@ -24,6 +24,7 @@ import { Text } from 'konva/lib/shapes/Text';
  * @property {String} fontStyle
  * @property {Layer} layer
  * @property {String} view
+ * @property {SegmentDisplayOptions} segmentOptions
  */
 
 /**
