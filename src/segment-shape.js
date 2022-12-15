@@ -234,16 +234,16 @@ SegmentShape.prototype.addToLayer = function(layer) {
     layer.add(this._label);
   }
 
+  if (this._overlay) {
+    layer.add(this._overlay);
+  }
+
   if (this._startMarker) {
     this._startMarker.addToLayer(layer);
   }
 
   if (this._endMarker) {
     this._endMarker.addToLayer(layer);
-  }
-
-  if (this._overlay) {
-    layer.add(this._overlay);
   }
 };
 
@@ -341,6 +341,8 @@ SegmentShape.prototype._onMouseLeave = function(event) {
 };
 
 SegmentShape.prototype._onClick = function(event) {
+  this._moveToTop();
+
   this._peaks.emit('segments.click', {
     segment: this._segment,
     evt: event.evt
@@ -515,12 +517,22 @@ SegmentShape.prototype._onSegmentDragEnd = function() {
   this._dragging = false;
 };
 
+SegmentShape.prototype._moveToTop = function() {
+  this._overlay.moveToTop();
+  this._endMarker.moveToTop();
+  this._startMarker.moveToTop();
+};
+
 /**
  * @param {SegmentMarker} segmentMarker
  */
 
 SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker, event) {
   this._setPreviousAndNextSegments();
+
+  // Move this segment to the top of the z-order, so that it remains on top
+  // of any adjacent segments that the handle is dragged over.
+  this._moveToTop();
 
   this._startMarkerX = this._startMarker.getX();
   this._endMarkerX = this._endMarker.getX();

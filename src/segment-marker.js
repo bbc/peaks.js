@@ -81,6 +81,10 @@ SegmentMarker.prototype.addToLayer = function(layer) {
   layer.add(this._group);
 };
 
+SegmentMarker.prototype.moveToTop = function() {
+  this._group.moveToTop();
+};
+
 SegmentMarker.prototype.fitToView = function() {
   this._marker.fitToView();
 };
