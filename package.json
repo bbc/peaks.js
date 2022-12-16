@@ -1,6 +1,6 @@
 {
   "name": "peaks.js",
-  "version": "3.0.0-beta.1",
+  "version": "3.0.0-beta.2",
   "description": "JavaScript UI component for displaying audio waveforms",
   "main": "./dist/peaks.min.js",
   "module": "./dist/peaks.esm.js",

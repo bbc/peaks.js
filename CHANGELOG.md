@@ -1,5 +1,29 @@
 # Peaks.js
 
+## 3.0.0-beta.2 (2022/12/16)
+
+* (#341) Check media element source during initialisation
+
+* (#360) Fixed `setSource()` where the media element has `preload="none"`
+
+* (#451) Disable use of Worker when using the `webAudio.audioBuffer` option
+  in `Peaks.init()` or `instance.setSource()`
+
+* Removed deprecated options:
+
+  * `containers` - use `zoomview.container` and `overview.container`
+  * `overviewWaveformColor` - `use overview.waveformColor`
+  * `overviewHighlightOffset` - `use overview.highlightOffset`
+  * `overviewHighlightColor` - `use overview.highlightColor`
+  * `zoomWaveformColor` - `use zoomview.waveformColor`
+
+* Segment dragging improvements:
+
+  * Increased overlay segment handle size, to make resizing segments easier
+  * The segment being dragged is now moved to the top of the z-order,
+    so that it remains on top of any other segments that the handle is dragged
+    over (@chrisn)
+
 ## 3.0.0-beta.1 (2022/11/05)
 
 * Fixed dragging of custom point and segment markers (@chrisn)
