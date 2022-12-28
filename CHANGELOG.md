@@ -1,13 +1,19 @@
 # Peaks.js
 
+## 3.0.0-beta.3 (2022/12/28)
+
+* Replaced the `segmentOptions.style` option with separate options to enable
+  segment markers and overlays (@chrisn)
+
 ## 3.0.0-beta.2 (2022/12/16)
 
-* (#341) Check media element source during initialisation
+* (#341) Check media element source during initialisation (@chrisn)
 
 * (#360) Fixed `setSource()` where the media element has `preload="none"`
+  (@chrisn)
 
 * (#451) Disable use of Worker when using the `webAudio.audioBuffer` option
-  in `Peaks.init()` or `instance.setSource()`
+  in `Peaks.init()` or `instance.setSource()` (@chrisn)
 
 * Removed deprecated options:
 
@@ -15,7 +21,7 @@
   * `overviewWaveformColor` - `use overview.waveformColor`
   * `overviewHighlightOffset` - `use overview.highlightOffset`
   * `overviewHighlightColor` - `use overview.highlightColor`
-  * `zoomWaveformColor` - `use zoomview.waveformColor`
+  * `zoomWaveformColor` - `use zoomview.waveformColor` (@chrisn)
 
 * Segment dragging improvements:
 
