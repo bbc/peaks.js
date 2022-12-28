@@ -62,17 +62,16 @@ declare module 'peaks.js' {
     update: (options: PointUpdateOptions) => void;
   }
 
-  type SegmentStyle = 'markers' | 'overlay';
   type LabelHorizontalAlign = 'left' | 'center' | 'right';
   type LabelVerticalAlign = 'top' | 'middle' | 'bottom';
 
   interface SegmentDisplayOptions {
-    /**
-     * Segments can be either shown as start and end markers or an overlay rectangle
-     */
-    style?:                     SegmentStyle;
+    markers?:                   boolean;
+    overlay?:                   boolean;
     startMarkerColor?:          string;
     endMarkerColor?:            string;
+    waveformColor?:             WaveformColor;
+    overlayColor?:              string;
     overlayOpacity?:            number;
     overlayBorderColor?:        string;
     overlayBorderWidth?:        number;

@@ -95,7 +95,7 @@ WaveformSegments.prototype._createSegment = function(options) {
   }
 
   if (isNullOrUndefined(segmentOptions.color)) {
-    if (this._peaks.options.segmentOptions.style === 'overlay') {
+    if (this._peaks.options.segmentOptions.overlay) {
       segmentOptions.color = this._peaks.options.segmentOptions.overlayColor;
     }
     else {

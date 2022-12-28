@@ -99,7 +99,8 @@ const defaultOverviewOptions = {
 };
 
 const defaultSegmentOptions = {
-  style:                     'markers',
+  overlay:                   false,
+  markers:                   true,
   startMarkerColor:          '#aaaaaa',
   endMarkerColor:            '#aaaaaa',
   waveformColor:             '#0074d9',

@@ -52,7 +52,8 @@ describe('SegmentShape', function() {
       it('should create marker handles', function(done) {
         createPeaksInstance({
           segmentOptions: {
-            style: 'markers'
+            markers: true,
+            overlay: false
           }
         },
         function() {
@@ -89,7 +90,8 @@ describe('SegmentShape', function() {
       it('should not create marker handles', function(done) {
         createPeaksInstance({
           segmentOptions: {
-            style: 'markers'
+            markers: true,
+            overlay: false
           }
         },
         function() {
@@ -107,7 +109,8 @@ describe('SegmentShape', function() {
       it('should use the default color', function(done) {
         createPeaksInstance({
           segmentOptions: {
-            style: 'markers'
+            markers: true,
+            overlay: false
           }
         },
         function() {
@@ -136,7 +139,8 @@ describe('SegmentShape', function() {
       it('should create a waveform segment', function(done) {
         createPeaksInstance({
           segmentOptions: {
-            style:         'markers',
+            markers:       true,
+            overlay:       false,
             waveformColor: '#f00'
           }
         },
@@ -165,7 +169,8 @@ describe('SegmentShape', function() {
     it('should use view specific segment options', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style: 'markers'
+          markers: true,
+          overlay: false
         },
         zoomview: {
           segmentOptions: {
@@ -202,7 +207,8 @@ describe('SegmentShape', function() {
     it('should not create marker handles', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style: 'overlay'
+          markers: false,
+          overlay: true
         }
       },
       function() {
@@ -224,7 +230,8 @@ describe('SegmentShape', function() {
     it('should not create a waveform segment', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style: 'overlay'
+          markers: false,
+          overlay: true
         }
       },
       function() {
@@ -249,7 +256,8 @@ describe('SegmentShape', function() {
     it('should create an overlay with default attributes', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style: 'overlay'
+          markers: false,
+          overlay: true
         }
       },
       function() {
@@ -278,7 +286,8 @@ describe('SegmentShape', function() {
     it('should create an overlay with given color', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style: 'overlay'
+          markers: false,
+          overlay: true
         }
       },
       function() {
@@ -309,7 +318,8 @@ describe('SegmentShape', function() {
     it('should use view specific segment options', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style: 'overlay'
+          markers: false,
+          overlay: true
         },
         overview: {
           segmentOptions: {
@@ -351,7 +361,8 @@ describe('SegmentShape', function() {
     it('should use global color and border color options', function(done) {
       createPeaksInstance({
         segmentOptions: {
-          style:              'overlay',
+          markers:            false,
+          overlay:            true,
           overlayColor:       '#444',
           overlayBorderColor: '#222'
         },

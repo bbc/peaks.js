@@ -22,9 +22,12 @@ const defaultFontShape = 'normal';
  *
  * @typedef {Object} SegmentDisplayOptions
  * @global
- * @property {String} style
+ * @property {Boolean} markers
+ * @property {Boolean} overlay
  * @property {String} startMarkerColor
  * @property {String} endMarkerColor
+ * @property {String} waveformColor
+ * @property {String} overlayColor
  * @property {Number} overlayOpacity
  * @property {String} overlayBorderColor
  * @property {Number} overlayBorderWidth
@@ -68,9 +71,7 @@ function SegmentShape(segment, peaks, layer, view) {
 
   this._overlayOffset = segmentOptions.overlayOffset;
 
-  const hasOverlay = segmentOptions.style === 'overlay';
-
-  if (!hasOverlay) {
+  if (!segmentOptions.overlay) {
     this._waveformShape = new WaveformShape({
       color:   segment.color,
       view:    view,
@@ -129,7 +130,7 @@ function SegmentShape(segment, peaks, layer, view) {
 
   let overlayBorderColor, overlayBorderWidth, overlayColor, overlayOpacity, overlayCornerRadius;
 
-  if (hasOverlay) {
+  if (segmentOptions.overlay) {
     overlayBorderColor  = this._borderColor || segmentOptions.overlayBorderColor;
     overlayBorderWidth  = segmentOptions.overlayBorderWidth;
     overlayColor        = this._color || segmentOptions.overlayColor;
@@ -151,7 +152,7 @@ function SegmentShape(segment, peaks, layer, view) {
 
   this._overlay.add(this._overlayRect);
 
-  if (hasOverlay) {
+  if (segmentOptions.overlay) {
     this._overlayText = new Konva.Text({
       x:             0,
       y:             this._overlayOffset,
@@ -282,7 +283,7 @@ SegmentShape.prototype._createMarkers = function() {
 
   const segmentOptions = this._view.getViewOptions().segmentOptions;
 
-  const createSegmentMarker = segmentOptions.style === 'markers' ?
+  const createSegmentMarker = segmentOptions.markers ?
     this._peaks.options.createSegmentMarker :
     createOverlayMarker;
 

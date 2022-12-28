@@ -658,66 +658,55 @@ var options = {
   emitCueEvents: false,
 
   segmentOptions: {
-    // Segment marker style, either 'markers' (default), or 'overlay'
-    style: 'markers',
+    // Enable segment markers
+    markers: true,
+
+    // Enable segment overlays
+    overlay: false,
 
     // Color for segment start marker handles
-    // (not applicable for 'overlay' style segments)
     startMarkerColor: '#aaaaaa',
 
     // Color for segment end marker handles
-    // (not applicable for 'overlay' style segments)
     endMarkerColor: '#aaaaaa',
 
     // Segment waveform color
     waveformColor: '#ff851b',
 
     // Segment overlay color
-    // (only applicable for 'overlay' style segments)
     overlayColor: '#ff0000',
 
     // Segment overlay opacity
-    // (only applicable for 'overlay' style segments)
     overlayOpacity: 0.3,
 
     // Segment overlay border color
-    // (only applicable for 'overlay' style segments)
     overlayBorderColor: '#ff0000',
 
     // Segment overlay border width
-    // (only applicable for 'overlay' style segments)
     overlayBorderWidth: 2,
 
     // Segment overlay border corner radius
-    // (only applicable for 'overlay' style segments)
     overlayCornerRadius: 5,
 
     // Segment overlay offset from the top and bottom of the waveform view, in pixels
-    // (only applicable for 'overlay' style segments)
     overlayOffset: 25,
 
     // Segment overlay label alignment, either 'top-left' or 'center'
-    // (only applicable for 'overlay' style segments)
     overlayLabelAlign: 'top-left',
 
     // Segment overlay label offset, in pixels
-    // (only applicable for 'overlay' style segments)
     overlayLabelPadding: 8,
 
     // Segment overlay label color
-    // (only applicable for 'overlay' style segments)
     overlayLabelColor: '#000000',
 
     // Segment overlay font family
-    // (only applicable for 'overlay' style segments)
     overlayFontFamily: 'sans-serif',
 
     // Segment overlay font size
-    // (only applicable for 'overlay' style segments)
     overlayFontSize: 12,
 
     // Segment overlay font style
-    // (only applicable for 'overlay' style segments)
     overlayFontStyle: 'normal'
   },
 
