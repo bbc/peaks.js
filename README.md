@@ -50,6 +50,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
   - [Initialization](#initialization)
     - [Peaks.init()](#peaksinitoptions-callback)
     - [instance.setSource()](#instancesetsourceoptions-callback)
+    - [instance.getWaveformData()](#instancegetwaveformdata)
   - [Player API](#player-api)
     - [instance.player.play()](#instanceplayerplay)
     - [instance.player.pause()](#instanceplayerpause)
@@ -869,6 +870,15 @@ const options = {
 instance.setSource(options, function(error) {
   // Waveform updated
 });
+```
+
+### `instance.getWaveformData()`
+
+Returns an object that contains the waveform data that Peaks.js uses to render the waveform. Refer to the [WaveformData API documentation](https://github.com/bbc/waveform-data.js/blob/master/doc/API.md) for details of how to use the returned `WaveformData` object.
+
+```js
+const waveformData = instance.getWaveformData();
+console.log(waveformData);
 ```
 
 ## Player API
