@@ -4,6 +4,8 @@
  */
 
 declare module 'peaks.js' {
+  import WaveformData from 'waveform-data';
+
   type Without<T> = { [K in keyof T]?: undefined };
   type XOR<T, U> = (Without<T> & U) | (T & Without<U>);
   type OneOf<T, U, V> = (T & Without<U> & Without<V>) |
@@ -463,6 +465,7 @@ declare module 'peaks.js' {
 
   interface PeaksInstance {
     setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;
+    getWaveformData: () => WaveformData;
     destroy: () => void;
     /** Player API */
     player: {
