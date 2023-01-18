@@ -419,13 +419,20 @@ SegmentShape.prototype._setPreviousAndNextSegments = function() {
   }
 };
 
-SegmentShape.prototype._onSegmentDragStart = function() {
+SegmentShape.prototype._onSegmentDragStart = function(event) {
   this._setPreviousAndNextSegments();
 
   this._dragging = true;
   this._dragStartX = this._overlay.getX();
   this._dragStartTime = this._segment.startTime;
   this._dragEndTime = this._segment.endTime;
+
+  this._peaks.emit('segments.dragstart', {
+    segment: this._segment,
+    startMarker: false,
+    evt: event.evt
+  });
+
 };
 
 SegmentShape.prototype._onSegmentDragMove = function(event) {
@@ -538,8 +545,14 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   });
 };
 
-SegmentShape.prototype._onSegmentDragEnd = function() {
+SegmentShape.prototype._onSegmentDragEnd = function(event) {
   this._dragging = false;
+
+  this._peaks.emit('segments.dragend', {
+    segment: this._segment,
+    startMarker: false,
+    evt: event.evt
+  });
 };
 
 SegmentShape.prototype._moveToTop = function() {
