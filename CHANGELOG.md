@@ -1,5 +1,12 @@
 # Peaks.js
 
+## 3.0.0-beta.4 (2023/01/18)
+
+* (#473) Added `getWaveformData()` method (@chrisn)
+
+* `segments.dragstart` and `segments.dragend` events are now emitted when
+  when dragging entire segments (@chrisn)
+
 ## 3.0.0-beta.3 (2022/12/28)
 
 * Replaced the `segmentOptions.style` option with separate options to enable
