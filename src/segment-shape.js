@@ -432,7 +432,6 @@ SegmentShape.prototype._onSegmentDragStart = function(event) {
     startMarker: false,
     evt: event.evt
   });
-
 };
 
 SegmentShape.prototype._onSegmentDragMove = function(event) {
