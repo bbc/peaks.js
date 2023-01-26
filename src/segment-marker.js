@@ -48,6 +48,7 @@ function SegmentMarker(options) {
   self._onDragEnd     = options.onDragEnd;
 
   self._group = new Konva.Group({
+    name:          'marker',
     draggable:     self._draggable,
     dragBoundFunc: function(pos) {
       return options.dragBoundFunc(self, pos);

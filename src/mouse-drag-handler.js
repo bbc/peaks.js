@@ -64,6 +64,8 @@ function MouseDragHandler(stage, handlers) {
  */
 
 MouseDragHandler.prototype._mouseDown = function(event) {
+  let segment = null;
+
   if (event.type === 'mousedown' && event.evt.button !== 0) {
     // Mouse drag only applies to the primary mouse button.
     // The secondary button may be used to show a context menu
@@ -73,9 +75,16 @@ MouseDragHandler.prototype._mouseDown = function(event) {
 
   const marker = getMarkerObject(event.target);
 
-  // Avoid interfering with drag/drop of point and segment markers.
   if (marker && marker.attrs.draggable) {
-    return;
+    // Avoid interfering with drag/drop of point and segment markers.
+    if (marker.attrs.name === 'marker') {
+      return;
+    }
+
+    // Check if we're dragging a segment.
+    if (marker.attrs.name === 'overlay') {
+      segment = marker;
+    }
   }
 
   this._lastMouseClientX = Math.floor(
@@ -85,7 +94,7 @@ MouseDragHandler.prototype._mouseDown = function(event) {
   if (this._handlers.onMouseDown) {
     const mouseDownPosX = this._getMousePosX(this._lastMouseClientX);
 
-    this._handlers.onMouseDown(mouseDownPosX);
+    this._handlers.onMouseDown(mouseDownPosX, segment);
   }
 
   // Use the window mousemove and mouseup handlers instead of the

@@ -116,6 +116,7 @@ function SegmentShape(segment, peaks, layer, view) {
   const overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
 
   this._overlay = new Konva.Group({
+    name:          'overlay',
     x:             segmentStartOffset,
     y:             0,
     width:         segmentEndOffset - segmentStartOffset,

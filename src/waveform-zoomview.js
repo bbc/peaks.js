@@ -159,14 +159,24 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
   const self = this;
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
-    onMouseDown: function(mousePosX) {
+    onMouseDown: function(mousePosX, segment) {
       this._seeking = false;
+      this._segment = segment;
 
       const playheadOffset = self._playheadLayer.getPlayheadOffset();
 
       if (self._enableSeek &&
           Math.abs(mousePosX - playheadOffset) <= self._playheadClickTolerance) {
         this._seeking = true;
+
+        // The user has clicked near the playhead, and the playhead is within
+        // a segment. In this case we want to allow the playhead to move, but
+        // prevent the segment from being dragged. So we temporarily make the
+        // segment non-draggable, and restore its draggable state in onMouseUp().
+        if (this._segment) {
+          this._segmentIsDraggable = this._segment.draggable();
+          this._segment.draggable(false);
+        }
       }
 
       if (this._seeking) {
@@ -179,6 +189,11 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
     },
 
     onMouseMove: function(mousePosX) {
+      // Prevent scrolling the waveform if the user is dragging a segment.
+      if (this._segment && !this._seeking) {
+        return;
+      }
+
       if (this._seeking) {
         this._seek(mousePosX);
       }
@@ -210,6 +225,14 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
           self._playheadLayer.updatePlayheadTime(time);
 
           self._peaks.player.seek(time);
+        }
+      }
+
+      // If the user was dragging the playhead while the playhead is within
+      // a segment, restore the segment's original draggable state.
+      if (this._segment && this._seeking) {
+        if (this._segmentIsDraggable) {
+          this._segment.draggable(true);
         }
       }
     },
