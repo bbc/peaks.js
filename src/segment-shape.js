@@ -557,8 +557,14 @@ SegmentShape.prototype._onSegmentDragEnd = function(event) {
 
 SegmentShape.prototype._moveToTop = function() {
   this._overlay.moveToTop();
-  this._endMarker.moveToTop();
-  this._startMarker.moveToTop();
+
+  if (this._endMarker) {
+    this._endMarker.moveToTop();
+  }
+
+  if (this._startMarker) {
+    this._startMarker.moveToTop();
+  }
 };
 
 /**
