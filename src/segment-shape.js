@@ -666,7 +666,10 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
         evt: event.evt
       });
     }
-    else {
+    else if (startMarkerX >= upperLimit) {
+      segmentMarker.setX(upperLimit);
+    }
+    else { // startMarkerX < lowerLimit
       segmentMarker.setX(lowerLimit);
     }
   }
@@ -729,8 +732,11 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
         evt: event.evt
       });
     }
-    else {
+    else if (endMarkerX >= upperLimit) {
       segmentMarker.setX(upperLimit);
+    }
+    else { // endMarkerX < lowerLimit
+      segmentMarker.setX(lowerLimit);
     }
   }
 };
