@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 3.0.0-beta.5 (2023/01/30)
+
+* Allow the playhead to be dragged when within a segment (@chrisn)
+
+* Fixed segment handle dragging, when the segment becomes zero width (@chrisn)
+
 ## 3.0.0-beta.4 (2023/01/18)
 
 * (#473) Added `getWaveformData()` method (@chrisn)
