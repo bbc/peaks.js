@@ -81,6 +81,8 @@ function SegmentShape(segment, peaks, layer, view) {
 
   this._onMouseEnter  = this._onMouseEnter.bind(this);
   this._onMouseLeave  = this._onMouseLeave.bind(this);
+  this._onMouseDown   = this._onMouseDown.bind(this);
+  this._onMouseUp     = this._onMouseUp.bind(this);
   this._onClick       = this._onClick.bind(this);
   this._onDblClick    = this._onDblClick.bind(this);
   this._onContextMenu = this._onContextMenu.bind(this);
@@ -177,6 +179,9 @@ function SegmentShape(segment, peaks, layer, view) {
   // hovers the mouse over the segment.
   this._overlay.on('mouseenter', this._onMouseEnter);
   this._overlay.on('mouseleave', this._onMouseLeave);
+
+  this._overlay.on('mousedown', this._onMouseDown);
+  this._overlay.on('mouseup', this._onMouseUp);
 
   this._overlay.on('click', this._onClick);
   this._overlay.on('dblclick', this._onDblClick);
@@ -360,7 +365,23 @@ SegmentShape.prototype._onMouseLeave = function(event) {
     this._label.hide();
   }
 
+  document.body.style.cursor = 'default';
+
   this._peaks.emit('segments.mouseleave', {
+    segment: this._segment,
+    evt: event.evt
+  });
+};
+
+SegmentShape.prototype._onMouseDown = function(event) {
+  this._peaks.emit('segments.mousedown', {
+    segment: this._segment,
+    evt: event.evt
+  });
+};
+
+SegmentShape.prototype._onMouseUp = function(event) {
+  this._peaks.emit('segments.mouseup', {
     segment: this._segment,
     evt: event.evt
   });

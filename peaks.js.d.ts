@@ -389,6 +389,8 @@ declare module 'peaks.js' {
     'segments.remove': (segments: Segment[]) => void;
     'segments.mouseenter': (event: SegmentMouseEvent) => void;
     'segments.mouseleave': (event: SegmentMouseEvent) => void;
+    'segments.mousedown': (event: SegmentMouseEvent) => void;
+    'segments.mouseup': (event: SegmentMouseEvent) => void;
     'segments.click': (event: SegmentMouseEvent) => void;
     'segments.dblclick': (event: SegmentMouseEvent) => void;
     'segments.contextmenu': (event: SegmentPointerEvent) => void;
