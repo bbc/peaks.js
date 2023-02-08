@@ -52,6 +52,7 @@ function PointMarker(options) {
   this._onContextMenu = options.onContextMenu;
 
   this._group = new Konva.Group({
+    name:          'marker',
     draggable:     this._draggable,
     dragBoundFunc: options.dragBoundFunc
   });
