@@ -100,11 +100,11 @@ MouseDragHandler.prototype._mouseDown = function(event) {
   // Use the window mousemove and mouseup handlers instead of the
   // Konva.Stage ones so that we still receive events if the user moves the
   // mouse outside the stage.
-  window.addEventListener('mousemove', this._mouseMove, false);
-  window.addEventListener('touchmove', this._mouseMove, false);
-  window.addEventListener('mouseup', this._mouseUp, false);
-  window.addEventListener('touchend', this._mouseUp, false);
-  window.addEventListener('blur', this._mouseUp, false);
+  window.addEventListener('mousemove', this._mouseMove, { capture: false, passive: true });
+  window.addEventListener('touchmove', this._mouseMove, { capture: false, passive: true });
+  window.addEventListener('mouseup', this._mouseUp, { capture: false, passive: true });
+  window.addEventListener('touchend', this._mouseUp, { capture: false, passive: true });
+  window.addEventListener('blur', this._mouseUp, { capture: false, passive: true });
 };
 
 /**
@@ -160,11 +160,11 @@ MouseDragHandler.prototype._mouseUp = function(event) {
     this._handlers.onMouseUp(mousePosX);
   }
 
-  window.removeEventListener('mousemove', this._mouseMove, false);
-  window.removeEventListener('touchmove', this._mouseMove, false);
-  window.removeEventListener('mouseup', this._mouseUp, false);
-  window.removeEventListener('touchend', this._mouseUp, false);
-  window.removeEventListener('blur', this._mouseUp, false);
+  window.removeEventListener('mousemove', this._mouseMove, { capture: false });
+  window.removeEventListener('touchmove', this._mouseMove, { capture: false });
+  window.removeEventListener('mouseup', this._mouseUp, { capture: false });
+  window.removeEventListener('touchend', this._mouseUp, { capture: false });
+  window.removeEventListener('blur', this._mouseUp, { capture: false });
 
   this._dragging = false;
 };
