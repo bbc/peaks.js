@@ -365,8 +365,6 @@ SegmentShape.prototype._onMouseLeave = function(event) {
     this._label.hide();
   }
 
-  document.body.style.cursor = 'default';
-
   this._peaks.emit('segments.mouseleave', {
     segment: this._segment,
     evt: event.evt
@@ -624,12 +622,10 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
   let dragMode;
   let minSegmentDuration = this._view.pixelsToTime(50);
   let segmentDuration;
+  const minSegmentWidth = 50;
 
   if (isStartMarker) {
-    upperLimit = this._endMarker.getX() - this._endMarker.getWidth();
-
-    const startMarkerOffset = startMarkerX +
-                              this._startMarker.getWidth();
+    upperLimit = this._endMarker.getX() - minSegmentWidth;
 
     if (this._previousSegment) {
       dragMode = this._view.getSegmentDragMode();
@@ -667,7 +663,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
 
       segmentMarker.setX(startMarkerX);
 
-      this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerOffset));
+      this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerX));
 
       segmentMarker.timeUpdated(this._segment.startTime);
 
@@ -687,15 +683,33 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
         evt: event.evt
       });
     }
-    else if (startMarkerX >= upperLimit) {
-      segmentMarker.setX(upperLimit);
-    }
-    else { // startMarkerX < lowerLimit
-      segmentMarker.setX(lowerLimit);
+    else {
+      let x;
+
+      if (startMarkerX >= upperLimit) {
+        x = upperLimit;
+      }
+      else { // startMarkerX < lowerLimit
+        x = lowerLimit;
+      }
+
+      this._overlay.clipWidth(endMarkerX - x);
+
+      segmentMarker.setX(x);
+
+      this._segment._setStartTime(this._view.pixelOffsetToTime(x));
+
+      segmentMarker.timeUpdated(this._segment.startTime);
+
+      this._peaks.emit('segments.dragged', {
+        segment: this._segment,
+        startMarker: isStartMarker,
+        evt: event.evt
+      });
     }
   }
   else {
-    lowerLimit = this._startMarker.getX() + this._startMarker.getWidth();
+    lowerLimit = this._startMarker.getX() + minSegmentWidth;
 
     const width = this._view.getWidth();
 
@@ -753,11 +767,29 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
         evt: event.evt
       });
     }
-    else if (endMarkerX >= upperLimit) {
-      segmentMarker.setX(upperLimit);
-    }
-    else { // endMarkerX < lowerLimit
-      segmentMarker.setX(lowerLimit);
+    else {
+      let x;
+
+      if (endMarkerX >= upperLimit) {
+        x = upperLimit;
+      }
+      else { // endMarkerX < lowerLimit
+        x = lowerLimit;
+      }
+
+      this._overlay.clipWidth(x - startMarkerX);
+
+      segmentMarker.setX(x);
+
+      this._segment._setEndTime(this._view.pixelOffsetToTime(x));
+
+      segmentMarker.timeUpdated(this._segment.endTime);
+
+      this._peaks.emit('segments.dragged', {
+        segment: this._segment,
+        startMarker: isStartMarker,
+        evt: event.evt
+      });
     }
   }
 };
