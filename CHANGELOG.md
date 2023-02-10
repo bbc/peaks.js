@@ -6,7 +6,7 @@
 
 * (#478) Fixed dragging of point markers (@chrisn)
 
-* Added `view.setSegmentMinDragWidth()` method to set the minimum segment
+* Added `view.setMinSegmentDragWidth()` method to set the minimum segment
   width to apply when dragging segment handles or when using the `compress`
   drag mode (@chrisn)
 
