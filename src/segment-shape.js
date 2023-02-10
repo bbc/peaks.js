@@ -473,7 +473,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   let endTime = this._dragEndTime + timeOffset;
   const segmentDuration = this._segment.endTime - this._segment.startTime;
   let dragMode;
-  const minSegmentWidth = 50;
+  const minSegmentWidth = this._view.getMinSegmentDragWidth();
   const minSegmentDuration = this._view.pixelsToTime(minSegmentWidth);
 
   // Prevent the segment from being dragged beyond the start of the waveform.
@@ -622,7 +622,7 @@ SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event)
   let dragMode;
   let minSegmentDuration = this._view.pixelsToTime(50);
   let segmentDuration;
-  const minSegmentWidth = 50;
+  const minSegmentWidth = this._view.getMinSegmentDragWidth();
 
   if (isStartMarker) {
     upperLimit = this._endMarker.getX() - minSegmentWidth;

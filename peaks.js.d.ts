@@ -463,6 +463,7 @@ declare module 'peaks.js' {
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
     enableSegmentDragging: (enable: boolean) => void;
     setSegmentDragMode: (mode: 'overlap' | 'no-overlap' | 'compress') => void;
+    setMinSegmentDragWidth: (width: number) => void;
   }
 
   interface PeaksInstance {

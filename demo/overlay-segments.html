@@ -325,6 +325,8 @@
 
           console.log("Peaks instance ready");
 
+          peaksInstance.views.getView('zoomview').setMinSegmentDragWidth(50);
+
           document.querySelector('[data-action="zoom-in"]').addEventListener('click', function() {
             peaksInstance.zoom.zoomIn();
           });

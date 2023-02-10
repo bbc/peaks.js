@@ -67,6 +67,7 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._enableSeek = true;
   self._enableSegmentDragging = false;
   self._segmentDragMode = 'overlap';
+  self._minSegmentDragWidth = 0;
 
   if (self._viewOptions.formatPlayheadTime) {
     self._formatPlayheadTime = self._viewOptions.formatPlayheadTime;
@@ -966,6 +967,14 @@ WaveformZoomView.prototype.enableAutoScroll = function(enable) {
 WaveformZoomView.prototype.enableMarkerEditing = function(enable) {
   this._segmentsLayer.enableEditing(enable);
   this._pointsLayer.enableEditing(enable);
+};
+
+WaveformZoomView.prototype.getMinSegmentDragWidth = function() {
+  return this._minSegmentDragWidth;
+};
+
+WaveformZoomView.prototype.setMinSegmentDragWidth = function(width) {
+  this._minSegmentDragWidth = width;
 };
 
 WaveformZoomView.prototype.fitToContainer = function() {

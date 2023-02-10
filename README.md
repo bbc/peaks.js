@@ -74,6 +74,7 @@ You can read more about the project and see a demo [here](https://waveform.proto
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.enableSegmentDragging()](#viewenablesegmentdraggingenable)
     - [view.setSegmentDragMode()](#viewsetsegmentdragmodemode)
+    - [view.setMinSegmentDragWidth()](#viewsetminsegmentdragwidthwidth)
     - [view.fitToContainer()](#viewfittocontainer)
     - [view.setZoom()](#viewsetzoomoptions)
     - [view.setStartTime()](#viewsetstarttimetime)
@@ -1134,6 +1135,17 @@ This method applies to the zoomable waveform view only.
 ```js
 const view = instance.views.getView('zoomview');
 view.setSegmentDragMode('no-overlap');
+```
+
+### `view.setMinSegmentDragWidth(width)`
+
+Sets the minimum width for segments being dragged. The `width` value is a number of pixels, so that the minimum width is independent of the view's current zoom level.
+
+This method applies to the zoomable waveform view only.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setMinSegmentDragWidth(50);
 ```
 
 ### `view.fitToContainer()`
