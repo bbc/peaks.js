@@ -1649,6 +1649,8 @@ The following sections describe the available events.
 | `segments.dragend`        | `SegmentDragEvent event`              |
 | `segments.mouseenter`     | `SegmentEvent event`                  |
 | `segments.mouseleave`     | `SegmentEvent event`                  |
+| `segments.mousedown`      | `SegmentEvent event`                  |
+| `segments.mouseup`        | `SegmentEvent event`                  |
 | `segments.click`          | `SegmentEvent event`                  |
 | `segments.dblclick`       | `SegmentEvent event`                  |
 
