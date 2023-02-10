@@ -1,5 +1,15 @@
 # Peaks.js
 
+## 3.0.0-beta.6 (2023/02/10)
+
+* (#477) Added `segments.mousedown` and `segments.mouseup` events (@chrisn)
+
+* (#478) Fixed dragging of point markers (@chrisn)
+
+* Added `view.setSegmentMinDragWidth()` method to set the minimum segment
+  width to apply when dragging segment handles or when using the `compress`
+  drag mode (@chrisn)
+
 ## 3.0.0-beta.5 (2023/01/30)
 
 * Allow the playhead to be dragged when within a segment (@chrisn)
