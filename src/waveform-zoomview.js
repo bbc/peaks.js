@@ -408,9 +408,11 @@ WaveformZoomView.prototype._onWindowResize = function() {
   const width = self._container.clientWidth;
 
   if (!self._zoomLevelAuto) {
-    self._width = width;
-    self._stage.width(width);
-    self.updateWaveform(self._frameOffset);
+    if (width !== 0) {
+      self._width = width;
+      self._stage.width(width);
+      self.updateWaveform(self._frameOffset);
+    }
   }
   else {
     if (self._resizeTimeoutId) {
