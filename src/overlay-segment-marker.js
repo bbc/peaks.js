@@ -25,7 +25,7 @@ function OverlaySegmentMarker(options) {
 }
 
 OverlaySegmentMarker.prototype.init = function(group) {
-  const handleWidth  = 30;
+  const handleWidth  = 10;
   const handleHeight = 20;
   const handleX      = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
 
