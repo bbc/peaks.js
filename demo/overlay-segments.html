@@ -550,12 +550,20 @@
             console.log('segments.dragged:', event);
           });
 
-          peaksInstance.on('segments.mouseenter', function(segment) {
-            console.log('segments.mouseenter:', segment);
+          peaksInstance.on('segments.mouseenter', function(event) {
+            console.log('segments.mouseenter:', event);
           });
 
-          peaksInstance.on('segments.mouseleave', function(segment) {
-            console.log('segments.mouseleave:', segment);
+          peaksInstance.on('segments.mouseleave', function(event) {
+            console.log('segments.mouseleave:', event);
+          });
+
+          peaksInstance.on('segments.mousedown', function(event) {
+            console.log('segments.mousedown:', event);
+          });
+
+          peaksInstance.on('segments.mouseup', function(event) {
+            console.log('segments.mouseup:', event);
           });
 
           peaksInstance.on('segments.click', function(event) {
