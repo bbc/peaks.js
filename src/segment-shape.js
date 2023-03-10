@@ -612,186 +612,184 @@ SegmentShape.prototype._onSegmentHandleDragStart = function(segmentMarker, event
  */
 
 SegmentShape.prototype._onSegmentHandleDragMove = function(segmentMarker, event) {
-  const isStartMarker = segmentMarker.isStartMarker();
+  if (segmentMarker.isStartMarker()) {
+    this._segmentStartHandleDragMove(segmentMarker, event);
+  }
+  else {
+    this._segmentEndHandleDragMove(segmentMarker, event);
+  }
+};
 
+SegmentShape.prototype._segmentStartHandleDragMove = function(segmentMarker, event) {
   const startMarkerX = this._startMarker.getX();
   const endMarkerX   = this._endMarker.getX();
 
-  let lowerLimit;
-  let upperLimit;
-  let dragMode;
   let minSegmentDuration = this._view.pixelsToTime(50);
-  let segmentDuration;
   const minSegmentWidth = this._view.getMinSegmentDragWidth();
 
-  if (isStartMarker) {
-    upperLimit = this._endMarker.getX() - minSegmentWidth;
+  const upperLimit = this._endMarker.getX() - minSegmentWidth;
+  let lowerLimit;
 
-    if (this._previousSegment) {
-      dragMode = this._view.getSegmentDragMode();
+  if (this._previousSegment) {
+    const dragMode = this._view.getSegmentDragMode();
 
-      if (dragMode === 'no-overlap' ||
-          (dragMode === 'compress' && !this._previousSegment.editable)) {
-        lowerLimit = this._view.timeToPixelOffset(this._previousSegment.endTime);
+    if (dragMode === 'no-overlap' ||
+        (dragMode === 'compress' && !this._previousSegment.editable)) {
+      lowerLimit = this._view.timeToPixelOffset(this._previousSegment.endTime);
 
-        if (lowerLimit < 0) {
-          lowerLimit = 0;
-        }
-      }
-      else if (dragMode === 'compress') {
-        segmentDuration = this._previousSegment.endTime - this._previousSegment.startTime;
-
-        if (segmentDuration < minSegmentDuration) {
-          minSegmentDuration = segmentDuration;
-        }
-
-        lowerLimit = this._view.timeToPixelOffset(
-          this._previousSegment.startTime + minSegmentDuration
-        );
-
-        if (lowerLimit < 0) {
-          lowerLimit = 0;
-        }
+      if (lowerLimit < 0) {
+        lowerLimit = 0;
       }
     }
-    else {
-      lowerLimit = 0;
-    }
+    else if (dragMode === 'compress') {
+      const segmentDuration = this._previousSegment.endTime - this._previousSegment.startTime;
 
-    if (startMarkerX >= lowerLimit && startMarkerX < upperLimit) {
-      this._overlay.clipWidth(endMarkerX - startMarkerX);
-
-      segmentMarker.setX(startMarkerX);
-
-      this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerX));
-
-      segmentMarker.timeUpdated(this._segment.startTime);
-
-      if (this._previousSegment) {
-        const prevSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
-
-        if (startMarkerX < prevSegmentEndX) {
-          this._previousSegment.update({
-            endTime: this._view.pixelOffsetToTime(startMarkerX)
-          });
-        }
+      if (segmentDuration < minSegmentDuration) {
+        minSegmentDuration = segmentDuration;
       }
 
-      this._peaks.emit('segments.dragged', {
-        segment: this._segment,
-        startMarker: isStartMarker,
-        evt: event.evt
-      });
-    }
-    else {
-      let x;
+      lowerLimit = this._view.timeToPixelOffset(
+        this._previousSegment.startTime + minSegmentDuration
+      );
 
-      if (startMarkerX >= upperLimit) {
-        x = upperLimit;
+      if (lowerLimit < 0) {
+        lowerLimit = 0;
       }
-      else { // startMarkerX < lowerLimit
-        x = lowerLimit;
-      }
-
-      this._overlay.clipWidth(endMarkerX - x);
-
-      segmentMarker.setX(x);
-
-      this._segment._setStartTime(this._view.pixelOffsetToTime(x));
-
-      segmentMarker.timeUpdated(this._segment.startTime);
-
-      this._peaks.emit('segments.dragged', {
-        segment: this._segment,
-        startMarker: isStartMarker,
-        evt: event.evt
-      });
     }
   }
   else {
-    lowerLimit = this._startMarker.getX() + minSegmentWidth;
+    lowerLimit = 0;
+  }
 
-    const width = this._view.getWidth();
+  if (startMarkerX >= lowerLimit && startMarkerX < upperLimit) {
+    this._overlay.clipWidth(endMarkerX - startMarkerX);
 
-    if (this._nextSegment) {
-      dragMode = this._view.getSegmentDragMode();
+    segmentMarker.setX(startMarkerX);
 
-      if (dragMode === 'no-overlap' ||
-          (dragMode === 'compress' && !this._nextSegment.editable)) {
-        upperLimit = this._view.timeToPixelOffset(this._nextSegment.startTime);
+    this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerX));
 
-        if (upperLimit > width) {
-          upperLimit = width;
-        }
+    segmentMarker.timeUpdated(this._segment.startTime);
+
+    if (this._previousSegment) {
+      const prevSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
+
+      if (startMarkerX < prevSegmentEndX) {
+        this._previousSegment.update({
+          endTime: this._view.pixelOffsetToTime(startMarkerX)
+        });
       }
-      else if (dragMode === 'compress') {
-        segmentDuration = this._nextSegment.endTime - this._nextSegment.startTime;
-
-        if (segmentDuration < minSegmentDuration) {
-          minSegmentDuration = segmentDuration;
-        }
-
-        upperLimit = this._view.timeToPixelOffset(this._nextSegment.endTime - minSegmentDuration);
-
-        if (upperLimit > width) {
-          upperLimit = width;
-        }
-      }
-    }
-    else {
-      upperLimit = width;
-    }
-
-    if (endMarkerX >= lowerLimit && endMarkerX < upperLimit) {
-      this._overlay.clipWidth(endMarkerX - startMarkerX);
-
-      segmentMarker.setX(endMarkerX);
-
-      this._segment._setEndTime(this._view.pixelOffsetToTime(endMarkerX));
-
-      segmentMarker.timeUpdated(this._segment.endTime);
-
-      if (this._nextSegment) {
-        const nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
-
-        if (endMarkerX > nextSegmentStartX) {
-          this._nextSegment.update({
-            startTime: this._view.pixelOffsetToTime(endMarkerX)
-          });
-        }
-      }
-
-      this._peaks.emit('segments.dragged', {
-        segment: this._segment,
-        startMarker: isStartMarker,
-        evt: event.evt
-      });
-    }
-    else {
-      let x;
-
-      if (endMarkerX >= upperLimit) {
-        x = upperLimit;
-      }
-      else { // endMarkerX < lowerLimit
-        x = lowerLimit;
-      }
-
-      this._overlay.clipWidth(x - startMarkerX);
-
-      segmentMarker.setX(x);
-
-      this._segment._setEndTime(this._view.pixelOffsetToTime(x));
-
-      segmentMarker.timeUpdated(this._segment.endTime);
-
-      this._peaks.emit('segments.dragged', {
-        segment: this._segment,
-        startMarker: isStartMarker,
-        evt: event.evt
-      });
     }
   }
+  else {
+    let x;
+
+    if (startMarkerX >= upperLimit) {
+      x = upperLimit;
+    }
+    else { // startMarkerX < lowerLimit
+      x = lowerLimit;
+    }
+
+    this._overlay.clipWidth(endMarkerX - x);
+
+    segmentMarker.setX(x);
+
+    this._segment._setStartTime(this._view.pixelOffsetToTime(x));
+
+    segmentMarker.timeUpdated(this._segment.startTime);
+  }
+
+  this._peaks.emit('segments.dragged', {
+    segment: this._segment,
+    startMarker: true,
+    evt: event.evt
+  });
+};
+
+SegmentShape.prototype._segmentEndHandleDragMove = function(segmentMarker, event) {
+  const startMarkerX = this._startMarker.getX();
+  const endMarkerX   = this._endMarker.getX();
+
+  let minSegmentDuration = this._view.pixelsToTime(50);
+  const minSegmentWidth = this._view.getMinSegmentDragWidth();
+
+  const lowerLimit = this._startMarker.getX() + minSegmentWidth;
+  let upperLimit;
+
+  const width = this._view.getWidth();
+
+  if (this._nextSegment) {
+    const dragMode = this._view.getSegmentDragMode();
+
+    if (dragMode === 'no-overlap' ||
+        (dragMode === 'compress' && !this._nextSegment.editable)) {
+      upperLimit = this._view.timeToPixelOffset(this._nextSegment.startTime);
+
+      if (upperLimit > width) {
+        upperLimit = width;
+      }
+    }
+    else if (dragMode === 'compress') {
+      const segmentDuration = this._nextSegment.endTime - this._nextSegment.startTime;
+
+      if (segmentDuration < minSegmentDuration) {
+        minSegmentDuration = segmentDuration;
+      }
+
+      upperLimit = this._view.timeToPixelOffset(this._nextSegment.endTime - minSegmentDuration);
+
+      if (upperLimit > width) {
+        upperLimit = width;
+      }
+    }
+  }
+  else {
+    upperLimit = width;
+  }
+
+  if (endMarkerX >= lowerLimit && endMarkerX < upperLimit) {
+    this._overlay.clipWidth(endMarkerX - startMarkerX);
+
+    segmentMarker.setX(endMarkerX);
+
+    this._segment._setEndTime(this._view.pixelOffsetToTime(endMarkerX));
+
+    segmentMarker.timeUpdated(this._segment.endTime);
+
+    if (this._nextSegment) {
+      const nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
+
+      if (endMarkerX > nextSegmentStartX) {
+        this._nextSegment.update({
+          startTime: this._view.pixelOffsetToTime(endMarkerX)
+        });
+      }
+    }
+  }
+  else {
+    let x;
+
+    if (endMarkerX >= upperLimit) {
+      x = upperLimit;
+    }
+    else { // endMarkerX < lowerLimit
+      x = lowerLimit;
+    }
+
+    this._overlay.clipWidth(x - startMarkerX);
+
+    segmentMarker.setX(x);
+
+    this._segment._setEndTime(this._view.pixelOffsetToTime(x));
+
+    segmentMarker.timeUpdated(this._segment.endTime);
+  }
+
+  this._peaks.emit('segments.dragged', {
+    segment: this._segment,
+    startMarker: false,
+    evt: event.evt
+  });
 };
 
 /**
