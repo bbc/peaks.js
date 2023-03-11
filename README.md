@@ -1763,4 +1763,4 @@ Thank you to all our [contributors](https://github.com/bbc/peaks.js/graphs/contr
 
 # Copyright
 
-Copyright 2022 British Broadcasting Corporation
+Copyright 2023 British Broadcasting Corporation

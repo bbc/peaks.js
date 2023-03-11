@@ -1,5 +1,18 @@
 # Peaks.js
 
+## 3.0.0-beta.7 (2023/03/11)
+
+* (#433) Prevent resizing the waveform canvas to zero width (@chrisn)
+
+* (#479) Reduced the width of the hit region for resizing overlay segments
+  (@chrisn)
+
+* (#480) Adjacent segments can now have the same start or end time when
+  dragging a segment start or end marker over an adjacent segment in
+  `no-overlap` mode (@chrisn)
+
+* Fixed
+
 ## 3.0.0-beta.6 (2023/02/10)
 
 * (#477) Added `segments.mousedown` and `segments.mouseup` events (@chrisn)
