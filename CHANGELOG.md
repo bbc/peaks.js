@@ -11,8 +11,6 @@
   dragging a segment start or end marker over an adjacent segment in
   `no-overlap` mode (@chrisn)
 
-* Fixed
-
 ## 3.0.0-beta.6 (2023/02/10)
 
 * (#477) Added `segments.mousedown` and `segments.mouseup` events (@chrisn)
