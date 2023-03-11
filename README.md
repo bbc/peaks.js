@@ -457,7 +457,7 @@ var options = {
 
   overview: {
     // Container <div> element for the non-zoomable "overview" waveform
-    overview: document.getElementById('overview-container')
+    container: document.getElementById('overview-container')
 
     // Color for the overview waveform
     // You can also use a 2 stop gradient here. See setWaveformColor()
@@ -533,7 +533,7 @@ var options = {
 
   scrollbar: {
     // Container <div> element for the scrollbar
-    overview: document.getElementById('scrollbar-container'),
+    container: document.getElementById('scrollbar-container'),
 
     // Scrollbar color. The background color can be set using CSS on the
     // scrollbar container element
