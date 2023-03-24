@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 3.0.0-beta.8 (2023/03/24)
+
+* (#481) Fixed TypeScript declarations (@chrisn)
+
 ## 3.0.0-beta.7 (2023/03/11)
 
 * (#433) Prevent resizing the waveform canvas to zero width (@chrisn)
