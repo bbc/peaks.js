@@ -91,9 +91,9 @@ HighlightLayer.prototype._createHighlightRect = function(startTime, endTime) {
     x:            startOffset,
     y:            0,
     width:        endOffset - startOffset,
+    height:       0,
     stroke:       this._strokeColor,
     strokeWidth:  1,
-    height:       0,
     fill:         this._color,
     opacity:      this._opacity,
     cornerRadius: this._cornerRadius
