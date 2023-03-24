@@ -242,7 +242,7 @@ Read the [Generating waveform data](#generating-waveform-data) section to learn 
 
 Also refer to the [Configuration](#configuration) section for details of all the `Peaks.init()` options, and more advanced customization options, and the [API](#api) section to learn about the available API methods.
 
-If you're having difficulty, please refer to the [doc/faq.md](Frequently Asked Questions) page.
+If you're having difficulty, please refer to the [Frequently Asked Questions](doc/faq.md) page.
 
 # Demos
 
