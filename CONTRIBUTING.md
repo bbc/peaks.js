@@ -6,9 +6,13 @@ We love hearing feedback from people who use our software, so if you build somet
 
 Contributions are welcomed and encouraged. If you're thinking of fixing a bug or writing a new feature, please first read the following guidelines.
 
+## Asking questions
+
+* We welcome questions on how to use Peaks.js. Please check the [Frequently Asked Questions](doc/faq.md) in case your question is already answered there.
+
 ## Making changes
 
-* Before creating a pull request, we prefer that you first discuss the change you want to make, either by raising an issue, or contacting us directly, e.g, [by email](mailto:irfs@bbc.co.uk).
+* Before creating a pull request, we prefer that you first discuss the change you want to make, either by raising an issue, or contacting us directly, e.g., [by email](mailto:irfs@bbc.co.uk).
 
 * Please check our [development plan](https://github.com/bbc/peaks.js/projects/1), which shows the current and planned changes.
 

@@ -242,6 +242,8 @@ Read the [Generating waveform data](#generating-waveform-data) section to learn 
 
 Also refer to the [Configuration](#configuration) section for details of all the `Peaks.init()` options, and more advanced customization options, and the [API](#api) section to learn about the available API methods.
 
+If you're having difficulty, please refer to the [doc/faq.md](Frequently Asked Questions) page.
+
 # Demos
 
 The [demo](demo) folder contains some working examples of Peaks.js in use. To view these, enter the following commands:
