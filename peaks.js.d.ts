@@ -307,9 +307,9 @@ declare module 'peaks.js' {
      */
     zoomAdapter?: string;
     /** Array of initial segment objects */
-    segments?: Segment[];
+    segments?: SegmentAddOptions[];
     /** Array of initial point objects */
-    points?: Point[];
+    points?: PointAddOptions[];
     /** Emit cue events when playing */
     emitCueEvents?: boolean;
     /** Custom segment marker factory function */
