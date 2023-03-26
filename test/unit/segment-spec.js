@@ -1,5 +1,5 @@
 import Peaks from '../../src/main';
-import Segment from '../../src/segment';
+import { Segment } from '../../src/segment';
 
 describe('Segment', function() {
   describe('update', function() {
@@ -82,6 +82,23 @@ describe('Segment', function() {
       }).to.throw(RangeError);
     });
 
+    it('should not allow the id to be updated', function() {
+      p.segments.add({
+        id: 'segment1',
+        startTime: 10,
+        endTime: 20,
+        editable: true,
+        color: '#ff0000',
+        labelText: 'A point'
+      });
+
+      const segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({ id: 'segment2' });
+      }).to.throw(Error);
+    });
+
     it('should not update any attributes if invalid', function() {
       p.segments.add({
         startTime: 0,
@@ -148,6 +165,39 @@ describe('Segment', function() {
       segment.update({ data: 'updated' });
 
       expect(segment.data).to.equal('updated');
+    });
+
+    [
+      'update',
+      'isVisible',
+      'peaks',
+      '_id',
+      '_startTime',
+      '_endTime',
+      '_labelText',
+      '_color',
+      '_borderColor',
+      '_editable'
+    ].forEach(function(name) {
+      it('should not allow an invalid user data attribute name: ' + name, function() {
+        expect(function() {
+          const peaks = { emit: function() {} };
+          const segment = new Segment({
+            peaks: peaks,
+            id: 'segment.1',
+            startTime: 0.0,
+            endTime: 10.0,
+            labelText: '',
+            editable: true
+          });
+
+          const attributes = {};
+
+          attributes[name] = 'test';
+
+          segment.update(attributes);
+        }).to.throw(Error);
+      });
     });
   });
 

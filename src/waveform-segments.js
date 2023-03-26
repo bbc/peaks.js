@@ -6,8 +6,8 @@
  * @module waveform-segments
  */
 
-import Segment from './segment';
-import { extend, isNullOrUndefined, isObject, objectHasProperty } from './utils';
+import { Segment, validateSegmentOptions } from './segment';
+import { extend, isNullOrUndefined, objectHasProperty } from './utils';
 
 /**
  * Segment parameters.
@@ -77,16 +77,7 @@ WaveformSegments.prototype._addSegment = function(segment) {
  */
 
 WaveformSegments.prototype._createSegment = function(options) {
-  // Watch for anyone still trying to use the old
-  // createSegment(startTime, endTime, ...) API
-  if (!isObject(options)) {
-    // eslint-disable-next-line max-len
-    throw new TypeError('peaks.segments.add(): expected a Segment object parameter');
-  }
-
-  const segmentOptions = {
-    peaks: this._peaks
-  };
+  const segmentOptions = {};
 
   extend(segmentOptions, options);
 
@@ -114,6 +105,10 @@ WaveformSegments.prototype._createSegment = function(options) {
   if (isNullOrUndefined(segmentOptions.editable)) {
     segmentOptions.editable = false;
   }
+
+  validateSegmentOptions(segmentOptions, false);
+
+  segmentOptions.peaks = this._peaks;
 
   return new Segment(segmentOptions);
 };

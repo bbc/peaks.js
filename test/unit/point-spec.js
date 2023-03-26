@@ -1,5 +1,5 @@
 import Peaks from '../../src/main';
-import Point from '../../src/point';
+import { Point } from '../../src/point';
 
 describe('Point', function() {
   describe('update', function() {
@@ -80,6 +80,22 @@ describe('Point', function() {
       expect(point.labelText).to.equal('');
     });
 
+    it('should not allow the id to be updated', function() {
+      p.points.add({
+        id: 'point1',
+        time: 10,
+        editable: true,
+        color: '#ff0000',
+        labelText: 'A point'
+      });
+
+      const point = p.points.getPoints()[0];
+
+      expect(function() {
+        point.update({ id: 'point2' });
+      }).to.throw(Error);
+    });
+
     it('should not update any attributes if invalid', function() {
       p.points.add({
         time: 10,
@@ -140,6 +156,37 @@ describe('Point', function() {
       point.update({ data: 'updated' });
 
       expect(point.data).to.equal('updated');
+    });
+
+    [
+      'update',
+      'isVisible',
+      'peaks',
+      '_id',
+      '_time',
+      '_labelText',
+      '_color',
+      '_editable'
+    ].forEach(function(name) {
+      it('should not allow an invalid user data attribute name: ' + name, function() {
+        expect(function() {
+          const peaks = { emit: function() {} };
+          const point = new Point({
+            peaks: peaks,
+            id: 'point.1',
+            time: 0.0,
+            editable: false,
+            color: '#000000',
+            labelText: ''
+          });
+
+          const attributes = {};
+
+          attributes[name] = 'test';
+
+          point.update(attributes);
+        }).to.throw(Error);
+      });
     });
   });
 

@@ -11,9 +11,19 @@ import {
   isValidTime, objectHasProperty
 } from './utils';
 
-const pointOptions = ['peaks', 'id', 'time', 'labelText', 'color', 'editable'];
+const pointOptions = ['id', 'time', 'labelText', 'color', 'editable'];
 
-function validatePoint(options, context) {
+const invalidOptions = [
+  'update', 'isVisible', 'peaks'
+];
+
+function validatePointOptions(options, updating) {
+  const context = updating ? 'update()' : 'add()';
+
+  if (updating && objectHasProperty(options, 'id')) {
+    throw new Error('peaks.points.' + context + ': id cannot be updated');
+  }
+
   if (!isValidTime(options.time)) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
@@ -42,6 +52,18 @@ function validatePoint(options, context) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.points.' + context + ': color must be a string or a valid linear gradient object');
   }
+
+  invalidOptions.forEach(function(name) {
+    if (objectHasProperty(options, name)) {
+      throw new Error('peaks.points.' + context + ': invalid option name: ' + name);
+    }
+  });
+
+  pointOptions.forEach(function(name) {
+    if (objectHasProperty(options, '_' + name)) {
+      throw new Error('peaks.points.' + context + ': invalid option name: _' + name);
+    }
+  });
 }
 
 /**
@@ -61,8 +83,6 @@ function validatePoint(options, context) {
  */
 
 function Point(options) {
-  validatePoint(options, 'add()');
-
   this._peaks     = options.peaks;
   this._id        = options.id;
   this._time      = options.time;
@@ -123,7 +143,7 @@ Point.prototype.update = function(options) {
 
   extend(opts, options);
 
-  validatePoint(opts, 'update()');
+  validatePointOptions(opts, true);
 
   this._time      = opts.time;
   this._labelText = opts.labelText;
@@ -151,4 +171,4 @@ Point.prototype._setTime = function(time) {
   this._time = time;
 };
 
-export default Point;
+export { Point, validatePointOptions };

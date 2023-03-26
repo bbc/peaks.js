@@ -1,5 +1,5 @@
 import Peaks from '../../src/main';
-import Segment from '../../src/segment';
+import { Segment } from '../../src/segment';
 
 describe('Peaks.segments', function() {
   let p, logger;
@@ -322,6 +322,32 @@ describe('Peaks.segments', function() {
       expect(segments[0].startTime).to.equal(20);
       expect(segments[0].endTime).to.equal(30);
       expect(segments[0].id).to.equal('segment1');
+    });
+
+    [
+      'update',
+      'isVisible',
+      'peaks',
+      '_id',
+      '_startTime',
+      '_endTime',
+      '_labelText',
+      '_color',
+      '_borderColor',
+      '_editable'
+    ].forEach(function(name) {
+      it('should not allow an invalid user data attribute name: ' + name, function() {
+        expect(function() {
+          const segment = {
+            startTime: 0,
+            endTime: 10
+          };
+
+          segment[name] = 'test';
+
+          p.segments.add(segment);
+        }).to.throw(Error);
+      });
     });
 
     it('should add segments atomically', function() {

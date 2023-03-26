@@ -6,7 +6,7 @@
  * @module waveform-points
  */
 
-import Point from './point';
+import { Point, validatePointOptions } from './point';
 import { extend, isNullOrUndefined, objectHasProperty } from './utils';
 
 /**
@@ -75,9 +75,7 @@ WaveformPoints.prototype._addPoint = function(point) {
  */
 
 WaveformPoints.prototype._createPoint = function(options) {
-  const pointOptions = {
-    peaks: this._peaks
-  };
+  const pointOptions = {};
 
   extend(pointOptions, options);
 
@@ -92,6 +90,10 @@ WaveformPoints.prototype._createPoint = function(options) {
   if (isNullOrUndefined(pointOptions.editable)) {
     pointOptions.editable = false;
   }
+
+  validatePointOptions(pointOptions, false);
+
+  pointOptions.peaks = this._peaks;
 
   return new Point(pointOptions);
 };

@@ -1,5 +1,5 @@
 import Peaks from '../../src/main';
-import Point from '../../src/point';
+import { Point } from '../../src/point';
 
 describe('Peaks.points', function() {
   let p;
@@ -258,6 +258,29 @@ describe('Peaks.points', function() {
       expect(points).to.have.lengthOf(1);
       expect(points[0].time).to.equal(20);
       expect(points[0].id).to.equal('point1');
+    });
+
+    [
+      'update',
+      'isVisible',
+      'peaks',
+      '_id',
+      '_time',
+      '_labelText',
+      '_color',
+      '_editable'
+    ].forEach(function(name) {
+      it('should not allow an invalid user data attribute name: ' + name, function() {
+        expect(function() {
+          const point = {
+            time: 0
+          };
+
+          point[name] =  'test';
+
+          p.points.add(point);
+        }).to.throw(Error);
+      });
     });
 
     it('should add points atomically', function() {

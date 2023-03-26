@@ -12,10 +12,20 @@ import {
 } from './utils';
 
 const segmentOptions = [
-  'peaks', 'id', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
+  'id', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
 ];
 
-function validateSegment(options, context) {
+const invalidOptions = [
+  'update', 'isVisible', 'peaks'
+];
+
+function validateSegmentOptions(options, updating) {
+  const context = updating ? 'update()' : 'add()';
+
+  if (updating && objectHasProperty(options, 'id')) {
+    throw new Error('peaks.segments.' + context + ': id cannot be updated');
+  }
+
   if (!isValidTime(options.startTime)) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': startTime should be a valid number');
@@ -64,6 +74,18 @@ function validateSegment(options, context) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': borderColor must be a string');
   }
+
+  invalidOptions.forEach(function(name) {
+    if (options[name]) {
+      throw new Error('peaks.segments.' + context + ': invalid option name: ' + name);
+    }
+  });
+
+  segmentOptions.forEach(function(name) {
+    if (objectHasProperty(options, '_' + name)) {
+      throw new Error('peaks.segments.' + context + ': invalid option name: _' + name);
+    }
+  });
 }
 
 /**
@@ -85,8 +107,6 @@ function validateSegment(options, context) {
  */
 
 function Segment(options) {
-  validateSegment(options, 'add()');
-
   this._peaks       = options.peaks;
   this._id          = options.id;
   this._startTime   = options.startTime;
@@ -164,7 +184,7 @@ Segment.prototype.update = function(options) {
 
   extend(opts, options);
 
-  validateSegment(opts, 'update()');
+  validateSegmentOptions(opts, true);
 
   this._startTime   = opts.startTime;
   this._endTime     = opts.endTime;
@@ -200,4 +220,4 @@ Segment.prototype._setEndTime = function(time) {
   this._endTime = time;
 };
 
-export default Segment;
+export { Segment, validateSegmentOptions };
