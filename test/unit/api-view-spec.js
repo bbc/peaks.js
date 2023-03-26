@@ -193,6 +193,16 @@ describe('WaveformView', function() {
             expect(logger.calledOnce).to.equal(true);
           });
         });
+
+        context('with auto option', function() {
+          it('should fit the waveform to the width of the view', function() {
+            const view = p.views.getView('zoomview');
+
+            view.setZoom({ scale: 'auto' });
+
+            expect(view._data.length).to.equal(1000);
+          });
+        });
       });
 
       context('with seconds option', function() {
@@ -215,6 +225,16 @@ describe('WaveformView', function() {
 
             expect(view._scale).to.equal(256);
             expect(logger.calledOnce).to.equal(true);
+          });
+        });
+
+        context('with auto option', function() {
+          it('should fit the waveform to the width of the view', function() {
+            const view = p.views.getView('zoomview');
+
+            view.setZoom({ seconds: 'auto' });
+
+            expect(view._data.length).to.equal(1000);
           });
         });
       });
