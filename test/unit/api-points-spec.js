@@ -60,10 +60,10 @@ describe('Peaks.points', function() {
       expect(point.id).to.equal('point1');
     });
 
-    it('should return null if point not found', function() {
+    it('should return undefined if point not found', function() {
       const point = p.points.getPoint('point2');
 
-      expect(point).to.equal(null);
+      expect(point).to.equal(undefined);
     });
   });
 

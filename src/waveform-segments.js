@@ -20,7 +20,10 @@ import { extend, isNullOrUndefined, objectHasProperty } from './utils';
  *   end times can be adjusted via the user interface.
  *   Default: <code>false</code>.
  * @property {String=} color Segment waveform color.
- *   Default: a random color.
+ *   Default: Set by the <code>segmentOptions.waveformColor</code> option
+ *   or the <code>segmentOptions.overlayColor</code> option.
+ * @property {String=} borderColor Segment border color.
+ *   Default: Set by the <code>segmentOptions.overlayBorderColor</code> option.
  * @property {String=} labelText Segment label text.
  *   Default: an empty string.
  * @property {String=} id A unique segment identifier.
@@ -124,14 +127,14 @@ WaveformSegments.prototype.getSegments = function() {
 };
 
 /**
- * Returns the segment with the given id, or <code>null</code> if not found.
+ * Returns the segment with the given id, or <code>undefined</code> if not found.
  *
  * @param {String} id
- * @returns {Segment|null}
+ * @returns {Segment}
  */
 
 WaveformSegments.prototype.getSegment = function(id) {
-  return this._segmentsById[id] || null;
+  return this._segmentsById[id];
 };
 
 /**

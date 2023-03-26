@@ -109,14 +109,14 @@ WaveformPoints.prototype.getPoints = function() {
 };
 
 /**
- * Returns the point with the given id, or <code>null</code> if not found.
+ * Returns the point with the given id, or <code>undefined</code> if not found.
  *
  * @param {String} id
- * @returns {Point|null}
+ * @returns {Point}
  */
 
 WaveformPoints.prototype.getPoint = function(id) {
-  return this._pointsById[id] || null;
+  return this._pointsById[id];
 };
 
 /**

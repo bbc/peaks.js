@@ -69,13 +69,13 @@ describe('Peaks.segments', function() {
       expect(segment.endTime).to.equal(12);
     });
 
-    it('should return null if segment not found', function() {
+    it('should return undefined if segment not found', function() {
       p.segments.add({ startTime: 0, endTime: 10, id: 'segment1' });
       p.segments.add({ startTime: 2, endTime: 12, id: 'segment2' });
 
       const segment = p.segments.getSegment('segment3');
 
-      expect(segment).to.equal(null);
+      expect(segment).to.equal(undefined);
     });
   });
 

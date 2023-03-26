@@ -1386,7 +1386,7 @@ const segments = instance.segments.getSegments();
 
 ### `instance.segments.getSegment(id)`
 
-Returns the segment with the given id, or `null` if not found.
+Returns the segment with the given id, or `undefined` if not found.
 
 ```js
 const segment = instance.segments.getSegment('peaks.segment.3');
@@ -1515,7 +1515,7 @@ const points = instance.points.getPoints();
 
 ### `instance.points.getPoint(id)`
 
-Returns the point with the given id, or `null` if not found.
+Returns the point with the given id, or `undefined` if not found.
 
 ```js
 const point = instance.points.getPoint('peaks.point.3');
