@@ -65,7 +65,7 @@ describe('Segment', function() {
     });
 
     it('should not allow invalid updates', function() {
-      p.segments.add({ startTime: 0, endTime: 10 });
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
 
       const segment = p.segments.getSegments()[0];
 

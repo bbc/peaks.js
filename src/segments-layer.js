@@ -72,24 +72,28 @@ SegmentsLayer.prototype.formatTime = function(time) {
   return this._view.formatTime(time);
 };
 
-SegmentsLayer.prototype._onSegmentsUpdate = function(segment) {
-  let redraw = false;
-  const segmentShape = this._segmentShapes[segment.id];
+SegmentsLayer.prototype._onSegmentsUpdate = function(segment, options) {
   const frameStartTime = this._view.getStartTime();
   const frameEndTime = this._view.getEndTime();
 
-  if (segmentShape) {
-    this._removeSegment(segment);
-    redraw = true;
-  }
+  let segmentShape = this._segmentShapes[segment.id];
+  const isVisible = segment.isVisible(frameStartTime, frameEndTime);
 
-  if (segment.isVisible(frameStartTime, frameEndTime)) {
-    this._addSegmentShape(segment);
-    redraw = true;
-  }
+  if (segmentShape && !isVisible) {
+    // Remove segment shape that is no longer visible.
 
-  if (redraw) {
-    this.updateSegments(frameStartTime, frameEndTime);
+    if (!segmentShape.isDragging()) {
+      this._removeSegment(segment);
+    }
+  }
+  else if (!segmentShape && isVisible) {
+    // Add segment shape for visible segment.
+    // segmentShape = this._addSegmentShape(segment);
+    segmentShape = this._updateSegment(segment);
+  }
+  else if (segmentShape && isVisible) {
+    // Update the segment shape with the changed attributes.
+    segmentShape.update(options);
   }
 };
 
@@ -101,11 +105,11 @@ SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
 
   segments.forEach(function(segment) {
     if (segment.isVisible(frameStartTime, frameEndTime)) {
-      self._addSegmentShape(segment);
+      const segmentShape = self._addSegmentShape(segment);
+
+      segmentShape.update();
     }
   });
-
-  self.updateSegments(frameStartTime, frameEndTime);
 };
 
 SegmentsLayer.prototype._onSegmentsRemove = function(segments) {
@@ -168,16 +172,10 @@ SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
   // Update segments in visible time range.
   const segments = this._peaks.segments.find(startTime, endTime);
 
-  let count = segments.length;
-
   segments.forEach(this._updateSegment.bind(this));
 
-  // TODO: in the overview all segments are visible, so no need to check
-  count += this._removeInvisibleSegments(startTime, endTime);
-
-  if (count > 0) {
-    this._layer.draw();
-  }
+  // TODO: In the overview all segments are visible, so no need to do this.
+  this._removeInvisibleSegments(startTime, endTime);
 };
 
 /**
@@ -188,7 +186,7 @@ SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
 SegmentsLayer.prototype._updateSegment = function(segment) {
   const segmentShape = this._findOrAddSegmentShape(segment);
 
-  segmentShape.updatePosition();
+  segmentShape.update();
 };
 
 /**
@@ -213,24 +211,18 @@ SegmentsLayer.prototype._findOrAddSegmentShape = function(segment) {
  * @private
  * @param {Number} startTime The start of the visible time range, in seconds.
  * @param {Number} endTime The end of the visible time range, in seconds.
- * @returns {Number} The number of segments removed.
  */
 
 SegmentsLayer.prototype._removeInvisibleSegments = function(startTime, endTime) {
-  let count = 0;
-
   for (const segmentId in this._segmentShapes) {
     if (objectHasProperty(this._segmentShapes, segmentId)) {
       const segment = this._segmentShapes[segmentId].getSegment();
 
       if (!segment.isVisible(startTime, endTime)) {
         this._removeSegment(segment);
-        count++;
       }
     }
   }
-
-  return count;
 };
 
 /**

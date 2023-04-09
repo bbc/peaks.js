@@ -94,12 +94,6 @@ describe('Peaks.points', function() {
       expect(p.points.getPoints()[1].labelText).to.equal('Another point');
     });
 
-    it('should should throw if the argument is not an object', function() {
-      expect(function() {
-        p.points.add(10, true, '#ff0000', 'A point');
-      }).to.throw(TypeError);
-    });
-
     it('should throw if the time is missing', function() {
       expect(function() {
         // 'timestamp' should be 'time'
@@ -147,6 +141,12 @@ describe('Peaks.points', function() {
 
     it('should assign a default label text if not specified', function() {
       p.points.add({ time: 10 });
+
+      expect(p.points.getPoints()[0].labelText).to.equal('');
+    });
+
+    it('should assign a default label text if null', function() {
+      p.points.add({ time: 10, labelText: null });
 
       expect(p.points.getPoints()[0].labelText).to.equal('');
     });

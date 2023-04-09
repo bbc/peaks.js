@@ -6,7 +6,7 @@
  * @module waveform-segments
  */
 
-import { Segment, validateSegmentOptions } from './segment';
+import { Segment, setDefaultSegmentOptions, validateSegmentOptions } from './segment';
 import { extend, isNullOrUndefined, objectHasProperty } from './utils';
 
 /**
@@ -88,26 +88,7 @@ WaveformSegments.prototype._createSegment = function(options) {
     segmentOptions.id = this._getNextSegmentId();
   }
 
-  if (isNullOrUndefined(segmentOptions.color)) {
-    if (this._peaks.options.segmentOptions.overlay) {
-      segmentOptions.color = this._peaks.options.segmentOptions.overlayColor;
-    }
-    else {
-      segmentOptions.color = this._peaks.options.segmentOptions.waveformColor;
-    }
-  }
-
-  if (isNullOrUndefined(segmentOptions.borderColor)) {
-    segmentOptions.borderColor = this._peaks.options.segmentOptions.overlayBorderColor;
-  }
-
-  if (isNullOrUndefined(segmentOptions.labelText)) {
-    segmentOptions.labelText = '';
-  }
-
-  if (isNullOrUndefined(segmentOptions.editable)) {
-    segmentOptions.editable = false;
-  }
+  setDefaultSegmentOptions(segmentOptions, this._peaks.options.segmentOptions);
 
   validateSegmentOptions(segmentOptions, false);
 

@@ -120,6 +120,12 @@ SegmentMarker.prototype.timeUpdated = function(time) {
   }
 };
 
+SegmentMarker.prototype.update = function(options) {
+  if (this._marker.update) {
+    this._marker.update(options);
+  }
+};
+
 SegmentMarker.prototype.destroy = function() {
   if (this._marker.destroy) {
     this._marker.destroy();

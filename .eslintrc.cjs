@@ -51,6 +51,7 @@ module.exports = {
     'newline-per-chained-call': 'error',
     'no-alert': 'error',
     'no-caller': 'error',
+    'no-cond-assign': ['error', 'except-parens'],
     'no-console': 'warn',
     'no-continue': 'error',
     'no-eval': 'error',

@@ -136,6 +136,12 @@ PointMarker.prototype.timeUpdated = function(time) {
   }
 };
 
+PointMarker.prototype.update = function() {
+  if (this._marker.update) {
+    this._marker.update();
+  }
+};
+
 PointMarker.prototype.destroy = function() {
   if (this._marker.destroy) {
     this._marker.destroy();

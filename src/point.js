@@ -7,7 +7,7 @@
  */
 
 import {
-  extend, isBoolean, isLinearGradientColor, isNullOrUndefined, isString,
+  isBoolean, isLinearGradientColor, isNullOrUndefined, isString,
   isValidTime, objectHasProperty
 } from './utils';
 
@@ -17,16 +17,24 @@ const invalidOptions = [
   'update', 'isVisible', 'peaks'
 ];
 
+function setDefaultPointOptions(options) {
+  if (isNullOrUndefined(options.labelText)) {
+    options.labelText = '';
+  }
+
+  if (isNullOrUndefined(options.editable)) {
+    options.editable = false;
+  }
+}
+
 function validatePointOptions(options, updating) {
   const context = updating ? 'update()' : 'add()';
 
-  if (updating && objectHasProperty(options, 'id')) {
-    throw new Error('peaks.points.' + context + ': id cannot be updated');
-  }
-
-  if (!isValidTime(options.time)) {
-    // eslint-disable-next-line max-len
-    throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
+  if (!updating || (updating && objectHasProperty(options, 'time'))) {
+    if (!isValidTime(options.time)) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
+    }
   }
 
   if (options.time < 0) {
@@ -34,19 +42,15 @@ function validatePointOptions(options, updating) {
     throw new RangeError('peaks.points.' + context + ': time should not be negative');
   }
 
-  if (isNullOrUndefined(options.labelText)) {
-    // Set default label text
-    options.labelText = '';
-  }
-  else if (!isString(options.labelText)) {
+  if (objectHasProperty(options, 'labelText') && !isString(options.labelText)) {
     throw new TypeError('peaks.points.' + context + ': labelText must be a string');
   }
 
-  if (!isBoolean(options.editable)) {
+  if (objectHasProperty(options, 'editable') && !isBoolean(options.editable)) {
     throw new TypeError('peaks.points.' + context + ': editable must be true or false');
   }
 
-  if (options.color &&
+  if (objectHasProperty(options, 'color') &&
     !isString(options.color) &&
     !isLinearGradientColor(options.color)) {
     // eslint-disable-next-line max-len
@@ -83,20 +87,19 @@ function validatePointOptions(options, updating) {
  */
 
 function Point(options) {
-  this._peaks     = options.peaks;
-  this._id        = options.id;
-  this._time      = options.time;
-  this._labelText = options.labelText;
-  this._color     = options.color;
-  this._editable  = options.editable;
-
+  this._peaks = options.peaks;
   this._setUserData(options);
 }
 
 Point.prototype._setUserData = function(options) {
   for (const key in options) {
-    if (objectHasProperty(options, key) && pointOptions.indexOf(key) === -1) {
-      this[key] = options[key];
+    if (objectHasProperty(options, key)) {
+      if (pointOptions.indexOf(key) === -1) {
+        this[key] = options[key];
+      }
+      else {
+        this['_' + key] = options[key];
+      }
     }
   }
 };
@@ -134,25 +137,15 @@ Object.defineProperties(Point.prototype, {
 });
 
 Point.prototype.update = function(options) {
-  const opts = {
-    time:      this.time,
-    labelText: this.labelText,
-    color:     this.color,
-    editable:  this.editable
-  };
+  if (objectHasProperty(options, 'id')) {
+    throw new Error('peaks.points.update(): id cannot be updated');
+  }
 
-  extend(opts, options);
-
-  validatePointOptions(opts, true);
-
-  this._time      = opts.time;
-  this._labelText = opts.labelText;
-  this._color     = opts.color;
-  this._editable  = opts.editable;
+  validatePointOptions(options, true);
 
   this._setUserData(options);
 
-  this._peaks.emit('points.update', this);
+  this._peaks.emit('points.update', this, options);
 };
 
 /**
@@ -171,4 +164,4 @@ Point.prototype._setTime = function(time) {
   this._time = time;
 };
 
-export { Point, validatePointOptions };
+export { Point, setDefaultPointOptions, validatePointOptions };

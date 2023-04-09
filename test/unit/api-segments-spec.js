@@ -93,12 +93,6 @@ describe('Peaks.segments', function() {
       expect(logger).to.not.have.been.called;
     });
 
-    it('should should throw if the argument is not an object', function() {
-      expect(function() {
-        p.segments.add(0, 10);
-      }).to.throw(TypeError);
-    });
-
     it('should throw an exception if the startTime argument is missing', function() {
       expect(function() {
         p.segments.add({ endTime: 10 });
@@ -173,6 +167,12 @@ describe('Peaks.segments', function() {
 
     it('should assign a default label text if not specified', function() {
       p.segments.add({ startTime: 0, endTime: 10 });
+
+      expect(p.segments.getSegments()[0].labelText).to.equal('');
+    });
+
+    it('should assign a default label text if null', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: null });
 
       expect(p.segments.getSegments()[0].labelText).to.equal('');
     });
