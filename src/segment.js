@@ -7,7 +7,7 @@
  */
 
 import {
-  extend, isBoolean, isNullOrUndefined, isLinearGradientColor,
+  isBoolean, isNullOrUndefined, isLinearGradientColor,
   isString, isValidTime, objectHasProperty
 } from './utils';
 
@@ -19,21 +19,46 @@ const invalidOptions = [
   'update', 'isVisible', 'peaks'
 ];
 
+function setDefaultSegmentOptions(options, globalSegmentOptions) {
+  if (isNullOrUndefined(options.color)) {
+    if (globalSegmentOptions.overlay) {
+      options.color = globalSegmentOptions.overlayColor;
+    }
+    else {
+      options.color = globalSegmentOptions.waveformColor;
+    }
+  }
+
+  if (isNullOrUndefined(options.borderColor)) {
+    options.borderColor = globalSegmentOptions.overlayBorderColor;
+  }
+
+  if (isNullOrUndefined(options.labelText)) {
+    options.labelText = '';
+  }
+
+  if (isNullOrUndefined(options.editable)) {
+    options.editable = false;
+  }
+}
+
 function validateSegmentOptions(options, updating) {
   const context = updating ? 'update()' : 'add()';
 
-  if (updating && objectHasProperty(options, 'id')) {
-    throw new Error('peaks.segments.' + context + ': id cannot be updated');
-  }
-
-  if (!isValidTime(options.startTime)) {
+  if (objectHasProperty(options, 'startTime') && !isValidTime(options.startTime)) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': startTime should be a valid number');
   }
 
-  if (!isValidTime(options.endTime)) {
+  if (objectHasProperty(options, 'endTime') && !isValidTime(options.endTime)) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': endTime should be a valid number');
+  }
+
+  if (!updating) {
+    if (!objectHasProperty(options, 'startTime') || !objectHasProperty(options, 'endTime')) {
+      throw new TypeError('peaks.segments.' + context + ': missing startTime or endTime');
+    }
   }
 
   if (options.startTime < 0) {
@@ -51,32 +76,28 @@ function validateSegmentOptions(options, updating) {
     throw new RangeError('peaks.segments.' + context + ': endTime should not be less than startTime');
   }
 
-  if (isNullOrUndefined(options.labelText)) {
-    // Set default label text
-    options.labelText = '';
-  }
-  else if (!isString(options.labelText)) {
+  if (objectHasProperty(options, 'labelText') && !isString(options.labelText)) {
     throw new TypeError('peaks.segments.' + context + ': labelText must be a string');
   }
 
-  if (!isBoolean(options.editable)) {
+  if (objectHasProperty(options, 'editable') && !isBoolean(options.editable)) {
     throw new TypeError('peaks.segments.' + context + ': editable must be true or false');
   }
 
-  if (options.color &&
+  if (objectHasProperty(options, 'color') &&
     !isString(options.color) &&
     !isLinearGradientColor(options.color)) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
   }
 
-  if (options.borderColor && !isString(options.borderColor)) {
+  if (objectHasProperty(options, 'borderColor') && !isString(options.borderColor)) {
     // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': borderColor must be a string');
   }
 
   invalidOptions.forEach(function(name) {
-    if (options[name]) {
+    if (objectHasProperty(options, name)) {
       throw new Error('peaks.segments.' + context + ': invalid option name: ' + name);
     }
   });
@@ -121,8 +142,13 @@ function Segment(options) {
 
 Segment.prototype._setUserData = function(options) {
   for (const key in options) {
-    if (objectHasProperty(options, key) && segmentOptions.indexOf(key) === -1) {
-      this[key] = options[key];
+    if (objectHasProperty(options, key)) {
+      if (segmentOptions.indexOf(key) === -1) {
+        this[key] = options[key];
+      }
+      else {
+        this['_' + key] = options[key];
+      }
     }
   }
 };
@@ -173,29 +199,15 @@ Object.defineProperties(Segment.prototype, {
 });
 
 Segment.prototype.update = function(options) {
-  const opts = {
-    startTime:   this.startTime,
-    endTime:     this.endTime,
-    labelText:   this.labelText,
-    color:       this.color,
-    borderColor: this.borderColor,
-    editable:    this.editable
-  };
+  if (objectHasProperty(options, 'id')) {
+    throw new Error('peaks.segments.update(): id cannot be updated');
+  }
 
-  extend(opts, options);
-
-  validateSegmentOptions(opts, true);
-
-  this._startTime   = opts.startTime;
-  this._endTime     = opts.endTime;
-  this._labelText   = opts.labelText;
-  this._color       = opts.color;
-  this._borderColor = opts.borderColor;
-  this._editable    = opts.editable;
+  validateSegmentOptions(options, true);
 
   this._setUserData(options);
 
-  this._peaks.emit('segments.update', this);
+  this._peaks.emit('segments.update', this, options);
 };
 
 /**
@@ -220,4 +232,4 @@ Segment.prototype._setEndTime = function(time) {
   this._endTime = time;
 };
 
-export { Segment, validateSegmentOptions };
+export { Segment, setDefaultSegmentOptions, validateSegmentOptions };

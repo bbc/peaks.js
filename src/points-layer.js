@@ -35,15 +35,15 @@ function PointsLayer(peaks, view, allowEditing) {
 
   this._onPointsDrag = this._onPointsDrag.bind(this);
 
-  this._onPointHandleClick       = this._onPointHandleClick.bind(this);
-  this._onPointHandleDblClick    = this._onPointHandleDblClick.bind(this);
-  this._onPointHandleDragStart   = this._onPointHandleDragStart.bind(this);
-  this._onPointHandleDragMove    = this._onPointHandleDragMove.bind(this);
-  this._onPointHandleDragEnd     = this._onPointHandleDragEnd.bind(this);
-  this._pointHandleDragBoundFunc = this._pointHandleDragBoundFunc.bind(this);
-  this._onPointHandleMouseEnter  = this._onPointHandleMouseEnter.bind(this);
-  this._onPointHandleMouseLeave  = this._onPointHandleMouseLeave.bind(this);
-  this._onPointHandleContextMenu = this._onPointHandleContextMenu.bind(this);
+  this._onPointMarkerClick       = this._onPointMarkerClick.bind(this);
+  this._onPointMarkerDblClick    = this._onPointMarkerDblClick.bind(this);
+  this._onPointMarkerDragStart   = this._onPointMarkerDragStart.bind(this);
+  this._onPointMarkerDragMove    = this._onPointMarkerDragMove.bind(this);
+  this._onPointMarkerDragEnd     = this._onPointMarkerDragEnd.bind(this);
+  this._pointMarkerDragBoundFunc = this._pointMarkerDragBoundFunc.bind(this);
+  this._onPointMarkerMouseEnter  = this._onPointMarkerMouseEnter.bind(this);
+  this._onPointMarkerMouseLeave  = this._onPointMarkerMouseLeave.bind(this);
+  this._onPointMarkerContextMenu = this._onPointMarkerContextMenu.bind(this);
 
   this._onPointsUpdate    = this._onPointsUpdate.bind(this);
   this._onPointsAdd       = this._onPointsAdd.bind(this);
@@ -78,17 +78,34 @@ PointsLayer.prototype.formatTime = function(time) {
   return this._view.formatTime(time);
 };
 
-PointsLayer.prototype._onPointsUpdate = function(point) {
+PointsLayer.prototype._onPointsUpdate = function(point, options) {
   const frameStartTime = this._view.getStartTime();
   const frameEndTime   = this._view.getEndTime();
 
-  this._removePoint(point);
+  const pointMarker = this._pointMarkers[point.id];
+  const isVisible = point.isVisible(frameStartTime, frameEndTime);
 
-  if (point.isVisible(frameStartTime, frameEndTime)) {
-    this._addPointMarker(point);
+  if (pointMarker && !isVisible) {
+    // Remove point marker that is no longer visible.
+    this._removePoint(point);
   }
+  else if (!pointMarker && isVisible) {
+    // Add point marker for visible point.
+    this._updatePoint(point);
+  }
+  else if (pointMarker && isVisible) {
+    // Update the point marker with the changed attributes.
+    if (objectHasProperty(options, 'time')) {
+      const pointMarkerOffset = this._view.timeToPixels(point.time);
 
-  this.updatePoints(frameStartTime, frameEndTime);
+      const pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
+
+      pointMarker.setX(pointMarkerX);
+      pointMarker.timeUpdated(point.time);
+    }
+
+    pointMarker.update();
+  }
 };
 
 PointsLayer.prototype._onPointsAdd = function(points) {
@@ -99,11 +116,9 @@ PointsLayer.prototype._onPointsAdd = function(points) {
 
   points.forEach(function(point) {
     if (point.isVisible(frameStartTime, frameEndTime)) {
-      self._addPointMarker(point);
+      self._updatePoint(point);
     }
   });
-
-  self.updatePoints(frameStartTime, frameEndTime);
 };
 
 PointsLayer.prototype._onPointsRemove = function(points) {
@@ -145,15 +160,15 @@ PointsLayer.prototype._createPointMarker = function(point) {
     point:         point,
     draggable:     editable,
     marker:        marker,
-    onClick:       this._onPointHandleClick,
-    onDblClick:    this._onPointHandleDblClick,
-    onDragStart:   this._onPointHandleDragStart,
-    onDragMove:    this._onPointHandleDragMove,
-    onDragEnd:     this._onPointHandleDragEnd,
-    dragBoundFunc: this._pointHandleDragBoundFunc,
-    onMouseEnter:  this._onPointHandleMouseEnter,
-    onMouseLeave:  this._onPointHandleMouseLeave,
-    onContextMenu: this._onPointHandleContextMenu
+    onClick:       this._onPointMarkerClick,
+    onDblClick:    this._onPointMarkerDblClick,
+    onDragStart:   this._onPointMarkerDragStart,
+    onDragMove:    this._onPointMarkerDragMove,
+    onDragEnd:     this._onPointMarkerDragEnd,
+    dragBoundFunc: this._pointMarkerDragBoundFunc,
+    onMouseEnter:  this._onPointMarkerMouseEnter,
+    onMouseLeave:  this._onPointMarkerMouseLeave,
+    onContextMenu: this._onPointMarkerContextMenu
   });
 };
 
@@ -180,14 +195,17 @@ PointsLayer.prototype._addPointMarker = function(point) {
 };
 
 PointsLayer.prototype._onPointsDrag = function(event) {
-  this._updatePoint(event.point);
+  const pointMarker = this._updatePoint(event.point);
+
+  pointMarker.timeUpdated(event.point.time);
+  pointMarker.update();
 };
 
 /**
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDragMove = function(event, point) {
+PointsLayer.prototype._onPointMarkerDragMove = function(event, point) {
   const pointMarker = this._pointMarkers[point.id];
 
   const markerX = pointMarker.getX();
@@ -195,8 +213,6 @@ PointsLayer.prototype._onPointHandleDragMove = function(event, point) {
   const offset = markerX + pointMarker.getWidth();
 
   point._setTime(this._view.pixelOffsetToTime(offset));
-
-  pointMarker.timeUpdated(point.time);
 
   this._peaks.emit('points.dragmove', {
     point: point,
@@ -209,7 +225,7 @@ PointsLayer.prototype._onPointHandleDragMove = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleMouseEnter = function(event, point) {
+PointsLayer.prototype._onPointMarkerMouseEnter = function(event, point) {
   this._peaks.emit('points.mouseenter', {
     point: point,
     evt: event.evt
@@ -221,7 +237,7 @@ PointsLayer.prototype._onPointHandleMouseEnter = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleMouseLeave = function(event, point) {
+PointsLayer.prototype._onPointMarkerMouseLeave = function(event, point) {
   this._peaks.emit('points.mouseleave', {
     point: point,
     evt: event.evt
@@ -233,7 +249,7 @@ PointsLayer.prototype._onPointHandleMouseLeave = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleClick = function(event, point) {
+PointsLayer.prototype._onPointMarkerClick = function(event, point) {
   this._peaks.emit('points.click', {
     point: point,
     evt: event.evt
@@ -245,7 +261,7 @@ PointsLayer.prototype._onPointHandleClick = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDblClick = function(event, point) {
+PointsLayer.prototype._onPointMarkerDblClick = function(event, point) {
   this._peaks.emit('points.dblclick', {
     point: point,
     evt: event.evt
@@ -257,7 +273,7 @@ PointsLayer.prototype._onPointHandleDblClick = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDragStart = function(event, point) {
+PointsLayer.prototype._onPointMarkerDragStart = function(event, point) {
   this._dragPointMarker = this._pointMarkers[point.id];
 
   this._peaks.emit('points.dragstart', {
@@ -271,7 +287,7 @@ PointsLayer.prototype._onPointHandleDragStart = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
+PointsLayer.prototype._onPointMarkerDragEnd = function(event, point) {
   this._dragPointMarker = null;
 
   this._peaks.emit('points.dragend', {
@@ -280,7 +296,7 @@ PointsLayer.prototype._onPointHandleDragEnd = function(event, point) {
   });
 };
 
-PointsLayer.prototype._pointHandleDragBoundFunc = function(pos) {
+PointsLayer.prototype._pointMarkerDragBoundFunc = function(pos) {
   // Allow the marker to be moved horizontally but not vertically.
   return {
     x: clamp(pos.x, 0, this._view.getWidth()),
@@ -293,7 +309,7 @@ PointsLayer.prototype._pointHandleDragBoundFunc = function(pos) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointHandleContextMenu = function(event, point) {
+PointsLayer.prototype._onPointMarkerContextMenu = function(event, point) {
   this._peaks.emit('points.contextmenu', {
     point: point,
     evt: event.evt
@@ -315,7 +331,7 @@ PointsLayer.prototype.updatePoints = function(startTime, endTime) {
 
   points.forEach(this._updatePoint.bind(this));
 
-  // TODO: in the overview all points are visible, so no need to check
+  // TODO: In the overview all points are visible, so no need to do this.
   this._removeInvisiblePoints(startTime, endTime);
 };
 
@@ -328,10 +344,11 @@ PointsLayer.prototype._updatePoint = function(point) {
   const pointMarker = this._findOrAddPointMarker(point);
 
   const pointMarkerOffset = this._view.timeToPixels(point.time);
-
   const pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
   pointMarker.setX(pointMarkerX);
+
+  return pointMarker;
 };
 
 /**
@@ -357,24 +374,18 @@ PointsLayer.prototype._findOrAddPointMarker = function(point) {
  * @private
  * @param {Number} startTime The start of the visible time range, in seconds.
  * @param {Number} endTime The end of the visible time range, in seconds.
- * @returns {Number} The number of points removed.
  */
 
 PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
-  let count = 0;
-
   for (const pointId in this._pointMarkers) {
     if (objectHasProperty(this._pointMarkers, pointId)) {
       const point = this._pointMarkers[pointId].getPoint();
 
       if (!point.isVisible(startTime, endTime)) {
         this._removePoint(point);
-        count++;
       }
     }
   }
-
-  return count;
 };
 
 /**

@@ -76,8 +76,9 @@ describe('Point', function() {
         point.update({ time: -10 });
       }).to.throw(RangeError);
 
-      point.update({ labelText: undefined });
-      expect(point.labelText).to.equal('');
+      expect(function() {
+        point.update({ labelText: undefined });
+      }).to.throw(TypeError);
     });
 
     it('should not allow the id to be updated', function() {

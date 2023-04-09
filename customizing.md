@@ -13,6 +13,7 @@ This document describes how to customize various aspects of the waveform renderi
     - [marker.init()](#markerinitgroup)
     - [marker.fitToView()](#markerfittoview)
     - [marker.timeUpdated()](#markertimeupdatedtime)
+    - [marker.update()](#markerupdate)
     - [marker.destroy()](#markerdestroy)
   - [Layer API](#layer-api)
     - [layer.getHeight()](#layergetheight)
@@ -83,8 +84,7 @@ Peaks.init(options, function(err, peaks) {
 ```
 
 There is a complete example demo available [here](demo/custom-markers) that
-shows how to use these functions to draw custom point and segment marker
-handles.
+shows how to use these functions to draw custom point and segment markers.
 
 Customizing markers does not work with the Peaks.js UMD bundle. You must build
 Peaks.js into your own bundle with Konva as a peer dependency, using a module
@@ -93,20 +93,20 @@ bundler such as [Webpack](https://webpack.js.org/),
 
 ### `createPointMarker(options)`
 
-The `createPointMarker` function returns an object that renders a point marker
-handle. When called, this function receives an object containing the following
+The `createPointMarker` function returns an object that renders a point marker.
+When called, this function receives an object containing the following
 options:
 
-| Name         | Type          | Description                                                                                                                          |
-| ------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `point`      | `Point`       | The `Point` object associated with this marker handle. This provides access to the `time`, `color`, and `labelText` attributes, etc. |
-| `view`       | `string`      | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                                    |
-| `layer`      | `PointsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                        |
-| `draggable`  | `boolean`     | If `true`, the marker is draggable.                                                                                                  |
-| `color`      | `string`      | Color for the marker handle (set by the `pointMarkerColor` option in `Peaks.init()`.                                                 |
-| `fontFamily` | `string`      | Font family for the marker handle text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                  |
-| `fontSize`   | `number`      | Font size, in px, for the marker handle text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                         |
-| `fontShape`  | `string`      | Font shape for the marker handle text (set by the `fontShape` option in `Peaks.init()`, default: `'normal'`).                        |
+| Name         | Type          | Description                                                                                                                   |
+| ------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `point`      | `Point`       | The `Point` object associated with this marker. This provides access to the `time`, `color`, and `labelText` attributes, etc. |
+| `view`       | `string`      | The name of the view that the marker is being created in, either `zoomview` or `overview`.                                    |
+| `layer`      | `PointsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                 |
+| `draggable`  | `boolean`     | If `true`, the marker is draggable.                                                                                           |
+| `color`      | `string`      | Color for the marker (set by the `pointMarkerColor` option in `Peaks.init()`.                                                 |
+| `fontFamily` | `string`      | Font family for the marker text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                  |
+| `fontSize`   | `number`      | Font size, in px, for the marker text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                         |
+| `fontShape`  | `string`      | Font shape for the marker text (set by the `fontShape` option in `Peaks.init()`, default: `'normal'`).                        |
 
 The function should return an instance of an object as illustrated by the
 `CustomPointMarker` class below.
@@ -128,7 +128,11 @@ class CustomPointMarker {
     // (required, see below)
   }
 
-  timeUpdated() {
+  timeUpdated(time) {
+    // (optional, see below)
+  }
+
+  update() {
     // (optional, see below)
   }
 
@@ -142,36 +146,36 @@ function createPointMarker(options) {
 }
 ```
 
-Your custom point marker handle object must implement the `init` and
-`fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker API](#marker-api) section for
-details.
+Your custom point marker object must implement the `init` and
+`fitToView` methods. It may also optionally implement `timeUpdated`,
+`update`, and `destroy`. Refer to the [Marker API](#marker-api)
+section for details.
 
 ### `createSegmentMarker(options)`
 
 The `createSegmentMarker` function returns an object that renders a segment
-marker handle. When called, this function receives an object containing the
+marker. When called, this function receives an object containing the
 following options:
 
-| Name             | Type            | Description                                                                                                                                            |
-| ---------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `segment`        | `Segment`       | The `Segment` object associated with this marker handle. This provides access to the `startTime`, `endTime`, `color`, and `labelText` attributes, etc. |
-| `view`           | `string`        | The name of the view that the marker handle is being created in, either `zoomview` or `overview`.                                                      |
-| `layer`          | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                                          |
-| `draggable`      | `boolean`       | This value is always `true` for segment marker handles.                                                                                                |
-| `color`          | `string`        | Color for the marker handle (set by the `segmentOptions.startMarkerColor` or `segmentOptions.endMarkerColor` option in `Peaks.init()`.                 |
-| `fontFamily`     | `string`        | Font family for the marker handle text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                                    |
-| `fontSize`       | `number`        | Font size, in px, for the marker handle text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                                           |
-| `fontShape`      | `string`        | Font shape for the marker handle text (set by the `fontShape` option in `Peaks.init()`, default: `'normal'`).                                          |
-| `startMarker`    | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment.                           |
-| `segmentOptions` | `object`        | An object with segment display options for the current view (see `segmentOptions` in [README.md](README.md)).                                          |
+| Name             | Type            | Description                                                                                                                                     |
+| ---------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `segment`        | `Segment`       | The `Segment` object associated with this marker. This provides access to the `startTime`, `endTime`, `color`, and `labelText` attributes, etc. |
+| `view`           | `string`        | The name of the view that the marker is being created in, either `zoomview` or `overview`.                                                      |
+| `layer`          | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                                   |
+| `draggable`      | `boolean`       | This value is always `true` for segment markers.                                                                                                |
+| `color`          | `string`        | Color for the marker (set by the `segmentOptions.startMarkerColor` or `segmentOptions.endMarkerColor` option in `Peaks.init()`.                 |
+| `fontFamily`     | `string`        | Font family for the marker text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                                    |
+| `fontSize`       | `number`        | Font size, in px, for the marker text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                                           |
+| `fontShape`      | `string`        | Font shape for the marker text (set by the `fontShape` option in `Peaks.init()`, default: `'normal'`).                                          |
+| `startMarker`    | `boolean`       | If `true`, the marker indicates the start time of the segment. If `false`, the marker indicates the end time of the segment.                    |
+| `segmentOptions` | `object`        | An object with segment display options for the current view (see `segmentOptions` in [README.md](README.md)).                                   |
 
 The function should return an instance of an object as illustrated by the
 `CustomSegmentMarker` class below.
 
 You can use the `view` option to give the marker a different appearance or
 behavior in the zoomview and overview waveform views. You can also return
-`null` from this function if you do not want to display a segment marker handle.
+`null` from this function if you do not want to display a segment marker.
 
 ```javascript
 class CustomSegmentMarker {
@@ -187,7 +191,11 @@ class CustomSegmentMarker {
     // (required, see below)
   }
 
-  timeUpdated() {
+  timeUpdated(time) {
+    // (optional, see below)
+  }
+
+  update() {
     // (optional, see below)
   }
 
@@ -201,9 +209,10 @@ function createSegmentMarker(options) {
 }
 ```
 
-Your custom segment marker handle object must implement the `init` and
-`fitToView` methods. It may also optionally implement `timeUpdated` and
-`destroy`. Refer to the [Marker API](#marker-api) section for details.
+Your custom segment marker object must implement the `init` and
+`fitToView` methods. It may also optionally implement `timeUpdated`,
+`update`, and `destroy`. Refer to the [Marker API](#marker-api)
+section for details.
 
 ### Marker API
 
@@ -224,14 +233,13 @@ constructor(options) {
 #### `marker.init(group)`
 
 The `init` method should create the Konva objects needed to render the
-marker handle and add them to the supplied `group` object.
+marker and add them to the supplied `group` object.
 
-| Name      | Type                                                      | Description                                                                                                                          |
-| --------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `group`   | [`Konva.Group`](https://konvajs.org/api/Konva.Group.html) | A container for the marker's Konva objects.                                                                                          |
-| `options` | `object`                                                  | The same options passed to [`createPointMarker`](#createpointmarkeroptions) or [`createSegmentMarker`](#createsegmentmarkeroptions). |
+| Name      | Type                                                      | Description                                 |
+| --------- | --------------------------------------------------------- | ------------------------------------------- |
+| `group`   | [`Konva.Group`](https://konvajs.org/api/Konva.Group.html) | A container for the marker's Konva objects. |
 
-The following example creates a point marker handle as a vertical line with a
+The following example creates a point marker as a vertical line with a
 rectangular handle.
 
 Note that the `x` and `y` coordinates (0, 0) represent the centre of the marker
@@ -310,8 +318,8 @@ fitToView() {
 #### `marker.timeUpdated(time)`
 
 The `timeUpdated` method is called when the marker's time position has changed.
-This is the marker's `time` attribute (for point markers), or `startTime` or
-`endTime` (for segment markers).
+For point markers, this is the marker's `time` attribute, and for segment
+markers the `startTime` or `endTime` attribute.
 
 | Name   | Type     | Description                      |
 | ------ | -------- | -------------------------------- |
@@ -320,6 +328,24 @@ This is the marker's `time` attribute (for point markers), or `startTime` or
 ```javascript
 timeUpdated(time) {
   console.log('Marker time', time);
+}
+```
+
+#### `marker.update()`
+
+The `update` method is called when any of the point or segment attributes
+have changed, e.g., by calling `point.update()` or `segment.update()`.
+You should use this method to update the marker as needed.
+
+Note that `update()` is called in addition to `timeUpdated()` if the
+marker's time position (`point.time`, `segment.startTime`, or
+`segment.endTime`) has changed.
+
+```javascript
+update() {
+  const point = this._options.point;
+
+  console.log('Label text', point.labelText);
 }
 ```
 
