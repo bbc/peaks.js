@@ -53,7 +53,7 @@ describe('Peaks', function() {
         });
       });
 
-      it('should return undefined', function(done) {
+      it('should return the peaks instance', function(done) {
         const result = Peaks.init({
           overview: {
             container: document.getElementById('overview-container')
@@ -67,7 +67,7 @@ describe('Peaks', function() {
         function(err, instance) {
           expect(err).to.equal(null);
           expect(instance).to.be.an.instanceOf(Peaks);
-          expect(result).to.be.undefined;
+          expect(result).to.equal(instance);
           instance.destroy();
           done();
         });

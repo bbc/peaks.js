@@ -178,7 +178,7 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
     return;
   }
 
-  const xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
+  self._xhr = self._createXHR(url, requestType, options.withCredentials, function(event) {
     if (this.readyState !== 4) {
       return;
     }
@@ -190,6 +190,8 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
 
       return;
     }
+
+    self._xhr = null;
 
     const waveformData = WaveformData.create(event.target.response);
 
@@ -205,10 +207,13 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
     callback(null, waveformData);
   },
   function() {
-    callback(new Error('XHR Failed'));
+    callback(new Error('XHR failed'));
+  },
+  function() {
+    callback(new Error('XHR aborted'));
   });
 
-  xhr.send();
+  self._xhr.send();
 };
 
 /* eslint-disable max-len */
@@ -363,7 +368,7 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
     return;
   }
 
-  const xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(event) {
+  self._xhr = self._createXHR(url, 'arraybuffer', withCredentials, function(event) {
     if (this.readyState !== 4) {
       return;
     }
@@ -376,6 +381,8 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
       return;
     }
 
+    self._xhr = null;
+
     const webAudioBuilderOptions = {
       audio_context: webAudio.audioContext,
       array_buffer: event.target.response,
@@ -386,10 +393,19 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
     WaveformData.createFromAudio(webAudioBuilderOptions, callback);
   },
   function() {
-    callback(new Error('XHR Failed'));
+    callback(new Error('XHR failed'));
+  },
+  function() {
+    callback(new Error('XHR aborted'));
   });
 
-  xhr.send();
+  self._xhr.send();
+};
+
+WaveformBuilder.prototype.abort = function() {
+  if (this._xhr) {
+    this._xhr.abort();
+  }
 };
 
 /**
@@ -404,7 +420,7 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
  */
 
 WaveformBuilder.prototype._createXHR = function(url, requestType,
-    withCredentials, onLoad, onError) {
+    withCredentials, onLoad, onError, onAbort) {
   const xhr = new XMLHttpRequest();
 
   // open an XHR request to the data source file
@@ -426,6 +442,8 @@ WaveformBuilder.prototype._createXHR = function(url, requestType,
   if (isXhr2 && withCredentials) {
     xhr.withCredentials = true;
   }
+
+  xhr.addEventListener('abort', onAbort);
 
   return xhr;
 };

@@ -365,11 +365,11 @@ Peaks.init = function(opts, callback) {
   instance.views = new ViewController(instance);
 
   // Setup the UI components
-  const waveformBuilder = new WaveformBuilder(instance);
+  instance._waveformBuilder = new WaveformBuilder(instance);
 
   instance.player.init(instance)
     .then(function() {
-      waveformBuilder.init(instance.options, function(err, waveformData) {
+      instance._waveformBuilder.init(instance.options, function(err, waveformData) {
         if (err) {
           if (callback) {
             callback(err);
@@ -388,6 +388,7 @@ Peaks.init = function(opts, callback) {
           return;
         }
 
+        instance._waveformBuilder = null;
         instance._waveformData = waveformData;
 
         const zoomviewContainer = instance.options.zoomview.container;
@@ -434,6 +435,8 @@ Peaks.init = function(opts, callback) {
         callback(err);
       }
     });
+
+  return instance;
 };
 
 Peaks.prototype._setOptions = function(opts) {
@@ -545,20 +548,21 @@ Peaks.prototype._setOptions = function(opts) {
 Peaks.prototype.setSource = function(options, callback) {
   const self = this;
 
-  this.player._setSource(options)
+  self.player._setSource(options)
     .then(function() {
       if (!options.zoomLevels) {
         options.zoomLevels = self.options.zoomLevels;
       }
 
-      const waveformBuilder = new WaveformBuilder(self);
+      self._waveformBuilder = new WaveformBuilder(self);
 
-      waveformBuilder.init(options, function(err, waveformData) {
+      self._waveformBuilder.init(options, function(err, waveformData) {
         if (err) {
           callback(err);
           return;
         }
 
+        self._waveformBuilder = null;
         self._waveformData = waveformData;
 
         ['overview', 'zoomview'].forEach(function(viewName) {
@@ -614,6 +618,10 @@ Peaks.prototype._removeWindowResizeHandler = function() {
 
 Peaks.prototype.destroy = function() {
   this._removeWindowResizeHandler();
+
+  if (this._waveformBuilder) {
+    this._waveformBuilder.abort();
+  }
 
   if (this._keyboardHandler) {
     this._keyboardHandler.destroy();

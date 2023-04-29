@@ -16,13 +16,13 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const spy = sinon.spy(waveformBuilder, '_createXHR');
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
 
-        const requestType = spy.getCall(0).args[1];
+        const requestType = createXHR.getCall(0).args[1];
 
         expect(requestType).to.equal('json');
 
@@ -60,7 +60,7 @@ describe('WaveformBuilder', function() {
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.be.an.instanceof(Error);
-        expect(err.message).to.equal('XHR Failed');
+        expect(err.message).to.equal('XHR failed');
         expect(waveformData).to.equal(undefined);
 
         done();
@@ -79,13 +79,13 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const spy = sinon.spy(waveformBuilder, '_createXHR');
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
 
-        const url = spy.getCall(0).args[0];
+        const url = createXHR.getCall(0).args[0];
 
         expect(url).to.equal(peaks.options.dataUri.json);
 
@@ -105,13 +105,13 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const spy = sinon.spy(waveformBuilder, '_createXHR');
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
 
-        const xhr = spy.getCall(0).returnValue;
+        const xhr = createXHR.getCall(0).returnValue;
 
         expect(xhr.withCredentials).to.equal(false);
 
@@ -132,13 +132,13 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const spy = sinon.spy(waveformBuilder, '_createXHR');
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
 
-        const xhr = spy.getCall(0).returnValue;
+        const xhr = createXHR.getCall(0).returnValue;
 
         expect(xhr.withCredentials).to.equal(true);
 
@@ -158,13 +158,13 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const spy = sinon.spy(waveformBuilder, '_createXHR');
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
 
-        const url = spy.getCall(0).args[0];
+        const url = createXHR.getCall(0).args[0];
 
         expect(url).to.equal(peaks.options.dataUri.arraybuffer);
 
@@ -263,13 +263,13 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const spy = sinon.spy(waveformBuilder, '_createXHR');
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
 
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
 
-        const url = spy.getCall(0).args[0];
+        const url = createXHR.getCall(0).args[0];
         const expectedDataUri = window.ArrayBuffer ? peaks.options.dataUri.arraybuffer : peaks.options.dataUri.json;
 
         expect(url).to.equal(expectedDataUri);
@@ -316,6 +316,91 @@ describe('WaveformBuilder', function() {
       waveformBuilder.init(peaks.options, function(err, waveformData) {
         expect(err).to.equal(null);
         expect(waveformData).to.be.an.instanceOf(WaveformData);
+        done();
+      });
+    });
+  });
+
+  describe('abort', function() {
+    it('should abort an HTTP request for waveform data', function(done) {
+      const peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          dataUri: 'base/test_data/sample.json'
+        }
+      };
+
+      const waveformBuilder = new WaveformBuilder(peaks);
+
+      function callback(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(waveformData).to.equal(undefined);
+        done();
+      }
+
+      waveformBuilder.init(peaks.options, callback);
+      waveformBuilder.abort();
+    });
+
+    it('should abort an HTTP request for audio data', function(done) {
+      const peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          webAudio: {
+            audioContext: new TestAudioContext(),
+            scale: 512
+          },
+          zoomLevels: [512, 1024, 2048, 4096]
+        }
+      };
+
+      const waveformBuilder = new WaveformBuilder(peaks);
+
+      function callback(err, waveformData) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(waveformData).to.equal(undefined);
+        done();
+      }
+
+      waveformBuilder.init(peaks.options, callback);
+      waveformBuilder.abort();
+    });
+
+    it('should do nothing if the HTTP request has not yet been sent', function(done) {
+      const peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          dataUri: 'base/test_data/sample.json'
+        }
+      };
+
+      const waveformBuilder = new WaveformBuilder(peaks);
+      waveformBuilder.abort();
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.equal(null);
+        expect(waveformData).to.be.an.instanceOf(WaveformData);
+
+        done();
+      });
+    });
+
+    it('should do nothing if the HTTP request has completed', function(done) {
+      const peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          dataUri: 'base/test_data/sample.json'
+        }
+      };
+
+      const waveformBuilder = new WaveformBuilder(peaks);
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        waveformBuilder.abort();
+
+        expect(err).to.equal(null);
+        expect(waveformData).to.be.an.instanceOf(WaveformData);
+
         done();
       });
     });
