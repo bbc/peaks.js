@@ -810,6 +810,52 @@ describe('Peaks', function() {
           done();
         });
       });
+
+      it('should invoke callback with an error if the zoomview container element has zero height after initialisation', function(done) {
+        const container = document.getElementById('zoomview-container');
+
+        const options = {
+          zoomview: {
+            container: container
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/height/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
+
+        container.style.height = '0px';
+      });
+
+      it('should invoke callback with an error if the overview container element has zero height after initialisation', function(done) {
+        const container = document.getElementById('overview-container');
+
+        const options = {
+          overview: {
+            container: container
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
+        };
+
+        Peaks.init(options, function(err, instance) {
+          expect(err).to.be.an.instanceOf(Error);
+          expect(err.message).to.match(/height/);
+          expect(instance).to.equal(undefined);
+          done();
+        });
+
+        container.style.height = '0px';
+      });
     });
   });
 

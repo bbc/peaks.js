@@ -282,6 +282,31 @@ function addSegmentOptions(options, opts) {
   }
 }
 
+function checkContainerElements(options) {
+  const zoomviewContainer = options.zoomview.container;
+  const overviewContainer = options.overview.container;
+
+  if (!isHTMLElement(zoomviewContainer) &&
+      !isHTMLElement(overviewContainer)) {
+    // eslint-disable-next-line max-len
+    return new TypeError('Peaks.init(): The zoomview and/or overview container options must be valid HTML elements');
+  }
+
+  if (zoomviewContainer &&
+      (zoomviewContainer.clientWidth  <= 0 ||
+       zoomviewContainer.clientHeight <= 0)) {
+    // eslint-disable-next-line max-len
+    return new Error('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width and height');
+  }
+
+  if (overviewContainer &&
+      (overviewContainer.clientWidth  <= 0 ||
+       overviewContainer.clientHeight <= 0)) {
+    // eslint-disable-next-line max-len
+    return new Error('Peaks.init(): Please ensure that the overview container is visible and has non-zero width and height');
+  }
+}
+
 /**
  * Creates and initialises a new Peaks instance with the given options.
  *
@@ -293,36 +318,17 @@ function addSegmentOptions(options, opts) {
 Peaks.init = function(opts, callback) {
   const instance = new Peaks();
 
-  const err = instance._setOptions(opts);
+  let err = instance._setOptions(opts);
 
   if (err) {
     callback(err);
     return;
   }
 
-  const zoomviewContainer = instance.options.zoomview.container;
-  const overviewContainer = instance.options.overview.container;
+  err = checkContainerElements(instance.options);
 
-  if (!isHTMLElement(zoomviewContainer) &&
-      !isHTMLElement(overviewContainer)) {
-    // eslint-disable-next-line max-len
-    callback(new TypeError('Peaks.init(): The zoomview and/or overview container options must be valid HTML elements'));
-    return;
-  }
-
-  if (zoomviewContainer &&
-      (zoomviewContainer.clientWidth  <= 0 ||
-       zoomviewContainer.clientHeight <= 0)) {
-    // eslint-disable-next-line max-len
-    callback(new Error('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width and height'));
-    return;
-  }
-
-  if (overviewContainer &&
-      (overviewContainer.clientWidth  <= 0 ||
-       overviewContainer.clientHeight <= 0)) {
-    // eslint-disable-next-line max-len
-    callback(new Error('Peaks.init(): Please ensure that the overview container is visible and has non-zero width and height'));
+  if (err) {
+    callback(err);
     return;
   }
 
@@ -372,7 +378,20 @@ Peaks.init = function(opts, callback) {
           return;
         }
 
+        err = checkContainerElements(instance.options);
+
+        if (err) {
+          if (callback) {
+            callback(err);
+          }
+
+          return;
+        }
+
         instance._waveformData = waveformData;
+
+        const zoomviewContainer = instance.options.zoomview.container;
+        const overviewContainer = instance.options.overview.container;
 
         if (overviewContainer) {
           instance.views.createOverview(overviewContainer);
