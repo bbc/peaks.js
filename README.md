@@ -1726,13 +1726,19 @@ npm install
 
 ## Building
 
-This command will produce UMD-compatible standalone versions of Peaks.js, minified and unminified. You can use these with AMD or CommonJS module loaders, or even as vanilla JavaScript.
-
 ```bash
 npm run build
 ```
 
-The output of the build are files named `peaks.js`, and `peaks.min.js` alongside their associated [source maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/).
+This command will produce various builds of Peaks.js:
+
+* `dist/peaks.js` and `dist/peaks.min.js` are stand-alone UMD modules that contain all dependencies. Note that [custom markers](customizing.md#point-and-segment-markers) do not work with these builds. See the [FAQ](doc/faq.md) for more details
+
+* `dist/peaks.esm.js` is an ES module bundle that does not include the Konva.js and waveform-data.js dependencies
+
+* `dist/peaks.ext.js` and `dist/peaks.ext.min.js` are UMD builds that do not include the Konva.js and waveform-data.js dependencies
+
+The build also creates an associated [source map](https://web.dev/source-maps/) for each JavaScript file.
 
 ## Testing
 
