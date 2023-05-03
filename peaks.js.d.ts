@@ -13,9 +13,9 @@ declare module 'peaks.js' {
                         (Without<T> & Without<U> & V);
 
   interface LinearGradientColor {
-    linearGradientStart: number
-    linearGradientEnd: number
-    linearGradientColorStops: (string | number)[]
+    linearGradientStart: number;
+    linearGradientEnd: number;
+    linearGradientColorStops: (string | number)[];
   }
 
   type WaveformColor = string | LinearGradientColor;
@@ -201,6 +201,7 @@ declare module 'peaks.js' {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
     timeUpdated?: (time: number) => void;
+    update?: () => void;
     destroy?: () => void;
   }
 
@@ -208,6 +209,7 @@ declare module 'peaks.js' {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
     timeUpdated?: (time: number) => void;
+    update?: () => void;
     destroy?: () => void;
   }
 
