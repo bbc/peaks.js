@@ -1,5 +1,19 @@
 # Peaks.js
 
+## 3.0.0-beta.9 (2023/05/06)
+
+* (#484) Validate container elements after loading the waveform (@chrisn)
+
+* (#484) Calling `peaksInstance.destroy()` will now abort an in-progress
+  HTTP request to fetch audio or waveform data (@chrisn)
+
+* (#483) Enable point and segment marker updates while dragging (@chrisn)
+
+* (#481) Improved point/segment attribute validation to prevent
+  overwriting internal Point or Segment properties (@chrisn)
+
+* Added FAQ documentation, see [doc/faq.md](doc/faq.md) (@chrisn)
+
 ## 3.0.0-beta.8 (2023/03/24)
 
 * (#481) Fixed TypeScript declarations (@chrisn)
