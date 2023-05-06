@@ -517,6 +517,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   let dragMode;
   const minSegmentWidth = this._view.getMinSegmentDragWidth();
   const minSegmentDuration = this._view.pixelsToTime(minSegmentWidth);
+  let previousSegmentUpdated = false;
+  let nextSegmentUpdated = false;
 
   // Prevent the segment from being dragged beyond the start of the waveform.
 
@@ -556,6 +558,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
         }
 
         this._previousSegment.update({ endTime: previousSegmentEndTime });
+
+        previousSegmentUpdated = true;
       }
     }
   }
@@ -578,6 +582,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
       }
       else if (dragMode === 'compress') {
         let nextSegmentStartTime = this._view.pixelOffsetToTime(endX);
+
         const maxNextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
 
         if (nextSegmentStartTime > maxNextSegmentStartTime) {
@@ -592,6 +597,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
         }
 
         this._nextSegment.update({ startTime: nextSegmentStartTime });
+
+        nextSegmentUpdated = true;
       }
     }
   }
@@ -604,6 +611,21 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
     startMarker: false,
     evt: event.evt
   });
+
+  if (previousSegmentUpdated) {
+    this._peaks.emit('segments.dragged', {
+      segment: this._previousSegment,
+      startMarker: false,
+      evt: event.evt
+    });
+  }
+  else if (nextSegmentUpdated) {
+    this._peaks.emit('segments.dragged', {
+      segment: this._nextSegment,
+      startMarker: false,
+      evt: event.evt
+    });
+  }
 };
 
 SegmentShape.prototype._onSegmentDragEnd = function(event) {
@@ -655,7 +677,7 @@ SegmentShape.prototype._onSegmentMarkerDragStart = function(segmentMarker, event
 
 SegmentShape.prototype._onSegmentMarkerDragMove = function(segmentMarker, event) {
   if (segmentMarker.isStartMarker()) {
-    this._segmentStartHandleDragMove(segmentMarker, event);
+    this._segmentStartMarkerDragMove(segmentMarker, event);
     segmentMarker.timeUpdated(segmentMarker.getSegment().startTime);
   }
   else {
@@ -666,7 +688,7 @@ SegmentShape.prototype._onSegmentMarkerDragMove = function(segmentMarker, event)
   segmentMarker.update();
 };
 
-SegmentShape.prototype._segmentStartHandleDragMove = function(segmentMarker, event) {
+SegmentShape.prototype._segmentStartMarkerDragMove = function(segmentMarker, event) {
   const startMarkerX = this._startMarker.getX();
   const endMarkerX   = this._endMarker.getX();
 
@@ -676,6 +698,7 @@ SegmentShape.prototype._segmentStartHandleDragMove = function(segmentMarker, eve
   const upperLimit = this._endMarker.getX() - minSegmentWidth;
   let lowerLimit;
   let previousSegmentVisible = true;
+  let previousSegmentUpdated = false;
 
   if (this._previousSegment) {
     const dragMode = this._view.getSegmentDragMode();
@@ -726,6 +749,8 @@ SegmentShape.prototype._segmentStartHandleDragMove = function(segmentMarker, eve
         this._previousSegment.update({
           endTime: this._view.pixelOffsetToTime(startMarkerX)
         });
+
+        previousSegmentUpdated = true;
       }
     }
   }
@@ -751,6 +776,14 @@ SegmentShape.prototype._segmentStartHandleDragMove = function(segmentMarker, eve
     startMarker: true,
     evt: event.evt
   });
+
+  if (previousSegmentUpdated) {
+    this._peaks.emit('segments.dragged', {
+      segment: this._previousSegment,
+      startMarker: false,
+      evt: event.evt
+    });
+  }
 };
 
 SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event) {
@@ -763,6 +796,7 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
   const lowerLimit = this._startMarker.getX() + minSegmentWidth;
   let upperLimit;
   let nextSegmentVisible = true;
+  let nextSegmentUpdated = false;
 
   const width = this._view.getWidth();
 
@@ -813,6 +847,8 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
         this._nextSegment.update({
           startTime: this._view.pixelOffsetToTime(endMarkerX)
         });
+
+        nextSegmentUpdated = true;
       }
     }
   }
@@ -838,6 +874,14 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
     startMarker: false,
     evt: event.evt
   });
+
+  if (nextSegmentUpdated) {
+    this._peaks.emit('segments.dragged', {
+      segment: this._nextSegment,
+      startMarker: true,
+      evt: event.evt
+    });
+  }
 };
 
 /**
