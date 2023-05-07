@@ -468,7 +468,7 @@ declare module 'peaks.js' {
     setMinSegmentDragWidth: (width: number) => void;
   }
 
-  interface PeaksInstance {
+  export interface PeaksInstance {
     setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;
     getWaveformData: () => WaveformData;
     destroy: () => void;
