@@ -119,6 +119,7 @@ describe('WaveformZoomview', function() {
           expect(calls.length).to.equal(1);
 
           expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[0].args[1].marker).to.equal(false);
           expect(calls[0].args[1].segment.startTime).to.equal(1.0 + distance * p.zoom.getZoomLevel() / 44100);
           expect(calls[0].args[1].segment.endTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
         });

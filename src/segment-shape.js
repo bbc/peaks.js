@@ -491,6 +491,7 @@ SegmentShape.prototype._onSegmentDragStart = function(event) {
 
   this._peaks.emit('segments.dragstart', {
     segment: this._segment,
+    marker: false,
     startMarker: false,
     evt: event.evt
   });
@@ -608,6 +609,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
 
   this._peaks.emit('segments.dragged', {
     segment: this._segment,
+    marker: false,
     startMarker: false,
     evt: event.evt
   });
@@ -615,6 +617,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   if (previousSegmentUpdated) {
     this._peaks.emit('segments.dragged', {
       segment: this._previousSegment,
+      marker: false,
       startMarker: false,
       evt: event.evt
     });
@@ -622,6 +625,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   else if (nextSegmentUpdated) {
     this._peaks.emit('segments.dragged', {
       segment: this._nextSegment,
+      marker: false,
       startMarker: false,
       evt: event.evt
     });
@@ -633,6 +637,7 @@ SegmentShape.prototype._onSegmentDragEnd = function(event) {
 
   this._peaks.emit('segments.dragend', {
     segment: this._segment,
+    marker: false,
     startMarker: false,
     evt: event.evt
   });
@@ -666,6 +671,7 @@ SegmentShape.prototype._onSegmentMarkerDragStart = function(segmentMarker, event
 
   this._peaks.emit('segments.dragstart', {
     segment: this._segment,
+    marker: true,
     startMarker: segmentMarker.isStartMarker(),
     evt: event.evt
   });
@@ -773,6 +779,7 @@ SegmentShape.prototype._segmentStartMarkerDragMove = function(segmentMarker, eve
 
   this._peaks.emit('segments.dragged', {
     segment: this._segment,
+    marker: true,
     startMarker: true,
     evt: event.evt
   });
@@ -780,6 +787,7 @@ SegmentShape.prototype._segmentStartMarkerDragMove = function(segmentMarker, eve
   if (previousSegmentUpdated) {
     this._peaks.emit('segments.dragged', {
       segment: this._previousSegment,
+      marker: true,
       startMarker: false,
       evt: event.evt
     });
@@ -871,6 +879,7 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
 
   this._peaks.emit('segments.dragged', {
     segment: this._segment,
+    marker: true,
     startMarker: false,
     evt: event.evt
   });
@@ -878,6 +887,7 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
   if (nextSegmentUpdated) {
     this._peaks.emit('segments.dragged', {
       segment: this._nextSegment,
+      marker: true,
       startMarker: true,
       evt: event.evt
     });
@@ -896,6 +906,7 @@ SegmentShape.prototype._onSegmentMarkerDragEnd = function(segmentMarker, event) 
 
   this._peaks.emit('segments.dragend', {
     segment: this._segment,
+    marker: true,
     startMarker: startMarker,
     evt: event.evt
   });
