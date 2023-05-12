@@ -365,6 +365,7 @@ declare module 'peaks.js' {
 
   interface SegmentDragEvent {
     segment: Segment;
+    marker: boolean;
     startMarker: boolean;
     evt: MouseEvent;
   }
