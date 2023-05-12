@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 3.0.0-beta.10 (2023/05/12)
+
+* (#488) Added `marker` flag to `segments.dragstart`, `segments.dragend`,
+  and `segments.dragged` events, so you can detect whether a segment
+  start or end marker, or the entire segment is being dragged (@chrisn)
+
 ## 3.0.0-beta.9 (2023/05/06)
 
 * (#484) Validate container elements after loading the waveform (@chrisn)
