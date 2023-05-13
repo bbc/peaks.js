@@ -503,12 +503,12 @@
 
           // Points mouse events
 
-          peaksInstance.on('points.mouseenter', function(point) {
-            console.log('points.mouseenter:', point);
+          peaksInstance.on('points.mouseenter', function(event) {
+            console.log('points.mouseenter:', event);
           });
 
-          peaksInstance.on('points.mouseleave', function(point) {
-            console.log('points.mouseleave:', point);
+          peaksInstance.on('points.mouseleave', function(event) {
+            console.log('points.mouseleave:', event);
           });
 
           peaksInstance.on('points.click', function(event) {
