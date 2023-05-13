@@ -334,7 +334,7 @@ npm run build
 
 This command will produce various builds of Peaks.js:
 
-* `dist/peaks.js` and `dist/peaks.min.js` are stand-alone UMD modules that contain all dependencies. Note that [custom markers](customizing.md#point-and-segment-markers) do not work with these builds. See the [FAQ](doc/faq.md) for more details
+* `dist/peaks.js` and `dist/peaks.min.js` are stand-alone UMD modules that contain all dependencies. Note that [custom markers](doc/customizing.md#point-and-segment-markers) do not work with these builds. See the [FAQ](doc/faq.md) for more details
 
 * `dist/peaks.esm.js` is an ES module bundle that does not include the Konva.js and waveform-data.js dependencies
 
