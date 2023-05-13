@@ -12,7 +12,7 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 ## Making changes
 
-* Before creating a pull request, we prefer that you first discuss the change you want to make, either by raising an issue, or contacting us directly, e.g., [by email](mailto:irfs@bbc.co.uk).
+* Before creating a pull request, we prefer that you first discuss the change you want to make, either by raising an issue, or contacting us directly, e.g., [by email](mailto:chris@chrisneedham.com).
 
 * Please check our [development plan](https://github.com/bbc/peaks.js/projects/1), which shows the current and planned changes.
 
@@ -24,15 +24,15 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 * Before working on a change, please ensure your local fork is up to date with the code in the upstream repository, and create a [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) for your changes.
 
-* Please don't change the `version` field in [package.json](https://github.com/bbc/peaks.js/blob/master/package.json), or update [CHANGELOG.md](https://github.com/bbc/peaks.js/blob/master/CHANGELOG.md). We'll do that when [preparing a new release](#preparing-a-new-release).
+* Please don't change the `version` field in [package.json](https://github.com/bbc/peaks.js/blob/master/package.json) or update [CHANGELOG.md](https://github.com/bbc/peaks.js/blob/master/CHANGELOG.md). We'll do that when [preparing a new release](#preparing-a-new-release).
 
-* Please follow the existing coding conventions, and ensure that there are no linting errors (`npm run lint`). The eslint config doesn't specify all our coding conventions, so please try to be consistent.
+* Please follow the existing coding conventions, and ensure that there are no linting errors, using `npm run lint`. The eslint config doesn't specify all our coding conventions, so please try to be consistent.
 
 * For commit messages, please follow [these guidelines](https://chris.beams.io/posts/git-commit/), although we're not fussy about use of imperative mood vs past tense. In particular, please don't use [Conventional Commits](https://www.conventionalcommits.org/) style. We may choose to edit your commit messages for consistency when merging.
 
-* Please add test cases for your feature, and ensure all tests are passing (`npm run test`).
+* Please add test cases for your feature, and ensure all tests are passing, using `npm run test`.
 
-* When merging a feature branch, core contributors may choose to squash your commits, so that the feature is merged as a single logical change.
+* When merging a feature branch, the maintainers may choose to squash your commits, so that the feature is merged as a single logical change.
 
 ### Preparing a new release
 
