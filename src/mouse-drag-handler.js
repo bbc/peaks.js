@@ -6,19 +6,7 @@
  * @module mouse-drag-handler
  */
 
-import Konva from 'konva/lib/Core';
-
-function getMarkerObject(obj) {
-  while (obj.parent !== null) {
-    if (obj.parent instanceof Konva.Layer) {
-      return obj;
-    }
-
-    obj = obj.parent;
-  }
-
-  return null;
-}
+import { getMarkerObject } from './utils';
 
 /**
  * An object to receive callbacks on mouse drag events. Each function is
@@ -77,12 +65,13 @@ MouseDragHandler.prototype._mouseDown = function(event) {
 
   if (marker && marker.attrs.draggable) {
     // Avoid interfering with drag/drop of point and segment markers.
-    if (marker.attrs.name === 'marker') {
+    if (marker.attrs.name === 'point-marker' ||
+        marker.attrs.name === 'segment-marker') {
       return;
     }
 
     // Check if we're dragging a segment.
-    if (marker.attrs.name === 'overlay') {
+    if (marker.attrs.name === 'segment-overlay') {
       segment = marker;
     }
   }

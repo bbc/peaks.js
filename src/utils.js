@@ -1,3 +1,5 @@
+import Konva from 'konva/lib/Core';
+
 function zeroPad(number, precision) {
   number = number.toString();
 
@@ -272,4 +274,16 @@ export function isLinearGradientColor(value) {
     isNumber(value.linearGradientEnd) &&
     isArray(value.linearGradientColorStops) &&
     value.linearGradientColorStops.length === 2;
+}
+
+export function getMarkerObject(obj) {
+  while (obj.parent !== null) {
+    if (obj.parent instanceof Konva.Layer) {
+      return obj;
+    }
+
+    obj = obj.parent;
+  }
+
+  return null;
 }

@@ -83,9 +83,6 @@ function SegmentShape(segment, peaks, layer, view) {
   this._onMouseLeave  = this._onMouseLeave.bind(this);
   this._onMouseDown   = this._onMouseDown.bind(this);
   this._onMouseUp     = this._onMouseUp.bind(this);
-  this._onClick       = this._onClick.bind(this);
-  this._onDblClick    = this._onDblClick.bind(this);
-  this._onContextMenu = this._onContextMenu.bind(this);
 
   this._dragBoundFunc      = this._dragBoundFunc.bind(this);
   this._onSegmentDragStart = this._onSegmentDragStart.bind(this);
@@ -118,7 +115,8 @@ function SegmentShape(segment, peaks, layer, view) {
   const overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
 
   this._overlay = new Konva.Group({
-    name:          'overlay',
+    name:          'segment-overlay',
+    segment:       this._segment,
     x:             segmentStartOffset,
     y:             0,
     width:         segmentEndOffset - segmentStartOffset,
@@ -182,10 +180,6 @@ function SegmentShape(segment, peaks, layer, view) {
 
   this._overlay.on('mousedown', this._onMouseDown);
   this._overlay.on('mouseup', this._onMouseUp);
-
-  this._overlay.on('click', this._onClick);
-  this._overlay.on('dblclick', this._onDblClick);
-  this._overlay.on('contextmenu', this._onContextMenu);
 
   if (this._draggable) {
     this._overlay.on('dragstart', this._onSegmentDragStart);
@@ -427,24 +421,10 @@ SegmentShape.prototype._onMouseUp = function(event) {
   });
 };
 
-SegmentShape.prototype._onClick = function(event) {
+SegmentShape.prototype.segmentClicked = function(eventName, event) {
   this._moveToTop();
 
-  this._peaks.emit('segments.click', {
-    segment: this._segment,
-    evt: event.evt
-  });
-};
-
-SegmentShape.prototype._onDblClick = function(event) {
-  this._peaks.emit('segments.dblclick', {
-    segment: this._segment,
-    evt: event.evt
-  });
-};
-
-SegmentShape.prototype._onContextMenu = function(event) {
-  this._peaks.emit('segments.contextmenu', {
+  this._peaks.emit('segments.' + eventName, {
     segment: this._segment,
     evt: event.evt
   });

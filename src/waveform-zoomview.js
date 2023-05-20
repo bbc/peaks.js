@@ -14,7 +14,7 @@ import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
 // import AnimatedZoomAdapter from './animated-zoom-adapter';
 // import StaticZoomAdapter from './static-zoom-adapter';
-import { clamp, formatTime, isFinite, isNumber, isValidTime,
+import { clamp, formatTime, getMarkerObject, isFinite, isNumber, isValidTime,
   objectHasProperty } from './utils';
 
 import Konva from 'konva/lib/Core';
@@ -264,22 +264,46 @@ WaveformZoomView.prototype.enableSeek = function(enable) {
 };
 
 WaveformZoomView.prototype._onClick = function(event) {
-  this._clickHandler(event, 'zoomview.click');
+  this._clickHandler(event, 'click');
 };
 
 WaveformZoomView.prototype._onDblClick = function(event) {
-  this._clickHandler(event, 'zoomview.dblclick');
+  this._clickHandler(event, 'dblclick');
 };
 
 WaveformZoomView.prototype._onContextMenu = function(event) {
-  this._clickHandler(event, 'zoomview.contextmenu');
+  this._clickHandler(event, 'contextmenu');
 };
 
 WaveformZoomView.prototype._clickHandler = function(event, eventName) {
+  if (event.target !== this._stage) {
+    const marker = getMarkerObject(event.target);
+
+    if (marker) {
+      if (marker.attrs.name === 'point-marker') {
+        const point = marker.getAttr('point');
+
+        if (point) {
+          this._peaks.emit('points.' + eventName, {
+            point: point,
+            evt: event.evt
+          });
+        }
+      }
+      else if (marker.attrs.name === 'segment-overlay') {
+        const segment = marker.getAttr('segment');
+
+        if (segment) {
+          this._segmentsLayer.segmentClicked(eventName, segment, event);
+        }
+      }
+    }
+  }
+
   const mousePosX = event.evt.layerX;
   const time = this.pixelOffsetToTime(mousePosX);
 
-  this._peaks.emit(eventName, {
+  this._peaks.emit('zoomview.' + eventName, {
     time: time,
     evt: event.evt
   });

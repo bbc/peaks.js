@@ -41,18 +41,16 @@ function PointMarker(options) {
   this._marker    = options.marker;
   this._draggable = options.draggable;
 
-  this._onClick       = options.onClick;
-  this._onDblClick    = options.onDblClick;
   this._onDragStart   = options.onDragStart;
   this._onDragMove    = options.onDragMove;
   this._onDragEnd     = options.onDragEnd;
   this._dragBoundFunc = options.dragBoundFunc;
   this._onMouseEnter  = options.onMouseEnter;
   this._onMouseLeave  = options.onMouseLeave;
-  this._onContextMenu = options.onContextMenu;
 
   this._group = new Konva.Group({
-    name:          'marker',
+    name:          'point-marker',
+    point:         this._point,
     draggable:     this._draggable,
     dragBoundFunc: options.dragBoundFunc
   });
@@ -77,24 +75,12 @@ PointMarker.prototype._bindDefaultEventHandlers = function() {
     self._onDragEnd(event, self._point);
   });
 
-  self._group.on('click', function(event) {
-    self._onClick(event, self._point);
-  });
-
-  self._group.on('dblclick', function(event) {
-    self._onDblClick(event, self._point);
-  });
-
   self._group.on('mouseenter', function(event) {
     self._onMouseEnter(event, self._point);
   });
 
   self._group.on('mouseleave', function(event) {
     self._onMouseLeave(event, self._point);
-  });
-
-  self._group.on('contextmenu', function(event) {
-    self._onContextMenu(event, self._point);
   });
 };
 

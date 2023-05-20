@@ -13,7 +13,7 @@ import PointsLayer from './points-layer';
 import SegmentsLayer from './segments-layer';
 import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
-import { clamp, formatTime, isFinite, isNumber } from './utils';
+import { clamp, formatTime, getMarkerObject, isFinite, isNumber } from './utils';
 import Konva from 'konva/lib/Core';
 
 /**
@@ -179,22 +179,46 @@ WaveformOverview.prototype.enableSeek = function(enable) {
 };
 
 WaveformOverview.prototype._onClick = function(event) {
-  this._clickHandler(event, 'overview.click');
+  this._clickHandler(event, 'click');
 };
 
 WaveformOverview.prototype._onDblClick = function(event) {
-  this._clickHandler(event, 'overview.dblclick');
+  this._clickHandler(event, 'dblclick');
 };
 
 WaveformOverview.prototype._onContextMenu = function(event) {
-  this._clickHandler(event, 'overview.contextmenu');
+  this._clickHandler(event, 'contextmenu');
 };
 
 WaveformOverview.prototype._clickHandler = function(event, eventName) {
+  if (event.target !== this._stage) {
+    const marker = getMarkerObject(event.target);
+
+    if (marker) {
+      if (marker.attrs.name === 'point-marker') {
+        const point = marker.getAttr('point');
+
+        if (point) {
+          this._peaks.emit('points.' + eventName, {
+            point: point,
+            evt: event.evt
+          });
+        }
+      }
+      else if (marker.attrs.name === 'segment-overlay') {
+        const segment = marker.getAttr('segment');
+
+        if (segment) {
+          this._segmentsLayer.segmentClicked(eventName, segment, event);
+        }
+      }
+    }
+  }
+
   const pixelIndex = event.evt.layerX;
   const time = this.pixelsToTime(pixelIndex);
 
-  this._peaks.emit(eventName, {
+  this._peaks.emit('overview.' + eventName, {
     time: time,
     evt: event.evt
   });

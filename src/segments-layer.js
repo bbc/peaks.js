@@ -250,6 +250,14 @@ SegmentsLayer.prototype.setVisible = function(visible) {
   this._layer.setVisible(visible);
 };
 
+SegmentsLayer.prototype.segmentClicked = function(eventName, segment, event) {
+  const segmentShape = this._segmentShapes[segment.id];
+
+  if (segmentShape) {
+    segmentShape.segmentClicked(eventName, event);
+  }
+};
+
 SegmentsLayer.prototype.destroy = function() {
   this._peaks.off('segments.update', this._onSegmentsUpdate);
   this._peaks.off('segments.add', this._onSegmentsAdd);

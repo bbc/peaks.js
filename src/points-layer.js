@@ -35,15 +35,12 @@ function PointsLayer(peaks, view, allowEditing) {
 
   this._onPointsDrag = this._onPointsDrag.bind(this);
 
-  this._onPointMarkerClick       = this._onPointMarkerClick.bind(this);
-  this._onPointMarkerDblClick    = this._onPointMarkerDblClick.bind(this);
   this._onPointMarkerDragStart   = this._onPointMarkerDragStart.bind(this);
   this._onPointMarkerDragMove    = this._onPointMarkerDragMove.bind(this);
   this._onPointMarkerDragEnd     = this._onPointMarkerDragEnd.bind(this);
   this._pointMarkerDragBoundFunc = this._pointMarkerDragBoundFunc.bind(this);
   this._onPointMarkerMouseEnter  = this._onPointMarkerMouseEnter.bind(this);
   this._onPointMarkerMouseLeave  = this._onPointMarkerMouseLeave.bind(this);
-  this._onPointMarkerContextMenu = this._onPointMarkerContextMenu.bind(this);
 
   this._onPointsUpdate    = this._onPointsUpdate.bind(this);
   this._onPointsAdd       = this._onPointsAdd.bind(this);
@@ -160,15 +157,12 @@ PointsLayer.prototype._createPointMarker = function(point) {
     point:         point,
     draggable:     editable,
     marker:        marker,
-    onClick:       this._onPointMarkerClick,
-    onDblClick:    this._onPointMarkerDblClick,
     onDragStart:   this._onPointMarkerDragStart,
     onDragMove:    this._onPointMarkerDragMove,
     onDragEnd:     this._onPointMarkerDragEnd,
     dragBoundFunc: this._pointMarkerDragBoundFunc,
     onMouseEnter:  this._onPointMarkerMouseEnter,
-    onMouseLeave:  this._onPointMarkerMouseLeave,
-    onContextMenu: this._onPointMarkerContextMenu
+    onMouseLeave:  this._onPointMarkerMouseLeave
   });
 };
 
@@ -249,30 +243,6 @@ PointsLayer.prototype._onPointMarkerMouseLeave = function(event, point) {
  * @param {Point} point
  */
 
-PointsLayer.prototype._onPointMarkerClick = function(event, point) {
-  this._peaks.emit('points.click', {
-    point: point,
-    evt: event.evt
-  });
-};
-
-/**
- * @param {KonvaEventObject} event
- * @param {Point} point
- */
-
-PointsLayer.prototype._onPointMarkerDblClick = function(event, point) {
-  this._peaks.emit('points.dblclick', {
-    point: point,
-    evt: event.evt
-  });
-};
-
-/**
- * @param {KonvaEventObject} event
- * @param {Point} point
- */
-
 PointsLayer.prototype._onPointMarkerDragStart = function(event, point) {
   this._dragPointMarker = this._pointMarkers[point.id];
 
@@ -302,18 +272,6 @@ PointsLayer.prototype._pointMarkerDragBoundFunc = function(pos) {
     x: clamp(pos.x, 0, this._view.getWidth()),
     y: this._dragPointMarker.getAbsolutePosition().y
   };
-};
-
-/**
- * @param {KonvaEventObject} event
- * @param {Point} point
- */
-
-PointsLayer.prototype._onPointMarkerContextMenu = function(event, point) {
-  this._peaks.emit('points.contextmenu', {
-    point: point,
-    evt: event.evt
-  });
 };
 
 /**
