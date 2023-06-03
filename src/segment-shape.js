@@ -424,10 +424,7 @@ SegmentShape.prototype._onMouseUp = function(event) {
 SegmentShape.prototype.segmentClicked = function(eventName, event) {
   this._moveToTop();
 
-  this._peaks.emit('segments.' + eventName, {
-    segment: this._segment,
-    evt: event.evt
-  });
+  this._peaks.emit('segments.' + eventName, event);
 };
 
 SegmentShape.prototype.enableSegmentDragging = function(enable) {

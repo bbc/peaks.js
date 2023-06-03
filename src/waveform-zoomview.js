@@ -276,6 +276,8 @@ WaveformZoomView.prototype._onContextMenu = function(event) {
 };
 
 WaveformZoomView.prototype._clickHandler = function(event, eventName) {
+  let emitViewEvent = true;
+
   if (event.target !== this._stage) {
     const marker = getMarkerObject(event.target);
 
@@ -286,7 +288,10 @@ WaveformZoomView.prototype._clickHandler = function(event, eventName) {
         if (point) {
           this._peaks.emit('points.' + eventName, {
             point: point,
-            evt: event.evt
+            evt: event.evt,
+            preventViewEvent: function() {
+              emitViewEvent = false;
+            }
           });
         }
       }
@@ -294,19 +299,29 @@ WaveformZoomView.prototype._clickHandler = function(event, eventName) {
         const segment = marker.getAttr('segment');
 
         if (segment) {
-          this._segmentsLayer.segmentClicked(eventName, segment, event);
+          const clickEvent = {
+            segment: segment,
+            evt: event.evt,
+            preventViewEvent: function() {
+              emitViewEvent = false;
+            }
+          };
+
+          this._segmentsLayer.segmentClicked(eventName, clickEvent);
         }
       }
     }
   }
 
-  const mousePosX = event.evt.layerX;
-  const time = this.pixelOffsetToTime(mousePosX);
+  if (emitViewEvent) {
+    const mousePosX = event.evt.layerX;
+    const time = this.pixelOffsetToTime(mousePosX);
 
-  this._peaks.emit('zoomview.' + eventName, {
-    time: time,
-    evt: event.evt
-  });
+    this._peaks.emit('zoomview.' + eventName, {
+      time: time,
+      evt: event.evt
+    });
+  }
 };
 
 WaveformZoomView.prototype.setWheelMode = function(mode, options) {

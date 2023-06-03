@@ -343,6 +343,12 @@ declare module 'peaks.js' {
     evt: PointerEvent;
   }
 
+  interface PointClickEvent {
+    point: Point;
+    evt: MouseEvent;
+    preventViewEvent: () => void;
+  }
+
   interface PointMouseEvent {
     point: Point;
     evt: MouseEvent;
@@ -351,6 +357,13 @@ declare module 'peaks.js' {
   interface PointPointerEvent {
     point: Point;
     evt: PointerEvent;
+    preventViewEvent: () => void;
+  }
+
+  interface SegmentClickEvent {
+    segment: Segment;
+    evt: MouseEvent;
+    preventViewEvent: () => void;
   }
 
   interface SegmentMouseEvent {
@@ -361,6 +374,7 @@ declare module 'peaks.js' {
   interface SegmentPointerEvent {
     segment: Segment;
     evt: PointerEvent;
+    preventViewEvent: () => void;
   }
 
   interface SegmentDragEvent {
@@ -373,8 +387,8 @@ declare module 'peaks.js' {
   interface InstanceEvents {
     'peaks.ready': () => void;
     'points.add': (points: Point[]) => void;
-    'points.click': (event: PointMouseEvent) => void;
-    'points.dblclick': (event: PointMouseEvent) => void;
+    'points.click': (event: PointClickEvent) => void;
+    'points.dblclick': (event: PointClickEvent) => void;
     'points.contextmenu': (event: PointPointerEvent) => void;
     'points.dragend': (event: PointMouseEvent) => void;
     'points.dragmove': (event: PointMouseEvent) => void;
@@ -394,8 +408,8 @@ declare module 'peaks.js' {
     'segments.mouseleave': (event: SegmentMouseEvent) => void;
     'segments.mousedown': (event: SegmentMouseEvent) => void;
     'segments.mouseup': (event: SegmentMouseEvent) => void;
-    'segments.click': (event: SegmentMouseEvent) => void;
-    'segments.dblclick': (event: SegmentMouseEvent) => void;
+    'segments.click': (event: SegmentClickEvent) => void;
+    'segments.dblclick': (event: SegmentClickEvent) => void;
     'segments.contextmenu': (event: SegmentPointerEvent) => void;
     'segments.enter': (segment: Segment) => void;
     'segments.exit': (segment: Segment) => void;

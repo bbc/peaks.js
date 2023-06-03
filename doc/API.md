@@ -1688,6 +1688,8 @@ The `event` parameter contains:
 * `point`: The point that was clicked
 * `evt`: The associated [`MouseEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent)
 
+By default, clicking on a point will also emit either a [`zoomview.click`](#zoomviewclick) or [`overview.click`](#overviewclick) event. To prevent this, call `event.preventViewEvent()`.
+
 ```js
 instance.on('points.click', function(event) {
   console.log(`Point clicked: ${event.point.id}`);
@@ -1702,6 +1704,10 @@ The `event` parameter contains:
 
 * `point`: The point that was clicked
 * `evt`: The associated [`MouseEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent)
+
+Note that for a double click, both [`points.click`](#pointsclick) and `points.dblclick` events are emitted.
+
+By default, clicking on a point will also emit either a [`zoomview.dblclick`](#zoomviewdblclick) or [`overview.dblclick`](#overviewdblclick) event. To prevent this, call `event.preventViewEvent()`.
 
 ```js
 instance.on('points.dblclick', function(event) {
@@ -1719,6 +1725,8 @@ The `event` parameter contains:
 
 * `point`: The point that was clicked
 * `evt`: The associated [`MouseEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent)
+
+By default, clicking on a point will also emit either a [`zoomview.contextmenu`](#zoomviewcontextmenu) or [`overview.contextmenu`](#overviewcontextmenu) event. To prevent this, call `event.preventViewEvent()`.
 
 ```js
 instance.on('points.contextmenu', function(event) {
@@ -1898,6 +1906,8 @@ The `event` parameter contains:
 * `segment`: The segment that was clicked
 * `evt`: The associated [`MouseEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent)
 
+By default, clicking on a segment will also emit either a [`zoomview.click`](#zoomviewclick) or [`overview.click`](#overviewclick) event. To prevent this, call `event.preventViewEvent()`.
+
 ```js
 instance.on('segments.click', function(event) {
   console.log(`Segment clicked: ${event.segment.id}`);
@@ -1913,13 +1923,15 @@ The `event` parameter contains:
 * `segment`: The segment that was clicked
 * `evt`: The associated [`MouseEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent)
 
+Note that for a double click, both [`segments.click`](#segmentsclick) and `segments.dblclick` events are emitted.
+
+By default, clicking on a segment will also emit either a [`zoomview.dblclick`](#zoomviewdblclick) or [`overview.dblclick`](#overviewdblclick) event. To prevent this, call `event.preventViewEvent()`.
+
 ```js
 instance.on('segments.click', function(event) {
   console.log(`Segment clicked: ${event.segment.id}`);
 });
 ```
-
-Note that for a double click, both `segments.click` and `segments.dblclick` events are emitted.
 
 ### `segments.contextmenu`
 
@@ -1929,6 +1941,8 @@ The `event` parameter contains:
 
 * `segment`: The segment that was clicked
 * `evt`: The associated [`MouseEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent)
+
+By default, clicking on a segment will also emit either a [`zoomview.contextmenu`](#zoomviewcontextmenu) or [`overview.contextmenu`](#overviewcontextmenu) event. To prevent this, call `event.preventViewEvent()`.
 
 ```js
 instance.on('segments.contextmenu', function(event) {
