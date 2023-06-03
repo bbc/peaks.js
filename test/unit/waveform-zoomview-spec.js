@@ -180,4 +180,165 @@ describe('WaveformZoomview', function() {
       });
     });
   });
+
+  describe('setSegmentDragMode', function() {
+    beforeEach(function(done) {
+      p.segments.add({ id: 'segment2', startTime: 3.0, endTime: 4.0, editable: true });
+      zoomview.enableSegmentDragging(true);
+      setTimeout(done, 50);
+    });
+
+    context('overlap', function() {
+      beforeEach(function() {
+        zoomview.setSegmentDragMode('overlap');
+      });
+
+      context('when dragging a segment over the next segment', function() {
+        it('should emit a segments.dragged event', function() {
+          const emit = sinon.spy(p, 'emit');
+
+          const distance = 150;
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          const calls = getEmitCalls(emit, 'segments.dragged');
+          expect(calls.length).to.equal(1);
+
+          expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[0].args[1].segment.startTime).to.equal(1.0 + distance * p.zoom.getZoomLevel() / 44100);
+          expect(calls[0].args[1].segment.endTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
+        });
+
+        it('should not move the next segment', function() {
+          const distance = 150;
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          const nextSegment = p.segments.getSegment('segment2');
+
+          expect(nextSegment.startTime).to.equal(3.0);
+          expect(nextSegment.endTime).to.equal(4.0);
+        });
+      });
+    });
+
+    context('no-overlap', function() {
+      beforeEach(function() {
+        zoomview.setSegmentDragMode('no-overlap');
+      });
+    });
+
+    context('compress', function() {
+      beforeEach(function() {
+        zoomview.setSegmentDragMode('compress');
+        zoomview.setMinSegmentDragWidth(20);
+      });
+
+      context('when dragging a segment over the next segment', function() {
+        it('should emit a segments.dragged event', function() {
+          const emit = sinon.spy(p, 'emit');
+
+          const distance = 150;
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          const calls = getEmitCalls(emit, 'segments.dragged');
+          expect(calls.length).to.equal(2);
+
+          expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[0].args[1].segment.id).to.equal('segment1');
+          expect(calls[0].args[1].segment.startTime).to.equal(1.0 + distance * p.zoom.getZoomLevel() / 44100);
+          expect(calls[0].args[1].segment.endTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
+
+          expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[1].args[1].segment.id).to.equal('segment2');
+          expect(calls[1].args[1].segment.startTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
+          expect(calls[1].args[1].segment.endTime).to.equal(4.0);
+        });
+
+        it('should move the next segment start time', function() {
+          const distance = 150;
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          const nextSegment = p.segments.getSegment('segment2');
+
+          expect(nextSegment.startTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
+          expect(nextSegment.endTime).to.equal(4.0);
+        });
+
+        it('should compress the next segment to a minimum width', function() {
+          const distance = 300;
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          const nextSegment = p.segments.getSegment('segment2');
+
+          expect(nextSegment.startTime).to.equal(4.0 - 20 * p.zoom.getZoomLevel() / 44100);
+          expect(nextSegment.endTime).to.equal(4.0);
+        });
+      });
+
+      context('when dragging a segment over the previous segment', function() {
+        it('should emit a segments.dragged event', function() {
+          const emit = sinon.spy(p, 'emit');
+
+          const distance = -150;
+
+          inputController.mouseDown({ x: 300, y: 50 });
+          inputController.mouseMove({ x: 300 + distance, y: 50 });
+          inputController.mouseUp({ x: 300 + distance, y: 50 });
+
+          const calls = getEmitCalls(emit, 'segments.dragged');
+          expect(calls.length).to.equal(2);
+
+          expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[0].args[1].segment.id).to.equal('segment2');
+          expect(calls[0].args[1].segment.startTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
+          expect(calls[0].args[1].segment.endTime).to.equal(4.0 + distance * p.zoom.getZoomLevel() / 44100);
+
+          expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[1].args[1].segment.id).to.equal('segment1');
+          expect(calls[1].args[1].segment.startTime).to.equal(1.0);
+          expect(calls[1].args[1].segment.endTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
+        });
+
+        it('should move the previous segment end time', function() {
+          const distance = -150;
+
+          inputController.mouseDown({ x: 300, y: 50 });
+          inputController.mouseMove({ x: 300 + distance, y: 50 });
+          inputController.mouseUp({ x: 300 + distance, y: 50 });
+
+          const previousSegment = p.segments.getSegment('segment1');
+
+          expect(previousSegment.startTime).to.equal(1.0);
+          expect(previousSegment.endTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
+        });
+
+        it('should compress the previous segment to a minimum width', function() {
+          const distance = -300;
+
+          inputController.mouseDown({ x: 300, y: 50 });
+          inputController.mouseMove({ x: 300 + distance, y: 50 });
+          inputController.mouseUp({ x: 300 + distance, y: 50 });
+
+          const previousSegment = p.segments.getSegment('segment1');
+
+          expect(previousSegment.startTime).to.equal(1.0);
+          expect(previousSegment.endTime).to.equal(1.0 + 20 * p.zoom.getZoomLevel() / 44100);
+        });
+      });
+    });
+  });
 });

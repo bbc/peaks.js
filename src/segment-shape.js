@@ -521,7 +521,8 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
         this._overlay.setX(previousSegmentEndX);
       }
       else if (dragMode === 'compress') {
-        let previousSegmentEndTime = this._view.pixelOffsetToTime(x);
+        let previousSegmentEndTime = startTime;
+
         const minPreviousSegmentEndTime = this._previousSegment.startTime + minSegmentDuration;
 
         if (previousSegmentEndTime < minPreviousSegmentEndTime) {
@@ -547,8 +548,6 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
   if (this._nextSegment) {
     let nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
 
-    const endX = this._overlay.getX() + this._overlay.getWidth();
-
     if (endTime > this._nextSegment.startTime) {
       dragMode = this._view.getSegmentDragMode();
 
@@ -559,7 +558,7 @@ SegmentShape.prototype._onSegmentDragMove = function(event) {
         this._overlay.setX(nextSegmentStartX - this._overlay.getWidth());
       }
       else if (dragMode === 'compress') {
-        let nextSegmentStartTime = this._view.pixelOffsetToTime(endX);
+        let nextSegmentStartTime = endTime;
 
         const maxNextSegmentStartTime = this._nextSegment.endTime - minSegmentDuration;
 
