@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/bbc/peaks.js/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/bbc/peaks.js/actions)
+[![Build Status](https://github.com/bbc/peaks.js/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/bbc/peaks.js/actions) [![npm](https://img.shields.io/npm/v/peaks.js.svg)](https://www.npmjs.com/package/peaks.js)
 
 <p align="center">
   <a href="https://github.com/bbc/peaks.js"><img src="peaks-logo.svg" alt="Peaks.js" height="120" /></a>
