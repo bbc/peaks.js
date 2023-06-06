@@ -230,6 +230,74 @@ describe('WaveformZoomview', function() {
       beforeEach(function() {
         zoomview.setSegmentDragMode('no-overlap');
       });
+
+      context('when dragging a segment over the next segment', function() {
+        it('should move the segment adjacent to the next segment', function() {
+          it('should move segment adjacent to the next segment', function() {
+            const emit = sinon.spy(p, 'emit');
+
+            const distance = 150;
+
+            inputController.mouseDown({ x: 100, y: 50 });
+            inputController.mouseMove({ x: 100 + distance, y: 50 });
+            inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+            const calls = getEmitCalls(emit, 'segments.dragged');
+            expect(calls.length).to.equal(1);
+
+            expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[0].args[1].segment.id).to.equal('segment1');
+            expect(calls[0].args[1].segment.startTime).to.equal(2.0);
+            expect(calls[0].args[1].segment.endTime).to.equal(3.0);
+          });
+
+          it('should not move the next segment', function() {
+            const distance = 150;
+
+            inputController.mouseDown({ x: 100, y: 50 });
+            inputController.mouseMove({ x: 100 + distance, y: 50 });
+            inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+            const nextSegment = p.segments.getSegment('segment2');
+
+            expect(nextSegment.startTime).to.equal(3.0);
+            expect(nextSegment.endTime).to.equal(4.0);
+          });
+        });
+      });
+
+      context('when dragging a segment over the previous segment', function() {
+        it('should move the segment adjacent to the previous segment', function() {
+          const emit = sinon.spy(p, 'emit');
+
+          const distance = -150;
+
+          inputController.mouseDown({ x: 300, y: 50 });
+          inputController.mouseMove({ x: 300 + distance, y: 50 });
+          inputController.mouseUp({ x: 300 + distance, y: 50 });
+
+          const calls = getEmitCalls(emit, 'segments.dragged');
+          expect(calls.length).to.equal(1);
+
+          expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+          expect(calls[0].args[1].segment.id).to.equal('segment2');
+          expect(calls[0].args[1].segment.startTime).to.equal(2.0);
+          expect(calls[0].args[1].segment.endTime).to.equal(3.0);
+        });
+
+        it('should not move the previous segment', function() {
+          const distance = -150;
+
+          inputController.mouseDown({ x: 300, y: 50 });
+          inputController.mouseMove({ x: 300 + distance, y: 50 });
+          inputController.mouseUp({ x: 300 + distance, y: 50 });
+
+          const previousSegment = p.segments.getSegment('segment1');
+
+          expect(previousSegment.startTime).to.equal(1.0);
+          expect(previousSegment.endTime).to.equal(2.0);
+        });
+      });
     });
 
     context('compress', function() {
@@ -239,104 +307,106 @@ describe('WaveformZoomview', function() {
       });
 
       context('when dragging a segment over the next segment', function() {
-        it('should emit a segments.dragged event', function() {
-          const emit = sinon.spy(p, 'emit');
+        context('and does not reach the minimum width of the next segment', function() {
+          it('should move the next segment start time', function() {
+            const emit = sinon.spy(p, 'emit');
 
-          const distance = 150;
+            const distance = 150;
 
-          inputController.mouseDown({ x: 100, y: 50 });
-          inputController.mouseMove({ x: 100 + distance, y: 50 });
-          inputController.mouseUp({ x: 100 + distance, y: 50 });
+            inputController.mouseDown({ x: 100, y: 50 });
+            inputController.mouseMove({ x: 100 + distance, y: 50 });
+            inputController.mouseUp({ x: 100 + distance, y: 50 });
 
-          const calls = getEmitCalls(emit, 'segments.dragged');
-          expect(calls.length).to.equal(2);
+            const calls = getEmitCalls(emit, 'segments.dragged');
+            expect(calls.length).to.equal(2);
 
-          expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
-          expect(calls[0].args[1].segment.id).to.equal('segment1');
-          expect(calls[0].args[1].segment.startTime).to.equal(1.0 + distance * p.zoom.getZoomLevel() / 44100);
-          expect(calls[0].args[1].segment.endTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
+            expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[0].args[1].segment.id).to.equal('segment1');
+            expect(calls[0].args[1].segment.startTime).to.equal(1.0 + distance * p.zoom.getZoomLevel() / 44100);
+            expect(calls[0].args[1].segment.endTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
 
-          expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
-          expect(calls[1].args[1].segment.id).to.equal('segment2');
-          expect(calls[1].args[1].segment.startTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
-          expect(calls[1].args[1].segment.endTime).to.equal(4.0);
+            expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[1].args[1].segment.id).to.equal('segment2');
+            expect(calls[1].args[1].segment.startTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
+            expect(calls[1].args[1].segment.endTime).to.equal(4.0);
+          });
         });
 
-        it('should move the next segment start time', function() {
-          const distance = 150;
+        context('and reaches the minimum width of the next segment', function() {
+          it('should compress the next segment to a minimum width', function() {
+            const emit = sinon.spy(p, 'emit');
 
-          inputController.mouseDown({ x: 100, y: 50 });
-          inputController.mouseMove({ x: 100 + distance, y: 50 });
-          inputController.mouseUp({ x: 100 + distance, y: 50 });
+            const distance = 300;
 
-          const nextSegment = p.segments.getSegment('segment2');
+            inputController.mouseDown({ x: 100, y: 50 });
+            inputController.mouseMove({ x: 100 + distance, y: 50 });
+            inputController.mouseUp({ x: 100 + distance, y: 50 });
 
-          expect(nextSegment.startTime).to.equal(2.0 + distance * p.zoom.getZoomLevel() / 44100);
-          expect(nextSegment.endTime).to.equal(4.0);
-        });
+            const calls = getEmitCalls(emit, 'segments.dragged');
+            expect(calls.length).to.equal(2);
 
-        it('should compress the next segment to a minimum width', function() {
-          const distance = 300;
+            expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[0].args[1].segment.id).to.equal('segment1');
+            expect(calls[0].args[1].segment.startTime).to.equal(3.0 - 20 * p.zoom.getZoomLevel() / 44100);
+            expect(calls[0].args[1].segment.endTime).to.equal(4.0 - 20 * p.zoom.getZoomLevel() / 44100);
 
-          inputController.mouseDown({ x: 100, y: 50 });
-          inputController.mouseMove({ x: 100 + distance, y: 50 });
-          inputController.mouseUp({ x: 100 + distance, y: 50 });
-
-          const nextSegment = p.segments.getSegment('segment2');
-
-          expect(nextSegment.startTime).to.equal(4.0 - 20 * p.zoom.getZoomLevel() / 44100);
-          expect(nextSegment.endTime).to.equal(4.0);
+            expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[1].args[1].segment.id).to.equal('segment2');
+            expect(calls[1].args[1].segment.startTime).to.equal(4.0 - 20 * p.zoom.getZoomLevel() / 44100);
+            expect(calls[1].args[1].segment.endTime).to.equal(4.0);
+          });
         });
       });
 
       context('when dragging a segment over the previous segment', function() {
-        it('should emit a segments.dragged event', function() {
-          const emit = sinon.spy(p, 'emit');
+        context('and does not reach the minimum width of the previous segment', function() {
+          it('should move the previous segment end time', function() {
+            const emit = sinon.spy(p, 'emit');
 
-          const distance = -150;
+            const distance = -150;
 
-          inputController.mouseDown({ x: 300, y: 50 });
-          inputController.mouseMove({ x: 300 + distance, y: 50 });
-          inputController.mouseUp({ x: 300 + distance, y: 50 });
+            inputController.mouseDown({ x: 300, y: 50 });
+            inputController.mouseMove({ x: 300 + distance, y: 50 });
+            inputController.mouseUp({ x: 300 + distance, y: 50 });
 
-          const calls = getEmitCalls(emit, 'segments.dragged');
-          expect(calls.length).to.equal(2);
+            const calls = getEmitCalls(emit, 'segments.dragged');
+            expect(calls.length).to.equal(2);
 
-          expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
-          expect(calls[0].args[1].segment.id).to.equal('segment2');
-          expect(calls[0].args[1].segment.startTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
-          expect(calls[0].args[1].segment.endTime).to.equal(4.0 + distance * p.zoom.getZoomLevel() / 44100);
+            expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[0].args[1].segment.id).to.equal('segment2');
+            expect(calls[0].args[1].segment.startTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
+            expect(calls[0].args[1].segment.endTime).to.equal(4.0 + distance * p.zoom.getZoomLevel() / 44100);
 
-          expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
-          expect(calls[1].args[1].segment.id).to.equal('segment1');
-          expect(calls[1].args[1].segment.startTime).to.equal(1.0);
-          expect(calls[1].args[1].segment.endTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
+            expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[1].args[1].segment.id).to.equal('segment1');
+            expect(calls[1].args[1].segment.startTime).to.equal(1.0);
+            expect(calls[1].args[1].segment.endTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
+          });
         });
 
-        it('should move the previous segment end time', function() {
-          const distance = -150;
+        context('and reaches the minimum width of the previous segment', function() {
+          it('should compress the previous segment to a minimum width', function() {
+            const emit = sinon.spy(p, 'emit');
 
-          inputController.mouseDown({ x: 300, y: 50 });
-          inputController.mouseMove({ x: 300 + distance, y: 50 });
-          inputController.mouseUp({ x: 300 + distance, y: 50 });
+            const distance = -300;
 
-          const previousSegment = p.segments.getSegment('segment1');
+            inputController.mouseDown({ x: 300, y: 50 });
+            inputController.mouseMove({ x: 300 + distance, y: 50 });
+            inputController.mouseUp({ x: 300 + distance, y: 50 });
 
-          expect(previousSegment.startTime).to.equal(1.0);
-          expect(previousSegment.endTime).to.equal(3.0 + distance * p.zoom.getZoomLevel() / 44100);
-        });
+            const calls = getEmitCalls(emit, 'segments.dragged');
+            expect(calls.length).to.equal(2);
 
-        it('should compress the previous segment to a minimum width', function() {
-          const distance = -300;
+            expect(calls[0].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[0].args[1].segment.id).to.equal('segment2');
+            expect(calls[0].args[1].segment.startTime).to.equal(1.0 + 20 * p.zoom.getZoomLevel() / 44100);
+            expect(calls[0].args[1].segment.endTime).to.be.closeTo(2.0 + 20 * p.zoom.getZoomLevel() / 44100, 1e-15);
 
-          inputController.mouseDown({ x: 300, y: 50 });
-          inputController.mouseMove({ x: 300 + distance, y: 50 });
-          inputController.mouseUp({ x: 300 + distance, y: 50 });
-
-          const previousSegment = p.segments.getSegment('segment1');
-
-          expect(previousSegment.startTime).to.equal(1.0);
-          expect(previousSegment.endTime).to.equal(1.0 + 20 * p.zoom.getZoomLevel() / 44100);
+            expect(calls[1].args[1].segment).to.be.an.instanceof(Segment);
+            expect(calls[1].args[1].segment.id).to.equal('segment1');
+            expect(calls[1].args[1].segment.startTime).to.equal(1.0);
+            expect(calls[1].args[1].segment.endTime).to.equal(1.0 + 20 * p.zoom.getZoomLevel() / 44100);
+          });
         });
       });
     });
