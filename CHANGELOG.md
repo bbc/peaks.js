@@ -1,5 +1,15 @@
 # Peaks.js
 
+## 3.0.0-beta.11 (2023/06/07)
+
+* (#490) Added `preventViewEvent()` method for point and segment events.
+  This allwos you to prevent `zoomview.*` or `overview.*` click events
+  from a `segments.*` or `points.*` click event handler (@chrisn)
+
+* (#489) Improved event documentation, see [doc/API.md#events] (@chrisn)
+
+* (#494) Enable use of Konva v9.x (@jdelStrother)
+
 ## 3.0.0-beta.10 (2023/05/12)
 
 * (#488) Added `marker` flag to `segments.dragstart`, `segments.dragend`,
