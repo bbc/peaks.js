@@ -61,7 +61,9 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._peaks.on('keyboard.shift_left', self._onKeyboardShiftLeft);
   self._peaks.on('keyboard.shift_right', self._onKeyboardShiftRight);
 
-  self._enableAutoScroll = true;
+  self._autoScroll = self._viewOptions.autoScroll;
+  self._autoScrollOffset = self._viewOptions.autoScrollOffset;
+
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
   self._enableSeek = true;
@@ -524,7 +526,7 @@ WaveformZoomView.prototype.playheadPosChanged = function(time) {
 WaveformZoomView.prototype._syncPlayhead = function(time) {
   this._playheadLayer.updatePlayheadTime(time);
 
-  if (this._enableAutoScroll) {
+  if (this._autoScroll) {
     // Check for the playhead reaching the right-hand side of the window.
 
     const pixelIndex = this.timeToPixels(time);
@@ -532,11 +534,11 @@ WaveformZoomView.prototype._syncPlayhead = function(time) {
     // TODO: move this code to animation function?
     // TODO: don't scroll if user has positioned view manually (e.g., using
     // the keyboard)
-    const endThreshold = this._frameOffset + this._width - 100;
+    const endThreshold = this._frameOffset + this._width - this._autoScrollOffset;
 
     if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
       // Put the playhead at 100 pixels from the left edge
-      this._frameOffset = pixelIndex - 100;
+      this._frameOffset = pixelIndex - this._autoScrollOffset;
 
       if (this._frameOffset < 0) {
         this._frameOffset = 0;
@@ -1001,8 +1003,12 @@ WaveformZoomView.prototype.showAxisLabels = function(show) {
   this._axisLayer.draw();
 };
 
-WaveformZoomView.prototype.enableAutoScroll = function(enable) {
-  this._enableAutoScroll = enable;
+WaveformZoomView.prototype.enableAutoScroll = function(enable, options) {
+  this._autoScroll = enable;
+
+  if (objectHasProperty(options, 'offset')) {
+    this._autoScrollOffset = options.offset;
+  }
 };
 
 WaveformZoomView.prototype.enableMarkerEditing = function(enable) {

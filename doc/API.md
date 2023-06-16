@@ -32,7 +32,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [view.setPlayedWaveformColor()](#viewsetplayedwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
-    - [view.enableAutoScroll()](#viewenableautoscrollenable)
+    - [view.enableAutoScroll()](#viewenableautoscrollenable-options)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.enableSegmentDragging()](#viewenablesegmentdraggingenable)
     - [view.setSegmentDragMode()](#viewsetsegmentdragmodemode)
@@ -186,6 +186,14 @@ var options = {
 
     // Mouse-wheel mode: either 'none' or 'scroll'
     wheelMode: 'none',
+
+    // Auto-scroll the waveform when the playhead reaches the edge of
+    // the visible waveform
+    autoScroll: true,
+
+    // The offset in pixels edge of the visible waveform to trigger
+    // auto-scroll
+    autoScrollOffset: 100,
 
     segmentOptions: {
       // Some segment options can be overridden for the zoomable waveform,
@@ -826,13 +834,18 @@ const view = instance.views.getView('zoomview');
 view.showAxisLabels(false); // Remove the time axis labels.
 ```
 
-### `view.enableAutoScroll(enable)`
+### `view.enableAutoScroll(enable[, options])`
 
 Enables or disables auto-scroll behavior (enabled by default). This only applies to the zoomable waveform view.
+
+The optional `options` parameter allows the behavior to be customized. If present, `options` should be an object with one of the following keys:
+
+* `offset`: The offset in pixels from the edge of the visible waveform to trigger auto-scroll (`number`, defaults to 100)
 
 ```js
 const view = instance.views.getView('zoomview');
 view.enableAutoScroll(false);
+view.enableAutoScroll(true, { offset: 0 });
 ```
 
 ### `view.enableMarkerEditing(enable)`

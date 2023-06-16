@@ -122,6 +122,8 @@ declare module 'peaks.js' {
   interface ZoomViewOptions extends ViewOptions {
     wheelMode?: "none" | "scroll";
     playheadClickTolerance?: number;
+    autoScroll?: boolean;
+    autoScrollOffset?: number;
   }
 
   interface OverviewOptions extends ViewOptions {
@@ -468,12 +470,16 @@ declare module 'peaks.js' {
   interface WaveformOverview extends WaveformView {
   }
 
+  interface EnableAutoScrollOptions {
+    offset?: number;
+  }
+
   interface SetWheelModeOptions {
     captureVerticalScroll?: boolean;
   }
 
   interface WaveformZoomView extends WaveformView {
-    enableAutoScroll: (enable: boolean) => void;
+    enableAutoScroll: (enable: boolean, options?: EnableAutoScrollOptions) => void;
     scrollWaveform: (options: XOR<{ seconds: number }, { pixels: number }>) => void;
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none', options?: SetWheelModeOptions) => void;

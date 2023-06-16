@@ -84,7 +84,9 @@ const defaultZoomviewOptions = {
   // showPlayheadTime:    true,
   playheadClickTolerance: 3,
   waveformColor:          'rgba(0, 225, 128, 1)',
-  wheelMode:              'none'
+  wheelMode:              'none',
+  autoScroll:             true,
+  autoScrollOffset:       100,
   // zoomAdapter:         'static'
 };
 
@@ -199,7 +201,9 @@ function getZoomviewOptions(opts) {
     'fontFamily',
     'fontSize',
     'fontStyle',
-    'wheelMode'
+    'wheelMode',
+    'autoScroll',
+    'autoScrollOffset'
   ];
 
   optNames.forEach(function(optName) {
