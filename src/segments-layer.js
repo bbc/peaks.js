@@ -88,7 +88,6 @@ SegmentsLayer.prototype._onSegmentsUpdate = function(segment, options) {
   }
   else if (!segmentShape && isVisible) {
     // Add segment shape for visible segment.
-    // segmentShape = this._addSegmentShape(segment);
     segmentShape = this._updateSegment(segment);
   }
   else if (segmentShape && isVisible) {
@@ -110,6 +109,9 @@ SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
       segmentShape.update();
     }
   });
+
+  // Ensure segment markers are always draggable.
+  this.moveSegmentMarkersToTop();
 };
 
 SegmentsLayer.prototype._onSegmentsRemove = function(segments) {
@@ -184,24 +186,13 @@ SegmentsLayer.prototype.updateSegments = function(startTime, endTime) {
  */
 
 SegmentsLayer.prototype._updateSegment = function(segment) {
-  const segmentShape = this._findOrAddSegmentShape(segment);
-
-  segmentShape.update();
-};
-
-/**
- * @private
- * @param {Segment} segment
- */
-
-SegmentsLayer.prototype._findOrAddSegmentShape = function(segment) {
   let segmentShape = this._segmentShapes[segment.id];
 
   if (!segmentShape) {
     segmentShape = this._addSegmentShape(segment);
   }
 
-  return segmentShape;
+  segmentShape.update();
 };
 
 /**
@@ -237,6 +228,19 @@ SegmentsLayer.prototype._removeSegment = function(segment) {
   if (segmentShape) {
     segmentShape.destroy();
     delete this._segmentShapes[segment.id];
+  }
+};
+
+/**
+ * Moves all segment markers to the top of the z-order,
+ * so the user can always drag them.
+ */
+
+SegmentsLayer.prototype.moveSegmentMarkersToTop = function() {
+  for (const segmentId in this._segmentShapes) {
+    if (objectHasProperty(this._segmentShapes, segmentId)) {
+      this._segmentShapes[segmentId].moveMarkersToTop();
+    }
   }
 };
 

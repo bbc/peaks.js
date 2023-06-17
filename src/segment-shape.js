@@ -427,6 +427,12 @@ SegmentShape.prototype.segmentClicked = function(eventName, event) {
   this._peaks.emit('segments.' + eventName, event);
 };
 
+SegmentShape.prototype._moveToTop = function() {
+  this._overlay.moveToTop();
+
+  this._layer.moveSegmentMarkersToTop();
+};
+
 SegmentShape.prototype.enableSegmentDragging = function(enable) {
   if (!this._segment.editable) {
     return;
@@ -619,9 +625,7 @@ SegmentShape.prototype._onSegmentDragEnd = function(event) {
   });
 };
 
-SegmentShape.prototype._moveToTop = function() {
-  this._overlay.moveToTop();
-
+SegmentShape.prototype.moveMarkersToTop = function() {
   if (this._endMarker) {
     this._endMarker.moveToTop();
   }
