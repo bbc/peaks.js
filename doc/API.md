@@ -195,6 +195,12 @@ var options = {
     // auto-scroll
     autoScrollOffset: 100,
 
+    // Enables point markers to be shown on the zoomable waveform
+    enablePoints: true,
+
+    // Enables segments to be shown on the zoomable waveform
+    enableSegments: true,
+
     segmentOptions: {
       // Some segment options can be overridden for the zoomable waveform,
       // see segmentOptions below
@@ -270,6 +276,12 @@ var options = {
     // Font style for axis labels, playhead, and point and segment markers
     // (either 'normal', 'bold', or 'italic')
     fontStyle: 'normal',
+
+    // Enables point markers to be shown on the overview waveform
+    enablePoints: true,
+
+    // Enables segments to be shown on the overview waveform
+    enableSegments: true,
 
     segmentOptions: {
       // Some segment options can be overridden for the overview waveform,
@@ -408,6 +420,12 @@ var options = {
 
   // if true, emit cue events on the Peaks instance (see Cue Events)
   emitCueEvents: false,
+
+  // Enables point markers to be shown on the waveform views
+  enablePoints: true,
+
+  // Enables segments to be shown on the waveform views
+  enableSegments: true,
 
   segmentOptions: {
     // Enable segment markers

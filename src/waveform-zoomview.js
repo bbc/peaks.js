@@ -108,11 +108,15 @@ function WaveformZoomView(waveformData, container, peaks) {
 
   self._createWaveform();
 
-  self._segmentsLayer = new SegmentsLayer(peaks, self, true);
-  self._segmentsLayer.addToStage(self._stage);
+  if (self._viewOptions.enableSegments) {
+    self._segmentsLayer = new SegmentsLayer(peaks, self, true);
+    self._segmentsLayer.addToStage(self._stage);
+  }
 
-  self._pointsLayer = new PointsLayer(peaks, self, true);
-  self._pointsLayer.addToStage(self._stage);
+  if (self._viewOptions.enablePoints) {
+    self._pointsLayer = new PointsLayer(peaks, self, true);
+    self._pointsLayer.addToStage(self._stage);
+  }
 
   self._createAxisLabels();
 
@@ -307,7 +311,9 @@ WaveformZoomView.prototype._clickHandler = function(event, eventName) {
             }
           };
 
-          this._segmentsLayer.segmentClicked(eventName, clickEvent);
+          if (this._segmentsLayer) {
+            this._segmentsLayer.segmentClicked(eventName, clickEvent);
+          }
         }
       }
     }
@@ -406,7 +412,9 @@ WaveformZoomView.prototype.enableSegmentDragging = function(enable) {
   this._enableSegmentDragging = enable;
 
   // Update all existing segments
-  this._segmentsLayer.enableSegmentDragging(enable);
+  if (this._segmentsLayer) {
+    this._segmentsLayer.enableSegmentDragging(enable);
+  }
 };
 
 WaveformZoomView.prototype.isSegmentDraggingEnabled = function() {
@@ -798,7 +806,10 @@ WaveformZoomView.prototype.setAmplitudeScale = function(scale) {
   this._amplitudeScale = scale;
 
   this._drawWaveformLayer();
-  this._segmentsLayer.draw();
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.draw();
+  }
 };
 
 WaveformZoomView.prototype.getAmplitudeScale = function() {
@@ -932,8 +943,13 @@ WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
   const frameStartTime = this.getStartTime();
   const frameEndTime   = this.getEndTime();
 
-  this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
-  this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
+  if (this._pointsLayer) {
+    this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
+  }
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
+  }
 
   this._peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
 };
@@ -991,8 +1007,13 @@ WaveformZoomView.prototype.enableAutoScroll = function(enable, options) {
 };
 
 WaveformZoomView.prototype.enableMarkerEditing = function(enable) {
-  this._segmentsLayer.enableEditing(enable);
-  this._pointsLayer.enableEditing(enable);
+  if (this._segmentsLayer) {
+    this._segmentsLayer.enableEditing(enable);
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.enableEditing(enable);
+  }
 };
 
 WaveformZoomView.prototype.getMinSegmentDragWidth = function() {
@@ -1042,8 +1063,14 @@ WaveformZoomView.prototype.fitToContainer = function() {
 
   this._waveformShape.fitToView();
   this._playheadLayer.fitToView();
-  this._segmentsLayer.fitToView();
-  this._pointsLayer.fitToView();
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.fitToView();
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.fitToView();
+  }
 
   if (updateWaveform) {
     this.updateWaveform(this._frameOffset);
@@ -1073,8 +1100,14 @@ WaveformZoomView.prototype.destroy = function() {
   this._peaks.off('keyboard.shift_right', this._onKeyboardShiftRight);
 
   this._playheadLayer.destroy();
-  this._segmentsLayer.destroy();
-  this._pointsLayer.destroy();
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.destroy();
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.destroy();
+  }
 
   if (this._stage) {
     this._stage.destroy();

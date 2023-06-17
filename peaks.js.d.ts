@@ -68,24 +68,24 @@ declare module 'peaks.js' {
   type LabelVerticalAlign = 'top' | 'middle' | 'bottom';
 
   interface SegmentDisplayOptions {
-    markers?:                   boolean;
-    overlay?:                   boolean;
-    startMarkerColor?:          string;
-    endMarkerColor?:            string;
-    waveformColor?:             WaveformColor;
-    overlayColor?:              string;
-    overlayOpacity?:            number;
-    overlayBorderColor?:        string;
-    overlayBorderWidth?:        number;
-    overlayCornerRadius?:       number;
-    overlayOffset?:             number;
-    overlayLabelAlign?:         LabelHorizontalAlign;
+    markers?: boolean;
+    overlay?: boolean;
+    startMarkerColor?: string;
+    endMarkerColor?: string;
+    waveformColor?: WaveformColor;
+    overlayColor?: string;
+    overlayOpacity?: number;
+    overlayBorderColor?: string;
+    overlayBorderWidth?: number;
+    overlayCornerRadius?: number;
+    overlayOffset?: number;
+    overlayLabelAlign?: LabelHorizontalAlign;
     overlayLabelVerticalAlign?: LabelVerticalAlign;
-    overlayLabelPadding?:       number;
-    overlayLabelColor?:         string;
-    overlayFontFamily?:         string;
-    overlayFontSize?:           number;
-    overlayFontStyle?:          string;
+    overlayLabelPadding?: number;
+    overlayLabelColor?: string;
+    overlayFontFamily?: string;
+    overlayFontSize?: number;
+    overlayFontStyle?: string;
   }
 
   /**
@@ -116,6 +116,8 @@ declare module 'peaks.js' {
     showAxisLabels?: boolean;
     formatAxisTime?: FormatTimeFunction;
     waveformColor?: WaveformColor;
+    enablePoints?: boolean;
+    enableSegments?: boolean;
     segmentOptions?: SegmentDisplayOptions;
   }
 

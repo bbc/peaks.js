@@ -95,11 +95,15 @@ function WaveformOverview(waveformData, container, peaks) {
 
   self._createWaveform();
 
-  self._segmentsLayer = new SegmentsLayer(peaks, self, false);
-  self._segmentsLayer.addToStage(self._stage);
+  if (self._viewOptions.enableSegments) {
+    self._segmentsLayer = new SegmentsLayer(peaks, self, false);
+    self._segmentsLayer.addToStage(self._stage);
+  }
 
-  self._pointsLayer = new PointsLayer(peaks, self, false);
-  self._pointsLayer.addToStage(self._stage);
+  if (self._viewOptions.enablePoints) {
+    self._pointsLayer = new PointsLayer(peaks, self, false);
+    self._pointsLayer.addToStage(self._stage);
+  }
 
   self._highlightLayer = new HighlightLayer(
     self,
@@ -222,7 +226,9 @@ WaveformOverview.prototype._clickHandler = function(event, eventName) {
             }
           };
 
-          this._segmentsLayer.segmentClicked(eventName, clickEvent);
+          if (this._segmentsLayer) {
+            this._segmentsLayer.segmentClicked(eventName, clickEvent);
+          }
         }
       }
     }
@@ -411,7 +417,10 @@ WaveformOverview.prototype.setAmplitudeScale = function(scale) {
   this._amplitudeScale = scale;
 
   this._waveformLayer.draw();
-  this._segmentsLayer.draw();
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.draw();
+  }
 };
 
 WaveformOverview.prototype.getAmplitudeScale = function() {
@@ -504,8 +513,13 @@ WaveformOverview.prototype._updateWaveform = function() {
   const frameStartTime = 0;
   const frameEndTime   = this.pixelsToTime(this._width);
 
-  this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
-  this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
+  if (this._pointsLayer) {
+    this._pointsLayer.updatePoints(frameStartTime, frameEndTime);
+  }
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
+  }
 };
 
 WaveformOverview.prototype.setWaveformColor = function(color) {
@@ -549,8 +563,13 @@ WaveformOverview.prototype.showAxisLabels = function(show) {
 };
 
 WaveformOverview.prototype.enableMarkerEditing = function(enable) {
-  this._segmentsLayer.enableEditing(enable);
-  this._pointsLayer.enableEditing(enable);
+  if (this._segmentsLayer) {
+    this._segmentsLayer.enableEditing(enable);
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.enableEditing(enable);
+  }
 };
 
 WaveformOverview.prototype.fitToContainer = function() {
@@ -578,8 +597,15 @@ WaveformOverview.prototype.fitToContainer = function() {
 
   this._waveformShape.fitToView();
   this._playheadLayer.fitToView();
-  this._segmentsLayer.fitToView();
-  this._pointsLayer.fitToView();
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.fitToView();
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.fitToView();
+  }
+
   this._highlightLayer.fitToView();
 
   if (updateWaveform) {
@@ -606,8 +632,14 @@ WaveformOverview.prototype.destroy = function() {
   this._peaks.off('window_resize', this._onWindowResize);
 
   this._playheadLayer.destroy();
-  this._segmentsLayer.destroy();
-  this._pointsLayer.destroy();
+
+  if (this._segmentsLayer) {
+    this._segmentsLayer.destroy();
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.destroy();
+  }
 
   if (this._stage) {
     this._stage.destroy();

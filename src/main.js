@@ -77,7 +77,9 @@ const defaultViewOptions = {
   fontFamily:          'sans-serif',
   fontSize:            11,
   fontStyle:           'normal',
-  timeLabelPrecision:  2
+  timeLabelPrecision:  2,
+  enablePoints:        true,
+  enableSegments:      true
 };
 
 const defaultZoomviewOptions = {
@@ -87,7 +89,6 @@ const defaultZoomviewOptions = {
   wheelMode:              'none',
   autoScroll:             true,
   autoScrollOffset:       100
-  // zoomAdapter:         'static'
 };
 
 const defaultOverviewOptions = {
@@ -152,7 +153,9 @@ function getOverviewOptions(opts) {
     'highlightStrokeColor',
     'highlightOpacity',
     'highlightCornerRadius',
-    'highlightOffset'
+    'highlightOffset',
+    'enablePoints',
+    'enableSegments'
   ];
 
   optNames.forEach(function(optName) {
@@ -203,7 +206,9 @@ function getZoomviewOptions(opts) {
     'fontStyle',
     'wheelMode',
     'autoScroll',
-    'autoScrollOffset'
+    'autoScrollOffset',
+    'enablePoints',
+    'enableSegments'
   ];
 
   optNames.forEach(function(optName) {
