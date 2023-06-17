@@ -86,7 +86,7 @@ const defaultZoomviewOptions = {
   waveformColor:          'rgba(0, 225, 128, 1)',
   wheelMode:              'none',
   autoScroll:             true,
-  autoScrollOffset:       100,
+  autoScrollOffset:       100
   // zoomAdapter:         'static'
 };
 
