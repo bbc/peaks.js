@@ -12,8 +12,6 @@ import PointsLayer from './points-layer';
 import SegmentsLayer from './segments-layer';
 import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
-// import AnimatedZoomAdapter from './animated-zoom-adapter';
-// import StaticZoomAdapter from './static-zoom-adapter';
 import { clamp, formatTime, getMarkerObject, isFinite, isNumber, isValidTime,
   objectHasProperty } from './utils';
 
@@ -644,10 +642,6 @@ WaveformZoomView.prototype.setZoom = function(options) {
   // Update the playhead position after zooming.
   this._playheadLayer.updatePlayheadTime(currentTime);
 
-  // const adapter = this.createZoomAdapter(currentScale, previousScale);
-
-  // adapter.start(relativePosition);
-
   this._peaks.emit('zoom.update', scale, prevScale);
 
   return true;
@@ -748,21 +742,6 @@ WaveformZoomView.prototype.pixelOffsetToTime = function(offset) {
 WaveformZoomView.prototype.timeToPixelOffset = function(time) {
   return Math.floor(time * this._data.sample_rate / this._data.scale) - this._frameOffset;
 };
-
-/* const zoomAdapterMap = {
-  'animated': AnimatedZoomAdapter,
-  'static': StaticZoomAdapter
-};
-
-WaveformZoomView.prototype.createZoomAdapter = function(currentScale, previousScale) {
-  const ZoomAdapter = zoomAdapterMap[this._viewOptions.zoomAdapter];
-
-  if (!ZoomAdapter) {
-    throw new Error('Invalid zoomAdapter: ' + this._viewOptions.zoomAdapter);
-  }
-
-  return ZoomAdapter.create(this, currentScale, previousScale);
-}; */
 
 /**
  * @returns {Number} The start position of the waveform shown in the view,
@@ -1076,33 +1055,6 @@ WaveformZoomView.prototype.fitToContainer = function() {
 WaveformZoomView.prototype.getViewOptions = function() {
   return this._viewOptions;
 };
-
-/* WaveformZoomView.prototype.beginZoom = function() {
-  // Fade out the time axis and the segments
-  // this._axis.axisShape.setAttr('opacity', 0);
-
-  if (this._pointsLayer) {
-    this._pointsLayer.setVisible(false);
-  }
-
-  if (this._segmentsLayer) {
-    this._segmentsLayer.setVisible(false);
-  }
-};
-
-WaveformZoomView.prototype.endZoom = function() {
-  if (this._pointsLayer) {
-    this._pointsLayer.setVisible(true);
-  }
-
-  if (this._segmentsLayer) {
-    this._segmentsLayer.setVisible(true);
-  }
-
-  const time = this._peaks.player.getCurrentTime();
-
-  this.seekFrame(this.timeToPixels(time));
-}; */
 
 WaveformZoomView.prototype.destroy = function() {
   if (this._resizeTimeoutId) {
