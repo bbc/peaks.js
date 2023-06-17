@@ -299,28 +299,16 @@ PointsLayer.prototype.updatePoints = function(startTime, endTime) {
  */
 
 PointsLayer.prototype._updatePoint = function(point) {
-  const pointMarker = this._findOrAddPointMarker(point);
-
-  const pointMarkerOffset = this._view.timeToPixels(point.time);
-  const pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
-
-  pointMarker.setX(pointMarkerX);
-
-  return pointMarker;
-};
-
-/**
- * @private
- * @param {Point} point
- * @return {PointMarker}
- */
-
-PointsLayer.prototype._findOrAddPointMarker = function(point) {
   let pointMarker = this._pointMarkers[point.id];
 
   if (!pointMarker) {
     pointMarker = this._addPointMarker(point);
   }
+
+  const pointMarkerOffset = this._view.timeToPixels(point.time);
+  const pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
+
+  pointMarker.setX(pointMarkerX);
 
   return pointMarker;
 };
