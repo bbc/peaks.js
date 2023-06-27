@@ -116,8 +116,14 @@ DefaultSegmentMarker.prototype.fitToView = function() {
   this._line.points([0.5, 0, 0.5, height]);
 };
 
-DefaultSegmentMarker.prototype.timeUpdated = function(time) {
-  this._label.setText(this._options.layer.formatTime(time));
+DefaultSegmentMarker.prototype.update = function(options) {
+  if (options.startTime !== undefined && this._options.startMarker) {
+    this._label.text(this._options.layer.formatTime(options.startTime));
+  }
+
+  if (options.endTime !== undefined && !this._options.startMarker) {
+    this._label.text(this._options.layer.formatTime(options.endTime));
+  }
 };
 
 export default DefaultSegmentMarker;

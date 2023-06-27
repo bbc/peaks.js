@@ -10,6 +10,8 @@ import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 
+import { objectHasProperty } from './utils';
+
 /**
  * Creates a point marker handle.
  *
@@ -145,9 +147,25 @@ DefaultPointMarker.prototype.fitToView = function() {
   }
 };
 
-DefaultPointMarker.prototype.timeUpdated = function(time) {
-  if (this._time) {
-    this._time.setText(this._options.layer.formatTime(time));
+DefaultPointMarker.prototype.update = function(options) {
+  if (objectHasProperty(options, 'time')) {
+    if (this._time) {
+      this._time.setText(this._options.layer.formatTime(options.time));
+    }
+  }
+
+  if (objectHasProperty(options, 'labelText')) {
+    if (this._label) {
+      this._label.text(options.labelText);
+    }
+  }
+
+  if (objectHasProperty(options, 'color')) {
+    if (this._handle) {
+      this._handle.fill(options.color);
+    }
+
+    this._line.stroke(options.color);
   }
 };
 

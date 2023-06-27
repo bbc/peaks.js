@@ -116,15 +116,9 @@ PointMarker.prototype.getAbsolutePosition = function() {
   return this._group.getAbsolutePosition();
 };
 
-PointMarker.prototype.timeUpdated = function(time) {
-  if (this._marker.timeUpdated) {
-    this._marker.timeUpdated(time);
-  }
-};
-
-PointMarker.prototype.update = function() {
+PointMarker.prototype.update = function(options) {
   if (this._marker.update) {
-    this._marker.update();
+    this._marker.update(options);
   }
 };
 

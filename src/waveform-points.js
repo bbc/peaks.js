@@ -83,7 +83,7 @@ WaveformPoints.prototype._createPoint = function(options) {
     pointOptions.id = this._getNextPointId();
   }
 
-  setDefaultPointOptions(pointOptions);
+  setDefaultPointOptions(pointOptions, this._peaks.options);
 
   validatePointOptions(pointOptions, false);
 

@@ -75,16 +75,16 @@ describe('PointsLayer', function() {
 
       expect(overviewPointMarker.getX()).to.equal(0);
 
-      const zoomviewPointMarkerTimeUpdated = sinon.spy(zoomviewPointMarker, 'timeUpdated');
-      const overviewPointMarkerTimeUpdated = sinon.spy(overviewPointMarker, 'timeUpdated');
+      const zoomviewPointMarkerUpdate = sinon.spy(zoomviewPointMarker, 'update');
+      const overviewPointMarkerUpdate = sinon.spy(overviewPointMarker, 'update');
 
       point.update({ time: 5.0 });
 
       expect(zoomviewPointMarker.getX()).to.equal(Math.floor(5.0 * 44100 / p.zoom.getZoomLevel()));
-      expect(zoomviewPointMarkerTimeUpdated.callCount).to.equal(1);
+      expect(zoomviewPointMarkerUpdate).calledOnceWithExactly({ time: 5.0 });
 
       expect(overviewPointMarker.getX()).to.equal(Math.floor(5.0 * 44100 / overview._data.scale));
-      expect(overviewPointMarkerTimeUpdated.callCount).to.equal(1);
+      expect(overviewPointMarkerUpdate).calledOnceWithExactly({ time: 5.0 });
     });
 
     it('should remove the point marker if its time has changed and is no longer visible', function() {

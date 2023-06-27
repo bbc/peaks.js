@@ -27,6 +27,12 @@ class SimplePointMarker {
 
     this._line.points([0.5, 0, 0.5, height]);
   }
+
+  update(options) {
+    if (options.color !== undefined) {
+      this._line.stroke(options.color);
+    }
+  }
 }
 
 export default SimplePointMarker;

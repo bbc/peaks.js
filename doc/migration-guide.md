@@ -72,11 +72,85 @@ Peaks.init({
 });
 ```
 
-Finally, the `randomizeSegmentColor` option has been removed. This option was `true` by default in earlier versions. Instead of using this option, set the `color` attribute when calling [`segments.add()`](https://github.com/bbc/peaks.js#instancesegmentsaddsegment).
+The `randomizeSegmentColor` option has been removed. This option was `true` by default in earlier versions. Instead of using this option, set the `color` attribute when calling [`segments.add()`](https://github.com/bbc/peaks.js#instancesegmentsaddsegment).
+
+Finally, the [custom Marker API](customizing.md#marker-api) has changed. In earlier versions, updating a point or segment's attributes would cause the corresponding marker to be destroyed and then constructed again. There is now a new `update()` method, which you should use to update a custom point or segment marker when any of its attributes have been updated. The `timeUpdated()` method has been removed, as the `update()` method provides the same functionality.
+
+```js
+// Before
+class CustomSegmentMarker {
+  constructor(options) {
+    this._options = options;
+  }
+
+  init(group) {
+    this._group = group;
+
+    // Create Konva.js objects to render the marker
+
+    this.fitToView();
+    this.bindEventHandlers();
+  }
+
+  bindEventHandlers() {
+    // etc
+  }
+
+  fitToView() {
+    // etc
+  }
+
+  timeUpdated(time) {
+    this._label.setText(this._options.layer.formatTime(time));
+  }
+}
+
+// After
+class CustomSegmentMarker {
+  constructor(options) {
+    this._options = options;
+  }
+
+  init(group) {
+    this._group = group;
+
+    // Create Konva.js objects to render the marker.
+    //
+    // See demo/custom-markers/custom-point-marker.js
+    // and demo/custom-markers/custom-segment-marker.js
+    // for complete examples.
+
+    this.fitToView();
+    this.bindEventHandlers();
+  }
+
+  bindEventHandlers() {
+    // etc
+  }
+
+  fitToView() {
+    // etc
+  }
+
+  update(options) {
+    if (options.startTime !== undefined && this._options.startMarker) {
+      console.log('Updated segment start marker time', options.startTime);
+    }
+
+    if (options.endTime !== undefined && !this._options.startMarker) {
+      console.log('Updated segment end marker time', options.endTime);
+    }
+
+    if (options.labelText !== undefined) {
+      console.log('Updated label text', options.labelText);
+    }
+  }
+}
+```
 
 ## Peaks.js v2.0.0
 
-Peaks.js v2.0.0 changes how [custom player objects](../customizing.md#media-playback) should be initialized. To allow for initialization that may involve asynchronous operations, your custom player object's `init` function must now return a `Promise` that resolves when the player has been initialized.
+Peaks.js v2.0.0 changes how [custom player objects](customizing.md#media-playback) should be initialized. To allow for initialization that may involve asynchronous operations, your custom player object's `init` function must now return a `Promise` that resolves when the player has been initialized.
 
 If your application does not use a custom player object, i.e., the `player` option when calling `Peaks.init()`, then updating to v2.0.0 does not require you to make any changes.
 

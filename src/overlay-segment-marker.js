@@ -111,8 +111,12 @@ OverlaySegmentMarker.prototype.fitToView = function() {
   this._handle.height(overlayRectHeight);
 };
 
-OverlaySegmentMarker.prototype.timeUpdated = function(time) {
-  this._label.setText(this._options.layer.formatTime(time));
+OverlaySegmentMarker.prototype.update = function(options) {
+  const time = options.startTime || options.endTime;
+
+  if (time !== undefined) {
+    this._label.setText(this._options.layer.formatTime(time));
+  }
 };
 
 export default OverlaySegmentMarker;

@@ -17,13 +17,17 @@ const invalidOptions = [
   'update', 'isVisible', 'peaks'
 ];
 
-function setDefaultPointOptions(options) {
+function setDefaultPointOptions(options, peaksOptions) {
   if (isNullOrUndefined(options.labelText)) {
     options.labelText = '';
   }
 
   if (isNullOrUndefined(options.editable)) {
     options.editable = false;
+  }
+
+  if (isNullOrUndefined(options.color)) {
+    options.color = peaksOptions.pointMarkerColor;
   }
 }
 

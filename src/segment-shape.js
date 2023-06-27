@@ -11,7 +11,7 @@ import Konva from 'konva/lib/Core';
 import OverlaySegmentMarker from './overlay-segment-marker';
 import SegmentMarker from './segment-marker';
 import WaveformShape from './waveform-shape';
-import { clamp, objectHasProperty } from './utils';
+import { clamp } from './utils';
 
 const defaultFontFamily = 'sans-serif';
 const defaultFontSize = 10;
@@ -211,20 +211,16 @@ SegmentShape.prototype.update = function(options) {
   if ((marker = this.getStartMarker())) {
     marker.setX(segmentStartOffset - marker.getWidth());
 
-    marker.update();
-
-    if (options && objectHasProperty(options, 'startTime')) {
-      marker.timeUpdated(options.startTime);
+    if (options) {
+      marker.update(options);
     }
   }
 
   if ((marker = this.getEndMarker())) {
     marker.setX(segmentEndOffset);
 
-    marker.update();
-
-    if (options && objectHasProperty(options, 'endTime')) {
-      marker.timeUpdated(options.endTime);
+    if (options) {
+      marker.update(options);
     }
   }
 
@@ -664,14 +660,12 @@ SegmentShape.prototype._onSegmentMarkerDragStart = function(segmentMarker, event
 SegmentShape.prototype._onSegmentMarkerDragMove = function(segmentMarker, event) {
   if (segmentMarker.isStartMarker()) {
     this._segmentStartMarkerDragMove(segmentMarker, event);
-    segmentMarker.timeUpdated(segmentMarker.getSegment().startTime);
+    segmentMarker.update({ startTime: this._segment.startTime });
   }
   else {
     this._segmentEndMarkerDragMove(segmentMarker, event);
-    segmentMarker.timeUpdated(segmentMarker.getSegment().endTime);
+    segmentMarker.update({ endTime: this._segment.endTime });
   }
-
-  segmentMarker.update();
 };
 
 SegmentShape.prototype._segmentStartMarkerDragMove = function(segmentMarker, event) {
@@ -726,7 +720,7 @@ SegmentShape.prototype._segmentStartMarkerDragMove = function(segmentMarker, eve
 
     this._segment._setStartTime(this._view.pixelOffsetToTime(startMarkerX));
 
-    segmentMarker.timeUpdated(this._segment.startTime);
+    segmentMarker.update({ startTime: this._segment.startTime });
 
     if (this._previousSegment) {
       const prevSegmentEndX = this._view.timeToPixelOffset(this._previousSegment.endTime);
@@ -754,7 +748,7 @@ SegmentShape.prototype._segmentStartMarkerDragMove = function(segmentMarker, eve
       this._segment._setStartTime(this._view.pixelOffsetToTime(x));
     }
 
-    segmentMarker.timeUpdated(this._segment.startTime);
+    segmentMarker.update({ startTime: this._segment.startTime });
   }
 
   this._peaks.emit('segments.dragged', {
@@ -826,7 +820,7 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
 
     this._segment._setEndTime(this._view.pixelOffsetToTime(endMarkerX));
 
-    segmentMarker.timeUpdated(this._segment.endTime);
+    segmentMarker.update({ endTime: this._segment.endTime });
 
     if (this._nextSegment) {
       const nextSegmentStartX = this._view.timeToPixelOffset(this._nextSegment.startTime);
@@ -854,7 +848,7 @@ SegmentShape.prototype._segmentEndMarkerDragMove = function(segmentMarker, event
       this._segment._setEndTime(this._view.pixelOffsetToTime(x));
     }
 
-    segmentMarker.timeUpdated(this._segment.endTime);
+    segmentMarker.update({ endTime: this._segment.endTime });
   }
 
   this._peaks.emit('segments.dragged', {

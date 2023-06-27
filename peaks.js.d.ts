@@ -201,19 +201,32 @@ declare module 'peaks.js' {
 
   type AudioOptions = OneOf<RemoteWaveformDataOptions, LocalWaveformDataOptions, WebAudioOptions>;
 
+  export interface PointMarkerUpdateOptions {
+    time?: number;
+    color?: string;
+    labelText?: string;
+    [userAttributes: string]: unknown;
+  }
+
   export interface PointMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
-    timeUpdated?: (time: number) => void;
-    update?: () => void;
+    update?: (options: PointMarkerUpdateOptions) => void;
     destroy?: () => void;
+  }
+
+  export interface SegmentMarkerUpdateOptions {
+    startTime?: number;
+    endTime?: number;
+    color?: string;
+    labelText?: string;
+    [userAttributes: string]: unknown;
   }
 
   export interface SegmentMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
-    timeUpdated?: (time: number) => void;
-    update?: () => void;
+    update?: (options: SegmentMarkerUpdateOptions) => void;
     destroy?: () => void;
   }
 

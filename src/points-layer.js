@@ -98,10 +98,9 @@ PointsLayer.prototype._onPointsUpdate = function(point, options) {
       const pointMarkerX = pointMarkerOffset - this._view.getFrameOffset();
 
       pointMarker.setX(pointMarkerX);
-      pointMarker.timeUpdated(point.time);
     }
 
-    pointMarker.update();
+    pointMarker.update(options);
   }
 };
 
@@ -145,7 +144,7 @@ PointsLayer.prototype._createPointMarker = function(point) {
   const marker = this._peaks.options.createPointMarker({
     point:      point,
     draggable:  editable,
-    color:      point.color ? point.color : this._peaks.options.pointMarkerColor,
+    color:      point.color,
     fontFamily: this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:   this._peaks.options.fontSize || defaultFontSize,
     fontStyle:  this._peaks.options.fontStyle || defaultFontShape,
@@ -191,8 +190,7 @@ PointsLayer.prototype._addPointMarker = function(point) {
 PointsLayer.prototype._onPointsDrag = function(event) {
   const pointMarker = this._updatePoint(event.point);
 
-  pointMarker.timeUpdated(event.point.time);
-  pointMarker.update();
+  pointMarker.update({ time: event.point.time });
 };
 
 /**

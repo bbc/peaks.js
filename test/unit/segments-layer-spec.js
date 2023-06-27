@@ -66,23 +66,18 @@ describe('SegmentsLayer', function() {
       expect(segmentShape).to.be.ok;
 
       expect(segmentShape._startMarker.getX()).to.equal(0);
+      expect(segmentShape._endMarker.getX()).to.equal(Math.floor(2.0 * 44100 / p.zoom.getZoomLevel()));
 
       const startMarkerUpdate = sinon.spy(segmentShape._startMarker, 'update');
       const endMarkerUpdate = sinon.spy(segmentShape._endMarker, 'update');
 
-      const startMarkerTimeUpdated = sinon.spy(segmentShape._startMarker, 'timeUpdated');
-      const endMarkerTimeUpdated = sinon.spy(segmentShape._endMarker, 'timeUpdated');
-
       segment.update({ startTime: 1.0 });
 
       expect(segmentShape._startMarker.getX()).to.equal(Math.floor(1.0 * 44100 / p.zoom.getZoomLevel()));
+      expect(segmentShape._endMarker.getX()).to.equal(Math.floor(2.0 * 44100 / p.zoom.getZoomLevel()));
 
-      expect(startMarkerUpdate.callCount).to.equal(1);
-      expect(endMarkerUpdate.callCount).to.equal(1);
-
-      expect(startMarkerTimeUpdated.callCount).to.equal(1);
-      expect(startMarkerTimeUpdated).calledWith(1.0);
-      expect(endMarkerTimeUpdated.callCount).to.equal(0);
+      expect(startMarkerUpdate).calledOnceWithExactly({ startTime: 1.0 });
+      expect(endMarkerUpdate).calledOnceWithExactly({ startTime: 1.0 });
     });
 
     it('should move the segment end marker if its time has changed', function() {
@@ -99,19 +94,12 @@ describe('SegmentsLayer', function() {
       const startMarkerUpdate = sinon.spy(segmentShape._startMarker, 'update');
       const endMarkerUpdate = sinon.spy(segmentShape._endMarker, 'update');
 
-      const startMarkerTimeUpdated = sinon.spy(segmentShape._startMarker, 'timeUpdated');
-      const endMarkerTimeUpdated = sinon.spy(segmentShape._endMarker, 'timeUpdated');
-
       segment.update({ endTime: 3.0 });
 
       expect(segmentShape._endMarker.getX()).to.equal(Math.floor(3.0 * 44100 / p.zoom.getZoomLevel()));
 
-      expect(startMarkerUpdate.callCount).to.equal(1);
-      expect(endMarkerUpdate.callCount).to.equal(1);
-
-      expect(startMarkerTimeUpdated.callCount).to.equal(0);
-      expect(endMarkerTimeUpdated.callCount).to.equal(1);
-      expect(endMarkerTimeUpdated).calledWith(3.0);
+      expect(startMarkerUpdate).calledOnceWithExactly({ endTime: 3.0 });
+      expect(endMarkerUpdate).calledOnceWithExactly({ endTime: 3.0 });
     });
 
     it('should update the segment if it is visible', function() {

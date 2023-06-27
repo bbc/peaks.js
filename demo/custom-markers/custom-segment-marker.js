@@ -15,7 +15,7 @@ class CustomSegmentMarker {
       y: 0.5
     });
 
-    const color = this._options.segment.color;
+    const color = this._options.color;
 
     this._tag = new Tag({
       fill:             color,
@@ -89,6 +89,18 @@ class CustomSegmentMarker {
     this._group.y(offsetTop + labelHeight + 0.5);
 
     this._line.points([0.5, 0, 0.5, height - labelHeight - offsetTop - offsetBottom]);
+  }
+
+  update(options) {
+    if (options.labelText !== undefined) {
+      this._text.text(options.labelText);
+    }
+
+    if (options.color !== undefined) {
+      this._tag.fill(options.color);
+      this._tag.stroke(options.color);
+      this._line.stroke(options.color);
+    }
   }
 }
 

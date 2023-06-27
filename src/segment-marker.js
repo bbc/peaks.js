@@ -115,12 +115,6 @@ SegmentMarker.prototype.isStartMarker = function() {
   return this._startMarker;
 };
 
-SegmentMarker.prototype.timeUpdated = function(time) {
-  if (this._marker.timeUpdated) {
-    this._marker.timeUpdated(time);
-  }
-};
-
 SegmentMarker.prototype.update = function(options) {
   if (this._marker.update) {
     this._marker.update(options);

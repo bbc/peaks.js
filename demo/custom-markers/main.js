@@ -166,6 +166,10 @@ var options = {
     },
     highlightColor: '#888'
   },
+  segmentOptions: {
+    startMarkerColor: '#006eb0',
+    endMarkerColor: '#006eb0'
+  },
   mediaElement: document.getElementById('audio'),
   dataUri: {
     arraybuffer: 'TOL_6min_720p_download.dat',

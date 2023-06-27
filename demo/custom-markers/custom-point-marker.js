@@ -80,6 +80,18 @@ class CustomPointMarker {
 
     this._line.points([0.5, 0, 0.5, height - labelHeight - offsetTop - offsetBottom]);
   }
+
+  update(options) {
+    if (options.labelText !== undefined) {
+      this._text.text(options.labelText);
+    }
+
+    if (options.color !== undefined) {
+      this._tag.fill(options.color);
+      this._tag.stroke(options.color);
+      this._line.stroke(options.color);
+    }
+  }
 }
 
 export default CustomPointMarker;
