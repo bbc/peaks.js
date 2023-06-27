@@ -1,5 +1,20 @@
 # Peaks.js
 
+## 3.0.0-beta.12 (2023/06/27)
+
+* (#498) The custom marker `timeUpdated()` method has been removed, and
+  replaced by a more general purpose `update()` method, which is called
+  when any of the point or segment attributes have been updated
+  (including when markers are dragged). Refer to doc/migration-guide.md
+  for details of how to update your application (@chrisn)
+
+* (#497) Added zoomview `autoScroll` and `autoScrollOffset` options
+  (@chrisn)
+
+* (#88) Added `enablePoints` and `enableSegment` options, to allow you
+  to control whether points and segments are shown in the zoomview and
+  overview waveforms (@chrisn)
+
 ## 3.0.0-beta.11 (2023/06/07)
 
 * (#490) Added `preventViewEvent()` method for point and segment events.
