@@ -112,10 +112,12 @@ OverlaySegmentMarker.prototype.fitToView = function() {
 };
 
 OverlaySegmentMarker.prototype.update = function(options) {
-  const time = options.startTime || options.endTime;
+  if (options.startTime !== undefined && this._options.startMarker) {
+    this._label.text(this._options.layer.formatTime(options.startTime));
+  }
 
-  if (time !== undefined) {
-    this._label.setText(this._options.layer.formatTime(time));
+  if (options.endTime !== undefined && !this._options.startMarker) {
+    this._label.text(this._options.layer.formatTime(options.endTime));
   }
 };
 
