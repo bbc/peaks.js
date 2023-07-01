@@ -114,6 +114,9 @@ function SegmentShape(segment, peaks, layer, view) {
 
   const overlayRectHeight = clamp(0, this._view.getHeight() - 2 * this._overlayOffset);
 
+  // The clip rectangle prevents text in the overlay from appearing
+  // outside the overlay.
+
   this._overlay = new Konva.Group({
     name:          'segment-overlay',
     segment:       this._segment,
