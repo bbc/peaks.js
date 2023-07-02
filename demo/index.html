@@ -618,8 +618,8 @@
             console.log('player.ended');
           });
 
-          peaksInstance.on('zoom.update', function(currentZoom, previousZoom) {
-            console.log('zoom.update', currentZoom, previousZoom);
+          peaksInstance.on('zoom.update', function(event) {
+            console.log('zoom.update', event);
           });
         });
       })(peaks);

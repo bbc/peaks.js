@@ -100,13 +100,13 @@ SegmentsLayer.prototype._onSegmentsUpdate = function(segment, options) {
   }
 };
 
-SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
+SegmentsLayer.prototype._onSegmentsAdd = function(event) {
   const self = this;
 
   const frameStartTime = self._view.getStartTime();
   const frameEndTime   = self._view.getEndTime();
 
-  segments.forEach(function(segment) {
+  event.segments.forEach(function(segment) {
     if (segment.isVisible(frameStartTime, frameEndTime)) {
       const segmentShape = self._addSegmentShape(segment);
 
@@ -118,10 +118,10 @@ SegmentsLayer.prototype._onSegmentsAdd = function(segments) {
   this.moveSegmentMarkersToTop();
 };
 
-SegmentsLayer.prototype._onSegmentsRemove = function(segments) {
+SegmentsLayer.prototype._onSegmentsRemove = function(event) {
   const self = this;
 
-  segments.forEach(function(segment) {
+  event.segments.forEach(function(segment) {
     self._removeSegment(segment);
   });
 };

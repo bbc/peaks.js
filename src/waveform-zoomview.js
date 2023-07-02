@@ -684,7 +684,10 @@ WaveformZoomView.prototype.setZoom = function(options) {
   // Update the playhead position after zooming.
   this._playheadLayer.updatePlayheadTime(currentTime);
 
-  this._peaks.emit('zoom.update', scale, prevScale);
+  this._peaks.emit('zoom.update', {
+    currentZoom: scale,
+    previousZoom: prevScale
+  });
 
   return true;
 };

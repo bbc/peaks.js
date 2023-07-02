@@ -1604,11 +1604,16 @@ instance.on('zoomview.contextmenu', function(event) {
 
 ### `zoom.update`
 
-This event is emitted when the zoom level in the zoomable waveform view changes. Event handler functions receive the current and previous zoom levels, in samples per pixel.
+This event is emitted when the zoom level in the zoomable waveform view changes.
+
+The `event` parameter contains:
+
+* `currentZoom`: The current zoom level, in samples per pixel
+* `previousZoom`: The previous zoom level, in samples per pixel
 
 ```js
-instance.on('zoom.update', function(currentZoom, previousZoom) {
-  console.log(`Zoom changed from ${previousZoom} to ${currentZoom}`);
+instance.on('zoom.update', function(event) {
+  console.log(`Zoom changed from ${event.previousZoom} to ${event.currentZoom}`);
 });
 ```
 
@@ -1616,11 +1621,15 @@ instance.on('zoom.update', function(currentZoom, previousZoom) {
 
 ### `points.add`
 
-This event is emitted one or more points are added, by calling [`instance.points.add()`](#instancepointsaddpoint). The event contains an array of the Points added.
+This event is emitted one or more points are added, by calling [`instance.points.add()`](#instancepointsaddpoint).
+
+The `event` parameter contains:
+
+* `points`: An array of the [Point](#point-api) objects added
 
 ```js
-instance.on('points.add', function(points) {
-  points.forEach(function(point)) {
+instance.on('points.add', function(event) {
+  event.points.forEach(function(point)) {
     console.log(`Added point: ${point.id}`);
   });
 });
@@ -1628,11 +1637,15 @@ instance.on('points.add', function(points) {
 
 ### `points.remove`
 
-This event is emitted one or more points are removed, by calling [`instance.points.removeById()`](#instancepointtsremovebyidpointid) or [`instance.points.removeByTime`](#instancepointsremovebytimetime)). The event contains an array of the Points removed.
+This event is emitted one or more points are removed, by calling [`instance.points.removeById()`](#instancepointtsremovebyidpointid) or [`instance.points.removeByTime`](#instancepointsremovebytimetime)).
+
+The `event` parameter contains:
+
+* `points`: An array of the [Point](#point-api) objects removed
 
 ```js
-instance.on('points.remove', function(points) {
-  points.forEach(function(point)) {
+instance.on('points.remove', function(event) {
+  event.points.forEach(function(point)) {
     console.log(`Removed point: ${point.id}`);
   });
 });
@@ -1784,13 +1797,16 @@ instance.on('points.contextmenu', function(event) {
 
 This event is emitted when playback of the audio or video passes through a point.
 
-When the playhead reaches a point or segment boundary, a cue event is emitted.
+The `event` parameter contains:
+
+* `point`: The point that was passed through
+* `time`: The current playback time, in seconds
 
 This event is not emitted by default. To enable it, call `Peaks.init()` with the `emitCueEvents` option set to `true`.
 
 ```js
-instance.on('points.enter', function(point) {
-  console.log(`Entered point: ${point.id}`);
+instance.on('points.enter', function(event) {
+  console.log(`Entered point: ${event.point.id}, currentTime: ${event.time}`);
 });
 ```
 
@@ -1798,11 +1814,16 @@ instance.on('points.enter', function(point) {
 
 ### `segments.add`
 
-This event is emitted one or more segments are added, by calling [`instance.segments.add()`](#instancesegmentsaddsegment). The event contains an array of the Segments added.
+This event is emitted one or more segments are added, by calling [`instance.segments.add()`](#instancesegmentsaddsegment).
+
+The `event` parameter contains:
+
+* `segments`: An array of the [Segment](#segment-api) objects added
+
 
 ```js
-instance.on('segments.add', function(segments) {
-  segments.forEach(function(segment)) {
+instance.on('segments.add', function(event) {
+  event.segments.forEach(function(segment)) {
     console.log(`Added segment: ${segment.id}`);
   });
 });
@@ -1810,11 +1831,15 @@ instance.on('segments.add', function(segments) {
 
 ### `segments.remove`
 
-This event is emitted one or more segments are removed, by calling [`instance.segments.removeById()`](#instancesegmentsremovebyidsegmentid) or [`instance.segments.removeByTime`](#instancesegmentsremovebytimestarttime-endtime). The event contains an array of the Segments removed.
+This event is emitted one or more segments are removed, by calling [`instance.segments.removeById()`](#instancesegmentsremovebyidsegmentid) or [`instance.segments.removeByTime`](#instancesegmentsremovebytimestarttime-endtime).
+
+The `event` parameter contains:
+
+* `segments`: An array of the [Segment](#segment-api) objects removed
 
 ```js
-instance.on('segments.remove', function(segments) {
-  segments.forEach(function(segment)) {
+instance.on('segments.remove', function(event) {
+  event.segments.forEach(function(segment)) {
     console.log(`Removed segment: ${segment.id}`);
   });
 });
@@ -2000,11 +2025,16 @@ instance.on('segments.contextmenu', function(event) {
 
 This event is emitted when playback of the audio or video enters a segment.
 
+The `event` parameter contains:
+
+* `segment`: The segment that was entered
+* `time`: The current playback time, in seconds
+
 This event is not emitted by default. To enable it, call `Peaks.init()` with the `emitCueEvents` option set to `true`.
 
 ```js
-instance.on('segments.enter', function(segment) {
-  console.log(`Entered segment: ${segment.id}`);
+instance.on('segments.enter', function(event) {
+  console.log(`Entered segment: ${event.segment.id}, currentTime: ${event.time}`);
 });
 ```
 
@@ -2012,10 +2042,15 @@ instance.on('segments.enter', function(segment) {
 
 This event is emitted when playback of the audio or video exits a segment.
 
+The `event` parameter contains:
+
+* `segment`: The segment that was exited
+* `time`: The current playback time, in seconds
+
 This event is not emitted by default. To enable it, call `Peaks.init()` with the `emitCueEvents` option set to `true`.
 
 ```js
-instance.on('segments.exit', function(segment) {
-  console.log(`Exited segment: ${segment.id}`);
+instance.on('segments.exit', function(event) {
+  console.log(`Exited segment: ${event.segment.id}, currentTime: ${event.time}`);
 });
 ```

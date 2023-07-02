@@ -104,23 +104,23 @@ PointsLayer.prototype._onPointsUpdate = function(point, options) {
   }
 };
 
-PointsLayer.prototype._onPointsAdd = function(points) {
+PointsLayer.prototype._onPointsAdd = function(event) {
   const self = this;
 
   const frameStartTime = self._view.getStartTime();
   const frameEndTime   = self._view.getEndTime();
 
-  points.forEach(function(point) {
+  event.points.forEach(function(point) {
     if (point.isVisible(frameStartTime, frameEndTime)) {
       self._updatePoint(point);
     }
   });
 };
 
-PointsLayer.prototype._onPointsRemove = function(points) {
+PointsLayer.prototype._onPointsRemove = function(event) {
   const self = this;
 
-  points.forEach(function(point) {
+  event.points.forEach(function(point) {
     self._removePoint(point);
   });
 };

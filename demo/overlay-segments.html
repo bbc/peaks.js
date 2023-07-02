@@ -514,7 +514,11 @@
             }
           });
 
-          // Points mouse events
+          // Point events
+
+          peaksInstance.on('points.add', function(event) {
+            console.log('points.add:', event);
+          });
 
           peaksInstance.on('points.mouseenter', function(event) {
             console.log('points.mouseenter:', event);
@@ -550,7 +554,11 @@
             console.log('points.dragend:', event);
           });
 
-          // Segments mouse events
+          // Segment events
+
+          peaksInstance.on('segments.add', function(event) {
+            console.log('segments.add:', event);
+          });
 
           peaksInstance.on('segments.dragstart', function(event) {
             console.log('segments.dragstart:', event);

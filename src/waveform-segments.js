@@ -216,7 +216,9 @@ WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
     self._addSegment(segment);
   });
 
-  this._peaks.emit('segments.add', segments);
+  this._peaks.emit('segments.add', {
+    segments: segments
+  });
 
   return arrayArgs ? segments : segments[0];
 };
@@ -284,7 +286,9 @@ WaveformSegments.prototype._removeSegments = function(predicate) {
 
   const removed = this._removeIndexes(indexes);
 
-  this._peaks.emit('segments.remove', removed);
+  this._peaks.emit('segments.remove', {
+    segments: removed
+  });
 
   return removed;
 };

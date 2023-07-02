@@ -56,6 +56,12 @@ eventNames[EVENT_TYPE_POINT] = 'points.enter';
 eventNames[EVENT_TYPE_SEGMENT_ENTER] = 'segments.enter';
 eventNames[EVENT_TYPE_SEGMENT_EXIT] = 'segments.exit';
 
+const eventAttributes = {};
+
+eventAttributes[EVENT_TYPE_POINT] = 'point';
+eventAttributes[EVENT_TYPE_SEGMENT_ENTER] = 'segment';
+eventAttributes[EVENT_TYPE_SEGMENT_EXIT] = 'segment';
+
 /**
  * Given a cue instance, returns the corresponding {@link Point}
  * {@link Segment}.
@@ -95,11 +101,10 @@ function CueEmitter(peaks) {
   this._peaks = peaks;
   this._previousTime = -1;
   this._updateCues = this._updateCues.bind(this);
-  // Event handlers:
-  this._onPlaying = this.onPlaying.bind(this);
-  this._onSeeked = this.onSeeked.bind(this);
-  this._onTimeUpdate = this.onTimeUpdate.bind(this);
-  this._onAnimationFrame = this.onAnimationFrame.bind(this);
+  this._onPlaying = this._onPlaying.bind(this);
+  this._onSeeked = this._onSeeked.bind(this);
+  this._onTimeUpdate = this._onTimeUpdate.bind(this);
+  this._onAnimationFrame = this._onAnimationFrame.bind(this);
   this._rAFHandle = null;
   this._activeSegments = {};
   this._attachEventHandlers();
@@ -162,7 +167,8 @@ CueEmitter.prototype._onUpdate = function(time, previousTime) {
     step = -1;
   }
 
-  // Cues are sorted
+  // Cues are sorted.
+
   for (let i = start; isForward ? i < end : i > end; i += step) {
     const cue = this._cues[i];
 
@@ -171,7 +177,7 @@ CueEmitter.prototype._onUpdate = function(time, previousTime) {
         break;
       }
 
-      // Cue falls between time and previousTime
+      // Cue falls between time and previousTime.
 
       const marker = getPointOrSegment(this._peaks, cue);
 
@@ -185,16 +191,22 @@ CueEmitter.prototype._onUpdate = function(time, previousTime) {
         delete this._activeSegments[marker.id];
       }
 
-      this._peaks.emit(eventNames[eventType], marker);
+      const event = {
+        time: time
+      };
+
+      event[eventAttributes[eventType]] = marker;
+
+      this._peaks.emit(eventNames[eventType], event);
     }
   }
 };
 
-// the next handler and onAnimationFrame are bound together
+// The next handler and onAnimationFrame are bound together
 // when the window isn't in focus, rAF is throttled
-// falling back to timeUpdate
+// falling back to timeUpdate.
 
-CueEmitter.prototype.onTimeUpdate = function(time) {
+CueEmitter.prototype._onTimeUpdate = function(time) {
   if (windowIsVisible()) {
     return;
   }
@@ -206,7 +218,7 @@ CueEmitter.prototype.onTimeUpdate = function(time) {
   this._previousTime = time;
 };
 
-CueEmitter.prototype.onAnimationFrame = function() {
+CueEmitter.prototype._onAnimationFrame = function() {
   const time = this._peaks.player.getCurrentTime();
 
   if (!this._peaks.player.isSeeking()) {
@@ -220,12 +232,12 @@ CueEmitter.prototype.onAnimationFrame = function() {
   }
 };
 
-CueEmitter.prototype.onPlaying = function() {
+CueEmitter.prototype._onPlaying = function() {
   this._previousTime = this._peaks.player.getCurrentTime();
   this._rAFHandle = requestAnimationFrame(this._onAnimationFrame);
 };
 
-CueEmitter.prototype.onSeeked = function(time) {
+CueEmitter.prototype._onSeeked = function(time) {
   this._previousTime = time;
 
   this._updateActiveSegments(time);
@@ -255,7 +267,11 @@ CueEmitter.prototype._updateActiveSegments = function(time) {
       const segment = activeSegments.find(getSegmentIdComparator(id));
 
       if (!segment) {
-        self._peaks.emit('segments.exit', self._activeSegments[id]);
+        self._peaks.emit('segments.exit', {
+          segment: self._activeSegments[id],
+          time: time
+        });
+
         delete self._activeSegments[id];
       }
     }
@@ -266,7 +282,11 @@ CueEmitter.prototype._updateActiveSegments = function(time) {
   activeSegments.forEach(function(segment) {
     if (!(segment.id in self._activeSegments)) {
       self._activeSegments[segment.id] = segment;
-      self._peaks.emit('segments.enter', segment);
+
+      self._peaks.emit('segments.enter', {
+        segment: segment,
+        time: time
+      });
     }
   });
 };

@@ -360,6 +360,14 @@ declare module 'peaks.js' {
     evt: PointerEvent;
   }
 
+  interface PointsAddEvent {
+    points: Point[];
+  }
+
+  interface PointsRemoveEvent {
+    points: Point[];
+  }
+
   interface PointClickEvent {
     point: Point;
     evt: MouseEvent;
@@ -375,6 +383,11 @@ declare module 'peaks.js' {
     point: Point;
     evt: PointerEvent;
     preventViewEvent: () => void;
+  }
+
+  interface PointCueEvent {
+    point: Point;
+    time: number;
   }
 
   interface SegmentClickEvent {
@@ -401,9 +414,27 @@ declare module 'peaks.js' {
     evt: MouseEvent;
   }
 
+  interface SegmentsAddEvent {
+    segments: Segment[];
+  }
+
+  interface SegmentsRemoveEvent {
+    segments: Segment[];
+  }
+
+  interface SegmentCueEvent {
+    segment: Segment;
+    time: number;
+  }
+
+  interface ZoomChangeEvent {
+    currentZoom: number;
+    previousZoom: number;
+  }
+
   interface InstanceEvents {
     'peaks.ready': () => void;
-    'points.add': (points: Point[]) => void;
+    'points.add': (event: PointsAddEvent) => void;
     'points.click': (event: PointClickEvent) => void;
     'points.dblclick': (event: PointClickEvent) => void;
     'points.contextmenu': (event: PointPointerEvent) => void;
@@ -413,14 +444,14 @@ declare module 'peaks.js' {
     'points.mouseenter': (event: PointMouseEvent) => void;
     'points.mouseleave': (event: PointMouseEvent) => void;
     'points.remove_all': () => void;
-    'points.remove': (points: Point[]) => void;
-    'points.enter': (point: Point) => void;
-    'segments.add': (segments: Segment[]) => void;
+    'points.remove': (event: PointsRemoveEvent) => void;
+    'points.enter': (event: PointCueEvent) => void;
+    'segments.add': (event: SegmentsAddEvent) => void;
     'segments.dragstart': (event: SegmentDragEvent) => void;
     'segments.dragged': (event: SegmentDragEvent) => void;
     'segments.dragend': (event: SegmentDragEvent) => void;
     'segments.remove_all': () => void;
-    'segments.remove': (segments: Segment[]) => void;
+    'segments.remove': (event: SegmentsRemoveEvent) => void;
     'segments.mouseenter': (event: SegmentMouseEvent) => void;
     'segments.mouseleave': (event: SegmentMouseEvent) => void;
     'segments.mousedown': (event: SegmentMouseEvent) => void;
@@ -428,15 +459,15 @@ declare module 'peaks.js' {
     'segments.click': (event: SegmentClickEvent) => void;
     'segments.dblclick': (event: SegmentClickEvent) => void;
     'segments.contextmenu': (event: SegmentPointerEvent) => void;
-    'segments.enter': (segment: Segment) => void;
-    'segments.exit': (segment: Segment) => void;
+    'segments.enter': (event: SegmentCueEvent) => void;
+    'segments.exit': (event: SegmentCueEvent) => void;
     'overview.click': (event: WaveformViewMouseEvent) => void;
     'zoomview.click': (event: WaveformViewMouseEvent) => void;
     'overview.dblclick': (event: WaveformViewMouseEvent) => void;
     'zoomview.dblclick': (event: WaveformViewMouseEvent) => void;
     'overview.contextmenu': (event: WaveformViewPointerEvent) => void;
     'zoomview.contextmenu': (event: WaveformViewPointerEvent) => void;
-    'zoom.update': (currentZoomLevel: number, previousZoomLevel: number) => void;
+    'zoom.update': (event: ZoomChangeEvent) => void;
   }
 
   interface PlayerEvents {

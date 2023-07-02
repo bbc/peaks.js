@@ -366,16 +366,16 @@
             id: 'testpoint'
           });
 
-          peaksInstance.on('points.enter', function(point) {
-            console.log('points.enter', point, peaksInstance.player.getCurrentTime())
+          peaksInstance.on('points.enter', function(event) {
+            console.log('points.enter', event);
           });
 
-          peaksInstance.on('segments.enter', function(segment) {
-            console.log('segments.enter', segment,peaksInstance.player.getCurrentTime())
+          peaksInstance.on('segments.enter', function(event) {
+            console.log('segments.enter', event);
           });
 
           peaksInstance.on('segments.exit', function(segment) {
-            console.log('segments.exit', segment, peaksInstance.player.getCurrentTime())
+            console.log('segments.exit', event);
           });
         });
       })(peaks);

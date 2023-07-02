@@ -4,7 +4,11 @@ This document describes any breaking changes in the Peaks.js API and provides ad
 
 ## Peaks.js v3.0.0
 
-Peaks.js v3.0.0 adds a number of new customization options for segments. These have been moved under a new `segmentOptions` object in the call to `Peaks.init()`.
+Peaks.js v3.0.0 introduces a number of changes, described in the following sections.
+
+### `Peaks.init()` configuration options
+
+The segment customization options have been moved under a new `segmentOptions` object in the call to `Peaks.init()`, and some options have been renamed:
 
 ```js
 // Before
@@ -72,9 +76,13 @@ Peaks.init({
 });
 ```
 
+### `randomizeSegmentColor`
+
 The `randomizeSegmentColor` option has been removed. This option was `true` by default in earlier versions. Instead of using this option, set the `color` attribute when calling [`segments.add()`](https://github.com/bbc/peaks.js#instancesegmentsaddsegment).
 
-Finally, the [custom Marker API](customizing.md#marker-api) has changed. In earlier versions, updating a point or segment's attributes would cause the corresponding marker to be destroyed and then constructed again. There is now a new `update()` method, which you should use to update a custom point or segment marker when any of its attributes have been updated. The `timeUpdated()` method has been removed, as the `update()` method provides the same functionality.
+### Custom marker API
+
+The [Marker API](customizing.md#marker-api) for creating custom point and segment markers has changed. In earlier versions, updating a point or segment's attributes would cause the corresponding marker to be destroyed and then constructed again. Markers are no longer re-created on update. There is now a new `update()` method, which you should use to update a custom point or segment marker when any of its attributes have been updated. The `timeUpdated()` method has been removed, as the `update()` method provides the same functionality.
 
 ```js
 // Before
@@ -146,6 +154,84 @@ class CustomSegmentMarker {
     }
   }
 }
+```
+
+### `points.add`, `points.remove`, `segments.add`, and `segments.remove` events
+
+These events now receive an `event` object:
+
+Before:
+
+```javascript
+peaks.on('points.add', function(points) {
+  points.forEach(function(point) {
+    console.log(point);
+  });
+});
+
+peaks.on('segments.remove', function(segments) {
+  segments.forEach(function(segment) {
+    console.log(segment);
+  });
+});
+```
+
+After:
+
+```javascript
+peaks.on('points.add', function(event) {
+  event.points.forEach(function(point) {
+    console.log(point);
+  });
+});
+
+peaks.on('segments.remove', function(event) {
+  event.segments.forEach(function(segment) {
+    console.log(segment);
+  });
+});
+```
+
+### `points.enter`, `segments.enter`, and `segments.exit` events
+
+Cue events (`points.enter`, `segments.enter`, `segments.exit`) now receive an `event` object that contains the point or segment, together with `time`, the current playback position.
+
+Before:
+
+```javascript
+peaks.on('segments.enter', function(segment) {
+  console.log(segment);
+});
+```
+
+After:
+
+```javascript
+peaks.on('segments.enter', function(event) {
+  console.log(event.segment);
+  console.log(event.time);
+});
+```
+
+### `zoom.update` event
+
+The `zoom.update` event now receives an `event` object:
+
+Before:
+
+```javascript
+peaks.on('zoom.update', function(currentZoom, previousZoom) {
+  console.log(currentZoom, previousZoom);
+});
+```
+
+After:
+
+```javascript
+peaks.on('zoom.update', function(event) {
+  console.log(event.currentZoom);
+  console.log(event.previousZoom);
+});
 ```
 
 ## Peaks.js v2.0.0

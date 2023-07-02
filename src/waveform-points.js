@@ -157,7 +157,9 @@ WaveformPoints.prototype.add = function(/* pointOrPoints */) {
     self._addPoint(point);
   });
 
-  this._peaks.emit('points.add', points);
+  this._peaks.emit('points.add', {
+    points: points
+  });
 
   return arrayArgs ? points : points[0];
 };
@@ -225,7 +227,9 @@ WaveformPoints.prototype._removePoints = function(predicate) {
 
   const removed = this._removeIndexes(indexes);
 
-  this._peaks.emit('points.remove', removed);
+  this._peaks.emit('points.remove', {
+    points: removed
+  });
 
   return removed;
 };
