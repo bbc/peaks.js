@@ -625,12 +625,24 @@ SegmentShape.prototype._onSegmentDragEnd = function(event) {
 };
 
 SegmentShape.prototype.moveMarkersToTop = function() {
+  if (this._startMarker) {
+    this._startMarker.moveToTop();
+  }
+
   if (this._endMarker) {
     this._endMarker.moveToTop();
   }
+};
 
-  if (this._startMarker) {
-    this._startMarker.moveToTop();
+SegmentShape.prototype.startDrag = function() {
+  if (this._endMarker) {
+    this._endMarker.startDrag();
+  }
+};
+
+SegmentShape.prototype.stopDrag = function() {
+  if (this._endMarker) {
+    this._endMarker.stopDrag();
   }
 };
 

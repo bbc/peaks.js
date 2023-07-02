@@ -68,6 +68,10 @@ SegmentsLayer.prototype.enableSegmentDragging = function(enable) {
   }
 };
 
+SegmentsLayer.prototype.getSegmentShape = function(segmentId) {
+  return this._segmentShapes[segmentId];
+};
+
 SegmentsLayer.prototype.formatTime = function(time) {
   return this._view.formatTime(time);
 };

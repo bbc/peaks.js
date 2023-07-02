@@ -85,6 +85,11 @@
         <div>
           <input type="checkbox" id="enable-seek" checked>
           <label for="enable-seek">Enable click to seek</label>
+          <label for="waveform-drag-mode">Waveform drag mode:</label>
+          <select id="waveform-drag-mode">
+            <option value="scroll">Scroll</option>
+            <option value="insert-segment">Insert segment</option>
+          </select>
         </div>
         <div>
           <input type="checkbox" id="enable-segment-dragging">
@@ -378,6 +383,12 @@
 
             zoomview.enableSeek(event.target.checked);
             overview.enableSeek(event.target.checked);
+          });
+
+          document.getElementById('waveform-drag-mode').addEventListener('change', function(event) {
+            var view = peaksInstance.views.getView('zoomview');
+
+            view.setWaveformDragMode(event.target.value);
           });
 
           document.getElementById('enable-segment-dragging').addEventListener('change', function(event) {

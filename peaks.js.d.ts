@@ -499,6 +499,7 @@ declare module 'peaks.js' {
     setStartTime: (time: number) => void;
     setWheelMode: (mode: 'scroll' | 'none', options?: SetWheelModeOptions) => void;
     setZoom: (options: XOR<{ scale: number | 'auto' }, { seconds: number | 'auto' }>) => void;
+    setWaveformDragMode: (mode: 'scroll' | 'insert-segment') => void;
     enableSegmentDragging: (enable: boolean) => void;
     setSegmentDragMode: (mode: 'overlap' | 'no-overlap' | 'compress') => void;
     setMinSegmentDragWidth: (width: number) => void;

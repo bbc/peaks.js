@@ -37,6 +37,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [view.enableSegmentDragging()](#viewenablesegmentdraggingenable)
     - [view.setSegmentDragMode()](#viewsetsegmentdragmodemode)
     - [view.setMinSegmentDragWidth()](#viewsetminsegmentdragwidthwidth)
+    - [view.setWaveformDragMode()](#viewsetwaveformdragmodemode)
     - [view.fitToContainer()](#viewfittocontainer)
     - [view.setZoom()](#viewsetzoomoptions)
     - [view.setStartTime()](#viewsetstarttimetime)
@@ -919,6 +920,18 @@ This method applies to the zoomable waveform view only.
 ```js
 const view = instance.views.getView('zoomview');
 view.setMinSegmentDragWidth(50);
+```
+
+### `view.setWaveformDragMode(mode)`
+
+Controls the behaviour of mouse drag operations. Possible values for the `mode` parameter are:
+
+* `'scroll'` (default): Dragging scrolls the waveform
+* `'insert-segment'`: Dragging inserts a new segment
+
+```js
+const view = instance.views.getView('zoomview');
+view.setWaveformDragMode('insert-segment');
 ```
 
 ### `view.fitToContainer()`

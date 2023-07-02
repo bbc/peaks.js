@@ -130,4 +130,12 @@ SegmentMarker.prototype.destroy = function() {
   this._group.destroy();
 };
 
+SegmentMarker.prototype.startDrag = function() {
+  this._group.startDrag();
+};
+
+SegmentMarker.prototype.stopDrag = function() {
+  this._group.stopDrag();
+};
+
 export default SegmentMarker;
