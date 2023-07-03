@@ -311,6 +311,8 @@ There are also some example projects that show how to use Peaks.js with popular 
 
 Refer to the [API documentation](doc/API.md) for details of all the available configuration options and the API methods and events, and to [Customizing Peaks.js](doc/customizing.md) for more information on advanced customization options.
 
+If you're updating your code to use a new release of Peaks.js, please refer to the [Version Migration Guide](doc/migration-guide.md) for details of any breaking API changes.
+
 # Building Peaks.js
 
 This section describes how to build Peaks.js locally, if you want to modify the code or contribute changes.
