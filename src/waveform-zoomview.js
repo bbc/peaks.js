@@ -167,7 +167,18 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
 
   self._mouseDragHandler = new MouseDragHandler(self._stage, {
     onMouseDown: function(mousePosX, segment) {
+      this._segment = segment;
+
       if (self._waveformDragMode === 'insert-segment') {
+        if (this._segment) {
+          // The user has clicked within a segment. We want to prevent
+          // the segment from being dragged while the user inserts a new
+          // segment. So we temporarily make the segment non-draggable,
+          // and restore its draggable state in onMouseUp().
+          this._segmentIsDraggable = this._segment.draggable();
+          this._segment.draggable(false);
+        }
+
         const time = self.pixelsToTime(mousePosX + self._frameOffset);
 
         const segment = self._peaks.segments.add({
@@ -185,7 +196,6 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
       }
       else {
         this._seeking = false;
-        this._segment = segment;
 
         const playheadOffset = self._playheadLayer.getPlayheadOffset();
 
@@ -261,13 +271,13 @@ WaveformZoomView.prototype._createMouseDragHandler = function() {
             self._peaks.player.seek(time);
           }
         }
+      }
 
-        // If the user was dragging the playhead while the playhead is within
-        // a segment, restore the segment's original draggable state.
-        if (this._segment && this._seeking) {
-          if (this._segmentIsDraggable) {
-            this._segment.draggable(true);
-          }
+      // If the user was dragging the playhead while the playhead is within
+      // a segment, restore the segment's original draggable state.
+      if (this._segment && this._seeking) {
+        if (this._segmentIsDraggable) {
+          this._segment.draggable(true);
         }
       }
     },
