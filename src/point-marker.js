@@ -117,6 +117,10 @@ PointMarker.prototype.getAbsolutePosition = function() {
 };
 
 PointMarker.prototype.update = function(options) {
+  if (options.editable !== undefined) {
+    this._group.draggable(options.editable);
+  }
+
   if (this._marker.update) {
     this._marker.update(options);
   }

@@ -203,6 +203,7 @@ declare module 'peaks.js' {
 
   export interface PointMarkerUpdateOptions {
     time?: number;
+    editable?: boolean;
     color?: string;
     labelText?: string;
     [userAttributes: string]: unknown;
