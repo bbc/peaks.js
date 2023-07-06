@@ -59,7 +59,7 @@
     "prepack": "npm run build"
   },
   "devDependencies": {
-    "@babel/preset-env": "~7.21.5",
+    "@babel/preset-env": "~7.22.6",
     "@rollup/plugin-babel": "~5.3.1",
     "@rollup/plugin-commonjs": "~22.0.2",
     "@rollup/plugin-json": "~4.1.0",
@@ -68,9 +68,9 @@
     "babel-plugin-istanbul": "~6.1.1",
     "chai": "~4.3.7",
     "copyfiles": "~2.4.1",
-    "eslint": "~8.41.0",
+    "eslint": "~8.44.0",
     "jsdoc": "~4.0.2",
-    "karma": "~6.4.1",
+    "karma": "~6.4.2",
     "karma-chai-sinon": "~0.1.5",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
@@ -84,7 +84,7 @@
     "rollup": "~2.78.1",
     "rollup-plugin-peer-deps-external": "~2.2.4",
     "serve": "~14.2.0",
-    "sinon": "~15.1.0",
+    "sinon": "~15.2.0",
     "sinon-chai": "~3.7.0",
     "watchify": "~4.0.0"
   },
