@@ -7,13 +7,14 @@
  */
 
 import HighlightLayer from './highlight-layer';
-import MouseDragHandler from './mouse-drag-handler';
 import PlayheadLayer from './playhead-layer';
 import PointsLayer from './points-layer';
 import SegmentsLayer from './segments-layer';
 import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
-import { clamp, formatTime, getMarkerObject, isFinite, isNumber } from './utils';
+import SeekMouseDragHandler from './seek-mouse-drag-handler';
+import { formatTime, getMarkerObject, isFinite, isNumber } from './utils';
+
 import Konva from 'konva/lib/Core';
 
 /**
@@ -128,58 +129,25 @@ function WaveformOverview(waveformData, container, peaks) {
 
   const time = self._peaks.player.getCurrentTime();
 
-  this._playheadLayer.updatePlayheadTime(time);
+  self._playheadLayer.updatePlayheadTime(time);
 
-  self._createMouseDragHandler();
+  self._mouseDragHandler = new SeekMouseDragHandler(peaks, self);
 
-  self._onClick = self._onClick.bind(this);
-  self._onDblClick = self._onDblClick.bind(this);
-  self._onContextMenu = self._onContextMenu.bind(this);
+  self._onClick = self._onClick.bind(self);
+  self._onDblClick = self._onDblClick.bind(self);
+  self._onContextMenu = self._onContextMenu.bind(self);
 
   self._stage.on('click', self._onClick);
   self._stage.on('dblclick', self._onDblClick);
   self._stage.on('contextmenu', self._onContextMenu);
 }
 
-WaveformOverview.prototype._createMouseDragHandler = function() {
-  const self = this;
-
-  self._mouseDragHandler = new MouseDragHandler(self._stage, {
-    onMouseDown: function(mousePosX) {
-      this._seek(mousePosX);
-    },
-
-    onMouseMove: function(mousePosX) {
-      this._seek(mousePosX);
-    },
-
-    _seek: function(mousePosX) {
-      if (!self._enableSeek) {
-        return;
-      }
-
-      mousePosX = clamp(mousePosX, 0, self._width);
-
-      let time = self.pixelsToTime(mousePosX);
-      const duration = self._getDuration();
-
-      // Prevent the playhead position from jumping by limiting click
-      // handling to the waveform duration.
-      if (time > duration) {
-        time = duration;
-      }
-
-      // Update the playhead position. This gives a smoother visual update
-      // than if we only use the player.timeupdate event.
-      self._playheadLayer.updatePlayheadTime(time);
-
-      self._peaks.player.seek(time);
-    }
-  });
-};
-
 WaveformOverview.prototype.enableSeek = function(enable) {
   this._enableSeek = enable;
+};
+
+WaveformOverview.prototype.isSeekEnabled = function() {
+  return this._enableSeek;
 };
 
 WaveformOverview.prototype._onClick = function(event) {
@@ -630,6 +598,8 @@ WaveformOverview.prototype.destroy = function() {
   this._peaks.off('player.timeupdate', this._onTimeUpdate);
   this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
   this._peaks.off('window_resize', this._onWindowResize);
+
+  this._mouseDragHandler.destroy();
 
   this._playheadLayer.destroy();
 

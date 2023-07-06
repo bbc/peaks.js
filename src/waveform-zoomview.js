@@ -6,12 +6,13 @@
  * @module waveform-zoomview
  */
 
-import MouseDragHandler from './mouse-drag-handler';
 import PlayheadLayer from './playhead-layer';
 import PointsLayer from './points-layer';
 import SegmentsLayer from './segments-layer';
 import WaveformAxis from './waveform-axis';
 import WaveformShape from './waveform-shape';
+import InsertSegmentMouseDragHandler from './insert-segment-mouse-drag-handler';
+import ScrollMouseDragHandler from './scroll-mouse-drag-handler';
 import { clamp, formatTime, getMarkerObject, isFinite, isNumber, isValidTime,
   objectHasProperty } from './utils';
 
@@ -68,7 +69,6 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._enableSegmentDragging = false;
   self._segmentDragMode = 'overlap';
   self._minSegmentDragWidth = 0;
-  self._waveformDragMode = 'scroll';
   self._insertSegmentShape = null;
 
   if (self._viewOptions.formatPlayheadTime) {
@@ -139,15 +139,15 @@ function WaveformZoomView(waveformData, container, peaks) {
 
   self._syncPlayhead(time);
 
-  self._createMouseDragHandler();
+  self._mouseDragHandler = new ScrollMouseDragHandler(self._peaks, self);
 
   self._onWheel = self._onWheel.bind(self);
   self._onWheelCaptureVerticalScroll = self._onWheelCaptureVerticalScroll.bind(self);
   self.setWheelMode(self._viewOptions.wheelMode);
 
-  self._onClick = self._onClick.bind(this);
-  self._onDblClick = self._onDblClick.bind(this);
-  self._onContextMenu = self._onContextMenu.bind(this);
+  self._onClick = self._onClick.bind(self);
+  self._onDblClick = self._onDblClick.bind(self);
+  self._onContextMenu = self._onContextMenu.bind(self);
 
   self._stage.on('click', self._onClick);
   self._stage.on('dblclick', self._onDblClick);
@@ -162,149 +162,12 @@ WaveformZoomView.prototype._initWaveformCache = function() {
   }
 };
 
-WaveformZoomView.prototype._createMouseDragHandler = function() {
-  const self = this;
-
-  self._mouseDragHandler = new MouseDragHandler(self._stage, {
-    onMouseDown: function(mousePosX, segment) {
-      this._segment = segment;
-
-      if (self._waveformDragMode === 'insert-segment') {
-        if (this._segment) {
-          // The user has clicked within a segment. We want to prevent
-          // the segment from being dragged while the user inserts a new
-          // segment. So we temporarily make the segment non-draggable,
-          // and restore its draggable state in onMouseUp().
-          this._segmentIsDraggable = this._segment.draggable();
-          this._segment.draggable(false);
-        }
-
-        const time = self.pixelsToTime(mousePosX + self._frameOffset);
-
-        const segment = self._peaks.segments.add({
-          startTime: time,
-          endTime: time,
-          editable: true
-        });
-
-        self._insertSegmentShape = self._segmentsLayer.getSegmentShape(segment.id);
-
-        if (self._insertSegmentShape) {
-          self._insertSegmentShape.moveMarkersToTop();
-          self._insertSegmentShape.startDrag();
-        }
-      }
-      else {
-        this._seeking = false;
-
-        const playheadOffset = self._playheadLayer.getPlayheadOffset();
-
-        if (self._enableSeek &&
-            Math.abs(mousePosX - playheadOffset) <= self._playheadClickTolerance) {
-          this._seeking = true;
-
-          // The user has clicked near the playhead, and the playhead is within
-          // a segment. In this case we want to allow the playhead to move, but
-          // prevent the segment from being dragged. So we temporarily make the
-          // segment non-draggable, and restore its draggable state in onMouseUp().
-          if (this._segment) {
-            this._segmentIsDraggable = this._segment.draggable();
-            this._segment.draggable(false);
-          }
-        }
-
-        if (this._seeking) {
-          this._seek(mousePosX);
-        }
-        else {
-          this.initialFrameOffset = self._frameOffset;
-          this.mouseDownX = mousePosX;
-        }
-      }
-    },
-
-    onMouseMove: function(mousePosX) {
-      if (self._waveformDragMode === 'scroll') {
-        // Prevent scrolling the waveform if the user is dragging a segment.
-        if (this._segment && !this._seeking) {
-          return;
-        }
-
-        if (this._seeking) {
-          this._seek(mousePosX);
-        }
-        else {
-          // Moving the mouse to the left increases the time position of the
-          // left-hand edge of the visible waveform.
-          const diff = this.mouseDownX - mousePosX;
-          const newFrameOffset = this.initialFrameOffset + diff;
-
-          if (newFrameOffset !== this.initialFrameOffset) {
-            self.updateWaveform(newFrameOffset);
-          }
-        }
-      }
-    },
-
-    onMouseUp: function(/* mousePosX */) {
-      if (self._waveformDragMode === 'insert-segment') {
-        if (self._insertSegmentShape) {
-          self._insertSegmentShape.stopDrag();
-          self._insertSegmentShape = null;
-        }
-      }
-      else {
-        if (!this._seeking) {
-          // Set playhead position only on click release, when not dragging.
-          if (self._enableSeek && !self._mouseDragHandler.isDragging()) {
-            let time = self.pixelOffsetToTime(this.mouseDownX);
-            const duration = self._getDuration();
-
-            // Prevent the playhead position from jumping by limiting click
-            // handling to the waveform duration.
-            if (time > duration) {
-              time = duration;
-            }
-
-            self._playheadLayer.updatePlayheadTime(time);
-
-            self._peaks.player.seek(time);
-          }
-        }
-      }
-
-      // If the user was dragging the playhead while the playhead is within
-      // a segment, restore the segment's original draggable state.
-      if (this._segment && this._seeking) {
-        if (this._segmentIsDraggable) {
-          this._segment.draggable(true);
-        }
-      }
-    },
-
-    _seek: function(mousePosX) {
-      mousePosX = clamp(mousePosX, 0, self._width);
-
-      let time = self.pixelsToTime(mousePosX + self._frameOffset);
-      const duration = self._getDuration();
-
-      // Prevent the playhead position from jumping by limiting click
-      // handling to the waveform duration.
-      if (time > duration) {
-        time = duration;
-      }
-
-      // Update the playhead position. This gives a smoother visual update
-      // than if we only use the player.timeupdate event.
-      self._playheadLayer.updatePlayheadTime(time);
-
-      self._peaks.player.seek(time);
-    }
-  });
-};
-
 WaveformZoomView.prototype.enableSeek = function(enable) {
   this._enableSeek = enable;
+};
+
+WaveformZoomView.prototype.isSeekEnabled = function() {
+  return this._enableSeek;
 };
 
 WaveformZoomView.prototype._onClick = function(event) {
@@ -449,7 +312,16 @@ WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
 };
 
 WaveformZoomView.prototype.setWaveformDragMode = function(mode) {
-  this._waveformDragMode = mode;
+  if (this._viewOptions.enableSegments) {
+    this._mouseDragHandler.destroy();
+
+    if (mode === 'insert-segment') {
+      this._mouseDragHandler = new InsertSegmentMouseDragHandler(this._peaks, this);
+    }
+    else {
+      this._mouseDragHandler = new ScrollMouseDragHandler(this._peaks, this);
+    }
+  }
 };
 
 WaveformZoomView.prototype.enableSegmentDragging = function(enable) {
@@ -564,6 +436,21 @@ WaveformZoomView.prototype.setWaveformData = function(waveformData) {
   // Don't update the UI here, call setZoom().
 };
 
+/**
+ * Returns the position of the playhead marker, in pixels relative to the
+ * left hand side of the waveform view.
+ *
+ * @return {Number}
+ */
+
+WaveformZoomView.prototype.getPlayheadOffset = function() {
+  return this._playheadLayer.getPlayheadPixel() - this._frameOffset;
+};
+
+WaveformZoomView.prototype.getPlayheadClickTolerance = function() {
+  return this._playheadClickTolerance;
+};
+
 WaveformZoomView.prototype.playheadPosChanged = function(time) {
   if (this._playedWaveformShape) {
     this._playedSegment.endTime = time;
@@ -571,6 +458,10 @@ WaveformZoomView.prototype.playheadPosChanged = function(time) {
 
     this._drawWaveformLayer();
   }
+};
+
+WaveformZoomView.prototype.updatePlayheadTime = function(time) {
+  this._playheadLayer.updatePlayheadTime(time);
 };
 
 WaveformZoomView.prototype._syncPlayhead = function(time) {
@@ -665,7 +556,7 @@ WaveformZoomView.prototype.setZoom = function(options) {
 
   const currentTime = this._peaks.player.getCurrentTime();
   let apexTime;
-  let playheadOffsetPixels = this._playheadLayer.getPlayheadOffset();
+  let playheadOffsetPixels = this.getPlayheadOffset();
 
   if (playheadOffsetPixels >= 0 && playheadOffsetPixels < this._width) {
     // Playhead is visible. Change the zoom level while keeping the
@@ -1126,6 +1017,14 @@ WaveformZoomView.prototype.fitToContainer = function() {
   this._stage.draw();
 };
 
+WaveformZoomView.prototype.getStage = function() {
+  return this._stage;
+};
+
+WaveformZoomView.prototype.getSegmentsLayer = function() {
+  return this._segmentsLayer;
+};
+
 WaveformZoomView.prototype.getViewOptions = function() {
   return this._viewOptions;
 };
@@ -1145,6 +1044,8 @@ WaveformZoomView.prototype.destroy = function() {
   this._peaks.off('keyboard.right', this._onKeyboardRight);
   this._peaks.off('keyboard.shift_left', this._onKeyboardShiftLeft);
   this._peaks.off('keyboard.shift_right', this._onKeyboardShiftRight);
+
+  this._mouseDragHandler.destroy();
 
   this._playheadLayer.destroy();
 

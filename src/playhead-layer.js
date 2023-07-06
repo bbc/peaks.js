@@ -263,17 +263,6 @@ PlayheadLayer.prototype.stop = function(time) {
   this._syncPlayhead(time);
 };
 
-/**
- * Returns the position of the playhead marker, in pixels relative to the
- * left hand side of the waveform view.
- *
- * @return {Number}
- */
-
-PlayheadLayer.prototype.getPlayheadOffset = function() {
-  return this._playheadPixel - this._view.getFrameOffset();
-};
-
 PlayheadLayer.prototype.getPlayheadPixel = function() {
   return this._playheadPixel;
 };

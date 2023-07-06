@@ -183,4 +183,9 @@ MouseDragHandler.prototype.isDragging = function() {
   return this._dragging;
 };
 
+MouseDragHandler.prototype.destroy = function() {
+  this._stage.off('mousedown', this._mouseDown);
+  this._stage.off('touchstart', this._mouseDown);
+};
+
 export default MouseDragHandler;
