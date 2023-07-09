@@ -265,6 +265,7 @@ describe('Peaks.points', function() {
       'isVisible',
       'peaks',
       '_id',
+      '_pid',
       '_time',
       '_labelText',
       '_color',

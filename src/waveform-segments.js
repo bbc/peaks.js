@@ -28,6 +28,7 @@ import { extend, isNullOrUndefined, objectHasProperty } from './utils';
  *   Default: an empty string.
  * @property {String=} id A unique segment identifier.
  *   Default: an automatically generated identifier.
+ * @property {*} data Optional application specific data.
  */
 
 /**
@@ -44,7 +45,10 @@ function WaveformSegments(peaks) {
   this._peaks = peaks;
   this._segments = [];
   this._segmentsById = {};
+  this._segmentsByPid = {};
   this._segmentIdCounter = 0;
+  this._segmentPid = 0;
+  this._isInserting = false;
 }
 
 /**
@@ -59,6 +63,18 @@ WaveformSegments.prototype._getNextSegmentId = function() {
 };
 
 /**
+ * Returns a new unique segment id value, for internal use within
+ * Peaks.js only.
+ *
+ * @private
+ * @returns {Number}
+ */
+
+WaveformSegments.prototype._getNextPid = function() {
+  return this._segmentPid++;
+};
+
+/**
  * Adds a new segment object.
  *
  * @private
@@ -69,6 +85,7 @@ WaveformSegments.prototype._addSegment = function(segment) {
   this._segments.push(segment);
 
   this._segmentsById[segment.id] = segment;
+  this._segmentsByPid[segment.pid] = segment;
 };
 
 /**
@@ -88,13 +105,13 @@ WaveformSegments.prototype._createSegment = function(options) {
     segmentOptions.id = this._getNextSegmentId();
   }
 
+  const pid = this._getNextPid();
+
   setDefaultSegmentOptions(segmentOptions, this._peaks.options.segmentOptions);
 
   validateSegmentOptions(segmentOptions, false);
 
-  segmentOptions.peaks = this._peaks;
-
-  return new Segment(segmentOptions);
+  return new Segment(this._peaks, pid, segmentOptions);
 };
 
 /**
@@ -217,10 +234,23 @@ WaveformSegments.prototype.add = function(/* segmentOrSegments */) {
   });
 
   this._peaks.emit('segments.add', {
-    segments: segments
+    segments: segments,
+    insert: this._isInserting
   });
 
   return arrayArgs ? segments : segments[0];
+};
+
+WaveformSegments.prototype.updateSegmentId = function(segment, newSegmentId) {
+  if (this._segmentsById[segment.id]) {
+    if (this._segmentsById[newSegmentId]) {
+      throw new Error('segment.update(): duplicate id');
+    }
+    else {
+      delete this._segmentsById[segment.id];
+      this._segmentsById[newSegmentId] = segment;
+    }
+  }
 };
 
 /**
@@ -261,6 +291,7 @@ WaveformSegments.prototype._removeIndexes = function(indexes) {
     const itemRemoved = this._segments.splice(index, 1)[0];
 
     delete this._segmentsById[itemRemoved.id];
+    delete this._segmentsByPid[itemRemoved.pid];
 
     removed.push(itemRemoved);
   }
@@ -357,7 +388,16 @@ WaveformSegments.prototype.removeByTime = function(startTime, endTime) {
 WaveformSegments.prototype.removeAll = function() {
   this._segments = [];
   this._segmentsById = {};
+  this._segmentsByPid = {};
   this._peaks.emit('segments.remove_all');
+};
+
+WaveformSegments.prototype.setInserting = function(value) {
+  this._isInserting = value;
+};
+
+WaveformSegments.prototype.isInserting = function() {
+  return this._isInserting;
 };
 
 export default WaveformSegments;

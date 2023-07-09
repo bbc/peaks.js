@@ -58,7 +58,7 @@ describe('Point', function() {
       expect(emit).to.have.been.calledWith('points.update', point);
     });
 
-    it('should not allow invalid updates', function() {
+    it('should not allow the point time to be invalid', function() {
       p.points.add({
         time: 10,
         editable: true,
@@ -71,19 +71,10 @@ describe('Point', function() {
       expect(function() {
         point.update({ time: NaN });
       }).to.throw(TypeError);
-
-      expect(function() {
-        point.update({ time: -10 });
-      }).to.throw(RangeError);
-
-      expect(function() {
-        point.update({ labelText: undefined });
-      }).to.throw(TypeError);
     });
 
-    it('should not allow the id to be updated', function() {
+    it('should not allow the point time to be negative', function() {
       p.points.add({
-        id: 'point1',
         time: 10,
         editable: true,
         color: '#ff0000',
@@ -93,8 +84,53 @@ describe('Point', function() {
       const point = p.points.getPoints()[0];
 
       expect(function() {
-        point.update({ id: 'point2' });
-      }).to.throw(Error);
+        point.update({ time: -10 });
+      }).to.throw(RangeError);
+    });
+
+    it('should not allow labelText to be undefined', function() {
+      p.points.add({
+        time: 10,
+        editable: true,
+        color: '#ff0000',
+        labelText: 'A point'
+      });
+
+      const point = p.points.getPoints()[0];
+
+      expect(function() {
+        point.update({ labelText: undefined });
+      }).to.throw(TypeError);
+    });
+
+    it('should not allow id to be null', function() {
+      p.points.add({
+        time: 10,
+        editable: true,
+        color: '#ff0000',
+        labelText: 'A point'
+      });
+
+      const point = p.points.getPoints()[0];
+
+      expect(function() {
+        point.update({ id: null });
+      }).to.throw(TypeError);
+    });
+
+    it('should not allow id to be undefined', function() {
+      p.points.add({
+        time: 10,
+        editable: true,
+        color: '#ff0000',
+        labelText: 'A point'
+      });
+
+      const point = p.points.getPoints()[0];
+
+      expect(function() {
+        point.update({ id: undefined });
+      }).to.throw(TypeError);
     });
 
     it('should not update any attributes if invalid', function() {
@@ -126,10 +162,55 @@ describe('Point', function() {
       expect(emit.callCount).to.equal(0);
     });
 
+    it('should allow the point id to be updated', function() {
+      const point = p.points.add({
+        id: 'point1',
+        time: 10,
+        labelText: 'label text',
+        color: '#ff0000',
+        editable: true
+      });
+
+      expect(p.points.getPoint('point1')).to.be.ok;
+      expect(p.points.getPoint('point2')).to.equal(undefined);
+
+      point.update({
+        id: 'point2'
+      });
+
+      expect(p.points.getPoint('point1')).to.equal(undefined);
+      expect(p.points.getPoint('point2')).to.be.ok;
+    });
+
+    it('should not allow the point id to be updated to be a duplicate', function() {
+      const point = p.points.add({
+        id: 'point1',
+        time: 10,
+        labelText: 'label text',
+        color: '#ff0000',
+        editable: true
+      });
+
+      p.points.add({
+        id: 'point2',
+        time: 11,
+        labelText: 'label text',
+        color: '#ff0000',
+        editable: true
+      });
+
+      expect(function() {
+        point.update({
+          id: 'point2'
+        });
+      }).to.throw(Error);
+    });
+
     it('should allow a user data attribute to be created', function() {
       const peaks = { emit: function() {} };
-      const point = new Point({
-        peaks: peaks,
+      const pid = 0;
+
+      const point = new Point(peaks, pid, {
         id: 'point.1',
         time: 0.0,
         editable: false,
@@ -144,8 +225,9 @@ describe('Point', function() {
 
     it('should allow a user data attribute to be updated', function() {
       const peaks = { emit: function() {} };
-      const point = new Point({
-        peaks: peaks,
+      const pid = 0;
+
+      const point = new Point(peaks, pid, {
         id: 'point.1',
         time: 0.0,
         editable: false,
@@ -164,6 +246,7 @@ describe('Point', function() {
       'isVisible',
       'peaks',
       '_id',
+      '_pid',
       '_time',
       '_labelText',
       '_color',
@@ -172,8 +255,9 @@ describe('Point', function() {
       it('should not allow an invalid user data attribute name: ' + name, function() {
         expect(function() {
           const peaks = { emit: function() {} };
-          const point = new Point({
-            peaks: peaks,
+          const pid = 0;
+
+          const point = new Point(peaks, pid, {
             id: 'point.1',
             time: 0.0,
             editable: false,
@@ -193,8 +277,10 @@ describe('Point', function() {
 
   describe('isVisible', function() {
     it('should return false if point is before visible range', function() {
-      const point = new Point({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const point = new Point(peaks, pid, {
         id: 'point.1',
         labelText: '',
         editable: true,
@@ -205,8 +291,10 @@ describe('Point', function() {
     });
 
     it('should return false if point is after visible range', function() {
-      const point = new Point({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const point = new Point(peaks, pid, {
         id: 'point.1',
         labelText: '',
         editable: true,
@@ -217,8 +305,10 @@ describe('Point', function() {
     });
 
     it('should return true if point is within visible range', function() {
-      const point = new Point({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const point = new Point(peaks, pid, {
         id: 'point.1',
         labelText: '',
         editable: true,

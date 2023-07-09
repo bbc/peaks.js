@@ -329,6 +329,7 @@ describe('Peaks.segments', function() {
       'isVisible',
       'peaks',
       '_id',
+      '_pid',
       '_startTime',
       '_endTime',
       '_labelText',

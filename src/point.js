@@ -11,10 +11,12 @@ import {
   isValidTime, objectHasProperty
 } from './utils';
 
-const pointOptions = ['id', 'time', 'labelText', 'color', 'editable'];
+const pointOptions = [
+  'id', 'pid', 'time', 'labelText', 'color', 'editable'
+];
 
 const invalidOptions = [
-  'update', 'isVisible', 'peaks'
+  'update', 'isVisible', 'peaks', 'pid'
 ];
 
 function setDefaultPointOptions(options, peaksOptions) {
@@ -81,17 +83,13 @@ function validatePointOptions(options, updating) {
  * @alias Point
  *
  * @param {Peaks} peaks A reference to the Peaks instance.
- * @param {String} id A unique identifier for the point.
- * @param {Number} time Point time, in seconds.
- * @param {String} labelText Point label text.
- * @param {String} color Point marker color.
- * @param {Boolean} editable If <code>true</code> the segment start and
- *   end times can be adjusted via the user interface.
- * @param {*} data Optional application specific data.
+ * @param {Number} pid An internal unique identifier for the point.
+ * @param {PointOptions} options User specified point attributes.
  */
 
-function Point(options) {
-  this._peaks = options.peaks;
+function Point(peaks, pid, options) {
+  this._peaks = peaks;
+  this._pid = pid;
   this._setUserData(options);
 }
 
@@ -113,6 +111,12 @@ Object.defineProperties(Point.prototype, {
     enumerable: true,
     get: function() {
       return this._id;
+    }
+  },
+  pid: {
+    enumerable: true,
+    get: function() {
+      return this._pid;
     }
   },
   time: {
@@ -141,11 +145,15 @@ Object.defineProperties(Point.prototype, {
 });
 
 Point.prototype.update = function(options) {
-  if (objectHasProperty(options, 'id')) {
-    throw new Error('peaks.points.update(): id cannot be updated');
-  }
-
   validatePointOptions(options, true);
+
+  if (objectHasProperty(options, 'id')) {
+    if (isNullOrUndefined(options.id)) {
+      throw new TypeError('point.update(): invalid id');
+    }
+
+    this._peaks.points.updatePointId(this, options.id);
+  }
 
   this._setUserData(options);
 

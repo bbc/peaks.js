@@ -56,7 +56,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [instance.segments.removeById()](#instancesegmentsremovebyidsegmentid)
     - [instance.segments.removeAll()](#instancesegmentsremoveall)
   - [Segment API](#segment-api)
-    - [segment.update()](#segmentupdate-starttime-endtime-labeltext-color-editable--)
+    - [segment.update()](#segmentupdateoptions)
   - [Points API](#points-api)
     - [instance.points.add()](#instancepointsaddpoint)
     - [instance.points.getPoints()](#instancepointsgetpoints)
@@ -65,7 +65,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [instance.points.removeById()](#instancepointsremovebyidpointid)
     - [instance.points.removeAll()](#instancepointsremoveall)
   - [Point API](#point-api)
-    - [point.update()](#pointupdate-time-labeltext-color-editable--)
+    - [point.update()](#pointupdateoptions)
   - [Event Handling](#event-handling)
     - [instance.on()](#instanceonevent-callback)
     - [instance.once()](#instanceonceevent-callback)
@@ -106,6 +106,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [points.enter](#pointsenter)
   - [Segment Events](#segment-events)
     - [segments.add](#segmentsadd)
+    - [segments.insert](#segmentsinsert)
     - [segments.remove](#segmentsremove)
     - [segments.remove_all](#segmentsremove_all)
     - [segments.dragstart](#segmentsdragstart)
@@ -1215,12 +1216,13 @@ instance.segments.removeAll();
 
 A **segment**'s properties can be updated programatically.
 
-### `segment.update({ startTime, endTime, labelText, color, editable[, ...] })`
+### `segment.update(options)`
 
 Updates an existing segment. Accepts a single `options` parameter, with the following keys:
 
+* `id`: (optoinal) the segment identifer
 * `startTime`: (optional) the segment start time (seconds, defaults to current value)
-* `endTime`: (optional)  the segment end time (seconds, defaults to current value)
+* `endTime`: (optional) the segment end time (seconds, defaults to current value)
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to current value)
 * `color`: (optional) the segment color (defaults to current value)
 * `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the segment (defaults to current value)
@@ -1333,10 +1335,11 @@ instance.points.removeAll();
 
 A **point**'s properties can be updated programatically.
 
-### `point.update({ time, labelText, color, editable[, ...] })`
+### `point.update(options)`
 
 Updates an existing point. Accepts a single `options` parameter with the following keys:
 
+* `id`: (optional) the point identifier
 * `time`: (optional) the point's time (seconds, defaults to current value)
 * `editable`: (optional) sets whether the point is user editable (boolean, defaults to current value)
 * `color`: (optional) the point color (defaults to current value)
@@ -1814,18 +1817,37 @@ instance.on('points.enter', function(event) {
 
 ### `segments.add`
 
-This event is emitted one or more segments are added, by calling [`instance.segments.add()`](#instancesegmentsaddsegment).
+This event is emitted one or more segments are added, by calling [`instance.segments.add()`](#instancesegmentsaddsegment), or when the user starts dragging on the waveform view (see [view.setWaveformDragMode()](#viewsetwaveformdragmodemode)).
 
 The `event` parameter contains:
 
 * `segments`: An array of the [Segment](#segment-api) objects added
-
+* `insert`: A flag which is `true` if the segment was added by the user dragging on the waveform view.
 
 ```js
 instance.on('segments.add', function(event) {
+  if (event.insert) {
+    const segment = event.segments[0];
+    segment.update({ id: 'my-segment-id' });
+  }
+
   event.segments.forEach(function(segment)) {
     console.log(`Added segment: ${segment.id}`);
   });
+});
+```
+
+### `segments.insert`
+
+This event is emitted after the user inserts a segment by dragging on the waveform view (see [view.setWaveformDragMode()](#viewsetwaveformdragmodemode)).
+
+The `event` parameter contains:
+
+* `segment`: The [Segment](#segment-api) object that was added
+
+```js
+instance.on('segments.insert', function(event) {
+  event.segment.update({ id: 'my-segment-id' });
 });
 ```
 

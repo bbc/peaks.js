@@ -64,7 +64,17 @@ describe('Segment', function() {
       expect(emit).to.have.been.calledWith('segments.update', segment);
     });
 
-    it('should not allow invalid updates', function() {
+    it('should not allow startTime to be greater than endTime', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
+
+      const segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({ startTime: 8, endTime: 3 });
+      }).to.throw(RangeError);
+    });
+
+    it('should not allow startTime to be invalid', function() {
       p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
 
       const segment = p.segments.getSegments()[0];
@@ -72,31 +82,36 @@ describe('Segment', function() {
       expect(function() {
         segment.update({ startTime: NaN });
       }).to.throw(TypeError);
-
-      expect(function() {
-        segment.update({ endTime: NaN });
-      }).to.throw(TypeError);
-
-      expect(function() {
-        segment.update({ startTime: 8, endTime: 3 });
-      }).to.throw(RangeError);
     });
 
-    it('should not allow the id to be updated', function() {
-      p.segments.add({
-        id: 'segment1',
-        startTime: 10,
-        endTime: 20,
-        editable: true,
-        color: '#ff0000',
-        labelText: 'A point'
-      });
+    it('should not allow endTime to be invalid', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
 
       const segment = p.segments.getSegments()[0];
 
       expect(function() {
-        segment.update({ id: 'segment2' });
-      }).to.throw(Error);
+        segment.update({ endTime: NaN });
+      }).to.throw(TypeError);
+    });
+
+    it('should not allow id to be null', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
+
+      const segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({ id: null });
+      }).to.throw(TypeError);
+    });
+
+    it('should not allow id to be undefined', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
+
+      const segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({ id: undefined });
+      }).to.throw(TypeError);
     });
 
     it('should not update any attributes if invalid', function() {
@@ -134,10 +149,61 @@ describe('Segment', function() {
       expect(emit.callCount).to.equal(0);
     });
 
+    it('should allow the segment id to be updated', function() {
+      const segment = p.segments.add({
+        id: 'segment1',
+        startTime: 0,
+        endTime: 10,
+        labelText: 'label text',
+        color: '#ff0000',
+        borderColor: '#00ff00',
+        editable: true
+      });
+
+      expect(p.segments.getSegment('segment1')).to.be.ok;
+      expect(p.segments.getSegment('segment2')).to.equal(undefined);
+
+      segment.update({
+        id: 'segment2'
+      });
+
+      expect(p.segments.getSegment('segment1')).to.equal(undefined);
+      expect(p.segments.getSegment('segment2')).to.be.ok;
+    });
+
+    it('should not allow the segment id to be updated to be a duplicate', function() {
+      const segment = p.segments.add({
+        id: 'segment1',
+        startTime: 0,
+        endTime: 10,
+        labelText: 'label text',
+        color: '#ff0000',
+        borderColor: '#00ff00',
+        editable: true
+      });
+
+      p.segments.add({
+        id: 'segment2',
+        startTime: 10,
+        endTime: 20,
+        labelText: 'label text',
+        color: '#ff0000',
+        borderColor: '#00ff00',
+        editable: true
+      });
+
+      expect(function() {
+        segment.update({
+          id: 'segment2'
+        });
+      }).to.throw(Error);
+    });
+
     it('should allow a user data attribute to be created', function() {
       const peaks = { emit: function() {} };
-      const segment = new Segment({
-        peaks: peaks,
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         startTime: 0.0,
         endTime: 10.0,
@@ -152,8 +218,9 @@ describe('Segment', function() {
 
     it('should allow a user data attribute to be updated', function() {
       const peaks = { emit: function() {} };
-      const segment = new Segment({
-        peaks: peaks,
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         startTime: 0.0,
         endTime: 10.0,
@@ -171,7 +238,9 @@ describe('Segment', function() {
       'update',
       'isVisible',
       'peaks',
+      'pid',
       '_id',
+      '_pid',
       '_startTime',
       '_endTime',
       '_labelText',
@@ -182,8 +251,9 @@ describe('Segment', function() {
       it('should not allow an invalid user data attribute name: ' + name, function() {
         expect(function() {
           const peaks = { emit: function() {} };
-          const segment = new Segment({
-            peaks: peaks,
+          const pid = 0;
+
+          const segment = new Segment(peaks, pid, {
             id: 'segment.1',
             startTime: 0.0,
             endTime: 10.0,
@@ -203,8 +273,10 @@ describe('Segment', function() {
 
   describe('isVisible', function() {
     it('should return false if segment is before visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -216,8 +288,10 @@ describe('Segment', function() {
     });
 
     it('should return false if segment is after visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -229,8 +303,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment is within visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -242,8 +318,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts before and ends within visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -255,8 +333,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts before and ends at end of visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -268,8 +348,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts after and ends after visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -281,8 +363,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment starts after and ends at the end of visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -294,8 +378,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment is same as visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,
@@ -307,8 +393,10 @@ describe('Segment', function() {
     });
 
     it('should return true if segment contains visible range', function() {
-      const segment = new Segment({
-        peaks: null,
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
         id: 'segment.1',
         labelText: '',
         editable: true,

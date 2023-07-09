@@ -12,11 +12,11 @@ import {
 } from './utils';
 
 const segmentOptions = [
-  'id', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
+  'id', 'pid', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
 ];
 
 const invalidOptions = [
-  'update', 'isVisible', 'peaks'
+  'update', 'isVisible', 'peaks', 'pid'
 ];
 
 function setDefaultSegmentOptions(options, globalSegmentOptions) {
@@ -116,19 +116,13 @@ function validateSegmentOptions(options, updating) {
  * @alias Segment
  *
  * @param {Peaks} peaks A reference to the Peaks instance.
- * @param {String} id A unique identifier for the segment.
- * @param {Number} startTime Segment start time, in seconds.
- * @param {Number} endTime Segment end time, in seconds.
- * @param {String} labelText Segment label text.
- * @param {String | LinearGradientColor} color Segment color.
- * @param {String} borderColor Segment border color.
- * @param {Boolean} editable If <code>true</code> the segment start and
- *   end times can be adjusted via the user interface.
- * @param {*} data Optional application specific data.
+ * @param {Number} pid An internal unique identifier for the segment.
+ * @param {SegmentOptions} options User specified segment attributes.
  */
 
-function Segment(options) {
-  this._peaks       = options.peaks;
+function Segment(peaks, pid, options) {
+  this._peaks       = peaks;
+  this._pid         = pid;
   this._id          = options.id;
   this._startTime   = options.startTime;
   this._endTime     = options.endTime;
@@ -158,6 +152,12 @@ Object.defineProperties(Segment.prototype, {
     enumerable: true,
     get: function() {
       return this._id;
+    }
+  },
+  pid: {
+    enumerable: true,
+    get: function() {
+      return this._pid;
     }
   },
   startTime: {
@@ -199,11 +199,15 @@ Object.defineProperties(Segment.prototype, {
 });
 
 Segment.prototype.update = function(options) {
-  if (objectHasProperty(options, 'id')) {
-    throw new Error('peaks.segments.update(): id cannot be updated');
-  }
-
   validateSegmentOptions(options, true);
+
+  if (objectHasProperty(options, 'id')) {
+    if (isNullOrUndefined(options.id)) {
+      throw new TypeError('segment.update(): invalid id');
+    }
+
+    this._peaks.segments.updateSegmentId(this, options.id);
+  }
 
   this._setUserData(options);
 

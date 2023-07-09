@@ -882,4 +882,145 @@ describe('WaveformZoomView', function() {
       });
     });
   });
+
+  describe('setWaveformDragMode', function() {
+    describe('insert-segment', function() {
+      beforeEach(function(done) {
+        zoomview.enableSegmentDragging(true);
+        zoomview.setWaveformDragMode('insert-segment');
+        setTimeout(done, 50);
+      });
+
+      context('when dragging the waveform to the right', function() {
+        it('should insert a new segment', function() {
+          const clickX = 430;
+          const distance = 172;
+
+          const segments = p.segments.getSegments();
+          expect(segments.length).to.equal(4);
+
+          inputController.mouseDown({ x: clickX, y: 50 });
+          inputController.mouseMove({ x: clickX + distance, y: 50 });
+          inputController.mouseUp({ x: clickX + distance, y: 50 });
+
+          const view = p.views.getView('zoomview');
+
+          expect(segments.length).to.equal(5);
+
+          const segment = p.segments.getSegment('peaks.segment.0');
+
+          expect(segment.startTime).to.equal(view.pixelsToTime(430));
+          expect(segment.endTime).to.equal(view.pixelsToTime(430 + 172));
+        });
+
+        it('should emit a segments.add event when the segment is added', function(done) {
+          const clickX = 430;
+          const distance = 172;
+
+          const segments = p.segments.getSegments();
+          expect(segments.length).to.equal(4);
+
+          p.on('segments.add', function(event) {
+            const view = p.views.getView('zoomview');
+
+            expect(event.insert).to.equal(true);
+            expect(event.segments[0]).to.be.an.instanceOf(Segment);
+            expect(event.segments[0].startTime).to.equal(view.pixelsToTime(430));
+            expect(event.segments[0].endTime).to.equal(view.pixelsToTime(430));
+            done();
+          });
+
+          inputController.mouseDown({ x: clickX, y: 50 });
+          inputController.mouseMove({ x: clickX + distance, y: 50 });
+          inputController.mouseUp({ x: clickX + distance, y: 50 });
+        });
+
+        it('should emit a segments.insert event when the drag operation ends', function(done) {
+          const clickX = 430;
+          const distance = 172;
+
+          const segments = p.segments.getSegments();
+          expect(segments.length).to.equal(4);
+
+          p.on('segments.insert', function(event) {
+            const view = p.views.getView('zoomview');
+
+            expect(event.segment).to.be.an.instanceOf(Segment);
+            expect(event.segment.startTime).to.equal(view.pixelsToTime(430));
+            expect(event.segment.endTime).to.equal(view.pixelsToTime(430 + 172));
+            done();
+          });
+
+          inputController.mouseDown({ x: clickX, y: 50 });
+          inputController.mouseMove({ x: clickX + distance, y: 50 });
+          inputController.mouseUp({ x: clickX + distance, y: 50 });
+        });
+      });
+
+      context('when dragging the waveform over an existing segment', function() {
+        it('should insert a new segment', function() {
+          const clickX = 129; // Click within segment1
+          const distance = 172;
+
+          const segments = p.segments.getSegments();
+          expect(segments.length).to.equal(4);
+
+          inputController.mouseDown({ x: clickX, y: 50 });
+          inputController.mouseMove({ x: clickX + distance, y: 50 });
+          inputController.mouseUp({ x: clickX + distance, y: 50 });
+
+          const view = p.views.getView('zoomview');
+
+          expect(segments.length).to.equal(5);
+
+          const segment = p.segments.getSegment('peaks.segment.0');
+
+          expect(segment.startTime).to.equal(view.pixelsToTime(129));
+          expect(segment.endTime).to.equal(view.pixelsToTime(129 + 172));
+        });
+
+        it('should not move the existing segment', function() {
+          const clickX = 129; // Click within segment1
+          const distance = 172;
+
+          const segments = p.segments.getSegments();
+          expect(segments.length).to.equal(4);
+
+          inputController.mouseDown({ x: clickX, y: 50 });
+          inputController.mouseMove({ x: clickX + distance, y: 50 });
+          inputController.mouseUp({ x: clickX + distance, y: 50 });
+
+          const view = p.views.getView('zoomview');
+
+          const segment = p.segments.getSegment('segment1');
+
+          expect(segment.startTime).to.equal(1.0);
+          expect(segment.endTime).to.equal(2.0);
+        });
+      });
+
+      context('when dragging the waveform from to the left', function() {
+        it('should insert a new segment with zero width', function() {
+          const clickX = 430;
+          const distance = -172;
+
+          const segments = p.segments.getSegments();
+          expect(segments.length).to.equal(4);
+
+          inputController.mouseDown({ x: clickX, y: 50 });
+          inputController.mouseMove({ x: clickX + distance, y: 50 });
+          inputController.mouseUp({ x: clickX + distance, y: 50 });
+
+          const view = p.views.getView('zoomview');
+
+          expect(segments.length).to.equal(5);
+
+          const segment = p.segments.getSegments()[4];
+
+          expect(segment.startTime).to.equal(view.pixelsToTime(clickX));
+          expect(segment.endTime).to.equal(segment.startTime);
+        });
+      });
+    });
+  });
 });

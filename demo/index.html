@@ -494,14 +494,17 @@
             }
           });
 
-          // Points mouse events
-
-          peaksInstance.on('points.mouseenter', function(point) {
-            console.log('points.mouseenter:', point);
+          // Point events
+          peaksInstance.on('points.add', function(event) {
+            console.log('points.add:', event);
           });
 
-          peaksInstance.on('points.mouseleave', function(point) {
-            console.log('points.mouseleave:', point);
+          peaksInstance.on('points.mouseenter', function(event) {
+            console.log('points.mouseenter:', event);
+          });
+
+          peaksInstance.on('points.mouseleave', function(event) {
+            console.log('points.mouseleave:', event);
           });
 
           peaksInstance.on('points.click', function(event) {
@@ -530,7 +533,19 @@
             console.log('points.dragend:', event);
           });
 
-          // Segments mouse events
+          // Segment events
+
+          peaksInstance.on('segments.add', function(event) {
+            console.log('segments.add:', event);
+          });
+
+          peaksInstance.on('segments.insert', function(event) {
+            console.log('segments.insert:', event);
+          });
+
+          peaksInstance.on('segments.update', function(event) {
+            console.log('segments.update:', event);
+          });
 
           peaksInstance.on('segments.dragstart', function(event) {
             console.log('segments.dragstart:', event);
@@ -574,6 +589,8 @@
             console.log('segments.contextmenu:', event);
           });
 
+          // Zoomview waveform events
+
           peaksInstance.on('zoomview.click', function(event) {
             console.log('zoomview.click:', event);
           });
@@ -588,6 +605,8 @@
             console.log('zoomview.contextmenu:', event);
           });
 
+          // Overview waveform events
+
           peaksInstance.on('overview.click', function(event) {
             console.log('overview.click:', event);
           });
@@ -601,6 +620,8 @@
 
             console.log('overview.contextmenu:', event);
           });
+
+          // Player events
 
           peaksInstance.on('player.seeked', function(time) {
             console.log('player.seeked:', time);
@@ -617,6 +638,8 @@
           peaksInstance.on('player.ended', function() {
             console.log('player.ended');
           });
+
+          // Zoom events
 
           peaksInstance.on('zoom.update', function(event) {
             console.log('zoom.update', event);

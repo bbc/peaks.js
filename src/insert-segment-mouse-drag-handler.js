@@ -52,13 +52,15 @@ InsertSegmentMouseDragHandler.prototype._onMouseDown = function(mousePosX, segme
 
   const time = this._view.pixelsToTime(mousePosX + this._view.getFrameOffset());
 
-  const insertSegment = this._peaks.segments.add({
+  this._peaks.segments.setInserting(true);
+
+  this._insertSegment = this._peaks.segments.add({
     startTime: time,
     endTime: time,
     editable: true
   });
 
-  this._insertSegmentShape = this._view._segmentsLayer.getSegmentShape(insertSegment.id);
+  this._insertSegmentShape = this._view._segmentsLayer.getSegmentShape(this._insertSegment);
 
   if (this._insertSegmentShape) {
     this._insertSegmentShape.moveMarkersToTop();
@@ -74,6 +76,12 @@ InsertSegmentMouseDragHandler.prototype._onMouseUp = function() {
     this._insertSegmentShape.stopDrag();
     this._insertSegmentShape = null;
   }
+
+  this._peaks.emit('segments.insert', {
+    segment: this._insertSegment
+  });
+
+  this._peaks.segments.setInserting(false);
 };
 
 InsertSegmentMouseDragHandler.prototype.destroy = function() {

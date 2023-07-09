@@ -62,7 +62,7 @@ describe('SegmentsLayer', function() {
 
       const segment = p.segments.add({ startTime: 0.0, endTime: 2.0, editable: true });
 
-      const segmentShape = zoomview._segmentsLayer._segmentShapes[segment.id];
+      const segmentShape = zoomview._segmentsLayer.getSegmentShape(segment);
       expect(segmentShape).to.be.ok;
 
       expect(segmentShape._startMarker.getX()).to.equal(0);
@@ -86,7 +86,7 @@ describe('SegmentsLayer', function() {
 
       const segment = p.segments.add({ startTime: 0.0, endTime: 2.0, editable: true });
 
-      const segmentShape = zoomview._segmentsLayer._segmentShapes[segment.id];
+      const segmentShape = zoomview._segmentsLayer.getSegmentShape(segment);
       expect(segmentShape).to.be.ok;
 
       expect(segmentShape._startMarker.getX()).to.equal(0);
@@ -110,7 +110,7 @@ describe('SegmentsLayer', function() {
 
       const segment = p.segments.add({ startTime: 0, endTime: 10, editable: true, id: 'segment1' });
 
-      const segmentShape = zoomview._segmentsLayer._segmentShapes[segment.id];
+      const segmentShape = zoomview._segmentsLayer.getSegmentShape(segment);
       expect(segmentShape).to.be.ok;
 
       const startMarkerUpdate = sinon.spy(segmentShape._startMarker, 'update');
@@ -133,7 +133,7 @@ describe('SegmentsLayer', function() {
 
       expect(createSegmentShape.callCount).to.equal(0);
 
-      const segmentShape = zoomview._segmentsLayer._segmentShapes[segment.id];
+      const segmentShape = zoomview._segmentsLayer.getSegmentShape(segment);
       expect(segmentShape).to.equal(undefined);
 
       segment.update({ startTime: 0, endTime: 10 });
@@ -150,7 +150,7 @@ describe('SegmentsLayer', function() {
 
       const segment = p.segments.add({ startTime: 0, endTime: 10, editable: true });
 
-      const segmentShape = zoomview._segmentsLayer._segmentShapes[segment.id];
+      const segmentShape = zoomview._segmentsLayer.getSegmentShape(segment);
       expect(segmentShape).to.be.ok;
 
       const startMarkerDestroy = sinon.spy(segmentShape._startMarker, 'destroy');

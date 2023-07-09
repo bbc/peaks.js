@@ -65,12 +65,12 @@ describe('PointsLayer', function() {
 
       const point = p.points.add({ time: 0, editable: true });
 
-      const zoomviewPointMarker = zoomview._pointsLayer._pointMarkers[point.id];
+      const zoomviewPointMarker = zoomview._pointsLayer.getPointMarker(point);
       expect(zoomviewPointMarker).to.be.ok;
 
       expect(zoomviewPointMarker.getX()).to.equal(0);
 
-      const overviewPointMarker = overview._pointsLayer._pointMarkers[point.id];
+      const overviewPointMarker = overview._pointsLayer.getPointMarker(point);
       expect(overviewPointMarker).to.be.ok;
 
       expect(overviewPointMarker.getX()).to.equal(0);
@@ -96,7 +96,7 @@ describe('PointsLayer', function() {
 
       const point = p.points.add({ time: 0, editable: true });
 
-      const pointMarker = zoomview._pointsLayer._pointMarkers[point.id];
+      const pointMarker = zoomview._pointsLayer.getPointMarker(point);
       expect(pointMarker).to.be.ok;
 
       const pointMarkerDestroy = sinon.spy(pointMarker, 'destroy');
@@ -116,7 +116,7 @@ describe('PointsLayer', function() {
 
       const point = p.points.add({ time: 0, editable: true });
 
-      const pointMarker = zoomview._pointsLayer._pointMarkers[point.id];
+      const pointMarker = zoomview._pointsLayer.getPointMarker(point);
       expect(pointMarker).to.be.ok;
 
       const pointMarkerUpdate = sinon.spy(pointMarker, 'update');
@@ -137,7 +137,7 @@ describe('PointsLayer', function() {
 
       expect(createPointMarker.callCount).to.equal(0);
 
-      const pointMarker = zoomview._pointsLayer._pointMarkers[point.id];
+      const pointMarker = zoomview._pointsLayer.getPointMarker(point);
       expect(pointMarker).to.equal(undefined);
 
       point.update({ time: 0, labelText: 'test' });
@@ -154,7 +154,7 @@ describe('PointsLayer', function() {
 
       const point = p.points.add({ time: 0, editable: true });
 
-      const pointMarker = zoomview._pointsLayer._pointMarkers[point.id];
+      const pointMarker = zoomview._pointsLayer.getPointMarker(point);
       expect(pointMarker).to.be.ok;
 
       const pointMarkerDestroy = sinon.spy(pointMarker, 'destroy');

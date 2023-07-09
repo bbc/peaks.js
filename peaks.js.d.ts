@@ -20,7 +20,7 @@ declare module 'peaks.js' {
 
   type WaveformColor = string | LinearGradientColor;
 
-  interface SegmentAddOptions {
+  interface SegmentOptions {
     startTime: number;
     endTime: number;
     editable?: boolean;
@@ -30,20 +30,11 @@ declare module 'peaks.js' {
     [userAttributes: string]: unknown;
   }
 
-  interface SegmentUpdateOptions {
-    startTime?: number;
-    endTime?: number;
-    editable?: boolean;
-    color?: WaveformColor;
-    labelText?: string;
-    [userAttributes: string]: unknown;
+  interface Segment extends SegmentOptions {
+    update: (options: SegmentOptions) => void;
   }
 
-  interface Segment extends SegmentAddOptions {
-    update: (options: SegmentUpdateOptions) => void;
-  }
-
-  interface PointAddOptions {
+  interface PointOptions {
     time: number;
     editable?: boolean;
     color?: string;
@@ -52,16 +43,8 @@ declare module 'peaks.js' {
     [userAttributes: string]: unknown;
   }
 
-  interface PointUpdateOptions {
-    time?: number;
-    editable?: boolean;
-    color?: string;
-    labelText?: string;
-    [userAttributes: string]: unknown;
-  }
-
-  interface Point extends PointAddOptions {
-    update: (options: PointUpdateOptions) => void;
+  interface Point extends PointOptions {
+    update: (options: PointOptions) => void;
   }
 
   type LabelHorizontalAlign = 'left' | 'center' | 'right';
@@ -219,6 +202,7 @@ declare module 'peaks.js' {
   export interface SegmentMarkerUpdateOptions {
     startTime?: number;
     endTime?: number;
+    editable?: boolean;
     color?: string;
     labelText?: string;
     [userAttributes: string]: unknown;
@@ -417,6 +401,11 @@ declare module 'peaks.js' {
 
   interface SegmentsAddEvent {
     segments: Segment[];
+    insert: boolean;
+  }
+
+  interface SegmentsInsertEvent {
+    segment: Segment;
   }
 
   interface SegmentsRemoveEvent {
@@ -448,6 +437,7 @@ declare module 'peaks.js' {
     'points.remove': (event: PointsRemoveEvent) => void;
     'points.enter': (event: PointCueEvent) => void;
     'segments.add': (event: SegmentsAddEvent) => void;
+    'segments.insert': (event: SegmentsInsertEvent) => void;
     'segments.dragstart': (event: SegmentDragEvent) => void;
     'segments.dragged': (event: SegmentDragEvent) => void;
     'segments.dragend': (event: SegmentDragEvent) => void;
@@ -569,8 +559,8 @@ declare module 'peaks.js' {
     };
     /** Segments API */
     segments: {
-      add(segment: SegmentAddOptions): Segment;
-      add(segments: SegmentAddOptions[]): Segment[];
+      add(segment: SegmentOptions): Segment;
+      add(segments: SegmentOptions[]): Segment[];
       getSegments: () => Segment[];
       getSegment: (id: string) => Segment | undefined;
       removeByTime: (startTime: number, endTime?: number) => Segment[];
@@ -579,8 +569,8 @@ declare module 'peaks.js' {
     };
     /** Points API */
     points: {
-      add(point: PointAddOptions): Point;
-      add(points: PointAddOptions[]): Point[];
+      add(point: PointOptions): Point;
+      add(points: PointOptions[]): Point[];
       getPoints: () => Point[];
       getPoint: (id: string) => Point | undefined;
       removeByTime: (time: number) => Point[];

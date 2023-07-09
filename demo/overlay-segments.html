@@ -560,6 +560,10 @@
             console.log('segments.add:', event);
           });
 
+          peaksInstance.on('segments.insert', function(event) {
+            console.log('segments.insert:', event);
+          });
+
           peaksInstance.on('segments.dragstart', function(event) {
             console.log('segments.dragstart:', event);
           });
@@ -602,6 +606,8 @@
             console.log('segments.contextmenu:', event);
           });
 
+          // Zoomview waveform events
+
           peaksInstance.on('zoomview.click', function(event) {
             console.log('zoomview.click:', event);
           });
@@ -616,6 +622,8 @@
             console.log('zoomview.contextmenu:', event);
           });
 
+          // Overview waveform events
+
           peaksInstance.on('overview.click', function(event) {
             console.log('overview.click:', event);
           });
@@ -629,6 +637,8 @@
 
             console.log('overview.contextmenu:', event);
           });
+
+          // Player events
 
           peaksInstance.on('player.seeked', function(time) {
             console.log('player.seeked:', time);

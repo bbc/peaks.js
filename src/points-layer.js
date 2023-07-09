@@ -71,6 +71,10 @@ PointsLayer.prototype.enableEditing = function(enable) {
   this._allowEditing = enable;
 };
 
+PointsLayer.prototype.getPointMarker = function(point) {
+  return this._pointMarkers[point.pid];
+};
+
 PointsLayer.prototype.formatTime = function(time) {
   return this._view.formatTime(time);
 };
@@ -79,7 +83,7 @@ PointsLayer.prototype._onPointsUpdate = function(point, options) {
   const frameStartTime = this._view.getStartTime();
   const frameEndTime   = this._view.getEndTime();
 
-  const pointMarker = this._pointMarkers[point.id];
+  const pointMarker = this.getPointMarker(point);
   const isVisible = point.isVisible(frameStartTime, frameEndTime);
 
   if (pointMarker && !isVisible) {
@@ -180,7 +184,7 @@ PointsLayer.prototype.getHeight = function() {
 PointsLayer.prototype._addPointMarker = function(point) {
   const pointMarker = this._createPointMarker(point);
 
-  this._pointMarkers[point.id] = pointMarker;
+  this._pointMarkers[point.pid] = pointMarker;
 
   pointMarker.addToLayer(this._layer);
 
@@ -242,7 +246,7 @@ PointsLayer.prototype._onPointMarkerMouseLeave = function(event, point) {
  */
 
 PointsLayer.prototype._onPointMarkerDragStart = function(event, point) {
-  this._dragPointMarker = this._pointMarkers[point.id];
+  this._dragPointMarker = this.getPointMarker(point);
 
   this._peaks.emit('points.dragstart', {
     point: point,
@@ -297,7 +301,7 @@ PointsLayer.prototype.updatePoints = function(startTime, endTime) {
  */
 
 PointsLayer.prototype._updatePoint = function(point) {
-  let pointMarker = this._pointMarkers[point.id];
+  let pointMarker = this.getPointMarker(point);
 
   if (!pointMarker) {
     pointMarker = this._addPointMarker(point);
@@ -321,9 +325,9 @@ PointsLayer.prototype._updatePoint = function(point) {
  */
 
 PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
-  for (const pointId in this._pointMarkers) {
-    if (objectHasProperty(this._pointMarkers, pointId)) {
-      const point = this._pointMarkers[pointId].getPoint();
+  for (const pointPid in this._pointMarkers) {
+    if (objectHasProperty(this._pointMarkers, pointPid)) {
+      const point = this._pointMarkers[pointPid].getPoint();
 
       if (!point.isVisible(startTime, endTime)) {
         this._removePoint(point);
@@ -340,11 +344,11 @@ PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
  */
 
 PointsLayer.prototype._removePoint = function(point) {
-  const pointMarker = this._pointMarkers[point.id];
+  const pointMarker = this.getPointMarker(point);
 
   if (pointMarker) {
     pointMarker.destroy();
-    delete this._pointMarkers[point.id];
+    delete this._pointMarkers[point.pid];
   }
 };
 
@@ -369,9 +373,9 @@ PointsLayer.prototype.destroy = function() {
 };
 
 PointsLayer.prototype.fitToView = function() {
-  for (const pointId in this._pointMarkers) {
-    if (objectHasProperty(this._pointMarkers, pointId)) {
-      const pointMarker = this._pointMarkers[pointId];
+  for (const pointPid in this._pointMarkers) {
+    if (objectHasProperty(this._pointMarkers, pointPid)) {
+      const pointMarker = this._pointMarkers[pointPid];
 
       pointMarker.fitToView();
     }

@@ -14,7 +14,7 @@ import { extend, isNullOrUndefined, objectHasProperty } from './utils';
  *
  * @typedef {Object} PointOptions
  * @global
- * @property {Number} point Point time, in seconds.
+ * @property {Number} time Point time, in seconds.
  * @property {Boolean=} editable If <code>true</code> the point time can be
  *   adjusted via the user interface.
  *   Default: <code>false</code>.
@@ -24,6 +24,7 @@ import { extend, isNullOrUndefined, objectHasProperty } from './utils';
  *   Default: an empty string.
  * @property {String=} id A unique point identifier.
  *   Default: an automatically generated identifier.
+ * @property {*} data Optional application-specific data.
  */
 
 /**
@@ -40,7 +41,9 @@ function WaveformPoints(peaks) {
   this._peaks = peaks;
   this._points = [];
   this._pointsById = {};
+  this._pointsByPid = {};
   this._pointIdCounter = 0;
+  this._pointPid = 0;
 }
 
 /**
@@ -54,6 +57,17 @@ WaveformPoints.prototype._getNextPointId = function() {
 };
 
 /**
+ * Returns a new unique point id value, for internal use within
+ * Peaks.js only.
+ *
+ * @returns {Number}
+ */
+
+WaveformPoints.prototype._getNextPid = function() {
+  return this._pointPid++;
+};
+
+/**
  * Adds a new point object.
  *
  * @private
@@ -64,6 +78,7 @@ WaveformPoints.prototype._addPoint = function(point) {
   this._points.push(point);
 
   this._pointsById[point.id] = point;
+  this._pointsByPid[point.pid] = point;
 };
 
 /**
@@ -83,13 +98,13 @@ WaveformPoints.prototype._createPoint = function(options) {
     pointOptions.id = this._getNextPointId();
   }
 
+  const pid = this._getNextPid();
+
   setDefaultPointOptions(pointOptions, this._peaks.options);
 
   validatePointOptions(pointOptions, false);
 
-  pointOptions.peaks = this._peaks;
-
-  return new Point(pointOptions);
+  return new Point(this._peaks, pid, pointOptions);
 };
 
 /**
@@ -164,6 +179,18 @@ WaveformPoints.prototype.add = function(/* pointOrPoints */) {
   return arrayArgs ? points : points[0];
 };
 
+WaveformPoints.prototype.updatePointId = function(point, newPointId) {
+  if (this._pointsById[point.id]) {
+    if (this._pointsById[newPointId]) {
+      throw new Error('point.update(): duplicate id');
+    }
+    else {
+      delete this._pointsById[point.id];
+      this._pointsById[newPointId] = point;
+    }
+  }
+};
+
 /**
  * Returns the indexes of points that match the given predicate.
  *
@@ -202,6 +229,7 @@ WaveformPoints.prototype._removeIndexes = function(indexes) {
     const itemRemoved = this._points.splice(index, 1)[0];
 
     delete this._pointsById[itemRemoved.id];
+    delete this._pointsByPid[itemRemoved.pid];
 
     removed.push(itemRemoved);
   }
@@ -283,6 +311,7 @@ WaveformPoints.prototype.removeByTime = function(time) {
 WaveformPoints.prototype.removeAll = function() {
   this._points = [];
   this._pointsById = {};
+  this._pointsByPid = {};
   this._peaks.emit('points.remove_all');
 };
 

@@ -237,6 +237,10 @@ WaveformOverview.prototype._onZoomviewDisplaying = function(startTime, endTime) 
   this.showHighlight(startTime, endTime);
 };
 
+WaveformOverview.prototype.updatePlayheadTime = function(time) {
+  this._playheadLayer.updatePlayheadTime(time);
+};
+
 WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
   this._highlightLayer.showHighlight(startTime, endTime);
 };
