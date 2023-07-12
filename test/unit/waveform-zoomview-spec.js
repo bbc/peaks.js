@@ -990,8 +990,6 @@ describe('WaveformZoomView', function() {
           inputController.mouseMove({ x: clickX + distance, y: 50 });
           inputController.mouseUp({ x: clickX + distance, y: 50 });
 
-          const view = p.views.getView('zoomview');
-
           const segment = p.segments.getSegment('segment1');
 
           expect(segment.startTime).to.equal(1.0);

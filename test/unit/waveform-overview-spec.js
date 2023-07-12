@@ -1,5 +1,7 @@
 import Peaks from '../../src/main';
 
+import InputController from '../helpers/input-controller';
+
 describe('WaveformOverview', function() {
   let p = null;
 
@@ -73,6 +75,103 @@ describe('WaveformOverview', function() {
           expect(view._data).to.be.ok;
           expect(view._data.scale).to.equal(32);
           done();
+        });
+      });
+    });
+  });
+
+  describe('enableSeek', function() {
+    let inputController = null;
+
+    beforeEach(function(done) {
+      const options = {
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        p = instance;
+
+        inputController = new InputController('overview-container');
+
+        done();
+      });
+    });
+
+    context('when enabled', function() {
+      context('when dragging the waveform to the left', function() {
+        it('should set the playback position', function() {
+          const distance = -50;
+
+          inputController.mouseDown({ x: 50, y: 50 });
+          inputController.mouseMove({ x: 50 + distance, y: 50 });
+          inputController.mouseUp({ x: 50 + distance, y: 50 });
+
+          const view = p.views.getView('overview');
+
+          expect(p.player.getCurrentTime()).to.equal(view.pixelsToTime(0));
+        });
+
+        it('should not scroll beyond the start of the waveform', function() {
+          const distance = -200;
+
+          inputController.mouseDown({ x: 50, y: 50 });
+          inputController.mouseMove({ x: 50 + distance, y: 50 });
+          inputController.mouseUp({ x: 50 + distance, y: 50 });
+
+          expect(p.player.getCurrentTime()).to.equal(0);
+        });
+      });
+
+      context('when dragging the waveform to the right', function() {
+        it('should set the playback position', function() {
+          const distance = 100;
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          const view = p.views.getView('overview');
+
+          expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(200), 0.01);
+        });
+
+        it('should limit the playback position to the end of the waveform', function() {
+          const distance = 1200;
+
+          inputController.mouseDown({ x: 50, y: 50 });
+          inputController.mouseMove({ x: 50 + distance, y: 50 });
+          inputController.mouseUp({ x: 50 + distance, y: 50 });
+
+          expect(p.player.getCurrentTime()).to.equal(p.player.getDuration());
+        });
+      });
+    });
+
+    context('when disabled', function() {
+      beforeEach(function() {
+        const view = p.views.getView('overview');
+        view.enableSeek(false);
+      });
+
+      context('when dragging the waveform', function() {
+        it('should not change the playback position', function() {
+          const distance = 100;
+          const time = p.player.getCurrentTime();
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseMove({ x: 100 + distance, y: 50 });
+          inputController.mouseUp({ x: 100 + distance, y: 50 });
+
+          expect(p.player.getCurrentTime()).to.equal(time);
         });
       });
     });
