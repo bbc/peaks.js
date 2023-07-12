@@ -77,6 +77,12 @@ InsertSegmentMouseDragHandler.prototype._onMouseUp = function() {
     this._insertSegmentShape = null;
   }
 
+  // If the user was dragging within an existing segment,
+  // restore the segment's original draggable state.
+  if (this._segment && this._segmentIsDraggable) {
+    this._segment.draggable(true);
+  }
+
   this._peaks.emit('segments.insert', {
     segment: this._insertSegment
   });
