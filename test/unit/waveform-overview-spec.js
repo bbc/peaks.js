@@ -115,9 +115,7 @@ describe('WaveformOverview', function() {
           inputController.mouseMove({ x: 50 + distance, y: 50 });
           inputController.mouseUp({ x: 50 + distance, y: 50 });
 
-          const view = p.views.getView('overview');
-
-          expect(p.player.getCurrentTime()).to.equal(view.pixelsToTime(0));
+          expect(p.player.getCurrentTime()).to.equal(0);
         });
 
         it('should not scroll beyond the start of the waveform', function() {
