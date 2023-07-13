@@ -70,13 +70,7 @@ function WaveformOverview(waveformData, container, peaks) {
   self._data = waveformData;
 
   if (self._width !== 0) {
-    try {
-      self._data = waveformData.resample({ width: self._width });
-    }
-    catch (error) {
-      // This error usually indicates that the waveform length
-      // is less than the container width
-    }
+    self._resampleAndSetWaveformData(waveformData, self._width);
   }
 
   // Disable warning: The stage has 6 layers.
@@ -260,7 +254,7 @@ WaveformOverview.prototype._onWindowResize = function() {
 
     self._resizeTimeoutId = setTimeout(function() {
       self._width = self._container.clientWidth;
-      self._data = self._originalWaveformData.resample({ width: self._width });
+      self._resampleAndSetWaveformData(self._originalWaveformData, self._width);
       self._stage.setWidth(self._width);
 
       self._updateWaveform();
@@ -272,13 +266,27 @@ WaveformOverview.prototype.setWaveformData = function(waveformData) {
   this._originalWaveformData = waveformData;
 
   if (this._width !== 0) {
-    this._data = waveformData.resample({ width: this._width });
+    this._resampleAndSetWaveformData(waveformData, this._width);
   }
   else {
     this._data = waveformData;
   }
 
   this._updateWaveform();
+};
+
+WaveformOverview.prototype._resampleAndSetWaveformData = function(waveformData, width) {
+  try {
+    this._data = waveformData.resample({ width: width });
+    return true;
+  }
+  catch (error) {
+    // This error usually indicates that the waveform length
+    // is less than the container width. Ignore, and use the
+    // given waveform data
+    this._data = waveformData;
+    return false;
+  }
 };
 
 WaveformOverview.prototype.playheadPosChanged = function(time) {
@@ -555,12 +563,8 @@ WaveformOverview.prototype.fitToContainer = function() {
     this._width = this._container.clientWidth;
     this._stage.setWidth(this._width);
 
-    try {
-      this._data = this._originalWaveformData.resample({ width: this._width });
+    if (this._resampleAndSetWaveformData(this._originalWaveformData, this._width)) {
       updateWaveform = true;
-    }
-    catch (error) {
-      // Ignore, and leave this._data as it was
     }
   }
 
