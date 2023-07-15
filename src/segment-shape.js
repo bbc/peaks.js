@@ -193,6 +193,73 @@ function SegmentShape(segment, peaks, layer, view) {
   this._createMarkers();
 }
 
+function createOverlayMarker(options) {
+  return new OverlaySegmentMarker(options);
+}
+
+SegmentShape.prototype._createMarkers = function() {
+  const editable = this._layer.isEditingEnabled() && this._segment.editable;
+  const segmentOptions = this._view.getViewOptions().segmentOptions;
+
+  const createSegmentMarker = segmentOptions.markers ?
+    this._peaks.options.createSegmentMarker :
+    createOverlayMarker;
+
+  const startMarker = createSegmentMarker({
+    segment:        this._segment,
+    editable:       editable,
+    startMarker:    true,
+    color:          segmentOptions.startMarkerColor,
+    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
+    fontSize:       this._peaks.options.fontSize || defaultFontSize,
+    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+    layer:          this._layer,
+    view:           this._view.getName(),
+    segmentOptions: this._view.getViewOptions().segmentOptions
+  });
+
+  if (startMarker) {
+    this._startMarker = new SegmentMarker({
+      segment:       this._segment,
+      segmentShape:  this,
+      editable:      editable,
+      startMarker:   true,
+      marker:        startMarker,
+      onDragStart:   this._onSegmentMarkerDragStart,
+      onDragMove:    this._onSegmentMarkerDragMove,
+      onDragEnd:     this._onSegmentMarkerDragEnd,
+      dragBoundFunc: this._segmentMarkerDragBoundFunc
+    });
+  }
+
+  const endMarker = createSegmentMarker({
+    segment:        this._segment,
+    editable:       editable,
+    startMarker:    false,
+    color:          segmentOptions.endMarkerColor,
+    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
+    fontSize:       this._peaks.options.fontSize || defaultFontSize,
+    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+    layer:          this._layer,
+    view:           this._view.getName(),
+    segmentOptions: this._view.getViewOptions().segmentOptions
+  });
+
+  if (endMarker) {
+    this._endMarker = new SegmentMarker({
+      segment:       this._segment,
+      segmentShape:  this,
+      editable:      editable,
+      startMarker:   false,
+      marker:        endMarker,
+      onDragStart:   this._onSegmentMarkerDragStart,
+      onDragMove:    this._onSegmentMarkerDragMove,
+      onDragEnd:     this._onSegmentMarkerDragEnd,
+      dragBoundFunc: this._segmentMarkerDragBoundFunc
+    });
+  }
+};
+
 SegmentShape.prototype._dragBoundFunc = function(pos) {
   // Allow the segment to be moved horizontally but not vertically.
   return {
@@ -309,78 +376,6 @@ SegmentShape.prototype.addToLayer = function(layer) {
 
 SegmentShape.prototype.isDragging = function() {
   return this._dragging;
-};
-
-function createOverlayMarker(options) {
-  return new OverlaySegmentMarker(options);
-}
-
-SegmentShape.prototype._createMarkers = function() {
-  const editable = this._layer.isEditingEnabled() && this._segment.editable;
-
-  if (!editable) {
-    return;
-  }
-
-  const segmentOptions = this._view.getViewOptions().segmentOptions;
-
-  const createSegmentMarker = segmentOptions.markers ?
-    this._peaks.options.createSegmentMarker :
-    createOverlayMarker;
-
-  const startMarker = createSegmentMarker({
-    segment:        this._segment,
-    draggable:      editable,
-    startMarker:    true,
-    color:          segmentOptions.startMarkerColor,
-    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:       this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
-    layer:          this._layer,
-    view:           this._view.getName(),
-    segmentOptions: this._view.getViewOptions().segmentOptions
-  });
-
-  if (startMarker) {
-    this._startMarker = new SegmentMarker({
-      segment:       this._segment,
-      segmentShape:  this,
-      draggable:     editable,
-      startMarker:   true,
-      marker:        startMarker,
-      onDragStart:   this._onSegmentMarkerDragStart,
-      onDragMove:    this._onSegmentMarkerDragMove,
-      onDragEnd:     this._onSegmentMarkerDragEnd,
-      dragBoundFunc: this._segmentMarkerDragBoundFunc
-    });
-  }
-
-  const endMarker = createSegmentMarker({
-    segment:        this._segment,
-    draggable:      editable,
-    startMarker:    false,
-    color:          segmentOptions.endMarkerColor,
-    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:       this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
-    layer:          this._layer,
-    view:           this._view.getName(),
-    segmentOptions: this._view.getViewOptions().segmentOptions
-  });
-
-  if (endMarker) {
-    this._endMarker = new SegmentMarker({
-      segment:       this._segment,
-      segmentShape:  this,
-      draggable:     editable,
-      startMarker:   false,
-      marker:        endMarker,
-      onDragStart:   this._onSegmentMarkerDragStart,
-      onDragMove:    this._onSegmentMarkerDragMove,
-      onDragEnd:     this._onSegmentMarkerDragEnd,
-      dragBoundFunc: this._segmentMarkerDragBoundFunc
-    });
-  }
 };
 
 SegmentShape.prototype._onMouseEnter = function(event) {

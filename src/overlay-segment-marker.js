@@ -43,17 +43,16 @@ OverlaySegmentMarker.prototype.init = function(group) {
     fontSize:   this._options.fontSize,
     fontStyle:  this._options.fontStyle,
     fill:       '#000',
-    textAlign:  'center'
+    textAlign:  'center',
+    visible:    false
   });
-
-  this._label.hide();
 
   // Handle - create with default y, the real value is set in fitToView().
   this._handle = new Rect({
-    x:      handleX,
-    y:      0,
-    width:  handleWidth,
-    height: handleHeight
+    x:       handleX,
+    y:       0,
+    width:   handleWidth,
+    height:  handleHeight
   });
 
   group.add(this._label);
@@ -69,19 +68,17 @@ OverlaySegmentMarker.prototype.bindEventHandlers = function(group) {
 
   const xPosition = self._options.startMarker ? -24 : 24;
 
-  if (self._options.draggable) {
-    group.on('dragstart', function() {
-      if (self._options.startMarker) {
-        self._label.setX(xPosition - self._label.getWidth());
-      }
+  group.on('dragstart', function() {
+    if (self._options.startMarker) {
+      self._label.setX(xPosition - self._label.getWidth());
+    }
 
-      self._label.show();
-    });
+    self._label.show();
+  });
 
-    group.on('dragend', function() {
-      self._label.hide();
-    });
-  }
+  group.on('dragend', function() {
+    self._label.hide();
+  });
 
   self._handle.on('mouseover touchstart', function() {
     if (self._options.startMarker) {

@@ -21,6 +21,7 @@ import { Text } from 'konva/lib/shapes/Text';
 
 function DefaultSegmentMarker(options) {
   this._options = options;
+  this._editable = options.editable;
 }
 
 DefaultSegmentMarker.prototype.init = function(group) {
@@ -42,7 +43,8 @@ DefaultSegmentMarker.prototype.init = function(group) {
     fontSize:   this._options.fontSize,
     fontStyle:  this._options.fontStyle,
     fill:       '#000',
-    textAlign:  'center'
+    textAlign:  'center',
+    visible:    this._editable
   });
 
   this._label.hide();
@@ -55,7 +57,8 @@ DefaultSegmentMarker.prototype.init = function(group) {
     height:      handleHeight,
     fill:        this._options.color,
     stroke:      this._options.color,
-    strokeWidth: 1
+    strokeWidth: 1,
+    visible:     this._editable
   });
 
   // Vertical Line - create with default y and points, the real values
@@ -64,7 +67,8 @@ DefaultSegmentMarker.prototype.init = function(group) {
     x:           0,
     y:           0,
     stroke:      this._options.color,
-    strokeWidth: 1
+    strokeWidth: 1,
+    visible:     this._editable
   });
 
   group.add(this._label);
@@ -81,19 +85,17 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function(group) {
 
   const xPosition = self._options.startMarker ? -24 : 24;
 
-  if (self._options.draggable) {
-    group.on('dragstart', function() {
-      if (self._options.startMarker) {
-        self._label.setX(xPosition - self._label.getWidth());
-      }
+  group.on('dragstart', function() {
+    if (self._options.startMarker) {
+      self._label.setX(xPosition - self._label.getWidth());
+    }
 
-      self._label.show();
-    });
+    self._label.show();
+  });
 
-    group.on('dragend', function() {
-      self._label.hide();
-    });
-  }
+  group.on('dragend', function() {
+    self._label.hide();
+  });
 
   self._handle.on('mouseover touchstart', function() {
     if (self._options.startMarker) {
@@ -123,6 +125,14 @@ DefaultSegmentMarker.prototype.update = function(options) {
 
   if (options.endTime !== undefined && !this._options.startMarker) {
     this._label.text(this._options.layer.formatTime(options.endTime));
+  }
+
+  if (options.editable !== undefined) {
+    this._editable = options.editable;
+
+    this._label.visible(this._editable);
+    this._handle.visible(this._editable);
+    this._line.visible(this._editable);
   }
 };
 

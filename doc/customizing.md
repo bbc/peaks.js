@@ -101,7 +101,7 @@ options:
 | `point`      | `Point`       | The `Point` object associated with this marker. This provides access to the `time`, `color`, and `labelText` attributes, etc. |
 | `view`       | `string`      | The name of the view that the marker is being created in, either `zoomview` or `overview`.                                    |
 | `layer`      | `PointsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                 |
-| `draggable`  | `boolean`     | If `true`, the marker is draggable.                                                                                           |
+| `editable`   | `boolean`     | If `true`, the `Point` time can be changed by dragging the mouse.                                                             |
 | `color`      | `string`      | Color for the marker (set by the `pointMarkerColor` option in `Peaks.init()`).                                                |
 | `fontFamily` | `string`      | Font family for the marker text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                  |
 | `fontSize`   | `number`      | Font size, in px, for the marker text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                         |
@@ -157,7 +157,7 @@ following options:
 | `segment`        | `Segment`       | The `Segment` object associated with this marker. This provides access to the `startTime`, `endTime`, `color`, and `labelText` attributes, etc. |
 | `view`           | `string`        | The name of the view that the marker is being created in, either `zoomview` or `overview`.                                                      |
 | `layer`          | `SegmentsLayer` | The rendering layer, see [Layer API](#layer-api) for details.                                                                                   |
-| `draggable`      | `boolean`       | This value is always `true` for segment markers.                                                                                                |
+| `editable`       | `boolean`       | If `true`, the `Segment` start and end times can be changed by dragging the mouse.                                                              |
 | `color`          | `string`        | Color for the marker (set by the `segmentOptions.startMarkerColor` or `segmentOptions.endMarkerColor` option in `Peaks.init()`.                 |
 | `fontFamily`     | `string`        | Font family for the marker text (set by the `fontFamily` option in `Peaks.init()`, default: `'sans-serif'`).                                    |
 | `fontSize`       | `number`        | Font size, in px, for the marker text (set by the `fontSize` option in `Peaks.init()`, default: `10`)                                           |
@@ -339,6 +339,11 @@ update(options) {
 
   if (options.color !== undefined) {
     this._line.stroke(options.color);
+  }
+
+  if (options.editable !== undefined) {
+    // Show or hide the Konva shapes that draw the marker
+    console.log('Updated editable state', options.editable);
   }
 }
 ```

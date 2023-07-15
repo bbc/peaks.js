@@ -48,59 +48,58 @@ describe('SegmentShape', function() {
   });
 
   context('with marker style segments', function() {
-    context('with editable segments', function() {
-      it('should create marker handles', function(done) {
-        createPeaksInstance({
-          segmentOptions: {
-            markers: true,
-            overlay: false
-          }
-        },
-        function() {
-          const spy = sinon.spy(p.options, 'createSegmentMarker');
+    [
+      { name: 'editable',     editable: true  },
+      { name: 'non-editable', editable: false }
+    ].forEach(function(test) {
+      context(`with ${test.name} segments`, function() {
+        it('should create marker handles', function(done) {
+          createPeaksInstance({
+            segmentOptions: {
+              markers: true,
+              overlay: false
+            }
+          },
+          function() {
+            const spy = sinon.spy(p.options, 'createSegmentMarker');
 
-          p.segments.add({
-            startTime: 0,
-            endTime:   10,
-            editable:  true,
-            id:        'segment1'
+            p.segments.add({
+              startTime: 0,
+              endTime:   10,
+              editable:  test.editable,
+              id:        'segment1'
+            });
+
+            // Two markers in both zoomview and overview
+            expect(spy.callCount).to.equal(4);
+
+            let call = spy.getCall(0);
+
+            expect(call.args).to.have.lengthOf(1);
+            expect(call.args[0].segment.startTime).to.equal(0);
+            expect(call.args[0].segment.endTime).to.equal(10);
+            expect(call.args[0].segment.editable).to.equal(test.editable);
+            expect(call.args[0].segment.id).to.equal('segment1');
+            expect(call.args[0].editable).to.equal(false);
+            expect(call.args[0]).to.have.property('startMarker');
+            expect(call.args[0].color).to.equal('#aaaaaa');
+            expect(call.args[0]).to.have.property('layer');
+            expect(call.args[0].view).to.equal('overview');
+
+            call = spy.getCall(2);
+
+            expect(call.args).to.have.lengthOf(1);
+            expect(call.args[0].segment.startTime).to.equal(0);
+            expect(call.args[0].segment.endTime).to.equal(10);
+            expect(call.args[0].segment.editable).to.equal(test.editable);
+            expect(call.args[0].segment.id).to.equal('segment1');
+            expect(call.args[0].editable).to.equal(test.editable);
+            expect(call.args[0]).to.have.property('startMarker');
+            expect(call.args[0].color).to.equal('#aaaaaa');
+            expect(call.args[0]).to.have.property('layer');
+            expect(call.args[0].view).to.equal('zoomview');
+            done();
           });
-
-          // 2 for zoomview, as overview forces segments to be non-editable by default.
-          expect(spy.callCount).to.equal(2);
-
-          const call = spy.getCall(0);
-
-          expect(call.args).to.have.lengthOf(1);
-          expect(call.args[0].segment.startTime).to.equal(0);
-          expect(call.args[0].segment.endTime).to.equal(10);
-          expect(call.args[0].segment.editable).to.equal(true);
-          expect(call.args[0].segment.id).to.equal('segment1');
-          expect(call.args[0].draggable).to.equal(true);
-          expect(call.args[0]).to.have.property('startMarker');
-          expect(call.args[0].color).to.equal('#aaaaaa');
-          expect(call.args[0]).to.have.property('layer');
-          expect(call.args[0].view).to.equal('zoomview');
-          done();
-        });
-      });
-    });
-
-    context('with non-editable segments', function() {
-      it('should not create marker handles', function(done) {
-        createPeaksInstance({
-          segmentOptions: {
-            markers: true,
-            overlay: false
-          }
-        },
-        function() {
-          const spy = sinon.spy(p.options, 'createSegmentMarker');
-
-          p.segments.add({ startTime: 0, endTime: 10, editable: false, id: 'segment1' });
-
-          expect(spy.callCount).to.equal(0);
-          done();
         });
       });
     });

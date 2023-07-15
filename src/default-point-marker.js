@@ -21,7 +21,7 @@ import { Text } from 'konva/lib/shapes/Text';
 
 function DefaultPointMarker(options) {
   this._options = options;
-  this._draggable = options.draggable;
+  this._editable = options.editable;
 }
 
 DefaultPointMarker.prototype.init = function(group) {
@@ -48,16 +48,13 @@ DefaultPointMarker.prototype.init = function(group) {
   // Handle - create with default y, the real value is set in fitToView().
 
   this._handle = new Rect({
-    x:      handleX,
-    y:      0,
-    width:  handleWidth,
-    height: handleHeight,
-    fill:   this._options.color
+    x:       handleX,
+    y:       0,
+    width:   handleWidth,
+    height:  handleHeight,
+    fill:    this._options.color,
+    visible: this._editable
   });
-
-  if (!this._draggable) {
-    this._handle.hide();
-  }
 
   // Line - create with default y and points, the real values
   // are set in fitToView().
@@ -102,7 +99,7 @@ DefaultPointMarker.prototype.bindEventHandlers = function(group) {
   const self = this;
 
   self._handle.on('mouseover touchstart', function() {
-    if (self._draggable) {
+    if (self._editable) {
       // Position text to the left of the marker
       self._time.setX(-24 - self._time.getWidth());
       self._time.show();
@@ -110,7 +107,7 @@ DefaultPointMarker.prototype.bindEventHandlers = function(group) {
   });
 
   self._handle.on('mouseout touchend', function() {
-    if (self._draggable) {
+    if (self._editable) {
       self._time.hide();
     }
   });
@@ -167,12 +164,7 @@ DefaultPointMarker.prototype.update = function(options) {
   if (options.editable !== undefined) {
     this._draggable = options.editable;
 
-    if (this._draggable) {
-      this._handle.show();
-    }
-    else {
-      this._handle.hide();
-    }
+    this._handle.visible(this._draggable);
   }
 };
 

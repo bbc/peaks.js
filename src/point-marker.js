@@ -14,7 +14,7 @@ import Konva from 'konva/lib/Core';
  * @typedef {Object} PointMarkerOptions
  * @global
  * @property {Point} point Point object with timestamp.
- * @property {Boolean} draggable If true, marker is draggable.
+ * @property {Boolean} editable If true, marker is draggable.
  * @property {Marker} marker
  * @property {Function} onclick
  * @property {Function} onDblClick
@@ -37,9 +37,9 @@ import Konva from 'konva/lib/Core';
  */
 
 function PointMarker(options) {
-  this._point     = options.point;
-  this._marker    = options.marker;
-  this._draggable = options.draggable;
+  this._point    = options.point;
+  this._marker   = options.marker;
+  this._editable = options.editable;
 
   this._onDragStart   = options.onDragStart;
   this._onDragMove    = options.onDragMove;
@@ -51,7 +51,7 @@ function PointMarker(options) {
   this._group = new Konva.Group({
     name:          'point-marker',
     point:         this._point,
-    draggable:     this._draggable,
+    draggable:     this._editable,
     dragBoundFunc: options.dragBoundFunc
   });
 

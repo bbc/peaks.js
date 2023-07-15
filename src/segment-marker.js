@@ -15,7 +15,7 @@ import Konva from 'konva/lib/Core';
  * @global
  * @property {Segment} segment
  * @property {SegmentShape} segmentShape
- * @property {Boolean} draggable If true, marker is draggable.
+ * @property {Boolean} editable If true, marker is draggable.
  * @property {Boolean} startMarker If <code>true</code>, the marker indicates
  *   the start time of the segment. If <code>false</code>, the marker
  *   indicates the end time of the segment.
@@ -40,7 +40,7 @@ function SegmentMarker(options) {
   self._segment       = options.segment;
   self._marker        = options.marker;
   self._segmentShape  = options.segmentShape;
-  self._draggable     = options.draggable;
+  self._editable      = options.editable;
   self._startMarker   = options.startMarker;
 
   self._onDragStart   = options.onDragStart;
@@ -50,7 +50,8 @@ function SegmentMarker(options) {
   self._group = new Konva.Group({
     name:          'segment-marker',
     segment:       self._segment,
-    draggable:     self._draggable,
+    draggable:     self._editable,
+    visible:       self._editable,
     dragBoundFunc: function(pos) {
       return options.dragBoundFunc(self, pos);
     }
@@ -64,19 +65,17 @@ function SegmentMarker(options) {
 SegmentMarker.prototype._bindDefaultEventHandlers = function() {
   const self = this;
 
-  if (self._draggable) {
-    self._group.on('dragstart', function(event) {
-      self._onDragStart(self, event);
-    });
+  self._group.on('dragstart', function(event) {
+    self._onDragStart(self, event);
+  });
 
-    self._group.on('dragmove', function(event) {
-      self._onDragMove(self, event);
-    });
+  self._group.on('dragmove', function(event) {
+    self._onDragMove(self, event);
+  });
 
-    self._group.on('dragend', function(event) {
-      self._onDragEnd(self, event);
-    });
-  }
+  self._group.on('dragend', function(event) {
+    self._onDragEnd(self, event);
+  });
 };
 
 SegmentMarker.prototype.addToLayer = function(layer) {
@@ -116,6 +115,11 @@ SegmentMarker.prototype.isStartMarker = function() {
 };
 
 SegmentMarker.prototype.update = function(options) {
+  if (options.editable !== undefined) {
+    this._group.visible(options.editable);
+    this._group.draggable(options.editable);
+  }
+
   if (this._marker.update) {
     this._marker.update(options);
   }

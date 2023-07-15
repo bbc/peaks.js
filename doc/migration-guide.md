@@ -152,6 +152,10 @@ class CustomSegmentMarker {
     if (options.labelText !== undefined) {
       console.log('Updated label text', options.labelText);
     }
+
+    if (options.editable !== undefined) {
+      // Show or hide Konva.js objects as needed
+    }
   }
 }
 ```
