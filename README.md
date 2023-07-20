@@ -83,7 +83,7 @@ To include Peaks.js in your web page, you need to add container `<div>` elements
 ```html
 <div id="zoomview-container"></div>
 <div id="overview-container"></div>
-<audio>
+<audio id="audio">
   <source src="sample.mp3" type="audio/mpeg">
   <source src="sample.ogg" type='audio/ogg codecs="vorbis"'>
 </audio>
@@ -102,7 +102,7 @@ The container `div`s should be left empty, as shown above, as their content will
 
 The next step is to initialize a `Peaks` instance with [`Peaks.init()`](doc/API.md#initialization) and your configuration options.
 
-Refer to the [Configuration](doc/API.md#configuration) section in the API documentation for details of all the available options.
+The following examples show how to initialize Peaks.js with a minimal configuration. Refer to the [Configuration](doc/API.md#configuration) section in the API documentation for details of all the available options.
 
 ## Using a script tag
 
@@ -117,7 +117,7 @@ Refer to the [Configuration](doc/API.md#configuration) section in the API docume
     overview: {
       container: document.getElementById('overview-container')
     },
-    mediaElement: document.querySelector('audio'),
+    mediaElement: document.getElementById('audio'),
     webAudio: {
       audioContext: new AudioContext()
     }
@@ -147,7 +147,7 @@ const options = {
   overview: {
     container: document.getElementById('overview-container')
   },
-  mediaElement: document.querySelector('audio'),
+  mediaElement: document.getElementById('audio'),
   webAudio: {
     audioContext: new AudioContext()
   }
@@ -174,7 +174,7 @@ Using the Web Audio API can work well for short audio files, but involves downlo
 
 ## Pre-computed waveform data
 
-Peaks.js uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size.
+Peaks.js uses waveform data files produced by [audiowaveform](https://github.com/bbc/audiowaveform). These can be generated in either binary (.dat) or JSON format. Binary format is preferred because of the smaller file size (including after gzip or Brotli compression).
 
 You should also use the `-b 8` option when generating waveform data files, as Peaks.js does not currently support 16-bit waveform data files, and also to minimise file size.
 
@@ -208,7 +208,7 @@ const options = {
   overview: {
     container: document.getElementById('overview-container')
   },
-  mediaElement: document.querySelector('audio'),
+  mediaElement: document.getElementById('audio'),
   dataUri: {
     arraybuffer: 'sample.dat' // or json: 'sample.json'
   }
@@ -237,7 +237,7 @@ const options = {
   overview: {
     container: document.getElementById('overview-container')
   },
-  mediaElement: document.querySelector('audio'),
+  mediaElement: document.getElementById('audio'),
   webAudio: {
     audioContext: audioContext,
     scale: 128,
@@ -269,7 +269,7 @@ audioContext.decodeAudioData(arrayBuffer)
       overview: {
         container: document.getElementById('overview-container')
       },
-      mediaElement: document.querySelector('audio'),
+      mediaElement: document.getElementById('audio'),
       webAudio: {
         audioBuffer: audioBuffer
       }
@@ -287,7 +287,7 @@ We recommend that you take a look at the [demos](#demos), which show how to use 
 
 Refer to the [API documentation](doc/API.md) for details of all the available configuration options and the API methods and events, and to [Customizing Peaks.js](doc/customizing.md) for more information on advanced customization options.
 
-If you're having difficulty, please refer to the [Frequently Asked Questions](doc/faq.md) page.
+If you're having difficulty, please refer to the [Frequently Asked Questions](doc/faq.md) page or raise an [issue](https://github.com/bbc/peaks.js/issues).
 
 # Demos
 
@@ -331,7 +331,7 @@ Next, use the following command to build the library:
 npm run build
 ```
 
-This command will produce various builds of Peaks.js:
+This will produce various builds of Peaks.js:
 
 * `dist/peaks.js` and `dist/peaks.min.js` are stand-alone UMD modules that contain all dependencies. Note that [custom markers](doc/customizing.md#point-and-segment-markers) do not work with these builds. See the [FAQ](doc/faq.md) for more details
 
@@ -346,7 +346,7 @@ The build also creates an associated [source map](https://web.dev/source-maps/) 
 Tests run in Karma using Mocha, Chai, and Sinon.
 
  - `npm test` should work for simple one time testing.
- - `npm test -- --glob %pattern%` to run selected test suite(s) only
+ - `npm test -- --glob %pattern%` to run selected tests only
  - `npm run test-watch` if you are developing and want to repeatedly run tests in a browser on your machine.
  - `npm run test-watch -- --glob %pattern%` is also available
 
