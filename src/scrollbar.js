@@ -66,11 +66,11 @@ function Scrollbar(waveformData, container, peaks) {
   });
 
   this._scrollboxRect = new Rect({
-    x:           this._scrollboxX,
-    y:           this._offsetY,
-    width:       0,
-    height:      this._height,
-    fill:        this._color
+    x:      this._scrollboxX,
+    y:      this._offsetY,
+    width:  0,
+    height: this._height,
+    fill:   this._color
   });
 
   this._scrollbox.add(this._scrollboxRect);
@@ -83,6 +83,12 @@ function Scrollbar(waveformData, container, peaks) {
   this._layer.add(this._scrollbox);
   this._layer.draw();
 }
+
+Scrollbar.prototype.setZoomview = function(zoomview) {
+  this._zoomview = zoomview;
+
+  this._updateScrollbarWidthAndPosition();
+};
 
 /**
  * Sets the width of the scrollbox, based on the visible waveform region
@@ -101,7 +107,7 @@ Scrollbar.prototype._setScrollboxWidth = function() {
     }
   }
   else {
-    this._scrollboxWidth = this._minScrollboxWidth;
+    this._scrollboxWidth = this._width;
   }
 
   this._scrollboxRect.width(this._scrollboxWidth);
@@ -133,9 +139,7 @@ Scrollbar.prototype._onScrollboxDragEnd = function() {
 
 Scrollbar.prototype._onScrollboxDragMove = function() {
   const range = this._getScrollbarRange();
-  let x = this._scrollbox.x();
-
-  x = clamp(x, 0, range);
+  const x = clamp(this._scrollbox.x(), 0, range);
 
   this._scrollbox.x(x);
 
@@ -175,10 +179,8 @@ Scrollbar.prototype._onScrollbarClick = function(event) {
   // Handle clicks on the scrollbar outside the scrollbox.
   if (event.target === this._stage) {
     if (this._zoomview) {
-      let x = event.evt.layerX;
-
       // Centre the scrollbox where the user clicked.
-      x = Math.floor(x - this._scrollboxWidth / 2);
+      let x = Math.floor(event.evt.layerX - this._scrollboxWidth / 2);
 
       if (x < 0) {
         x = 0;

@@ -315,7 +315,7 @@ describe('Peaks', function() {
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
-            expect(instance._scrollbar).to.be.an.instanceOf(Scrollbar);
+            expect(instance.views._scrollbar).to.be.an.instanceOf(Scrollbar);
             done();
           });
         });

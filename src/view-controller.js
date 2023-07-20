@@ -8,6 +8,7 @@
 
 import WaveformOverview from './waveform-overview';
 import WaveformZoomView from './waveform-zoomview';
+import Scrollbar from './scrollbar';
 import { isNullOrUndefined } from './utils';
 
 /**
@@ -23,6 +24,7 @@ function ViewController(peaks) {
   this._peaks = peaks;
   this._overview = null;
   this._zoomview = null;
+  this._scrollbar = null;
 }
 
 ViewController.prototype.createOverview = function(container) {
@@ -61,7 +63,23 @@ ViewController.prototype.createZoomview = function(container) {
     this._peaks
   );
 
+  if (this._scrollbar) {
+    this._scrollbar.setZoomview(this._zoomview);
+  }
+
   return this._zoomview;
+};
+
+ViewController.prototype.createScrollbar = function(container) {
+  const waveformData = this._peaks.getWaveformData();
+
+  this._scrollbar = new Scrollbar(
+    waveformData,
+    container,
+    this._peaks
+  );
+
+  return this._scrollbar;
 };
 
 ViewController.prototype.destroyOverview = function() {
@@ -101,6 +119,11 @@ ViewController.prototype.destroy = function() {
   if (this._zoomview) {
     this._zoomview.destroy();
     this._zoomview = null;
+  }
+
+  if (this._scrollbar) {
+    this._scrollbar.destroy();
+    this._scrollbar = null;
   }
 };
 

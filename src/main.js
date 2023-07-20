@@ -14,7 +14,6 @@ import KeyboardHandler from './keyboard-handler';
 import MediaElementPlayer from './mediaelement-player';
 import Player from './player';
 import { createPointMarker, createSegmentMarker, createSegmentLabel } from './marker-factories';
-import Scrollbar from './scrollbar';
 import ViewController from './view-controller';
 import ZoomController from './zoom-controller';
 import WaveformBuilder from './waveform-builder';
@@ -412,7 +411,7 @@ Peaks.init = function(opts, callback) {
         }
 
         if (scrollbarContainer) {
-          instance.createScrollbar(scrollbarContainer);
+          instance.views.createScrollbar(scrollbarContainer);
         }
 
         instance._addWindowResizeHandler();
@@ -596,18 +595,6 @@ Peaks.prototype.getWaveformData = function() {
   return this._waveformData;
 };
 
-Peaks.prototype.createScrollbar = function(container) {
-  const waveformData = this.getWaveformData();
-
-  this._scrollbar = new Scrollbar(
-    waveformData,
-    container,
-    this
-  );
-
-  return this._scrollbar;
-};
-
 Peaks.prototype._addWindowResizeHandler = function() {
   this._onResize = this._onResize.bind(this);
   window.addEventListener('resize', this._onResize);
@@ -638,11 +625,6 @@ Peaks.prototype.destroy = function() {
 
   if (this.views) {
     this.views.destroy();
-  }
-
-  if (this._scrollbar) {
-    this._scrollbar.destroy();
-    this._scrollbar = null;
   }
 
   if (this.player) {
