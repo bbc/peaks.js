@@ -16,4 +16,5 @@ import './waveform-builder-spec';
 import './waveform-overview-spec';
 import './waveform-shape-spec';
 import './waveform-zoomview-spec';
+import './scrollbar-spec';
 import './utils-spec';

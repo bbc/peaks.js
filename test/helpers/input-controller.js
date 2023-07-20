@@ -11,7 +11,7 @@ function InputController(containerId) {
   const canvases = element.getElementsByTagName('canvas');
   const rect = element.getBoundingClientRect();
 
-  this._target = canvases[4];
+  this._target = canvases.length > 1 ? canvases[4] : canvases[0];
   this._top = rect.top;
   this._left = rect.left;
 }

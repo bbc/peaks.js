@@ -37,5 +37,6 @@ function removeElement(id) {
 afterEach(function() {
   removeElement('zoomview-container');
   removeElement('overview-container');
+  removeElement('scrollbar-container');
   removeElement('media');
 });
