@@ -1,4 +1,4 @@
-import Peaks from '../../src/main';
+import Peaks from '../src/main';
 
 describe('WaveformView', function() {
   let p;

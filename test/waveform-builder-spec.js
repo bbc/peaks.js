@@ -1,6 +1,7 @@
-import WaveformBuilder from '../../src/waveform-builder';
+import WaveformBuilder from '../src/waveform-builder';
+import sampleJsonData from '../test_data/sample.json';
+
 import WaveformData from 'waveform-data';
-import sampleJsonData from '../../test_data/sample.json';
 
 const TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 

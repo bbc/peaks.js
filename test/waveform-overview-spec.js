@@ -1,6 +1,6 @@
-import Peaks from '../../src/main';
+import Peaks from '../src/main';
 
-import InputController from '../helpers/input-controller';
+import InputController from './helpers/input-controller';
 
 describe('WaveformOverview', function() {
   let p = null;

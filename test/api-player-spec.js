@@ -1,5 +1,5 @@
-import Peaks from '../../src/main';
-import Player from '../../src/player';
+import Peaks from '../src/main';
+import Player from '../src/player';
 
 describe('Player', function() {
   context('with stub player', function() {

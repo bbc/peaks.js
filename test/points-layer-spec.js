@@ -1,4 +1,4 @@
-import Peaks from '../../src/main';
+import Peaks from '../src/main';
 
 describe('PointsLayer', function() {
   let p;

@@ -1,5 +1,5 @@
-import Peaks from '../../src/main';
-import { Segment } from '../../src/segment';
+import Peaks from '../src/main';
+import { Segment } from '../src/segment';
 
 describe('Segment', function() {
   describe('update', function() {

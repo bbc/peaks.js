@@ -1,12 +1,12 @@
-import Peaks from '../../src/main';
+import Peaks from '../src/main';
+import Scrollbar from '../src/scrollbar';
+import WaveformOverview from '../src/waveform-overview';
+import WaveformZoomView from '../src/waveform-zoomview';
+
+import sampleJsonData from '../test_data/sample.json';
+
 import WaveformData from 'waveform-data';
 import Konva from 'konva';
-
-import sampleJsonData from '../../test_data/sample.json';
-
-import Scrollbar from '../../src/scrollbar';
-import WaveformOverview from '../../src/waveform-overview';
-import WaveformZoomView from '../../src/waveform-zoomview';
 
 const TestAudioContext = window.AudioContext || window.mozAudioContext || window.webkitAudioContext;
 

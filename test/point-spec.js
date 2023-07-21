@@ -1,5 +1,5 @@
-import Peaks from '../../src/main';
-import { Point } from '../../src/point';
+import Peaks from '../src/main';
+import { Point } from '../src/point';
 
 describe('Point', function() {
   describe('update', function() {

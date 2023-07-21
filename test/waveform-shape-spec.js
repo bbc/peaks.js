@@ -1,4 +1,4 @@
-import WaveformShape from '../../src/waveform-shape';
+import WaveformShape from '../src/waveform-shape';
 
 describe('WaveformShape', function() {
   describe('scaleY', function() {

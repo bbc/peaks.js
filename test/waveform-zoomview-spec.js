@@ -1,7 +1,7 @@
-import Peaks from '../../src/main';
-import { Segment } from '../../src/segment';
+import Peaks from '../src/main';
+import { Segment } from '../src/segment';
 
-import InputController from '../helpers/input-controller';
+import InputController from './helpers/input-controller';
 
 function getEmitCalls(emit, eventName) {
   const calls = [];

@@ -2,7 +2,7 @@ import {
   clamp, extend, formatTime, isInAscendingOrder, isFinite, isFunction,
   isLinearGradientColor, isNullOrUndefined, isObject, isString,
   isValidTime, roundUpToNearest
-} from '../../src/utils';
+} from '../src/utils';
 
 describe('Utils', function() {
   describe('formatTime', function() {

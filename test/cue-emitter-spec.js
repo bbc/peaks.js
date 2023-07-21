@@ -1,6 +1,6 @@
-import Peaks from '../../src/main';
-import CueEmitter from '../../src/cue-emitter';
-import Cue from '../../src/cue';
+import Peaks from '../src/main';
+import CueEmitter from '../src/cue-emitter';
+import Cue from '../src/cue';
 
 describe('CueEmitter', function() {
   let p;

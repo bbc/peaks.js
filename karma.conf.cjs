@@ -27,7 +27,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       { pattern: 'test_data/*', included: false },
-      { pattern: 'test/unit/tests.js', type: 'module', included: true }
+      { pattern: 'test/tests.js', type: 'module', included: true }
     ],
 
     mime: {
@@ -35,7 +35,7 @@ module.exports = function(config) {
     },
 
     preprocessors: {
-      'test/unit/tests.js': ['rollup']
+      'test/tests.js': ['rollup']
     },
 
     rollupPreprocessor: {

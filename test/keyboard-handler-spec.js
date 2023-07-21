@@ -1,5 +1,6 @@
-import Peaks from '../../src/main';
-import InputController from '../helpers/input-controller';
+import Peaks from '../src/main';
+
+import InputController from './helpers/input-controller';
 
 describe('KeyboardHandler', function() {
   let p = null;
