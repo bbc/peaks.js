@@ -13,7 +13,9 @@ describe('Peaks.points', function() {
         container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json'
+      dataUri: {
+        arraybuffer: '/base/test_data/sample.dat'
+      }
     };
 
     Peaks.init(options, function(err, instance) {

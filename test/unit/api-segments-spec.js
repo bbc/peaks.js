@@ -16,7 +16,7 @@ describe('Peaks.segments', function() {
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
-        json: 'base/test_data/sample.json'
+        arraybuffer: 'base/test_data/sample.dat'
       },
       logger: logger
     };

@@ -37,29 +37,28 @@ function Peaks() {
 
   // Set default options
   this.options = {
-    zoomLevels:              [512, 1024, 2048, 4096],
-    waveformCache:           true,
+    zoomLevels:          [512, 1024, 2048, 4096],
+    waveformCache:       true,
 
-    mediaElement:            null,
-    mediaUrl:                null,
+    mediaElement:        null,
+    mediaUrl:            null,
 
-    dataUri:                 null,
-    dataUriDefaultFormat:    'json',
-    withCredentials:         false,
+    dataUri:             null,
+    withCredentials:     false,
 
-    waveformData:            null,
-    webAudio:                null,
+    waveformData:        null,
+    webAudio:            null,
 
-    nudgeIncrement:          1.0,
+    nudgeIncrement:      1.0,
 
-    pointMarkerColor:        '#39cccc',
+    pointMarkerColor:    '#39cccc',
 
-    createSegmentMarker:     createSegmentMarker,
-    createSegmentLabel:      createSegmentLabel,
-    createPointMarker:       createPointMarker,
+    createSegmentMarker: createSegmentMarker,
+    createSegmentLabel:  createSegmentLabel,
+    createPointMarker:   createPointMarker,
 
     // eslint-disable-next-line no-console
-    logger:                  console.error.bind(console)
+    logger:              console.error.bind(console)
   };
 
   return this;

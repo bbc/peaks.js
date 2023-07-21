@@ -15,7 +15,9 @@ describe('CueEmitter', function() {
         container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json',
+      dataUri: {
+        arraybuffer: 'base/test_data/sample.dat'
+      },
       emitCueEvents: false
     };
 
@@ -53,7 +55,9 @@ describe('CueEmitter', function() {
         container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json',
+      dataUri: {
+        arraybuffer: 'base/test_data/sample.dat'
+      },
       emitCueEvents: true,
       points: [{ time: 1.0 }],
       segments: [{ startTime: 1.1, endTime: 1.2 }]
@@ -77,7 +81,9 @@ describe('CueEmitter', function() {
         container: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('media'),
-      dataUri: 'base/test_data/sample.json',
+      dataUri: {
+        arraybuffer: 'base/test_data/sample.dat'
+      },
       emitCueEvents: true
     };
 
@@ -333,7 +339,9 @@ describe('CueEmitter', function() {
         zoomview: {
           container: document.getElementById('zoomview-container')
         },
-        dataUri: 'base/test_data/sample.json',
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        },
         player: player,
         emitCueEvents: true
       };

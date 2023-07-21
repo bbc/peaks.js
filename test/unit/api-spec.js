@@ -342,7 +342,7 @@ describe('Peaks', function() {
         });
       });
 
-      context('with valid json waveform data', function() {
+      context('with valid JSON waveform data', function() {
         it('should initialise correctly', function(done) {
           Peaks.init({
             overview: {
@@ -579,7 +579,7 @@ describe('Peaks', function() {
         });
       });
 
-      it('should invoke callback with an error if provided json waveform data is invalid', function(done) {
+      it('should invoke callback with an error if the provided JSON waveform data is invalid', function(done) {
         Peaks.init({
           overview: {
             container: document.getElementById('overview-container')
@@ -656,7 +656,9 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: '/base/test_data/sample.json',
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
+          },
           logger: 'foo'
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(TypeError);
@@ -675,7 +677,9 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: '/base/test_data/sample.json',
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
+          },
           zoomLevels: null
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
@@ -694,7 +698,9 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: '/base/test_data/sample.json',
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
+          },
           zoomLevels: []
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
@@ -713,7 +719,9 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: '/base/test_data/sample.json',
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
+          },
           zoomLevels: [1024, 512]
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
@@ -733,7 +741,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test_data/sample.dat'
           }
         };
 
@@ -755,7 +763,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test_data/sample.dat'
           }
         };
 
@@ -777,7 +785,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test_data/sample.dat'
           }
         };
 
@@ -799,7 +807,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test_data/sample.dat'
           }
         };
 
@@ -820,7 +828,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test_data/sample.dat'
           }
         };
 
@@ -843,7 +851,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test_data/sample.dat'
           }
         };
 

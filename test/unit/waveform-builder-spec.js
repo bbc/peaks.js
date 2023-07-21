@@ -6,7 +6,7 @@ const TestAudioContext = window.AudioContext || window.mozAudioContext || window
 
 describe('WaveformBuilder', function() {
   describe('init', function() {
-    it('should use the dataUriDefaultFormat value as a format URL if dataUri is provided as string', function(done) {
+    it('should not accept a string as dataUri', function(done) {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
@@ -16,16 +16,9 @@ describe('WaveformBuilder', function() {
 
       const waveformBuilder = new WaveformBuilder(peaks);
 
-      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
-
       waveformBuilder.init(peaks.options, function(err, waveformData) {
-        expect(err).to.equal(null);
-        expect(waveformData).to.be.an.instanceOf(WaveformData);
-
-        const requestType = createXHR.getCall(0).args[1];
-
-        expect(requestType).to.equal('json');
-
+        expect(err).to.be.an.instanceOf(Error);
+        expect(waveformData).to.equal(undefined);
         done();
       });
     });
@@ -34,7 +27,9 @@ describe('WaveformBuilder', function() {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          dataUri: 'base/test_data/404-file.json'
+          dataUri: {
+            json: 'base/test_data/404-file.json'
+          }
         }
       };
 
@@ -52,7 +47,9 @@ describe('WaveformBuilder', function() {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          dataUri: 'file:///test.json'
+          dataUri: {
+            json: 'file:///test.json'
+          }
         }
       };
 
@@ -67,7 +64,7 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    it('should use the JSON dataUri connector', function(done) {
+    it('should fetch JSON format waveform data', function(done) {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
@@ -88,6 +85,32 @@ describe('WaveformBuilder', function() {
         const url = createXHR.getCall(0).args[0];
 
         expect(url).to.equal(peaks.options.dataUri.json);
+
+        done();
+      });
+    });
+
+    it('should fetch binary format waveform data', function(done) {
+      const peaks = {
+        options: {
+          mediaElement: document.getElementById('media'),
+          dataUri: {
+            arraybuffer: 'base/test_data/sample.dat'
+          }
+        }
+      };
+
+      const waveformBuilder = new WaveformBuilder(peaks);
+
+      const createXHR = sinon.spy(waveformBuilder, '_createXHR');
+
+      waveformBuilder.init(peaks.options, function(err, waveformData) {
+        expect(err).to.equal(null);
+        expect(waveformData).to.be.an.instanceOf(WaveformData);
+
+        const url = createXHR.getCall(0).args[0];
+
+        expect(url).to.equal(peaks.options.dataUri.arraybuffer);
 
         done();
       });
@@ -326,7 +349,9 @@ describe('WaveformBuilder', function() {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          dataUri: 'base/test_data/sample.json'
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
         }
       };
 
@@ -370,7 +395,9 @@ describe('WaveformBuilder', function() {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          dataUri: 'base/test_data/sample.json'
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
         }
       };
 
@@ -389,7 +416,9 @@ describe('WaveformBuilder', function() {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          dataUri: 'base/test_data/sample.json'
+          dataUri: {
+            json: 'base/test_data/sample.json'
+          }
         }
       };
 

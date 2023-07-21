@@ -6,7 +6,7 @@
  * @module waveform-builder
  */
 
-import { isArrayBuffer, isObject, isString } from './utils';
+import { isArrayBuffer, isObject } from './utils';
 import WaveformData from 'waveform-data';
 
 const isXhr2 = ('withCredentials' in new XMLHttpRequest());
@@ -152,11 +152,6 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
 
   if (isObject(options.dataUri)) {
     dataUri = options.dataUri;
-  }
-  else if (isString(options.dataUri)) {
-    // Backward compatibility
-    dataUri = {};
-    dataUri[options.dataUriDefaultFormat || 'json'] = options.dataUri;
   }
   else {
     callback(new TypeError('Peaks.init(): The dataUri option must be an object'));
