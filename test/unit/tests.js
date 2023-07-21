@@ -17,4 +17,5 @@ import './waveform-overview-spec';
 import './waveform-shape-spec';
 import './waveform-zoomview-spec';
 import './scrollbar-spec';
+import './keyboard-handler-spec';
 import './utils-spec';

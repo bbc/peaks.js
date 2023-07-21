@@ -17,22 +17,47 @@ function InputController(containerId) {
 }
 
 InputController.prototype.mouseDown = function(pos) {
-  this._dispatchEvent('mousedown', pos);
+  this._dispatchMouseEvent('mousedown', pos);
 };
 
 InputController.prototype.mouseMove = function(pos) {
-  this._dispatchEvent('mousemove', pos);
+  this._dispatchMouseEvent('mousemove', pos);
 };
 
 InputController.prototype.mouseUp = function(pos) {
-  this._dispatchEvent('mouseup', pos);
+  this._dispatchMouseEvent('mouseup', pos);
 };
 
-InputController.prototype._dispatchEvent = function(type, pos) {
+InputController.prototype._dispatchMouseEvent = function(type, pos) {
   const event = new MouseEvent(type, {
     bubbles: true,
     clientX: this._left + pos.x,
     clientY: this._top  + pos.y
+  });
+
+  this._target.dispatchEvent(event);
+};
+
+const keyCodes = {
+  Tab: 9,
+  Space: 32,
+  ArrowLeft: 37,
+  ArrowRight: 39
+};
+
+InputController.prototype.keyDown = function(key, shift) {
+  this._dispatchKeyboardEvent('keydown', key, shift);
+};
+
+InputController.prototype.keyUp = function(key, shift) {
+  this._dispatchKeyboardEvent('keyup', key, shift);
+};
+
+InputController.prototype._dispatchKeyboardEvent = function(type, key, shift) {
+  const event = new KeyboardEvent(type, {
+    bubbles:  true,
+    keyCode:  keyCodes[key],
+    shiftKey: shift
   });
 
   this._target.dispatchEvent(event);

@@ -60,6 +60,7 @@ describe('WaveformZoomView', function() {
       p.destroy();
       p = null;
       zoomview = null;
+      inputController = null;
     }
   });
 
