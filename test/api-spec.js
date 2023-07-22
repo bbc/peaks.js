@@ -165,12 +165,16 @@ describe('Peaks', function() {
         });
 
         it('should use view-specific options', function(done) {
+          function overviewFormatPlayheadTime() { }
+          function zoomviewFormatPlayheadTime() { }
+
           Peaks.init({
             overview: {
               container: document.getElementById('overview-container'),
               playheadColor: '#ff0000',
               playheadTextColor: '#00ff00',
               showPlayheadTime: true,
+              formatPlayheadTime: overviewFormatPlayheadTime,
               axisLabelColor: '#0000ff',
               axisGridlineColor: '#000000',
               highlightColor: '#808080',
@@ -184,6 +188,7 @@ describe('Peaks', function() {
               playheadColor: '#00ff00',
               playheadTextColor: '#0000ff',
               showPlayheadTime: false,
+              formatPlayheadTime: zoomviewFormatPlayheadTime,
               axisLabelColor: '#ff0000',
               axisGridlineColor: '#808080'
             },
@@ -202,6 +207,8 @@ describe('Peaks', function() {
             expect(zoomview._playheadLayer._playheadTextColor).to.equal('#0000ff');
             expect(overview._playheadLayer._playheadText).to.be.an.instanceOf(Konva.Text);
             expect(zoomview._playheadLayer._playheadText).to.equal(undefined);
+            expect(overview._formatPlayheadTime).to.equal(overviewFormatPlayheadTime);
+            expect(zoomview._formatPlayheadTime).to.equal(zoomviewFormatPlayheadTime);
             expect(overview._axis._axisLabelColor).to.equal('#0000ff');
             expect(zoomview._axis._axisLabelColor).to.equal('#ff0000');
             expect(overview._axis._axisGridlineColor).to.equal('#000000');
@@ -634,18 +641,6 @@ describe('Peaks', function() {
           done();
         });
       });
-
-      /* it('should invoke callback with an error if the container option is used', function(done) {
-        Peaks.init({
-          container: document.createElement('div'),
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-        }, function(err, instance) {
-          expect(err).to.be.an.instanceOf(Error);
-          expect(instance).to.equal(undefined);
-          done();
-        });
-      }); */
 
       it('should invoke callback with an error if the logger is defined and not a function', function(done) {
         Peaks.init({
