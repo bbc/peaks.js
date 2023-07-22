@@ -1022,4 +1022,82 @@ describe('WaveformZoomView', function() {
       });
     });
   });
+
+  describe('enableSeek', function() {
+    let inputController = null;
+
+    beforeEach(function(done) {
+      const options = {
+        zoomview: {
+          container: document.getElementById('zoomview-container')
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        p = instance;
+
+        inputController = new InputController('zoomview-container');
+
+        done();
+      });
+    });
+
+    context('when enabled', function() {
+      context('when clicking on the waveform', function() {
+        it('should set the playback position', function() {
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseUp({ x: 100, y: 50 });
+
+          const view = p.views.getView('zoomview');
+
+          expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(100), 0.01);
+        });
+      });
+
+      context('when dragging the playhead', function() {
+        it('should set the playback position', function(done) {
+          const view = p.views.getView('zoomview');
+
+          p.once('player.timeupdate', function() {
+            const x = view.timeToPixels(1.0);
+            const distance = 100;
+
+            inputController.mouseDown({ x: x, y: 50 });
+            inputController.mouseMove({ x: x + distance, y: 50 });
+            inputController.mouseUp({ x: x + distance, y: 50 });
+
+            expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(x + distance), 0.01);
+            done();
+          });
+
+          p.player.seek(1.0);
+        });
+      });
+    });
+
+    context('when disabled', function() {
+      beforeEach(function() {
+        const view = p.views.getView('zoomview');
+        view.enableSeek(false);
+      });
+
+      context('when clicking on the waveform', function() {
+        it('should not change the playback position', function() {
+          const time = p.player.getCurrentTime();
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseUp({ x: 100, y: 50 });
+
+          expect(p.player.getCurrentTime()).to.equal(time);
+        });
+      });
+    });
+  });
 });

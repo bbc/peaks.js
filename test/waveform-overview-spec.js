@@ -107,6 +107,17 @@ describe('WaveformOverview', function() {
     });
 
     context('when enabled', function() {
+      context('when clicking on the waveform', function() {
+        it('should set the playback position', function() {
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseUp({ x: 100, y: 50 });
+
+          const view = p.views.getView('overview');
+
+          expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(100), 0.01);
+        });
+      });
+
       context('when dragging the waveform to the left', function() {
         it('should set the playback position', function() {
           const distance = -50;
@@ -158,6 +169,17 @@ describe('WaveformOverview', function() {
       beforeEach(function() {
         const view = p.views.getView('overview');
         view.enableSeek(false);
+      });
+
+      context('when clicking on the waveform', function() {
+        it('should not change the playback position', function() {
+          const time = p.player.getCurrentTime();
+
+          inputController.mouseDown({ x: 100, y: 50 });
+          inputController.mouseUp({ x: 100, y: 50 });
+
+          expect(p.player.getCurrentTime()).to.equal(time);
+        });
       });
 
       context('when dragging the waveform', function() {
