@@ -92,6 +92,20 @@ describe('WaveformView', function() {
 
           expect(view._waveformShape._shape.fill()).to.equal('#ff0000');
         });
+
+        it('should set the waveform to a linear gradient color', function() {
+          const view = p.views.getView(viewName);
+
+          view.setWaveformColor({
+            linearGradientStart: 20,
+            linearGradientEnd: 60,
+            linearGradientColorStops: ['hsl(180, 78%, 46%)', 'hsl(180, 78%, 16%)']
+          });
+
+          expect(view._waveformShape._shape.fillLinearGradientStartPointY()).to.equal(20);
+          expect(view._waveformShape._shape.fillLinearGradientEndPointY()).to.equal(60);
+          expect(view._waveformShape._shape.fillLinearGradientColorStops().length).to.equal(4);
+        });
       });
     });
   });
