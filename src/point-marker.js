@@ -37,9 +37,9 @@ import Konva from 'konva/lib/Core';
  */
 
 function PointMarker(options) {
-  this._point    = options.point;
-  this._marker   = options.marker;
-  this._editable = options.editable;
+  this._point     = options.point;
+  this._marker    = options.marker;
+  this._draggable = options.draggable;
 
   this._onDragStart   = options.onDragStart;
   this._onDragMove    = options.onDragMove;
@@ -51,7 +51,7 @@ function PointMarker(options) {
   this._group = new Konva.Group({
     name:          'point-marker',
     point:         this._point,
-    draggable:     this._editable,
+    draggable:     this._draggable,
     dragBoundFunc: options.dragBoundFunc
   });
 

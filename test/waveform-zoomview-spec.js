@@ -1,4 +1,5 @@
 import Peaks from '../src/main';
+import { Point } from '../src/point';
 import { Segment } from '../src/segment';
 
 import InputController from './helpers/input-controller';
@@ -34,6 +35,9 @@ describe('WaveformZoomView', function() {
       dataUri: {
         json: 'base/test_data/sample.json'
       },
+      points: [
+        { id: 'point1', time: 7.0, editable: true }
+      ],
       segments: [
         { id: 'segment1', startTime: 1.0,  endTime: 2.0, editable: true },
         { id: 'segment2', startTime: 3.0,  endTime: 4.0, editable: true },
@@ -1161,6 +1165,63 @@ describe('WaveformZoomView', function() {
           expect(p.player.getCurrentTime()).to.equal(time);
         });
       });
+    });
+  });
+
+  context('when dragging a point', function() {
+    it('should move the point', function() {
+      const view = p.views.getView('zoomview');
+      const x = view.timeToPixels(7.0);
+      const distance = 100;
+
+      inputController.mouseDown({ x: x, y: 50 });
+      inputController.mouseMove({ x: x + distance, y: 50 });
+      inputController.mouseUp({ x: x + distance, y: 50 });
+
+      const point = p.points.getPoint('point1');
+
+      expect(point.time).to.equal(view.pixelsToTime(x + distance));
+    });
+
+    it('should emit point drag events', function() {
+      const counters = {
+        dragStart: 0,
+        dragMove: 0,
+        dragEnd: 0
+      };
+
+      p.on('points.dragstart', function(event) {
+        counters.dragStart++;
+
+        expect(event.point).to.be.an.instanceOf(Point);
+        expect(event.point.id).to.equal('point1');
+      });
+
+      p.on('points.dragmove', function(event) {
+        counters.dragMove++;
+
+        expect(event.point).to.be.an.instanceOf(Point);
+        expect(event.point.id).to.equal('point1');
+      });
+
+      p.on('points.dragend', function(event) {
+        counters.dragEnd++;
+
+        expect(event.point).to.be.an.instanceOf(Point);
+        expect(event.point.id).to.equal('point1');
+      });
+
+      const view = p.views.getView('zoomview');
+      const x = view.timeToPixels(7.0);
+      const distance = 100;
+
+      inputController.mouseDown({ x: x, y: 50 });
+      inputController.mouseMove({ x: x + distance, y: 50 });
+      inputController.mouseUp({ x: x + distance, y: 50 });
+
+      expect(counters.dragStart).to.equal(1);
+      expect(counters.dragMove).to.equal(1);
+      expect(counters.dragEnd).to.equal(1);
     });
   });
 });

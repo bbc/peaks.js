@@ -202,7 +202,7 @@ PointsLayer.prototype._onPointsDrag = function(event) {
  */
 
 PointsLayer.prototype._onPointMarkerDragMove = function(event, point) {
-  const pointMarker = this._pointMarkers[point.id];
+  const pointMarker = this._pointMarkers[point.pid];
 
   const markerX = pointMarker.getX();
 
