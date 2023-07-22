@@ -21,7 +21,7 @@ import { Text } from 'konva/lib/shapes/Text';
 
 function DefaultPointMarker(options) {
   this._options = options;
-  this._editable = options.editable;
+  this._draggable = options.editable;
 }
 
 DefaultPointMarker.prototype.init = function(group) {
@@ -53,7 +53,7 @@ DefaultPointMarker.prototype.init = function(group) {
     width:   handleWidth,
     height:  handleHeight,
     fill:    this._options.color,
-    visible: this._editable
+    visible: this._draggable
   });
 
   // Line - create with default y and points, the real values
@@ -99,7 +99,7 @@ DefaultPointMarker.prototype.bindEventHandlers = function(group) {
   const self = this;
 
   self._handle.on('mouseover touchstart', function() {
-    if (self._editable) {
+    if (self._draggable) {
       // Position text to the left of the marker
       self._time.setX(-24 - self._time.getWidth());
       self._time.show();
@@ -107,7 +107,7 @@ DefaultPointMarker.prototype.bindEventHandlers = function(group) {
   });
 
   self._handle.on('mouseout touchend', function() {
-    if (self._editable) {
+    if (self._draggable) {
       self._time.hide();
     }
   });

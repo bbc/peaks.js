@@ -147,7 +147,7 @@ PointsLayer.prototype._createPointMarker = function(point) {
 
   const marker = this._peaks.options.createPointMarker({
     point:      point,
-    draggable:  editable,
+    editable:   editable,
     color:      point.color,
     fontFamily: this._peaks.options.fontFamily || defaultFontFamily,
     fontSize:   this._peaks.options.fontSize || defaultFontSize,

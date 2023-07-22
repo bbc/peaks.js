@@ -84,7 +84,7 @@ export function createSegmentLabel(options) {
  * @typedef {Object} CreatePointMarkerOptions
  * @global
  * @property {Point} point
- * @property {Boolean} draggable If true, marker is draggable.
+ * @property {Boolean} editable If true, marker is draggable.
  * @property {String} color
  * @property {Layer} layer
  * @property {String} view
