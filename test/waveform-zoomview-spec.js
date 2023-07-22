@@ -1032,7 +1032,11 @@ describe('WaveformZoomView', function() {
           container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
-        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+        segments: [
+          { id: 'segment1', startTime: 1.0, endTime: 2.0, editable: true },
+          { id: 'segment2', startTime: 3.0, endTime: 4.0, editable: false }
+        ]
       };
 
       Peaks.init(options, function(err, instance) {
@@ -1062,22 +1066,81 @@ describe('WaveformZoomView', function() {
       });
 
       context('when dragging the playhead', function() {
-        it('should set the playback position', function(done) {
+        beforeEach(function() {
           const view = p.views.getView('zoomview');
+          view.enableSegmentDragging(true);
+        });
 
-          p.once('player.timeupdate', function() {
-            const x = view.timeToPixels(1.0);
-            const distance = 100;
+        context('when the playhead is not over a segment', function() {
+          it('should set the playback position', function(done) {
+            const view = p.views.getView('zoomview');
 
-            inputController.mouseDown({ x: x, y: 50 });
-            inputController.mouseMove({ x: x + distance, y: 50 });
-            inputController.mouseUp({ x: x + distance, y: 50 });
+            p.once('player.timeupdate', function() {
+              const x = view.timeToPixels(2.5);
+              const distance = 100;
 
-            expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(x + distance), 0.01);
-            done();
+              inputController.mouseDown({ x: x, y: 50 });
+              inputController.mouseMove({ x: x + distance, y: 50 });
+              inputController.mouseUp({ x: x + distance, y: 50 });
+
+              expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(x + distance), 0.01);
+              done();
+            });
+
+            p.player.seek(2.5);
           });
+        });
 
-          p.player.seek(1.0);
+        context('when the playhead is over a draggable segment', function() {
+          it('should set the playback position and not move the segment', function(done) {
+            const view = p.views.getView('zoomview');
+
+            p.once('player.timeupdate', function() {
+              const x = view.timeToPixels(1.5);
+              const distance = 100;
+
+              inputController.mouseDown({ x: x, y: 50 });
+              inputController.mouseMove({ x: x + distance, y: 50 });
+              inputController.mouseUp({ x: x + distance, y: 50 });
+
+              expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(x + distance), 0.01);
+
+              const segment = p.segments.getSegment('segment1');
+
+              expect(segment.startTime).to.equal(1.0);
+              expect(segment.endTime).to.equal(2.0);
+
+              done();
+            });
+
+            p.player.seek(1.5);
+          });
+        });
+
+        context('when the playhead is over a non-draggable segment', function() {
+          it('should set the playback position and not move the segment', function(done) {
+            const view = p.views.getView('zoomview');
+
+            p.once('player.timeupdate', function() {
+              const x = view.timeToPixels(3.5);
+              const distance = 100;
+
+              inputController.mouseDown({ x: x, y: 50 });
+              inputController.mouseMove({ x: x + distance, y: 50 });
+              inputController.mouseUp({ x: x + distance, y: 50 });
+
+              expect(p.player.getCurrentTime()).to.be.closeTo(view.pixelsToTime(x + distance), 0.01);
+
+              const segment = p.segments.getSegment('segment2');
+
+              expect(segment.startTime).to.equal(3.0);
+              expect(segment.endTime).to.equal(4.0);
+
+              done();
+            });
+
+            p.player.seek(3.5);
+          });
         });
       });
     });
