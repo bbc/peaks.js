@@ -98,10 +98,6 @@ describe('WaveformZoomView', function() {
         dataUri: {
           json: 'base/test_data/sample.json'
         },
-        // segmentOptions: {
-        //   markers: test.markers,
-        //   overlay: test.overlay
-        // },
         segments: [
           { id: 'segment1', startTime: 1.0,  endTime: 2.0, editable: true },
           { id: 'segment2', startTime: 3.0,  endTime: 4.0, editable: true },
@@ -1479,39 +1475,415 @@ describe('WaveformZoomView', function() {
       }
     });
 
-    it('should emit an zoomview.click event', function() {
-      const emit = sinon.spy(p, 'emit');
+    context('when clicking on the waveform', function() {
+      it('should emit a zoomview.click event', function() {
+        const emit = sinon.spy(p, 'emit');
 
-      inputController.mouseDown({ x: 100, y: 50 });
-      inputController.mouseUp({ x: 100, y: 50 });
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
 
-      const calls = getEmitCalls(emit, /zoomview/);
+        const calls = getEmitCalls(emit, /zoomview/);
 
-      expect(calls.length).to.equal(1);
+        expect(calls.length).to.equal(1);
 
-      expect(calls[0].args[0]).to.equal('zoomview.click');
-      expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
-      expect(calls[0].args[1].time).to.be.a('number');
+        expect(calls[0].args[0]).to.equal('zoomview.click');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].time).to.be.a('number');
+      });
+
+      it('should emit a zoomview.dblclick event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview/);
+
+        expect(calls.length).to.equal(3);
+
+        expect(calls[0].args[0]).to.equal('zoomview.click');
+        expect(calls[1].args[0]).to.equal('zoomview.click');
+        expect(calls[2].args[0]).to.equal('zoomview.dblclick');
+
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].time).to.be.a('number');
+      });
     });
 
-    it('should emit an zoomview.dblclick event', function() {
-      const emit = sinon.spy(p, 'emit');
+    context('when clicking on a segment', function() {
+      beforeEach(function(done) {
+        p.segments.add({ id: 'segment1', startTime: 1.0, endTime: 2.0, editable: true });
+        setTimeout(done, 50);
+      });
 
-      inputController.mouseDown({ x: 100, y: 50 });
-      inputController.mouseUp({ x: 100, y: 50 });
-      inputController.mouseDown({ x: 100, y: 50 });
-      inputController.mouseUp({ x: 100, y: 50 });
+      it('should emit both a zoomview.click and a segments.click event', function() {
+        const emit = sinon.spy(p, 'emit');
 
-      const calls = getEmitCalls(emit, /zoomview/);
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
 
-      expect(calls.length).to.equal(3);
+        const calls = getEmitCalls(emit, /zoomview|segments/);
 
-      expect(calls[0].args[0]).to.equal('zoomview.click');
-      expect(calls[1].args[0]).to.equal('zoomview.click');
-      expect(calls[2].args[0]).to.equal('zoomview.dblclick');
+        expect(calls.length).to.equal(4);
 
-      expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
-      expect(calls[0].args[1].time).to.be.a('number');
+        expect(calls[0].args[0]).to.equal('segments.mousedown');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[0].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[1].args[0]).to.equal('segments.mouseup');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[1].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[2].args[0]).to.equal('segments.click');
+        expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[2].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[3].args[0]).to.equal('zoomview.click');
+        expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[3].args[1].time).to.be.a('number');
+      });
+
+      it('should emit both a zoomview.dblclick and a segments.dblclick event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|segments/);
+
+        expect(calls.length).to.equal(10);
+
+        expect(calls[0].args[0]).to.equal('segments.mousedown');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[0].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[1].args[0]).to.equal('segments.mouseup');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[1].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[2].args[0]).to.equal('segments.click');
+        expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[2].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[3].args[0]).to.equal('zoomview.click');
+        expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[3].args[1].time).to.be.a('number');
+
+        expect(calls[4].args[0]).to.equal('segments.mousedown');
+        expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[4].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[4].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[5].args[0]).to.equal('segments.mouseup');
+        expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[5].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[5].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[6].args[0]).to.equal('segments.click');
+        expect(calls[6].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[6].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[6].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[7].args[0]).to.equal('zoomview.click');
+        expect(calls[7].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[7].args[1].time).to.be.a('number');
+
+        expect(calls[8].args[0]).to.equal('segments.dblclick');
+        expect(calls[8].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[8].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[8].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[9].args[0]).to.equal('zoomview.dblclick');
+        expect(calls[9].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[9].args[1].time).to.be.a('number');
+      });
+
+      it('should allow the user to prevent the zoomview.click event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        p.on('segments.click', function(event) {
+          event.preventViewEvent();
+        });
+
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|segments/);
+
+        expect(calls.length).to.equal(3);
+
+        expect(calls[0].args[0]).to.equal('segments.mousedown');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[0].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[1].args[0]).to.equal('segments.mouseup');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[1].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[2].args[0]).to.equal('segments.click');
+        expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[2].args[1].segment.id).to.equal('segment1');
+      });
+
+      it('should allow the user to prevent the zoomview.dblclick event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        p.on('segments.dblclick', function(event) {
+          event.preventViewEvent();
+        });
+
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+        inputController.mouseDown({ x: 100, y: 50 });
+        inputController.mouseUp({ x: 100, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|segments/);
+
+        expect(calls.length).to.equal(9);
+
+        expect(calls[0].args[0]).to.equal('segments.mousedown');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[0].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[1].args[0]).to.equal('segments.mouseup');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[1].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[2].args[0]).to.equal('segments.click');
+        expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[2].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[3].args[0]).to.equal('zoomview.click');
+        expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[3].args[1].time).to.be.a('number');
+
+        expect(calls[4].args[0]).to.equal('segments.mousedown');
+        expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[4].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[4].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[5].args[0]).to.equal('segments.mouseup');
+        expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[5].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[5].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[6].args[0]).to.equal('segments.click');
+        expect(calls[6].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[6].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[6].args[1].segment.id).to.equal('segment1');
+
+        expect(calls[7].args[0]).to.equal('zoomview.click');
+        expect(calls[7].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[7].args[1].time).to.be.a('number');
+
+        expect(calls[8].args[0]).to.equal('segments.dblclick');
+        expect(calls[8].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[8].args[1].segment).to.be.an.instanceOf(Segment);
+        expect(calls[8].args[1].segment.id).to.equal('segment1');
+      });
+    });
+
+    context('when clicking on a point', function() {
+      beforeEach(function(done) {
+        p.points.add({ id: 'point1', time: 1.0, editable: true });
+        setTimeout(done, 50);
+      });
+
+      it('should emit both a zoomview.click and a points.click event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        inputController.mouseDown({ x: 86, y: 50 });
+        inputController.mouseUp({ x: 86, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|points/);
+
+        expect(calls.length).to.equal(2);
+
+        // expect(calls[0].args[0]).to.equal('points.mousedown');
+        // expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[0].args[1].point.id).to.equal('point1');
+
+        // expect(calls[1].args[0]).to.equal('points.mouseup');
+        // expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[1].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[1].args[1].point.id).to.equal('point1');
+
+        expect(calls[0].args[0]).to.equal('points.click');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[0].args[1].point.id).to.equal('point1');
+
+        expect(calls[1].args[0]).to.equal('zoomview.click');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].time).to.be.a('number');
+      });
+
+      it('should emit both a zoomview.dblclick and a points.dblclick event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        inputController.mouseDown({ x: 86, y: 50 });
+        inputController.mouseUp({ x: 86, y: 50 });
+        inputController.mouseDown({ x: 86, y: 50 });
+        inputController.mouseUp({ x: 86, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|points/);
+
+        expect(calls.length).to.equal(6);
+
+        // expect(calls[0].args[0]).to.equal('points.mousedown');
+        // expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[0].args[1].point.id).to.equal('segment1');
+
+        // expect(calls[1].args[0]).to.equal('points.mouseup');
+        // expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[1].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[1].args[1].point.id).to.equal('segment1');
+
+        expect(calls[0].args[0]).to.equal('points.click');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[0].args[1].point.id).to.equal('point1');
+
+        expect(calls[1].args[0]).to.equal('zoomview.click');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].time).to.be.a('number');
+
+        // expect(calls[4].args[0]).to.equal('points.mousedown');
+        // expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[4].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[4].args[1].point.id).to.equal('point1');
+
+        // expect(calls[5].args[0]).to.equal('points.mouseup');
+        // expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[5].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[5].args[1].point.id).to.equal('point1');
+
+        expect(calls[2].args[0]).to.equal('points.click');
+        expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[2].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[2].args[1].point.id).to.equal('point1');
+
+        expect(calls[3].args[0]).to.equal('zoomview.click');
+        expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[3].args[1].time).to.be.a('number');
+
+        expect(calls[4].args[0]).to.equal('points.dblclick');
+        expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[4].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[4].args[1].point.id).to.equal('point1');
+
+        expect(calls[5].args[0]).to.equal('zoomview.dblclick');
+        expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[5].args[1].time).to.be.a('number');
+      });
+
+      it('should allow the user to prevent the zoomview.click event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        p.on('points.click', function(event) {
+          event.preventViewEvent();
+        });
+
+        inputController.mouseDown({ x: 86, y: 50 });
+        inputController.mouseUp({ x: 86, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|points/);
+
+        expect(calls.length).to.equal(1);
+
+        // expect(calls[0].args[0]).to.equal('points.mousedown');
+        // expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[0].args[1].point.id).to.equal('point1');
+
+        // expect(calls[1].args[0]).to.equal('points.mouseup');
+        // expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[1].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[1].args[1].point.id).to.equal('point1');
+
+        expect(calls[0].args[0]).to.equal('points.click');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[0].args[1].point.id).to.equal('point1');
+      });
+
+      it('should allow the user to prevent the zoomview.dblclick event', function() {
+        const emit = sinon.spy(p, 'emit');
+
+        p.on('points.dblclick', function(event) {
+          event.preventViewEvent();
+        });
+
+        inputController.mouseDown({ x: 86, y: 50 });
+        inputController.mouseUp({ x: 86, y: 50 });
+        inputController.mouseDown({ x: 86, y: 50 });
+        inputController.mouseUp({ x: 86, y: 50 });
+
+        const calls = getEmitCalls(emit, /zoomview|points/);
+
+        expect(calls.length).to.equal(5);
+
+        // expect(calls[0].args[0]).to.equal('points.mousedown');
+        // expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[0].args[1].point.id).to.equal('point1');
+
+        // expect(calls[1].args[0]).to.equal('points.mouseup');
+        // expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[1].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[1].args[1].point.id).to.equal('point1');
+
+        expect(calls[0].args[0]).to.equal('points.click');
+        expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[0].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[0].args[1].point.id).to.equal('point1');
+
+        expect(calls[1].args[0]).to.equal('zoomview.click');
+        expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[1].args[1].time).to.be.a('number');
+
+        // expect(calls[4].args[0]).to.equal('points.mousedown');
+        // expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[4].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[4].args[1].point.id).to.equal('point1');
+
+        // expect(calls[5].args[0]).to.equal('points.mouseup');
+        // expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        // expect(calls[5].args[1].point).to.be.an.instanceOf(Point);
+        // expect(calls[5].args[1].point.id).to.equal('point1');
+
+        expect(calls[2].args[0]).to.equal('points.click');
+        expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[2].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[2].args[1].point.id).to.equal('point1');
+
+        expect(calls[3].args[0]).to.equal('zoomview.click');
+        expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[3].args[1].time).to.be.a('number');
+
+        expect(calls[4].args[0]).to.equal('points.dblclick');
+        expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+        expect(calls[4].args[1].point).to.be.an.instanceOf(Point);
+        expect(calls[4].args[1].point.id).to.equal('point1');
+      });
     });
   });
 });
