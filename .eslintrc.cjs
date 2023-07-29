@@ -91,7 +91,7 @@ module.exports = {
     'operator-assignment': ['error', 'always'],
     'padded-blocks': ['warn', 'never'],
     'prefer-const': 'error',
-    'quotes': ['error', 'single', { 'avoidEscape': true }],
+    'quotes': ['warn', 'single', { 'avoidEscape': true }],
     'radix': 'error',
     'semi': ['error', 'always'],
     'space-before-blocks': 'warn',
