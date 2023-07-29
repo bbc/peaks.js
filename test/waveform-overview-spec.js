@@ -1,6 +1,9 @@
 import Peaks from '../src/main';
 
 import InputController from './helpers/input-controller';
+import { getEmitCalls } from './helpers/utils';
+
+import Konva from 'konva';
 
 describe('WaveformOverview', function() {
   let p = null;
@@ -194,6 +197,80 @@ describe('WaveformOverview', function() {
           expect(p.player.getCurrentTime()).to.equal(time);
         });
       });
+    });
+  });
+
+  describe('click events', function() {
+    let inputController = null;
+
+    beforeEach(function(done) {
+      // TODO: Konva.js uses global state to handle double click timing.
+      // Instead of adding time delays, we just reset Konva's internal
+      // flag here.
+      Konva._mouseInDblClickWindow = false;
+
+      const options = {
+        overview: {
+          container: document.getElementById('overview-container')
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        p = instance;
+
+        inputController = new InputController('overview-container');
+
+        done();
+      });
+    });
+
+    afterEach(function() {
+      if (p) {
+        p.destroy();
+        p = null;
+      }
+    });
+
+    it('should emit an overview.click event', function() {
+      const emit = sinon.spy(p, 'emit');
+
+      inputController.mouseDown({ x: 100, y: 50 });
+      inputController.mouseUp({ x: 100, y: 50 });
+
+      const calls = getEmitCalls(emit, /overview/);
+
+      expect(calls.length).to.equal(1);
+
+      expect(calls[0].args[0]).to.equal('overview.click');
+      expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+      expect(calls[0].args[1].time).to.be.a('number');
+    });
+
+    it('should emit an overview.dblclick event', function() {
+      const emit = sinon.spy(p, 'emit');
+
+      inputController.mouseDown({ x: 100, y: 50 });
+      inputController.mouseUp({ x: 100, y: 50 });
+      inputController.mouseDown({ x: 100, y: 50 });
+      inputController.mouseUp({ x: 100, y: 50 });
+
+      const calls = getEmitCalls(emit, /overview/);
+
+      expect(calls.length).to.equal(3);
+
+      expect(calls[0].args[0]).to.equal('overview.click');
+      expect(calls[1].args[0]).to.equal('overview.click');
+      expect(calls[2].args[0]).to.equal('overview.dblclick');
+
+      expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+      expect(calls[0].args[1].time).to.be.a('number');
     });
   });
 });
