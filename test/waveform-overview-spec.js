@@ -8,15 +8,92 @@ import { getEmitCalls } from './helpers/utils';
 import Konva from 'konva';
 
 describe('WaveformOverview', function() {
-  let p = null;
+  context('with played waveform color option', function() {
+    it('should create a played waveform shape', function(done) {
+      const options = {
+        overview: {
+          container: document.getElementById('overview-container'),
+          waveformColor: '#f00',
+          playedWaveformColor: '#0f0'
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        }
+      };
 
-  beforeEach(function() {
-    const mediaElement = document.createElement('audio');
-    mediaElement.id = 'audio';
-    mediaElement.src = '/base/test_data/STAT3S3.mp3';
-    mediaElement.muted = true;
-    document.body.appendChild(mediaElement);
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+
+        const overview = instance.views.getView('overview');
+        expect(overview).to.be.ok;
+
+        expect(overview._waveformShape._color).to.equal('#f00');
+        expect(overview._playedWaveformShape._color).to.equal('#0f0');
+
+        done();
+      });
+    });
   });
+
+  describe('setPlayedWaveformColor', function() {
+    it('should create a played waveform shape', function(done) {
+      const options = {
+        overview: {
+          container: document.getElementById('overview-container'),
+          waveformColor: '#f00'
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+
+        const overview = instance.views.getView('overview');
+        expect(overview).to.be.ok;
+
+        overview.setPlayedWaveformColor('#0f0');
+
+        expect(overview._waveformShape._color).to.equal('#f00');
+        expect(overview._playedWaveformShape._color).to.equal('#0f0');
+
+        done();
+      });
+    });
+
+    it('should remove the played waveform shape', function(done) {
+      const options = {
+        overview: {
+          container: document.getElementById('zoomview-container'),
+          waveformColor: '#f00',
+          playedWaveformColor: '#0f0'
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+
+        const overview = instance.views.getView('overview');
+        expect(overview).to.be.ok;
+
+        overview.setPlayedWaveformColor(null);
+
+        expect(overview._waveformShape._color).to.equal('#f00');
+        expect(overview._playedWaveformShape).to.equal(null);
+
+        done();
+      });
+    });
+  });
+
+  let p = null;
 
   afterEach(function() {
     if (p) {
@@ -64,7 +141,7 @@ describe('WaveformOverview', function() {
           overview: {
             container: document.getElementById('overview-container')
           },
-          mediaElement: document.getElementById('audio'),
+          mediaElement: document.getElementById('media'),
           dataUri: { arraybuffer: '/base/test_data/STAT3S3.dat' }
         };
 

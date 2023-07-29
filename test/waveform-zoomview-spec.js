@@ -8,6 +8,91 @@ import { getEmitCalls } from './helpers/utils';
 import Konva from 'konva';
 
 describe('WaveformZoomView', function() {
+  context('with played waveform color option', function() {
+    it('should create a played waveform shape', function(done) {
+      const options = {
+        zoomview: {
+          container: document.getElementById('zoomview-container'),
+          waveformColor: '#f00',
+          playedWaveformColor: '#0f0'
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+
+        const zoomview = instance.views.getView('zoomview');
+        expect(zoomview).to.be.ok;
+
+        expect(zoomview._waveformShape._color).to.equal('#f00');
+        expect(zoomview._playedWaveformShape._color).to.equal('#0f0');
+
+        done();
+      });
+    });
+  });
+
+  describe('setPlayedWaveformColor', function() {
+    it('should create a played waveform shape', function(done) {
+      const options = {
+        zoomview: {
+          container: document.getElementById('zoomview-container'),
+          waveformColor: '#f00'
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+
+        const zoomview = instance.views.getView('zoomview');
+        expect(zoomview).to.be.ok;
+
+        zoomview.setPlayedWaveformColor('#0f0');
+
+        expect(zoomview._waveformShape._color).to.equal('#f00');
+        expect(zoomview._playedWaveformShape._color).to.equal('#0f0');
+
+        done();
+      });
+    });
+
+    it('should remove the played waveform shape', function(done) {
+      const options = {
+        zoomview: {
+          container: document.getElementById('zoomview-container'),
+          waveformColor: '#f00',
+          playedWaveformColor: '#0f0'
+        },
+        mediaElement: document.getElementById('media'),
+        dataUri: {
+          arraybuffer: 'base/test_data/sample.dat'
+        }
+      };
+
+      Peaks.init(options, function(err, instance) {
+        expect(err).to.equal(null);
+
+        const zoomview = instance.views.getView('zoomview');
+        expect(zoomview).to.be.ok;
+
+        zoomview.setPlayedWaveformColor(null);
+
+        expect(zoomview._waveformShape._color).to.equal('#f00');
+        expect(zoomview._playedWaveformShape).to.equal(null);
+
+        done();
+      });
+    });
+  });
+
   describe('setStartTime', function() {
     let p = null;
     let zoomview = null;
@@ -22,7 +107,7 @@ describe('WaveformZoomView', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          arraybuffer: 'base/test_data/sample.dat'
         }
       };
 
