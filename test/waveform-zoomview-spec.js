@@ -115,7 +115,7 @@ describe('WaveformZoomView', function() {
 
         inputController = new InputController('zoomview-container');
 
-        done();
+        setTimeout(done, 0);
       });
     });
 
