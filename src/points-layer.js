@@ -198,25 +198,6 @@ PointsLayer.prototype._onPointsDrag = function(event) {
 };
 
 /**
- * @param {Point} point
- */
-
-PointsLayer.prototype._onPointMarkerDragMove = function(event, point) {
-  const pointMarker = this._pointMarkers[point.pid];
-
-  const markerX = pointMarker.getX();
-
-  const offset = markerX + pointMarker.getWidth();
-
-  point._setTime(this._view.pixelOffsetToTime(offset));
-
-  this._peaks.emit('points.dragmove', {
-    point: point,
-    evt: event.evt
-  });
-};
-
-/**
  * @param {KonvaEventObject} event
  * @param {Point} point
  */
@@ -249,6 +230,26 @@ PointsLayer.prototype._onPointMarkerDragStart = function(event, point) {
   this._dragPointMarker = this.getPointMarker(point);
 
   this._peaks.emit('points.dragstart', {
+    point: point,
+    evt: event.evt
+  });
+};
+
+/**
+ * @param {KonvaEventObject} event
+ * @param {Point} point
+ */
+
+PointsLayer.prototype._onPointMarkerDragMove = function(event, point) {
+  const pointMarker = this._pointMarkers[point.pid];
+
+  const markerX = pointMarker.getX();
+
+  const offset = markerX + pointMarker.getWidth();
+
+  point._setTime(this._view.pixelOffsetToTime(offset));
+
+  this._peaks.emit('points.dragmove', {
     point: point,
     evt: event.evt
   });
