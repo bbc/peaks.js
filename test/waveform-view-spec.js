@@ -7,95 +7,364 @@ import { getEmitCalls } from './helpers/utils';
 
 import Konva from 'konva';
 
+function initOptions(view, viewOptions) {
+  const options = {
+    mediaElement: document.getElementById('media'),
+    dataUri: {
+      arraybuffer: 'base/test_data/sample.dat'
+    }
+  };
+
+  options[view] = viewOptions;
+
+  return options;
+}
+
 [
   { view: 'zoomview', name: 'WaveformZoomview', container: 'zoomview-container' },
   { view: 'overview', name: 'WaveformOverview', container: 'overview-container' }
 ].forEach(function(test) {
   describe(test.name, function() {
-    context('with played waveform color option', function() {
-      it('should create a played waveform shape', function(done) {
-        const options = {
-          mediaElement: document.getElementById('media'),
-          dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
-          }
-        };
+    describe('playedWaveformColor option', function() {
+      context('with a valid color', function() {
+        it('should create a played waveform shape', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            waveformColor: '#f00',
+            playedWaveformColor: '#0f0'
+          });
 
-        options[test.view] = {
-          container: document.getElementById(test.container),
-          waveformColor: '#f00',
-          playedWaveformColor: '#0f0'
-        };
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
 
-        Peaks.init(options, function(err, instance) {
-          expect(err).to.equal(null);
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
 
-          const view = instance.views.getView(test.view);
-          expect(view).to.be.ok;
+            expect(view._waveformShape._color).to.equal('#f00');
+            expect(view._playedWaveformShape._color).to.equal('#0f0');
 
-          expect(view._waveformShape._color).to.equal('#f00');
-          expect(view._playedWaveformShape._color).to.equal('#0f0');
-
-          done();
+            done();
+          });
         });
       });
     });
 
     describe('setPlayedWaveformColor', function() {
-      it('should create a played waveform shape', function(done) {
-        const options = {
-          mediaElement: document.getElementById('media'),
-          dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
-          }
-        };
+      context('with a valid color', function() {
+        it('should create a played waveform shape', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            waveformColor: '#f00'
+          });
 
-        options[test.view] = {
-          container: document.getElementById(test.container),
-          waveformColor: '#f00'
-        };
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
 
-        Peaks.init(options, function(err, instance) {
-          expect(err).to.equal(null);
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
 
-          const view = instance.views.getView(test.view);
-          expect(view).to.be.ok;
+            view.setPlayedWaveformColor('#0f0');
 
-          view.setPlayedWaveformColor('#0f0');
+            expect(view._waveformShape._color).to.equal('#f00');
+            expect(view._playedWaveformShape._color).to.equal('#0f0');
 
-          expect(view._waveformShape._color).to.equal('#f00');
-          expect(view._playedWaveformShape._color).to.equal('#0f0');
-
-          done();
+            done();
+          });
         });
       });
 
-      it('should remove the played waveform shape', function(done) {
-        const options = {
-          mediaElement: document.getElementById('media'),
-          dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
-          }
-        };
+      context('with null', function() {
+        it('should remove the played waveform shape', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            waveformColor: '#f00',
+            playedWaveformColor: '#0f0'
+          });
 
-        options[test.view] = {
-          container: document.getElementById(test.container),
-          waveformColor: '#f00',
-          playedWaveformColor: '#0f0'
-        };
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
 
-        Peaks.init(options, function(err, instance) {
-          expect(err).to.equal(null);
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
 
-          const view = instance.views.getView(test.view);
-          expect(view).to.be.ok;
+            view.setPlayedWaveformColor(null);
 
-          view.setPlayedWaveformColor(null);
+            expect(view._waveformShape._color).to.equal('#f00');
+            expect(view._playedWaveformShape).to.equal(null);
 
-          expect(view._waveformShape._color).to.equal('#f00');
-          expect(view._playedWaveformShape).to.equal(null);
+            done();
+          });
+        });
+      });
+    });
 
-          done();
+    describe('showPlayheadTime option', function() {
+      context('with default options', function() {
+        it('should not show the playhead time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container)
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.equal(undefined);
+
+            done();
+          });
+        });
+      });
+      context('when the global option is true', function() {
+        it('should show playhead time in the zoomview only', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container)
+          });
+
+          options.showPlayheadTime = true;
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            if (test.view === 'zoomview') {
+              expect(view._playheadLayer._playheadText).to.be.ok;
+              expect(view._playheadLayer._playheadText.getText()).to.equal('00:00.00');
+            }
+            else {
+              expect(view._playheadLayer._playheadText).to.equal(undefined);
+            }
+
+            done();
+          });
+        });
+      });
+
+      context('when the global option is false', function() {
+        it('should not show playhead time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container)
+          });
+
+          options.showPlayheadTime = false;
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.equal(undefined);
+
+            done();
+          });
+        });
+      });
+
+      context('when the view-specific option is true', function() {
+        it('should show the current playback position next to the playhead', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: true
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00.00');
+
+            done();
+          });
+        });
+      });
+
+      context('when the view-specific option is false', function() {
+        it('should not show the current playback position next to the playhead', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: false
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.equal(undefined);
+
+            done();
+          });
+        });
+      });
+    });
+
+    describe('showPlayheadTime', function() {
+      context('when enabled', function() {
+        it('should show the current playback position next to the playhead', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: false
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            view.showPlayheadTime(true);
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00.00');
+
+            done();
+          });
+        });
+      });
+
+      context('when disabled', function() {
+        it('should not show the current playback position next to the playhead', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: false
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            view.showPlayheadTime(false);
+
+            expect(view._playheadLayer._playheadText).to.equal(undefined);
+
+            done();
+          });
+        });
+      });
+    });
+
+    describe('timeLabelPrecision option', function() {
+      context('with default options', function() {
+        it('should use 2 decimal places for the current playback time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: true
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00.00');
+
+            done();
+          });
+        });
+      });
+
+      context('with zero', function() {
+        it('should set the number of decimal places for the current playback time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: true,
+            timeLabelPrecision: 0
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00');
+
+            done();
+          });
+        });
+      });
+
+      context('with non-zero', function() {
+        it('should set the number of decimal places for the current playback time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: true,
+            timeLabelPrecision: 3
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00.000');
+
+            done();
+          });
+        });
+      });
+    });
+
+    describe('setTimeLabelPrecision', function() {
+      context('with zero', function() {
+        it('should set the number of decimal places for the current playback time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: true
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            view.setTimeLabelPrecision(0);
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00');
+
+            done();
+          });
+        });
+      });
+
+      context('with non-zero', function() {
+        it('should set the number of decimal places for the current playback time', function(done) {
+          const options = initOptions(test.view, {
+            container: document.getElementById(test.container),
+            showPlayheadTime: true
+          });
+
+          Peaks.init(options, function(err, instance) {
+            expect(err).to.equal(null);
+
+            const view = instance.views.getView(test.view);
+            expect(view).to.be.ok;
+
+            view.setTimeLabelPrecision(3);
+
+            expect(view._playheadLayer._playheadText).to.be.ok;
+            expect(view._playheadLayer._playheadText.getText()).to.equal('00:00.000');
+
+            done();
+          });
         });
       });
     });
@@ -110,14 +379,9 @@ import Konva from 'konva';
         // flag here.
         Konva._mouseInDblClickWindow = false;
 
-        const options = {
-          mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
-        };
-
-        options[test.view] = {
+        const options = initOptions(test.view, {
           container: document.getElementById(test.container)
-        };
+        });
 
         Peaks.init(options, function(err, instance) {
           if (err) {

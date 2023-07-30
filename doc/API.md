@@ -251,10 +251,10 @@ var options = {
     // Returns a string for the playhead timestamp label
     formatPlayheadTime: function,
 
-    // Show current time next to the play head
+    // Show current time next to the playhead
     showPlayheadTime: false,
 
-    // Precision of time label of play head and point/segment markers
+    // Precision of time label of playhead and point/segment markers
     timeLabelPrecision: 2,
 
     // Color of the axis gridlines
@@ -385,10 +385,10 @@ var options = {
   // You can also use a 2 stop gradient here. See setWaveformColor()
   playedWaveformColor: 'rgba(0, 225, 128, 1)',
 
-  // Color of the play head
+  // Color of the playhead
   playheadColor: 'rgba(0, 0, 0, 1)',
 
-  // Color of the play head text
+  // Color of the playhead text
   playheadTextColor: '#aaa',
 
   // Color of the axis gridlines
@@ -407,10 +407,10 @@ var options = {
   // (either 'normal', 'bold', or 'italic')
   fontStyle: 'normal',
 
-  // Precision of time label of play head and point/segment markers
+  // Precision of time label of playhead and point/segment markers
   timeLabelPrecision: 2,
 
-  // Show current time next to the play head (zoomview only)
+  // Show current time next to the playhead (zoomview only)
   showPlayheadTime: false,
 
   //
