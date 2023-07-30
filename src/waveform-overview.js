@@ -42,14 +42,12 @@ function WaveformOverview(waveformData, container, peaks) {
   self._onPlaying = self._onPlaying.bind(this);
   self._onPause = self._onPause.bind(this);
   self._onZoomviewDisplaying = self._onZoomviewDisplaying.bind(this);
-  self._onWindowResize = self._onWindowResize.bind(this);
 
   // Register event handlers
   peaks.on('player.timeupdate', self._onTimeUpdate);
   peaks.on('player.playing', self._onPlaying);
   peaks.on('player.pause', self._onPause);
   peaks.on('zoomview.displaying', self._onZoomviewDisplaying);
-  peaks.on('window_resize', self._onWindowResize);
 
   self._amplitudeScale = 1.0;
   self._timeLabelPrecision = self._viewOptions.timeLabelPrecision;
@@ -76,8 +74,6 @@ function WaveformOverview(waveformData, container, peaks) {
   // Disable warning: The stage has 6 layers.
   // Recommended maximum number of layers is 3-5.
   Konva.showWarnings = false;
-
-  self._resizeTimeoutId = null;
 
   self._stage = new Konva.Stage({
     container: container,
@@ -237,29 +233,6 @@ WaveformOverview.prototype.updatePlayheadTime = function(time) {
 
 WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
   this._highlightLayer.showHighlight(startTime, endTime);
-};
-
-WaveformOverview.prototype._onWindowResize = function() {
-  const self = this;
-
-  if (self._resizeTimeoutId) {
-    clearTimeout(self._resizeTimeoutId);
-    self._resizeTimeoutId = null;
-  }
-
-  // Avoid resampling waveform data to zero width
-  if (self._container.clientWidth !== 0) {
-    self._width = self._container.clientWidth;
-    self._stage.setWidth(self._width);
-
-    self._resizeTimeoutId = setTimeout(function() {
-      self._width = self._container.clientWidth;
-      self._resampleAndSetWaveformData(self._originalWaveformData, self._width);
-      self._stage.setWidth(self._width);
-
-      self._updateWaveform();
-    }, 500);
-  }
 };
 
 WaveformOverview.prototype.setWaveformData = function(waveformData) {
@@ -568,27 +541,27 @@ WaveformOverview.prototype.fitToContainer = function() {
     }
   }
 
-  this._height = this._container.clientHeight;
-  this._stage.setHeight(this._height);
+  if (this._container.clientHeight !== this._height) {
+    this._height = this._container.clientHeight;
+    this._stage.setHeight(this._height);
 
-  this._waveformShape.fitToView();
-  this._playheadLayer.fitToView();
+    this._waveformShape.fitToView();
+    this._playheadLayer.fitToView();
 
-  if (this._segmentsLayer) {
-    this._segmentsLayer.fitToView();
+    if (this._segmentsLayer) {
+      this._segmentsLayer.fitToView();
+    }
+
+    if (this._pointsLayer) {
+      this._pointsLayer.fitToView();
+    }
+
+    this._highlightLayer.fitToView();
   }
-
-  if (this._pointsLayer) {
-    this._pointsLayer.fitToView();
-  }
-
-  this._highlightLayer.fitToView();
 
   if (updateWaveform) {
     this._updateWaveform();
   }
-
-  this._stage.draw();
 };
 
 WaveformOverview.prototype.getViewOptions = function() {
@@ -596,16 +569,10 @@ WaveformOverview.prototype.getViewOptions = function() {
 };
 
 WaveformOverview.prototype.destroy = function() {
-  if (this._resizeTimeoutId) {
-    clearTimeout(this._resizeTimeoutId);
-    this._resizeTimeoutId = null;
-  }
-
   this._peaks.off('player.playing', this._onPlaying);
   this._peaks.off('player.pause', this._onPause);
   this._peaks.off('player.timeupdate', this._onTimeUpdate);
   this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
-  this._peaks.off('window_resize', this._onWindowResize);
 
   this._mouseDragHandler.destroy();
 

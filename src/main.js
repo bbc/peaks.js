@@ -413,8 +413,6 @@ Peaks.init = function(opts, callback) {
           instance.views.createScrollbar(scrollbarContainer);
         }
 
-        instance._addWindowResizeHandler();
-
         if (opts.segments) {
           instance.segments.add(opts.segments);
         }
@@ -594,26 +592,11 @@ Peaks.prototype.getWaveformData = function() {
   return this._waveformData;
 };
 
-Peaks.prototype._addWindowResizeHandler = function() {
-  this._onResize = this._onResize.bind(this);
-  window.addEventListener('resize', this._onResize);
-};
-
-Peaks.prototype._onResize = function() {
-  this.emit('window_resize');
-};
-
-Peaks.prototype._removeWindowResizeHandler = function() {
-  window.removeEventListener('resize', this._onResize);
-};
-
 /**
  * Cleans up a Peaks instance after use.
  */
 
 Peaks.prototype.destroy = function() {
-  this._removeWindowResizeHandler();
-
   if (this._waveformBuilder) {
     this._waveformBuilder.abort();
   }

@@ -44,7 +44,6 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._onTimeUpdate = self._onTimeUpdate.bind(self);
   self._onPlaying = self._onPlaying.bind(self);
   self._onPause = self._onPause.bind(self);
-  self._onWindowResize = self._onWindowResize.bind(self);
   self._onKeyboardLeft = self._onKeyboardLeft.bind(self);
   self._onKeyboardRight = self._onKeyboardRight.bind(self);
   self._onKeyboardShiftLeft  = self._onKeyboardShiftLeft.bind(self);
@@ -54,7 +53,6 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._peaks.on('player.timeupdate', self._onTimeUpdate);
   self._peaks.on('player.playing', self._onPlaying);
   self._peaks.on('player.pause', self._onPause);
-  self._peaks.on('window_resize', self._onWindowResize);
   self._peaks.on('keyboard.left', self._onKeyboardLeft);
   self._peaks.on('keyboard.right', self._onKeyboardRight);
   self._peaks.on('keyboard.shift_left', self._onKeyboardShiftLeft);
@@ -90,7 +88,6 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._zoomLevelAuto = false;
   self._zoomLevelSeconds = null;
 
-  self._resizeTimeoutId = null;
   self._resampleData({ scale: initialZoomLevel });
 
   self._width = container.clientWidth;
@@ -363,40 +360,6 @@ WaveformZoomView.prototype._onPlaying = function(time) {
 
 WaveformZoomView.prototype._onPause = function(time) {
   this._playheadLayer.stop(time);
-};
-
-WaveformZoomView.prototype._onWindowResize = function() {
-  const self = this;
-
-  const width = self._container.clientWidth;
-
-  if (!self._zoomLevelAuto) {
-    if (width !== 0) {
-      self._width = width;
-      self._stage.width(width);
-      self.updateWaveform(self._frameOffset);
-    }
-  }
-  else {
-    if (self._resizeTimeoutId) {
-      clearTimeout(self._resizeTimeoutId);
-      self._resizeTimeoutId = null;
-    }
-
-    // Avoid resampling waveform data to zero width
-    if (width !== 0) {
-      self._width = width;
-      self._stage.width(width);
-
-      self._resizeTimeoutId = setTimeout(function() {
-        self._width = width;
-        self._data = self._originalWaveformData.resample(width);
-        self._stage.width(width);
-
-        self.updateWaveform(self._frameOffset);
-      }, 500);
-    }
-  }
 };
 
 WaveformZoomView.prototype._onKeyboardLeft = function() {
@@ -996,25 +959,25 @@ WaveformZoomView.prototype.fitToContainer = function() {
     }
   }
 
-  this._height = this._container.clientHeight;
-  this._stage.height(this._height);
+  if (this._container.clientHeight !== this._height) {
+    this._height = this._container.clientHeight;
+    this._stage.height(this._height);
 
-  this._waveformShape.fitToView();
-  this._playheadLayer.fitToView();
+    this._waveformShape.fitToView();
+    this._playheadLayer.fitToView();
 
-  if (this._segmentsLayer) {
-    this._segmentsLayer.fitToView();
-  }
+    if (this._segmentsLayer) {
+      this._segmentsLayer.fitToView();
+    }
 
-  if (this._pointsLayer) {
-    this._pointsLayer.fitToView();
+    if (this._pointsLayer) {
+      this._pointsLayer.fitToView();
+    }
   }
 
   if (updateWaveform) {
     this.updateWaveform(this._frameOffset);
   }
-
-  this._stage.draw();
 };
 
 WaveformZoomView.prototype.getStage = function() {
@@ -1030,16 +993,10 @@ WaveformZoomView.prototype.getViewOptions = function() {
 };
 
 WaveformZoomView.prototype.destroy = function() {
-  if (this._resizeTimeoutId) {
-    clearTimeout(this._resizeTimeoutId);
-    this._resizeTimeoutId = null;
-  }
-
   // Unregister event handlers
   this._peaks.off('player.timeupdate', this._onTimeUpdate);
   this._peaks.off('player.playing', this._onPlaying);
   this._peaks.off('player.pause', this._onPause);
-  this._peaks.off('window_resize', this._onWindowResize);
   this._peaks.off('keyboard.left', this._onKeyboardLeft);
   this._peaks.off('keyboard.right', this._onKeyboardRight);
   this._peaks.off('keyboard.shift_left', this._onKeyboardShiftLeft);
