@@ -947,17 +947,41 @@ function (such as lodash's [_.debounce()](https://lodash.com/docs/#debounce))
 when changing the container's width.
 
 ```js
-const container = document.getElementById('zoomview-container');
-const view = instance.views.getView('zoomview');
+const zoomviewContainer = document.getElementById('zoomview-container');
+const overviewContainer = document.getElementById('overview-container');
 
-container.setAttribute('style', 'height: 300px');
-view.fitToContainer();
+let firstResize = true;
 
-// or, with debounce of 500ms:
+function onResize(entries) {
+  if (firstResize) {
+    firstResize = false;
+    return;
+  }
 
-window.addEventListener('resize', _.debounce(function() {
-  view.fitToContainer();
-}, 500);
+  for (const entry of entries) {
+    if (entry.target === zoomviewContainer) {
+      const view = peaksInstance.views.getView('zoomview');
+
+      if (view) {
+        view.fitToContainer();
+      }
+    }
+    else if (entry.target === overviewContainer) {
+      const view = peaksInstance.views.getView('overview');
+
+      if (view) {
+        view.fitToContainer();
+      }
+    }
+  }
+}
+
+const resizeObserver = new ResizeObserver(_.debounce(onResize, 500));
+
+resizeObserver.observe(zoomviewContainer);
+resizeObserver.observe(overviewContainer);
+
+zoomviewContainer.style.height = '300px';
 ```
 
 ### `view.setZoom(options)`
