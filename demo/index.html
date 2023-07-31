@@ -446,21 +446,20 @@
           });
 
           document.querySelector('button[data-action="resize"]').addEventListener('click', function(event) {
-            var zoomviewContainer = document.getElementById('zoomview-container');
-            var overviewContainer = document.getElementById('overview-container');
+            const zoomviewContainer = document.getElementById('zoomview-container');
+            const overviewContainer = document.getElementById('overview-container');
 
-            var zoomviewStyle = zoomviewContainer.offsetHeight === 200 ? 'height:300px' : 'height:200px';
-            var overviewStyle = overviewContainer.offsetHeight === 85  ? 'height:200px' : 'height:85px';
+            zoomviewContainer.style.height = zoomviewContainer.offsetHeight === 200 ? "300px" : "200px";
+            overviewContainer.style.height = overviewContainer.offsetHeight === 200 ? "85px"  : "200px";
 
-            zoomviewContainer.setAttribute('style', zoomviewStyle);
-            overviewContainer.setAttribute('style', overviewStyle);
+            const zoomview = peaksInstance.views.getView('zoomview');
 
-            var zoomview = peaksInstance.views.getView('zoomview');
             if (zoomview) {
               zoomview.fitToContainer();
             }
 
-            var overview = peaksInstance.views.getView('overview');
+            const overview = peaksInstance.views.getView('overview');
+
             if (overview) {
               overview.fitToContainer();
             }
