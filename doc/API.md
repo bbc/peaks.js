@@ -948,6 +948,7 @@ when changing the container's width.
 
 ```js
 const zoomviewContainer = document.getElementById('zoomview-container');
+const scrollbarContainer = document.getElementById('scrollbar-container');
 const overviewContainer = document.getElementById('overview-container');
 
 let firstResize = true;
@@ -964,6 +965,13 @@ function onResize(entries) {
 
       if (view) {
         view.fitToContainer();
+      }
+    }
+    else if (entry.target === scrollbarContainer) {
+      const scrollbar = peaksInstance.views.getScrollbar();
+
+      if (scrollbar) {
+        scrollbar.fitToContainer();
       }
     }
     else if (entry.target === overviewContainer) {

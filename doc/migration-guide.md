@@ -238,6 +238,14 @@ peaks.on('zoom.update', function(event) {
 });
 ```
 
+### Window resize handling
+
+Before v3.0.0, Peaks.js would listen for window `resize` events and update the waveform views if the container elements changed size.
+
+This feature has been removed, because the container elements can change size for other reasons than resizing the window.
+
+We recommend that you use a [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver). Please refer to the [`fitToContainer()`](doc/API.md#viewfittocontainer) documentation for example code.
+
 ## Peaks.js v2.0.0
 
 Peaks.js v2.0.0 changes how [custom player objects](customizing.md#media-playback) should be initialized. To allow for initialization that may involve asynchronous operations, your custom player object's `init` function must now return a `Promise` that resolves when the player has been initialized.
