@@ -35,10 +35,8 @@ function Scrollbar(waveformData, container, peaks) {
   this._onScrollboxDragEnd = this._onScrollboxDragEnd.bind(this);
   this._onZoomviewDisplaying = this._onZoomviewDisplaying.bind(this);
   this._onScrollbarClick = this._onScrollbarClick.bind(this);
-  this._onWindowResize = this._onWindowResize.bind(this);
 
   peaks.on('zoomview.displaying', this._onZoomviewDisplaying);
-  peaks.on('window_resize', this._onWindowResize);
 
   this._width = container.clientWidth;
   this._height = container.clientHeight;
@@ -203,13 +201,6 @@ Scrollbar.prototype._updateWaveform = function(x) {
   this._zoomview.updateWaveform(offset);
 };
 
-Scrollbar.prototype._onWindowResize = function() {
-  this._width = this._container.clientWidth;
-  this._stage.width(this._width);
-
-  this._updateScrollbarWidthAndPosition();
-};
-
 Scrollbar.prototype.fitToContainer = function() {
   if (this._container.clientWidth === 0 && this._container.clientHeight === 0) {
     return;
@@ -218,17 +209,15 @@ Scrollbar.prototype.fitToContainer = function() {
   if (this._container.clientWidth !== this._width) {
     this._width = this._container.clientWidth;
     this._stage.width(this._width);
+
+    this._updateScrollbarWidthAndPosition();
   }
 
   this._height = this._container.clientHeight;
   this._stage.height(this._height);
-
-  this._stage.draw();
 };
 
 Scrollbar.prototype.destroy = function() {
-  this._peaks.off('window_resize', this._onWindowResize);
-
   this._layer.destroy();
 
   this._stage.destroy();

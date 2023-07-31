@@ -7,7 +7,7 @@ body {
   width: 1000px;
 }
 
-#waveform-container {
+.waveform-container {
   margin: 24px auto;
   width: 1000px;
   -moz-box-shadow: 3px 3px 20px #919191;
@@ -19,6 +19,10 @@ body {
   height: 200px;
   margin: 0;
   line-height: 0;
+}
+
+#overview-container {
+  height: 85px;
 }
 
 #scrollbar-container {

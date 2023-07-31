@@ -156,4 +156,8 @@ ViewController.prototype.getView = function(name) {
   }
 };
 
+ViewController.prototype.getScrollbar = function() {
+  return this._scrollbar;
+};
+
 export default ViewController;

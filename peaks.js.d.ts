@@ -527,6 +527,10 @@ declare module 'peaks.js' {
     setMinSegmentDragWidth: (width: number) => void;
   }
 
+  interface Scrollbar {
+    fitToContainer: () => void;
+  }
+
   export interface PeaksInstance {
     setSource: (options: SetSourceOptions, callback: SetSourceCallback) => void;
     getWaveformData: () => WaveformData;
@@ -549,6 +553,7 @@ declare module 'peaks.js' {
       getView(name?: null): WaveformView | null;
       getView(name: 'overview'): WaveformOverview | null;
       getView(name: 'zoomview'): WaveformZoomView | null;
+      getScrollbar() : Scrollbar | null;
     };
     /** Zoom API */
     zoom: {

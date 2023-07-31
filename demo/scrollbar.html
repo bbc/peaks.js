@@ -37,9 +37,12 @@
       </p>
     </div>
 
-    <div id="waveform-container">
+    <div class="waveform-container">
       <div id="zoomview-container"></div>
       <div id="scrollbar-container"></div>
+    </div>
+    <div class="waveform-container">
+      <div id="overview-container"></div>
     </div>
 
     <div id="demo-controls">
@@ -65,6 +68,10 @@
           <input type="checkbox" id="auto-scroll" checked>
           <label for="auto-scroll">Auto-scroll</label>
         </div>
+        <div>
+          <button data-action="resize-width">Resize width</button>
+          <button data-action="resize-height">Resize height</button>
+        </div>
       </div>
     </div>
 
@@ -75,6 +82,9 @@
           zoomview: {
             container: document.getElementById('zoomview-container'),
             playheadClickTolerance: 3
+          },
+          overview: {
+            container: document.getElementById('overview-container')
           },
           scrollbar: {
             container: document.getElementById('scrollbar-container'),
@@ -128,6 +138,50 @@
           document.getElementById('auto-scroll').addEventListener('change', function(event) {
             var view = peaksInstance.views.getView('zoomview');
             view.enableAutoScroll(event.target.checked);
+          });
+
+          document.querySelector('button[data-action="resize-width"]').addEventListener('click', function(event) {
+            document.querySelectorAll('.waveform-container').forEach(function(container) {
+              container.style.width = container.offsetWidth === 1000 ? "700px" : "1000px";
+            });
+
+            const zoomview = peaksInstance.views.getView('zoomview');
+
+            if (zoomview) {
+              zoomview.fitToContainer();
+            }
+
+            const scrollbar = peaksInstance.views.getScrollbar();
+
+            if (scrollbar) {
+              scrollbar.fitToContainer();
+            }
+
+            const overview = peaksInstance.views.getView('overview');
+
+            if (overview) {
+              overview.fitToContainer();
+            }
+          });
+
+          document.querySelector('button[data-action="resize-height"]').addEventListener('click', function(event) {
+            const zoomviewContainer = document.getElementById('zoomview-container');
+            const overviewContainer = document.getElementById('overview-container');
+
+            zoomviewContainer.style.height = zoomviewContainer.offsetHeight === 200 ? "300px" : "200px";
+            overviewContainer.style.height = overviewContainer.offsetHeight === 200 ? "85px"  : "200px";
+
+            const zoomview = peaksInstance.views.getView('zoomview');
+
+            if (zoomview) {
+              zoomview.fitToContainer();
+            }
+
+            const overview = peaksInstance.views.getView('overview');
+
+            if (overview) {
+              overview.fitToContainer();
+            }
           });
         });
       })(peaks);
