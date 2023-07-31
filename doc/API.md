@@ -22,6 +22,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [instance.player.playSegment()](#instanceplayerplaysegmentsegment-loop)
   - [Views API](#views-api)
     - [instance.views.getView()](#instanceviewsgetviewname)
+    - [instance.views.getScrollbar()](#instanceviewsgetscrollbar)
     - [instance.views.createZoomview()](#instanceviewscreatezoomviewcontainer)
     - [instance.views.createOverview()](#instanceviewscreateoverviewcontainer)
     - [instance.views.destroyZoomview()](#instanceviewsdestroyzoomview)
@@ -43,6 +44,8 @@ This document describes the Peaks.js API, including configuration options, funct
     - [view.setStartTime()](#viewsetstarttimetime)
     - [view.setWheelMode()](#viewsetwheelmodemode-options)
     - [view.enableSeek()](#viewenableseekenable)
+  - [Scrollbar API](#scrollbar-api)
+    - [scrollbar.fitToContainer()](#scrollbarfittocontainer)
   - [Zoom API](#zoom-api)
     - [instance.zoom.zoomIn()](#instancezoomzoomin)
     - [instance.zoom.zoomOut()](#instancezoomzoomout)
@@ -721,10 +724,18 @@ The Views API allows you to create or obtain references to these views.
 
 ### `instance.views.getView(name)`
 
-Returns a reference to one of the views. The `name` parameter can be omitted if there is only one view, otherwise it should be set to either `'zoomview'` or `'overview'`.
+Returns a reference to one of the views, or `null` if the requested view is not available. The `name` parameter can be omitted if there is only one view, otherwise it should be set to either `'zoomview'` or `'overview'`. See [View API](#view-api) for methods available on the returned view object.
 
 ```js
 const view = instance.views.getView('zoomview');
+```
+
+### `instance.views.getScrollbar()`
+
+Returns a reference to the scrollbar, or `null` if there is no scrollbar. See [Scrollbar API](#scrollbar-api) for methods available on the returned scrollbar object.
+
+```js
+const scrollbar = instance.views.getScrollbar();
 ```
 
 ### `instance.views.createZoomview(container)`
@@ -1073,6 +1084,15 @@ const zoomview = peaksInstance.views.getView('zoomview');
 overview.enableSeek(false); // or true to re-enable
 zoomview.enableSeek(false);
 ```
+
+## Scrollbar API
+
+### `scrollbar.fitToContainer()`
+
+Resizes the scrollbar to fit the container. You should call this method
+after changing the width or height of the scrollbar's container HTML element.
+
+See [`view.fitToContainer`](#viewfittocontainer) for example code.
 
 ## Zoom API
 
