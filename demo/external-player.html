@@ -161,11 +161,11 @@
               },
 
               play: function() {
-                Tone.Transport.start();
+                return Tone.start().then(() => {
+                  Tone.Transport.start();
 
-                this.eventEmitter.emit('player.playing', this.getCurrentTime());
-
-                return Promise.resolve();
+                  this.eventEmitter.emit('player.playing', this.getCurrentTime());
+                });
               },
 
               pause: function() {
