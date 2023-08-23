@@ -13,6 +13,7 @@ body {
   -moz-box-shadow: 3px 3px 20px #919191;
   -webkit-box-shadow: 3px 3px 20px #919191;
   box-shadow: 3px 3px 20px #919191;
+  overflow: clip;
 }
 
 #zoomview-container {
