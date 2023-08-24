@@ -2,13 +2,15 @@ body {
   font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
 }
 
-#titles, #waveform-container {
+#titles {
   margin: 24px auto;
   width: 1000px;
 }
 
-#zoomview-container, #overview-container {
-  margin: 0 0 24px 0;
+.waveform-container {
+  /* margin: 0 0 24px 0; */
+  margin: 24px auto;
+  width: 1000px;
   line-height: 0;
   -moz-box-shadow: 3px 3px 20px #919191;
   -webkit-box-shadow: 3px 3px 20px #919191;
@@ -18,17 +20,24 @@ body {
 
 #zoomview-container {
   height: 200px;
+  margin: 0;
+  line-height: 0;
 }
 
 #overview-container {
   height: 85px;
 }
 
+#scrollbar-container {
+  height: 16px;
+  background-color: #ccc;
+}
+
 #demo-controls {
   margin: 0 auto 24px auto;
   width: 1000px;
   display: flex;
-  align-items: start;
+  align-items: top;
 }
 
 #demo-controls button {
