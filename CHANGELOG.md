@@ -1,5 +1,18 @@
 # Peaks.js
 
+## 3.0.0 (2023/08/28)
+
+* Fixed point marker dragging (@chrisn)
+
+* Removed window `resize` event handling. Instead, you should use
+  [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
+  and call [`fitToContainer()`](doc/API.md#viewfittocontainer) (@chrisn)
+
+* Added `views.getScrollbar()` method, to allow the scrollbar to be
+  resized (@chrisn)
+
+* Removed undocumented `dataUriDefaultFormat` option (@chrisn)
+
 ## 3.0.0-beta.13 (2023/07/15)
 
 * (#499) Added a new `zoomview.setWaveformDragMode()` method, which
