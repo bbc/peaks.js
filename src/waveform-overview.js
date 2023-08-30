@@ -510,8 +510,8 @@ WaveformOverview.prototype.formatTime = function(time) {
   return this._formatPlayheadTime(time);
 };
 
-WaveformOverview.prototype.showAxisLabels = function(show) {
-  this._axis.showAxisLabels(show);
+WaveformOverview.prototype.showAxisLabels = function(show, options) {
+  this._axis.showAxisLabels(show, options);
   this._axisLayer.draw();
 };
 

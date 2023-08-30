@@ -67,17 +67,19 @@ function Peaks() {
 Peaks.prototype = Object.create(EventEmitter.prototype);
 
 const defaultViewOptions = {
-  playheadColor:       '#111111',
-  playheadTextColor:   '#aaaaaa',
-  axisGridlineColor:   '#cccccc',
-  showAxisLabels:      true,
-  axisLabelColor:      '#aaaaaa',
-  fontFamily:          'sans-serif',
-  fontSize:            11,
-  fontStyle:           'normal',
-  timeLabelPrecision:  2,
-  enablePoints:        true,
-  enableSegments:      true
+  playheadColor:          '#111111',
+  playheadTextColor:      '#aaaaaa',
+  axisGridlineColor:      '#cccccc',
+  showAxisLabels:         true,
+  axisTopMarkerHeight:    10,
+  axisBottomMarkerHeight: 10,
+  axisLabelColor:         '#aaaaaa',
+  fontFamily:             'sans-serif',
+  fontSize:               11,
+  fontStyle:              'normal',
+  timeLabelPrecision:     2,
+  enablePoints:           true,
+  enableSegments:         true
 };
 
 const defaultZoomviewOptions = {
@@ -142,6 +144,8 @@ function getOverviewOptions(opts) {
     'timeLabelPrecision',
     'axisGridlineColor',
     'showAxisLabels',
+    'axisTopMarkerHeight',
+    'axisBottomMarkerHeight',
     'axisLabelColor',
     'formatAxisTime',
     'fontFamily',
@@ -197,6 +201,8 @@ function getZoomviewOptions(opts) {
     'timeLabelPrecision',
     'axisGridlineColor',
     'showAxisLabels',
+    'axisTopMarkerHeight',
+    'axisBottomMarkerHeight',
     'axisLabelColor',
     'formatAxisTime',
     'fontFamily',

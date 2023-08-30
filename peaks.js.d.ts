@@ -492,13 +492,18 @@ declare module 'peaks.js' {
 
   type EventData<T> = [T] extends [(...eventData: infer U) => any] ? U : [T] extends [void] ? [] : [T];
 
+  interface ShowAxisLabelOptions {
+    topMarkerHeight?: number;
+    bottomMarkerHeight?: number;
+  }
+
   interface WaveformView {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: WaveformColor) => void;
     setPlayedWaveformColor: (color: WaveformColor | null) => void;
     showPlayheadTime: (show: boolean) => void;
     setTimeLabelPrecision: (precision: number) => void;
-    showAxisLabels: (show: boolean) => void;
+    showAxisLabels: (show: boolean, options?: ShowAxisLabelOptions) => void;
     enableMarkerEditing: (enable: boolean) => void;
     enableSeek: (enable: boolean) => void;
     fitToContainer: () => void;

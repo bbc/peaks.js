@@ -33,6 +33,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [view.setPlayedWaveformColor()](#viewsetplayedwaveformcolorcolor)
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
+    - [view.showAxisLabels()](#viewshowaxislabelsshow-options)
     - [view.enableAutoScroll()](#viewenableautoscrollenable-options)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.enableSegmentDragging()](#viewenablesegmentdraggingenable)
@@ -179,6 +180,12 @@ var options = {
     // Show or hide the axis label timestamps
     showAxisLabels: true,
 
+    // Height of the axis markers at the top of the waveform
+    axisTopMarkerHeight: 10,
+
+    // Height of the axis markers at the top of the waveform
+    axisBottomMarkerHeight: 10,
+
     // Font family for axis labels, playhead, and point and segment markers
     fontFamily: 'sans-serif',
 
@@ -271,6 +278,12 @@ var options = {
 
     // Show or hide the axis label timestamps
     showAxisLabels: true,
+
+    // Height of the axis markers at the top of the waveform
+    axisTopMarkerHeight: 10,
+
+    // Height of the axis markers at the top of the waveform
+    axisBottomMarkerHeight: 10,
 
     // Font family for axis labels, playhead, and point and segment markers
     fontFamily: 'sans-serif',
@@ -853,16 +866,36 @@ const view = instance.views.getView('zoomview');
 view.setTimeLabelPrecision(3); // Displays time of playhead/marker as hh:mm:ss.sss
 ```
 
-### `view.showAxisLabels(show)`
+### `view.showAxisLabels(show[, options])`
 
 Shows or hides the time axis timestamp labels.
 
+The `options` object can be used to set the the height of the time axis markers on the top and bottom of the waveform.
+
+
 The initial setting is controlled by the `showAxisLabels` configuration option
-(default: `true`).
+(default: `true`) and the `axisTopMarkerHeight` and `axisBottomMarkerHeight` options (default: 10).
 
 ```js
 const view = instance.views.getView('zoomview');
-view.showAxisLabels(false); // Remove the time axis labels.
+
+// Remove the time axis labels.
+view.showAxisLabels(false);
+
+// Show the time axis labels with default markers.
+view.showAxisLabels(true);
+
+// Show the time axis labels but remove the markers.
+view.showAxisLabels(true, {
+  topMarkerHeight: 0,
+  bottomMarkerHeight: 0
+});
+
+// Show the time axis labels and set the marker height.
+view.showAxisLabels(true, {
+  topMarkerHeight: 10,
+  bottomMarkerHeight: 10
+});
 ```
 
 ### `view.enableAutoScroll(enable[, options])`
