@@ -244,7 +244,7 @@ Before v3.0.0, Peaks.js would listen for window `resize` events and update the w
 
 This feature has been removed, because the container elements can change size for other reasons than resizing the window.
 
-We recommend that you use a [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver). Please refer to the [`fitToContainer()`](doc/API.md#viewfittocontainer) documentation for example code.
+We recommend that you use a [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver). Please refer to the [`fitToContainer()`](API.md#viewfittocontainer) documentation for example code.
 
 ## Peaks.js v2.0.0
 
