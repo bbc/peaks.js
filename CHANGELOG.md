@@ -61,7 +61,7 @@
 ## 3.0.0-beta.11 (2023/06/07)
 
 * (#490) Added `preventViewEvent()` method for point and segment events.
-  This allwos you to prevent `zoomview.*` or `overview.*` click events
+  This allows you to prevent `zoomview.*` or `overview.*` click events
   from a `segments.*` or `points.*` click event handler (@chrisn)
 
 * (#489) Improved event documentation, see [doc/API.md](doc/API.md#events)
@@ -175,6 +175,8 @@
   Some segment options have been removed, please refer to
   [doc/migration-guide.md](doc/migration-guide.md) for details of how to
   update your application (@chrisn)
+
+ * Added scrollbar (@chrisn)
 
 ## 2.1.0 (2022/10/17)
 
