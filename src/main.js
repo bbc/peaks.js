@@ -309,14 +309,14 @@ function checkContainerElements(options) {
       (zoomviewContainer.clientWidth  <= 0 ||
        zoomviewContainer.clientHeight <= 0)) {
     // eslint-disable-next-line max-len
-    return new Error('Peaks.init(): Please ensure that the zoomview container is visible and has non-zero width and height');
+    return new Error('Peaks.init(): The zoomview container must be visible and have non-zero width and height');
   }
 
   if (overviewContainer &&
       (overviewContainer.clientWidth  <= 0 ||
        overviewContainer.clientHeight <= 0)) {
     // eslint-disable-next-line max-len
-    return new Error('Peaks.init(): Please ensure that the overview container is visible and has non-zero width and height');
+    return new Error('Peaks.init(): The overview container must be visible and have non-zero width and height');
   }
 }
 
@@ -358,7 +358,7 @@ Peaks.init = function(opts, callback) {
 
     if (scrollbarContainer.clientWidth <= 0) {
       // eslint-disable-next-line max-len
-      callback(new TypeError('Peaks.init(): Please ensure that the scrollbar container is visible and has non-zero width'));
+      callback(new TypeError('Peaks.init(): The scrollbar container must be visible and have non-zero width'));
       return;
     }
   }
