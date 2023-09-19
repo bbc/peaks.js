@@ -328,7 +328,7 @@ WaveformOverview.prototype.getStartTime = function() {
  */
 
 WaveformOverview.prototype.getEndTime = function() {
-  return this._getDuration();
+  return this.pixelOffsetToTime(this._width);
 };
 
 /**
