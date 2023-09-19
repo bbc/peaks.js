@@ -1,5 +1,14 @@
 # Peaks.js
 
+## 3.1.0 (2023/09/19)
+
+* Added `enablePoints` and `enableSegments` options (@chrisn)
+
+* Added `axisTopMarkerHeight` and `axisBottomMarkerHeight` options (@chrisn)
+
+* Fixed point and segment rendering in the overview waveform, if the audio duration
+  is different to the waveform duration (@chrisn)
+
 ## 3.0.0 (2023/08/28)
 
 * Fixed point marker dragging (@chrisn)
