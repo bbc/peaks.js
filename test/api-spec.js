@@ -863,7 +863,7 @@ describe('Peaks', function() {
   });
 
   describe('setSource', function() {
-    let waveformLayerDraw;
+    let drawWaveformLayer;
 
     beforeEach(function(done) {
       const options = {
@@ -885,8 +885,8 @@ describe('Peaks', function() {
 
         const zoomview = instance.views.getView('zoomview');
         expect(zoomview).to.be.ok;
-        waveformLayerDraw = sinon.spy(zoomview, '_drawWaveformLayer');
 
+        drawWaveformLayer = sinon.spy(zoomview, 'drawWaveformLayer');
         done();
       });
     });
@@ -955,7 +955,7 @@ describe('Peaks', function() {
 
         p.setSource(options, function(error) {
           expect(error).to.be.undefined;
-          expect(waveformLayerDraw.callCount).to.equal(1);
+          expect(drawWaveformLayer.callCount).to.equal(1);
           done();
         });
       });
@@ -972,7 +972,7 @@ describe('Peaks', function() {
 
         p.setSource(options, function(error) {
           expect(error).to.be.undefined;
-          expect(waveformLayerDraw.callCount).to.equal(1);
+          expect(drawWaveformLayer.callCount).to.equal(1);
           done();
         });
       });
@@ -989,7 +989,7 @@ describe('Peaks', function() {
 
         p.setSource(options, function(error) {
           expect(error).to.be.undefined;
-          expect(waveformLayerDraw.callCount).to.equal(1);
+          expect(drawWaveformLayer.callCount).to.equal(1);
           done();
         });
       });
@@ -1017,7 +1017,7 @@ describe('Peaks', function() {
 
             p.setSource(options, function(error) {
               expect(error).to.be.undefined;
-              expect(waveformLayerDraw.callCount).to.equal(1);
+              expect(drawWaveformLayer.callCount).to.equal(1);
               done();
             });
           });
@@ -1040,7 +1040,7 @@ describe('Peaks', function() {
 
             p.setSource(options, function(error) {
               expect(error).to.be.undefined;
-              expect(waveformLayerDraw.callCount).to.equal(1);
+              expect(drawWaveformLayer.callCount).to.equal(1);
               done();
             });
           });
@@ -1082,7 +1082,7 @@ describe('Peaks', function() {
         p.setSource(options, function(error) {
           expect(error).to.be.undefined;
           expect(p.zoom.getZoomLevel()).to.equal(128);
-          expect(waveformLayerDraw.callCount).to.equal(1);
+          expect(drawWaveformLayer.callCount).to.equal(1);
           done();
         });
       });
@@ -1101,7 +1101,7 @@ describe('Peaks', function() {
         p.setSource(options, function(error) {
           expect(error).to.be.undefined;
           expect(p.zoom.getZoomLevel()).to.equal(128);
-          expect(waveformLayerDraw.callCount).to.equal(1);
+          expect(drawWaveformLayer.callCount).to.equal(1);
           done();
         });
       });

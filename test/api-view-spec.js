@@ -2,7 +2,7 @@ import Peaks from '../src/main';
 
 describe('WaveformView', function() {
   let p;
-  let waveformLayerDraw;
+  let drawWaveformLayer;
   let logger;
 
   beforeEach(function(done) {
@@ -29,7 +29,7 @@ describe('WaveformView', function() {
 
       const zoomview = instance.views.getView('zoomview');
       expect(zoomview).to.be.ok;
-      waveformLayerDraw = sinon.spy(zoomview, '_drawWaveformLayer');
+      drawWaveformLayer = sinon.spy(zoomview, 'drawWaveformLayer');
 
       done();
     });
@@ -135,7 +135,7 @@ describe('WaveformView', function() {
       it('should scroll the waveform to the right by the given number of seconds', function() {
         zoomview.scrollWaveform({ seconds: 2.0 });
 
-        expect(waveformLayerDraw.callCount).to.equal(1);
+        expect(drawWaveformLayer.callCount).to.equal(1);
         expect(zoomview.getStartTime()).to.equal(1.9969160997732427);
       });
 
@@ -143,14 +143,14 @@ describe('WaveformView', function() {
         zoomview.scrollWaveform({ seconds: 2.0 });
         zoomview.scrollWaveform({ seconds: -2.0 });
 
-        expect(waveformLayerDraw.callCount).to.equal(2);
+        expect(drawWaveformLayer.callCount).to.equal(2);
         expect(zoomview.getStartTime()).to.equal(0);
       });
 
       it('should scroll the waveform to the right by the given number of pixels', function() {
         zoomview.scrollWaveform({ pixels: 100 });
 
-        expect(waveformLayerDraw.callCount).to.equal(1);
+        expect(drawWaveformLayer.callCount).to.equal(1);
         expect(zoomview.getStartTime()).to.equal(1.1609977324263039);
       });
 
@@ -158,7 +158,7 @@ describe('WaveformView', function() {
         zoomview.scrollWaveform({ pixels: 100 });
         zoomview.scrollWaveform({ pixels: -100 });
 
-        expect(waveformLayerDraw.callCount).to.equal(2);
+        expect(drawWaveformLayer.callCount).to.equal(2);
         expect(zoomview.getStartTime()).to.equal(0);
       });
 

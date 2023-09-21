@@ -88,7 +88,8 @@ const defaultZoomviewOptions = {
   waveformColor:          'rgba(0, 225, 128, 1)',
   wheelMode:              'none',
   autoScroll:             true,
-  autoScrollOffset:       100
+  autoScrollOffset:       100,
+  enableEditing:          true
 };
 
 const defaultOverviewOptions = {
@@ -98,7 +99,8 @@ const defaultOverviewOptions = {
   highlightStrokeColor:   'transparent',
   highlightOpacity:       0.3,
   highlightOffset:        11,
-  highlightCornerRadius:  2
+  highlightCornerRadius:  2,
+  enableEditing:          false
 };
 
 const defaultSegmentOptions = {
@@ -157,7 +159,8 @@ function getOverviewOptions(opts) {
     'highlightCornerRadius',
     'highlightOffset',
     'enablePoints',
-    'enableSegments'
+    'enableSegments',
+    'enableEditing'
   ];
 
   optNames.forEach(function(optName) {
@@ -212,7 +215,8 @@ function getZoomviewOptions(opts) {
     'autoScroll',
     'autoScrollOffset',
     'enablePoints',
-    'enableSegments'
+    'enableSegments',
+    'enableEditing'
   ];
 
   optNames.forEach(function(optName) {
