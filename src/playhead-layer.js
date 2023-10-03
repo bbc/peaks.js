@@ -24,6 +24,7 @@ import { Text } from 'konva/lib/shapes/Text';
  *   is shown next to the playhead.
  * @param {String} options.playheadColor
  * @param {String} options.playheadTextColor
+ * @param {String} options.playheadBkgrdColor
  * @param {String} options.playheadFontFamily
  * @param {Number} options.playheadFontSize
  * @param {String} options.playheadFontStyle
@@ -37,6 +38,7 @@ function PlayheadLayer(options) {
   this._playheadVisible = false;
   this._playheadColor = options.playheadColor;
   this._playheadTextColor = options.playheadTextColor;
+  this._playheadBkgrdColor = options.playheadBkgrdColor;
 
   this._playheadFontFamily = options.playheadFontFamily;
   this._playheadFontSize = options.playheadFontSize;
@@ -47,7 +49,7 @@ function PlayheadLayer(options) {
   this._createPlayhead(this._playheadColor);
 
   if (options.showPlayheadTime) {
-    this._createPlayheadText(this._playheadTextColor);
+    this._createPlayheadText(this._playheadTextColor, this._playheadBkgrdColor);
   }
 
   this.fitToView();
@@ -134,7 +136,7 @@ PlayheadLayer.prototype._createPlayhead = function(color) {
   this._playheadLayer.add(this._playheadGroup);
 };
 
-PlayheadLayer.prototype._createPlayheadText = function(color) {
+PlayheadLayer.prototype._createPlayheadText = function(color, bkgrdColor) {
   const time = this._player.getCurrentTime();
   const text = this._view.formatTime(time);
 
@@ -147,7 +149,12 @@ PlayheadLayer.prototype._createPlayheadText = function(color) {
     fontFamily: this._playheadFontFamily,
     fontStyle: this._playheadFontStyle,
     fill: color,
-    align: 'right'
+    align: 'right',
+    sceneFunc: function(context, shape) {
+      context.fillStyle = bkgrdColor;
+      context.fillRect(0, 0, shape.width(), shape.height());
+      (shape)._sceneFunc(context);
+    }
   });
 
   this._playheadGroup.add(this._playheadText);
@@ -271,7 +278,7 @@ PlayheadLayer.prototype.showPlayheadTime = function(show) {
   if (show) {
     if (!this._playheadText) {
       // Create it
-      this._createPlayheadText(this._playheadTextColor);
+      this._createPlayheadText(this._playheadTextColor, this._playheadBkgrdColor);
       this.fitToView();
     }
   }

@@ -69,6 +69,7 @@ Peaks.prototype = Object.create(EventEmitter.prototype);
 const defaultViewOptions = {
   playheadColor:          '#111111',
   playheadTextColor:      '#aaaaaa',
+  playheadBkgrdColor:     'transparent',
   axisGridlineColor:      '#cccccc',
   showAxisLabels:         true,
   axisTopMarkerHeight:    10,
@@ -142,6 +143,7 @@ function getOverviewOptions(opts) {
     'playedWaveformColor',
     'playheadColor',
     'playheadTextColor',
+    'playheadBkgrdColor',
     'formatPlayheadTime',
     'timeLabelPrecision',
     'axisGridlineColor',
@@ -199,6 +201,7 @@ function getZoomviewOptions(opts) {
     'playedWaveformColor',
     'playheadColor',
     'playheadTextColor',
+    'playheadBkgrdColor',
     'formatPlayheadTime',
     'playheadClickTolerance',
     'timeLabelPrecision',
