@@ -24,7 +24,7 @@ import { Text } from 'konva/lib/shapes/Text';
  *   is shown next to the playhead.
  * @param {String} options.playheadColor
  * @param {String} options.playheadTextColor
- * @param {String} options.playheadBkgrdColor
+ * @param {String} options.playheadBackgroundColor
  * @param {String} options.playheadPadding
  * @param {String} options.playheadFontFamily
  * @param {Number} options.playheadFontSize
@@ -39,7 +39,7 @@ function PlayheadLayer(options) {
   this._playheadVisible = false;
   this._playheadColor = options.playheadColor;
   this._playheadTextColor = options.playheadTextColor;
-  this._playheadBkgrdColor = options.playheadBkgrdColor;
+  this._playheadBackgroundColor = options.playheadBackgroundColor;
   this._playheadPadding = options.playheadPadding;
 
   this._playheadFontFamily = options.playheadFontFamily;
@@ -52,7 +52,7 @@ function PlayheadLayer(options) {
 
   if (options.showPlayheadTime) {
     this._createPlayheadText(this._playheadTextColor,
-      this._playheadBkgrdColor, this._playheadPadding);
+      this._playheadBackgroundColor, this._playheadPadding);
   }
 
   this.fitToView();
@@ -147,6 +147,7 @@ PlayheadLayer.prototype._createPlayheadText = function(color, bkgrdColor, paddin
   this._playheadText = new Text({
     x: 2,
     y: 0,
+    padding: padding,
     text: text,
     fontSize: this._playheadFontSize,
     fontFamily: this._playheadFontFamily,
@@ -285,7 +286,7 @@ PlayheadLayer.prototype.showPlayheadTime = function(show) {
     if (!this._playheadText) {
       // Create it
       this._createPlayheadText(this._playheadTextColor,
-        this._playheadBkgrdColor, this._playheadPadding);
+        this._playheadBackgroundColor, this._playheadPadding);
       this.fitToView();
     }
   }
