@@ -84,6 +84,8 @@ function WaveformView(waveformData, container, peaks, viewOptions) {
     showPlayheadTime: self._viewOptions.showPlayheadTime,
     playheadColor: self._viewOptions.playheadColor,
     playheadTextColor: self._viewOptions.playheadTextColor,
+    playheadBackgroundColor: self._viewOptions.playheadBackgroundColor,
+    playheadPadding: self._viewOptions.playheadPadding,
     playheadFontFamily: self._viewOptions.fontFamily,
     playheadFontSize: self._viewOptions.fontSize,
     playheadFontStyle: self._viewOptions.fontStyle

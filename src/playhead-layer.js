@@ -24,6 +24,8 @@ import { Text } from 'konva/lib/shapes/Text';
  *   is shown next to the playhead.
  * @param {String} options.playheadColor
  * @param {String} options.playheadTextColor
+ * @param {String} options.playheadBackgroundColor
+ * @param {Number} options.playheadPadding
  * @param {String} options.playheadFontFamily
  * @param {Number} options.playheadFontSize
  * @param {String} options.playheadFontStyle
@@ -37,6 +39,8 @@ function PlayheadLayer(options) {
   this._playheadVisible = false;
   this._playheadColor = options.playheadColor;
   this._playheadTextColor = options.playheadTextColor;
+  this._playheadBackgroundColor = options.playheadBackgroundColor;
+  this._playheadPadding = options.playheadPadding;
 
   this._playheadFontFamily = options.playheadFontFamily;
   this._playheadFontSize = options.playheadFontSize;
@@ -44,10 +48,10 @@ function PlayheadLayer(options) {
 
   this._playheadLayer = new Konva.Layer();
 
-  this._createPlayhead(this._playheadColor);
+  this._createPlayhead();
 
   if (options.showPlayheadTime) {
-    this._createPlayheadText(this._playheadTextColor);
+    this._createPlayheadText();
   }
 
   this.fitToView();
@@ -118,10 +122,10 @@ PlayheadLayer.prototype.fitToView = function() {
  * @param {String} color
  */
 
-PlayheadLayer.prototype._createPlayhead = function(color) {
+PlayheadLayer.prototype._createPlayhead = function() {
   // Create with default points, the real values are set in fitToView().
   this._playheadLine = new Line({
-    stroke:      color,
+    stroke:      this._playheadColor,
     strokeWidth: 1
   });
 
@@ -134,23 +138,34 @@ PlayheadLayer.prototype._createPlayhead = function(color) {
   this._playheadLayer.add(this._playheadGroup);
 };
 
-PlayheadLayer.prototype._createPlayheadText = function(color) {
-  const time = this._player.getCurrentTime();
-  const text = this._view.formatTime(time);
+PlayheadLayer.prototype._createPlayheadText = function() {
+  const self = this;
+
+  const time = self._player.getCurrentTime();
+  const text = self._view.formatTime(time);
 
   // Create with default y, the real value is set in fitToView().
-  this._playheadText = new Text({
-    x: 2,
+  self._playheadText = new Text({
+    x: 0,
     y: 0,
+    padding: self._playheadPadding,
     text: text,
-    fontSize: this._playheadFontSize,
-    fontFamily: this._playheadFontFamily,
-    fontStyle: this._playheadFontStyle,
-    fill: color,
-    align: 'right'
+    fontSize: self._playheadFontSize,
+    fontFamily: self._playheadFontFamily,
+    fontStyle: self._playheadFontStyle,
+    fill: self._playheadTextColor,
+    align: 'right',
+    sceneFunc: function(context, shape) {
+      const width = shape.width();
+      const height = shape.height() + 2 * self._playheadPadding;
+
+      context.fillStyle = self._playheadBackgroundColor;
+      context.fillRect(0, -self._playheadPadding, width, height);
+      shape._sceneFunc(context);
+    }
   });
 
-  this._playheadGroup.add(this._playheadText);
+  self._playheadGroup.add(self._playheadText);
 };
 
 /**
@@ -197,15 +212,15 @@ PlayheadLayer.prototype._syncPlayhead = function(time) {
 
     if (this._playheadText) {
       const text = this._view.formatTime(time);
-      const playheadTextWidth = this._playheadText.getTextWidth();
+      const playheadTextWidth = this._playheadText.width();
 
       this._playheadText.setText(text);
 
       if (playheadTextWidth + playheadX > width - 2) {
-        this._playheadText.setX(-playheadTextWidth - 2);
+        this._playheadText.setX(-playheadTextWidth);
       }
       else if (playheadTextWidth + playheadX < width) {
-        this._playheadText.setX(2);
+        this._playheadText.setX(0);
       }
     }
   }
@@ -271,7 +286,8 @@ PlayheadLayer.prototype.showPlayheadTime = function(show) {
   if (show) {
     if (!this._playheadText) {
       // Create it
-      this._createPlayheadText(this._playheadTextColor);
+      this._createPlayheadText(this._playheadTextColor,
+        this._playheadBackgroundColor, this._playheadPadding);
       this.fitToView();
     }
   }

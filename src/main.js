@@ -67,19 +67,21 @@ function Peaks() {
 Peaks.prototype = Object.create(EventEmitter.prototype);
 
 const defaultViewOptions = {
-  playheadColor:          '#111111',
-  playheadTextColor:      '#aaaaaa',
-  axisGridlineColor:      '#cccccc',
-  showAxisLabels:         true,
-  axisTopMarkerHeight:    10,
-  axisBottomMarkerHeight: 10,
-  axisLabelColor:         '#aaaaaa',
-  fontFamily:             'sans-serif',
-  fontSize:               11,
-  fontStyle:              'normal',
-  timeLabelPrecision:     2,
-  enablePoints:           true,
-  enableSegments:         true
+  playheadColor:           '#111111',
+  playheadTextColor:       '#aaaaaa',
+  playheadBackgroundColor: 'transparent',
+  playheadPadding:         2,
+  axisGridlineColor:       '#cccccc',
+  showAxisLabels:          true,
+  axisTopMarkerHeight:     10,
+  axisBottomMarkerHeight:  10,
+  axisLabelColor:          '#aaaaaa',
+  fontFamily:              'sans-serif',
+  fontSize:                11,
+  fontStyle:               'normal',
+  timeLabelPrecision:      2,
+  enablePoints:            true,
+  enableSegments:          true
 };
 
 const defaultZoomviewOptions = {
@@ -142,6 +144,8 @@ function getOverviewOptions(opts) {
     'playedWaveformColor',
     'playheadColor',
     'playheadTextColor',
+    'playheadBackgroundColor',
+    'playheadPadding',
     'formatPlayheadTime',
     'timeLabelPrecision',
     'axisGridlineColor',
@@ -199,6 +203,8 @@ function getZoomviewOptions(opts) {
     'playedWaveformColor',
     'playheadColor',
     'playheadTextColor',
+    'playheadBackgroundColor',
+    'playheadPadding',
     'formatPlayheadTime',
     'playheadClickTolerance',
     'timeLabelPrecision',

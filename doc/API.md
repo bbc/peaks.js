@@ -155,6 +155,12 @@ var options = {
     // Color of the playhead text
     playheadTextColor: '#aaa',
 
+    // Background color of the playhead text
+    playheadBackgroundColor: 'transparent',
+
+    // Padding around the playhead text (pixels)
+    playheadPadding: 2,
+
     // Tolerance for clicks in the zoomview to be interpreted as
     // dragging the playhead (pixels)
     playheadClickTolerance: 3,
@@ -257,6 +263,12 @@ var options = {
 
     // Color of the playhead text
     playheadTextColor: '#aaa',
+
+    // Background color of the playhead text
+    playheadBackgroundColor: 'transparent',
+
+    // Padding around the playhead text (pixels)
+    playheadPadding: 2,
 
     // Returns a string for the playhead timestamp label
     formatPlayheadTime: function,
@@ -406,6 +418,12 @@ var options = {
 
   // Color of the playhead text
   playheadTextColor: '#aaa',
+
+  // Background color of the playhead text
+  playheadBackgroundColor: 'transparent',
+
+  // Padding around the playhead text (pixels)
+  playheadPadding: 2,
 
   // Color of the axis gridlines
   axisGridlineColor: '#ccc',
