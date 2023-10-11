@@ -145,7 +145,7 @@ PlayheadLayer.prototype._createPlayheadText = function(color, bkgrdColor, paddin
 
   // Create with default y, the real value is set in fitToView().
   this._playheadText = new Text({
-    x: 2,
+    x: 0,
     y: 0,
     padding: padding,
     text: text,
@@ -155,7 +155,7 @@ PlayheadLayer.prototype._createPlayheadText = function(color, bkgrdColor, paddin
     fill: color,
     align: 'right',
     sceneFunc: function(context, shape) {
-      const width = shape.width() + padding;
+      const width = shape.width();
       const height = shape.height() + (2 * padding);
 
       context.fillStyle = bkgrdColor;
@@ -211,15 +211,15 @@ PlayheadLayer.prototype._syncPlayhead = function(time) {
 
     if (this._playheadText) {
       const text = this._view.formatTime(time);
-      const playheadTextWidth = this._playheadText.getTextWidth();
+      const playheadTextWidth = this._playheadText.width();
 
       this._playheadText.setText(text);
 
       if (playheadTextWidth + playheadX > width - 2) {
-        this._playheadText.setX(-playheadTextWidth - 2);
+        this._playheadText.setX(-playheadTextWidth);
       }
       else if (playheadTextWidth + playheadX < width) {
-        this._playheadText.setX(2);
+        this._playheadText.setX(0);
       }
     }
   }

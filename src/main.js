@@ -69,7 +69,7 @@ Peaks.prototype = Object.create(EventEmitter.prototype);
 const defaultViewOptions = {
   playheadColor:          '#111111',
   playheadTextColor:      '#aaaaaa',
-  playheadBackgroundColor:     'transparent',
+  playheadBackgroundColor: 'transparent',
   playheadPadding:        2,
   axisGridlineColor:      '#cccccc',
   showAxisLabels:         true,
