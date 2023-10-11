@@ -25,7 +25,7 @@ import { Text } from 'konva/lib/shapes/Text';
  * @param {String} options.playheadColor
  * @param {String} options.playheadTextColor
  * @param {String} options.playheadBackgroundColor
- * @param {String} options.playheadPadding
+ * @param {Number} options.playheadPadding
  * @param {String} options.playheadFontFamily
  * @param {Number} options.playheadFontSize
  * @param {String} options.playheadFontStyle
@@ -48,11 +48,10 @@ function PlayheadLayer(options) {
 
   this._playheadLayer = new Konva.Layer();
 
-  this._createPlayhead(this._playheadColor);
+  this._createPlayhead();
 
   if (options.showPlayheadTime) {
-    this._createPlayheadText(this._playheadTextColor,
-      this._playheadBackgroundColor, this._playheadPadding);
+    this._createPlayheadText();
   }
 
   this.fitToView();
@@ -123,10 +122,10 @@ PlayheadLayer.prototype.fitToView = function() {
  * @param {String} color
  */
 
-PlayheadLayer.prototype._createPlayhead = function(color) {
+PlayheadLayer.prototype._createPlayhead = function() {
   // Create with default points, the real values are set in fitToView().
   this._playheadLine = new Line({
-    stroke:      color,
+    stroke:      this._playheadColor,
     strokeWidth: 1
   });
 
@@ -139,32 +138,34 @@ PlayheadLayer.prototype._createPlayhead = function(color) {
   this._playheadLayer.add(this._playheadGroup);
 };
 
-PlayheadLayer.prototype._createPlayheadText = function(color, bkgrdColor, padding) {
-  const time = this._player.getCurrentTime();
-  const text = this._view.formatTime(time);
+PlayheadLayer.prototype._createPlayheadText = function() {
+  const self = this;
+
+  const time = self._player.getCurrentTime();
+  const text = self._view.formatTime(time);
 
   // Create with default y, the real value is set in fitToView().
-  this._playheadText = new Text({
+  self._playheadText = new Text({
     x: 0,
     y: 0,
-    padding: padding,
+    padding: self._playheadPadding,
     text: text,
-    fontSize: this._playheadFontSize,
-    fontFamily: this._playheadFontFamily,
-    fontStyle: this._playheadFontStyle,
-    fill: color,
+    fontSize: self._playheadFontSize,
+    fontFamily: self._playheadFontFamily,
+    fontStyle: self._playheadFontStyle,
+    fill: self._playheadTextColor,
     align: 'right',
     sceneFunc: function(context, shape) {
       const width = shape.width();
-      const height = shape.height() + (2 * padding);
+      const height = shape.height() + 2 * self._playheadPadding;
 
-      context.fillStyle = bkgrdColor;
-      context.fillRect(0, padding * -1, width, height);
-      (shape)._sceneFunc(context);
+      context.fillStyle = self._playheadBackgroundColor;
+      context.fillRect(0, -self._playheadPadding, width, height);
+      shape._sceneFunc(context);
     }
   });
 
-  this._playheadGroup.add(this._playheadText);
+  self._playheadGroup.add(self._playheadText);
 };
 
 /**
