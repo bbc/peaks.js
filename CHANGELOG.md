@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 3.2.0 (2023/10/19)
+
+* Added `playheadBackgroundColor` and `playheadPadding` options (@amber-huo)
+
+* Fixed zoomview mouse drag handler (@chrisn)
+
 ## 3.1.0 (2023/09/19)
 
 * Added `enablePoints` and `enableSegments` options (@chrisn)
