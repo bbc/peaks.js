@@ -60,7 +60,11 @@ ScrollMouseDragHandler.prototype._onMouseDown = function(mousePosX, segment) {
   }
 
   if (this._seeking) {
-    this._seek(mousePosX);
+    mousePosX = clamp(mousePosX, 0, this._view.getWidth());
+
+    const time = this._view.pixelsToTime(mousePosX + this._view.getFrameOffset());
+
+    this._seek(time);
   }
   else {
     this._initialFrameOffset = this._view.getFrameOffset();
