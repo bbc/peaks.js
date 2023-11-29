@@ -210,6 +210,24 @@ describe('WaveformView', function() {
           });
         });
 
+        context('with non-integer scale', function() {
+          it('should round the scale down to an integer value', function() {
+            const view = p.views.getView('zoomview');
+
+            const resampleData = sinon.spy(view, '_resampleData');
+
+            view.setZoom({ scale: 500.5 });
+
+            expect(resampleData.callCount).to.equal(1);
+
+            // width is here because WaveformData.resample modifies
+            // its options parameter
+            expect(resampleData).calledWithExactly({ scale: 500, width: null });
+
+            expect(view._scale).to.equal(500);
+          });
+        });
+
         context('with auto option', function() {
           it('should fit the waveform to the width of the view', function() {
             const view = p.views.getView('zoomview');

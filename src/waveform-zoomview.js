@@ -305,7 +305,7 @@ WaveformZoomView.prototype._syncPlayhead = function(time) {
 };
 
 WaveformZoomView.prototype._getScale = function(duration) {
-  return duration * this._data.sample_rate / this._width;
+  return Math.floor(duration * this._data.sample_rate / this._width);
 };
 
 function isAutoScale(options) {
@@ -348,7 +348,7 @@ WaveformZoomView.prototype.setZoom = function(options) {
   else {
     if (objectHasProperty(options, 'scale')) {
       this._zoomLevelSeconds = null;
-      scale = options.scale;
+      scale = Math.floor(options.scale);
     }
     else if (objectHasProperty(options, 'seconds')) {
       if (!isValidTime(options.seconds)) {
