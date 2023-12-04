@@ -95,7 +95,7 @@ declare module 'peaks.js' {
     showPlayheadTime?: boolean;
     playheadTextColor?: string;
     playheadBackgroundColor?: string;
-    playheadPadding: number;
+    playheadPadding?: number;
     formatPlayheadTime?: FormatTimeFunction;
     timeLabelPrecision?: number;
     showAxisLabels?: boolean;
