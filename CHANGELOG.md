@@ -2,7 +2,7 @@
 
 ## 3.2.1 (2023/11/29)
 
-* Fixed `view.setZoom()` waveform scale calculation. This bug would manifest
+* (#513) Fixed `view.setZoom()` waveform scale calculation. This bug would manifest
   as a misalignment of time axis labels and point and segment markers, because
   the waveform can only be an integer number of samples per pixel (@chrisn)
 
