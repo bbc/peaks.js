@@ -219,11 +219,7 @@ describe('WaveformView', function() {
             view.setZoom({ scale: 500.5 });
 
             expect(resampleData.callCount).to.equal(1);
-
-            // width is here because WaveformData.resample modifies
-            // its options parameter
-            expect(resampleData).calledWithExactly({ scale: 500, width: null });
-
+            expect(resampleData).calledWithExactly({ scale: 500 });
             expect(view._scale).to.equal(500);
           });
         });
