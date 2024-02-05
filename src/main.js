@@ -343,12 +343,9 @@ Peaks.init = function(opts, callback) {
 
   let err = instance._setOptions(opts);
 
-  if (err) {
-    callback(err);
-    return;
+  if (!err) {
+    err = checkContainerElements(instance.options);
   }
-
-  err = checkContainerElements(instance.options);
 
   if (err) {
     callback(err);
