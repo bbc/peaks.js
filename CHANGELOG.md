@@ -1,5 +1,12 @@
 # Peaks.js
 
+## 3.2.2 (2024/02/07)
+
+* (#491) Fixed handling of HTTP 206 response statuses, when requesting audio
+  or waveform data (@chrisn)
+
+* (#518) Fixed TypeScript declarations (@jdelStrother)
+
 ## 3.2.1 (2023/11/29)
 
 * (#513) Fixed `view.setZoom()` waveform scale calculation. This bug would manifest
