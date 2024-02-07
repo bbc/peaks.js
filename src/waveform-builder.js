@@ -122,6 +122,30 @@ WaveformBuilder.prototype.init = function(options, callback) {
   }
 };
 
+function hasValidContentRangeHeader(xhr) {
+  const contentRange = xhr.getResponseHeader('content-range');
+
+  if (!contentRange) {
+    return false;
+  }
+
+  const matches = contentRange.match(/^bytes (\d+)-(\d+)\/(\d+)$/);
+
+  if (matches && matches.length === 4) {
+    const firstPos = parseInt(matches[1], 10);
+    const lastPos = parseInt(matches[2], 10);
+    const length = parseInt(matches[3], 10);
+
+    if (firstPos === 0 && (lastPos + 1) === length) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return false;
+}
+
 /* eslint-disable max-len */
 
 /**
@@ -178,7 +202,10 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
       return;
     }
 
-    if (this.status !== 200) {
+    // See https://github.com/bbc/peaks.js/issues/491
+
+    if (this.status !== 200 &&
+        !(this.status === 206 && hasValidContentRangeHeader(this))) {
       callback(
         new Error('Unable to fetch remote data. HTTP status ' + this.status)
       );
@@ -368,7 +395,10 @@ WaveformBuilder.prototype._requestAudioAndBuildWaveformData = function(url,
       return;
     }
 
-    if (this.status !== 200) {
+    // See https://github.com/bbc/peaks.js/issues/491
+
+    if (this.status !== 200 &&
+        !(this.status === 206 && hasValidContentRangeHeader(this))) {
       callback(
         new Error('Unable to fetch remote data. HTTP status ' + this.status)
       );
