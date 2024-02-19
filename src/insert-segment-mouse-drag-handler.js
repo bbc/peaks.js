@@ -42,12 +42,17 @@ InsertSegmentMouseDragHandler.prototype._onMouseDown = function(mousePosX, segme
   this._segment = segment;
 
   if (this._segment) {
-    // The user has clicked within a segment. We want to prevent
-    // the segment from being dragged while the user inserts a new
-    // segment. So we temporarily make the segment non-draggable,
-    // and restore its draggable state in onMouseUp().
-    this._segmentIsDraggable = this._segment.draggable();
-    this._segment.draggable(false);
+    if (this._view.getSegmentDragMode() !== 'overlap') {
+      return;
+    }
+    else {
+      // The user has clicked within a segment. We want to prevent
+      // the segment from being dragged while the user inserts a new
+      // segment. So we temporarily make the segment non-draggable,
+      // and restore its draggable state in onMouseUp().
+      this._segmentIsDraggable = this._segment.draggable();
+      this._segment.draggable(false);
+    }
   }
 
   const time = this._view.pixelsToTime(mousePosX + this._view.getFrameOffset());
@@ -72,6 +77,10 @@ InsertSegmentMouseDragHandler.prototype._onMouseMove = function() {
 };
 
 InsertSegmentMouseDragHandler.prototype._onMouseUp = function() {
+  if (!this._insertSegment) {
+    return;
+  }
+
   if (this._insertSegmentShape) {
     this._insertSegmentShape.stopDrag();
     this._insertSegmentShape = null;

@@ -63,7 +63,7 @@ MouseDragHandler.prototype._mouseDown = function(event) {
 
   const marker = getMarkerObject(event.target);
 
-  if (marker && marker.attrs.draggable) {
+  if (marker) {
     // Avoid interfering with drag/drop of point and segment markers.
     if (marker.attrs.name === 'point-marker' ||
         marker.attrs.name === 'segment-marker') {

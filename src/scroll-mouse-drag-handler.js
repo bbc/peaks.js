@@ -40,8 +40,14 @@ ScrollMouseDragHandler.prototype.isDragging = function() {
 };
 
 ScrollMouseDragHandler.prototype._onMouseDown = function(mousePosX, segment) {
-  this._segment = segment;
   this._seeking = false;
+
+  if (segment && !segment.attrs.draggable) {
+    this._segment = null;
+  }
+  else {
+    this._segment = segment;
+  }
 
   const playheadOffset = this._view.getPlayheadOffset();
 

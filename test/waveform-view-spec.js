@@ -445,198 +445,212 @@ function initOptions(view, viewOptions) {
         });
       });
 
-      context('when clicking on a segment', function() {
-        beforeEach(function(done) {
-          p.segments.add({ id: 'segment1', startTime: 1.0, endTime: 2.0, editable: true });
-          setTimeout(done, 50);
-        });
+      ['scroll', 'insert-segment'].forEach(function(waveformDragMode) {
+        context('with waveformDragMode(' + waveformDragMode + ')', function() {
+          ['no-overlap', 'compress'].forEach(function(segmentDragMode) {
+            context('with segmentDragMode(' + segmentDragMode + ')', function() {
+              context('when clicking on a segment', function() {
+                beforeEach(function(done) {
+                  if (test.view === 'zoomview') {
+                    const view = p.views.getView('zoomview');
+                    view.setWaveformDragMode(waveformDragMode);
+                    view.setSegmentDragMode(segmentDragMode);
+                  }
 
-        it('should emit both a ' + test.view + '.click and a segments.click event', function() {
-          const emit = sinon.spy(p, 'emit');
+                  p.segments.add({ id: 'segment1', startTime: 1.0, endTime: 2.0, editable: true });
+                  setTimeout(done, 50);
+                });
 
-          const x = test.view === 'overview' ? 40 : 100;
+                it('should emit both a ' + test.view + '.click and a segments.click event', function() {
+                  const emit = sinon.spy(p, 'emit');
 
-          inputController.mouseDown({ x: x, y: 50 });
-          inputController.mouseUp({ x: x, y: 50 });
+                  const x = test.view === 'overview' ? 40 : 100;
 
-          const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
+                  inputController.mouseDown({ x: x, y: 50 });
+                  inputController.mouseUp({ x: x, y: 50 });
 
-          expect(calls.length).to.equal(4);
+                  const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
 
-          expect(calls[0].args[0]).to.equal('segments.mousedown');
-          expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[0].args[1].segment.id).to.equal('segment1');
+                  expect(calls.length).to.equal(4);
 
-          expect(calls[1].args[0]).to.equal('segments.mouseup');
-          expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[1].args[1].segment.id).to.equal('segment1');
+                  expect(calls[0].args[0]).to.equal('segments.mousedown');
+                  expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[0].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[2].args[0]).to.equal('segments.click');
-          expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[2].args[1].segment.id).to.equal('segment1');
+                  expect(calls[1].args[0]).to.equal('segments.mouseup');
+                  expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[1].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[3].args[0]).to.equal(`${test.view}.click`);
-          expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[3].args[1].time).to.be.a('number');
-        });
+                  expect(calls[2].args[0]).to.equal('segments.click');
+                  expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[2].args[1].segment.id).to.equal('segment1');
 
-        it('should emit both a ' + test.view + '.dblclick and a segments.dblclick event', function() {
-          const emit = sinon.spy(p, 'emit');
+                  expect(calls[3].args[0]).to.equal(`${test.view}.click`);
+                  expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[3].args[1].time).to.be.a('number');
+                });
 
-          const x = test.view === 'overview' ? 40 : 100;
+                it('should emit both a ' + test.view + '.dblclick and a segments.dblclick event', function() {
+                  const emit = sinon.spy(p, 'emit');
 
-          inputController.mouseDown({ x: x, y: 50 });
-          inputController.mouseUp({ x: x, y: 50 });
-          inputController.mouseDown({ x: x, y: 50 });
-          inputController.mouseUp({ x: x, y: 50 });
+                  const x = test.view === 'overview' ? 40 : 100;
 
-          const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
+                  inputController.mouseDown({ x: x, y: 50 });
+                  inputController.mouseUp({ x: x, y: 50 });
+                  inputController.mouseDown({ x: x, y: 50 });
+                  inputController.mouseUp({ x: x, y: 50 });
 
-          expect(calls.length).to.equal(10);
+                  const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
 
-          expect(calls[0].args[0]).to.equal('segments.mousedown');
-          expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[0].args[1].segment.id).to.equal('segment1');
+                  expect(calls.length).to.equal(10);
 
-          expect(calls[1].args[0]).to.equal('segments.mouseup');
-          expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[1].args[1].segment.id).to.equal('segment1');
+                  expect(calls[0].args[0]).to.equal('segments.mousedown');
+                  expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[0].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[2].args[0]).to.equal('segments.click');
-          expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[2].args[1].segment.id).to.equal('segment1');
+                  expect(calls[1].args[0]).to.equal('segments.mouseup');
+                  expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[1].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[3].args[0]).to.equal(`${test.view}.click`);
-          expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[3].args[1].time).to.be.a('number');
+                  expect(calls[2].args[0]).to.equal('segments.click');
+                  expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[2].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[4].args[0]).to.equal('segments.mousedown');
-          expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[4].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[4].args[1].segment.id).to.equal('segment1');
+                  expect(calls[3].args[0]).to.equal(`${test.view}.click`);
+                  expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[3].args[1].time).to.be.a('number');
 
-          expect(calls[5].args[0]).to.equal('segments.mouseup');
-          expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[5].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[5].args[1].segment.id).to.equal('segment1');
+                  expect(calls[4].args[0]).to.equal('segments.mousedown');
+                  expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[4].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[4].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[6].args[0]).to.equal('segments.click');
-          expect(calls[6].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[6].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[6].args[1].segment.id).to.equal('segment1');
+                  expect(calls[5].args[0]).to.equal('segments.mouseup');
+                  expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[5].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[5].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[7].args[0]).to.equal(`${test.view}.click`);
-          expect(calls[7].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[7].args[1].time).to.be.a('number');
+                  expect(calls[6].args[0]).to.equal('segments.click');
+                  expect(calls[6].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[6].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[6].args[1].segment.id).to.equal('segment1');
 
-          expect(calls[8].args[0]).to.equal('segments.dblclick');
-          expect(calls[8].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[8].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[8].args[1].segment.id).to.equal('segment1');
+                  expect(calls[7].args[0]).to.equal(`${test.view}.click`);
+                  expect(calls[7].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[7].args[1].time).to.be.a('number');
 
-          expect(calls[9].args[0]).to.equal(`${test.view}.dblclick`);
-          expect(calls[9].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[9].args[1].time).to.be.a('number');
-        });
+                  expect(calls[8].args[0]).to.equal('segments.dblclick');
+                  expect(calls[8].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[8].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[8].args[1].segment.id).to.equal('segment1');
 
-        it(`should allow the user to prevent the ${test.view}.click event`, function() {
-          const emit = sinon.spy(p, 'emit');
+                  expect(calls[9].args[0]).to.equal(`${test.view}.dblclick`);
+                  expect(calls[9].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[9].args[1].time).to.be.a('number');
+                });
 
-          p.on('segments.click', function(event) {
-            event.preventViewEvent();
+                it(`should allow the user to prevent the ${test.view}.click event`, function() {
+                  const emit = sinon.spy(p, 'emit');
+
+                  p.on('segments.click', function(event) {
+                    event.preventViewEvent();
+                  });
+
+                  const x = test.view === 'overview' ? 40 : 100;
+
+                  inputController.mouseDown({ x: x, y: 50 });
+                  inputController.mouseUp({ x: x, y: 50 });
+
+                  const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
+
+                  expect(calls.length).to.equal(3);
+
+                  expect(calls[0].args[0]).to.equal('segments.mousedown');
+                  expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[0].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[1].args[0]).to.equal('segments.mouseup');
+                  expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[1].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[2].args[0]).to.equal('segments.click');
+                  expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[2].args[1].segment.id).to.equal('segment1');
+                });
+
+                it(`should allow the user to prevent the ${test.view}.dblclick event`, function() {
+                  const emit = sinon.spy(p, 'emit');
+
+                  p.on('segments.dblclick', function(event) {
+                    event.preventViewEvent();
+                  });
+
+                  const x = test.view === 'overview' ? 40 : 100;
+
+                  inputController.mouseDown({ x: x, y: 50 });
+                  inputController.mouseUp({ x: x, y: 50 });
+                  inputController.mouseDown({ x: x, y: 50 });
+                  inputController.mouseUp({ x: x, y: 50 });
+
+                  const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
+
+                  expect(calls.length).to.equal(9);
+
+                  expect(calls[0].args[0]).to.equal('segments.mousedown');
+                  expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[0].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[1].args[0]).to.equal('segments.mouseup');
+                  expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[1].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[2].args[0]).to.equal('segments.click');
+                  expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[2].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[3].args[0]).to.equal(`${test.view}.click`);
+                  expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[3].args[1].time).to.be.a('number');
+
+                  expect(calls[4].args[0]).to.equal('segments.mousedown');
+                  expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[4].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[4].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[5].args[0]).to.equal('segments.mouseup');
+                  expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[5].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[5].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[6].args[0]).to.equal('segments.click');
+                  expect(calls[6].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[6].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[6].args[1].segment.id).to.equal('segment1');
+
+                  expect(calls[7].args[0]).to.equal(`${test.view}.click`);
+                  expect(calls[7].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[7].args[1].time).to.be.a('number');
+
+                  expect(calls[8].args[0]).to.equal('segments.dblclick');
+                  expect(calls[8].args[1].evt).to.be.an.instanceOf(MouseEvent);
+                  expect(calls[8].args[1].segment).to.be.an.instanceOf(Segment);
+                  expect(calls[8].args[1].segment.id).to.equal('segment1');
+                });
+              });
+            });
           });
-
-          const x = test.view === 'overview' ? 40 : 100;
-
-          inputController.mouseDown({ x: x, y: 50 });
-          inputController.mouseUp({ x: x, y: 50 });
-
-          const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
-
-          expect(calls.length).to.equal(3);
-
-          expect(calls[0].args[0]).to.equal('segments.mousedown');
-          expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[0].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[1].args[0]).to.equal('segments.mouseup');
-          expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[1].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[2].args[0]).to.equal('segments.click');
-          expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[2].args[1].segment.id).to.equal('segment1');
-        });
-
-        it(`should allow the user to prevent the ${test.view}.dblclick event`, function() {
-          const emit = sinon.spy(p, 'emit');
-
-          p.on('segments.dblclick', function(event) {
-            event.preventViewEvent();
-          });
-
-          const x = test.view === 'overview' ? 40 : 100;
-
-          inputController.mouseDown({ x: x, y: 50 });
-          inputController.mouseUp({ x: x, y: 50 });
-          inputController.mouseDown({ x: x, y: 50 });
-          inputController.mouseUp({ x: x, y: 50 });
-
-          const calls = getEmitCalls(emit, new RegExp(`${test.view}|segments`));
-
-          expect(calls.length).to.equal(9);
-
-          expect(calls[0].args[0]).to.equal('segments.mousedown');
-          expect(calls[0].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[0].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[0].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[1].args[0]).to.equal('segments.mouseup');
-          expect(calls[1].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[1].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[1].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[2].args[0]).to.equal('segments.click');
-          expect(calls[2].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[2].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[2].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[3].args[0]).to.equal(`${test.view}.click`);
-          expect(calls[3].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[3].args[1].time).to.be.a('number');
-
-          expect(calls[4].args[0]).to.equal('segments.mousedown');
-          expect(calls[4].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[4].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[4].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[5].args[0]).to.equal('segments.mouseup');
-          expect(calls[5].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[5].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[5].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[6].args[0]).to.equal('segments.click');
-          expect(calls[6].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[6].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[6].args[1].segment.id).to.equal('segment1');
-
-          expect(calls[7].args[0]).to.equal(`${test.view}.click`);
-          expect(calls[7].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[7].args[1].time).to.be.a('number');
-
-          expect(calls[8].args[0]).to.equal('segments.dblclick');
-          expect(calls[8].args[1].evt).to.be.an.instanceOf(MouseEvent);
-          expect(calls[8].args[1].segment).to.be.an.instanceOf(Segment);
-          expect(calls[8].args[1].segment.id).to.equal('segment1');
         });
       });
 
