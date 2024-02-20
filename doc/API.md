@@ -965,7 +965,9 @@ Controls how segments behave when dragged over an adjacent segment. Possible val
 
 * `'overlap'` (default): Segments can be dragged to overlap each other
 * `'no-overlap'`: Segment overlap is prevented
-* `'compress'`: Dragging a segment over the previous or next segment causes that segment to reduce in size
+* `'compress'`: Segment overlap is prevented, and dragging a segment over the previous or next segment causes that segment to reduce in size
+
+When the segment drag mode is either `'no-overlap'` or `'compress'`, and the [waveform drag mode](#viewsetwaveformdragmodemode) is `'insert-segment'`, clicking on an existing segment will not create a new overlapping segment.
 
 This method applies to the zoomable waveform view only.
 
@@ -991,6 +993,8 @@ Controls the behaviour of mouse drag operations. Possible values for the `mode` 
 
 * `'scroll'` (default): Dragging scrolls the waveform
 * `'insert-segment'`: Dragging inserts a new segment
+
+When the [segment drag mode](#viewsetsegmentdragmodemode) is either `'no-overlap'` or `'compress'`, clicking on an existing segment in `'insert-segment'` mode will not create a new overlapping segment.
 
 ```js
 const view = instance.views.getView('zoomview');
