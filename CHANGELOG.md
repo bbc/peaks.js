@@ -1,10 +1,18 @@
 # Peaks.js
 
+## 3.3.0 (2024/02/21)
+
+* (#524) Fixed `'insert-segment'` waveform drag mode when clicking on an
+  existing segment (@chrisn)
+
+* (#523) Added check for `MEDIA_ERR_SRC_NOT_SUPPORTED` error in `Peaks.init()`,
+  in case the media element source uses an unsupported file format (@chrisn)
+
 ## 3.2.3 (2024/02/20)
 
 * (#524) When the segment drag mode is either `'no-overlap'` or `'compress'`,
   clicking on an existing segment in `'insert-segment'` waveform drag mode
-  will no longer create a new overlapping segment.
+  will no longer create a new overlapping segment (@chrisn)
 
 ## 3.2.2 (2024/02/07)
 
