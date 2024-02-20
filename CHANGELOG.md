@@ -1,5 +1,11 @@
 # Peaks.js
 
+## 3.2.3 (2024/02/20)
+
+* (#524) When the segment drag mode is either `'no-overlap'` or `'compress'`,
+  clicking on an existing segment in `'insert-segment'` waveform drag mode
+  will no longer create a new overlapping segment.
+
 ## 3.2.2 (2024/02/07)
 
 * (#491) Fixed handling of HTTP 206 response statuses, when requesting audio
