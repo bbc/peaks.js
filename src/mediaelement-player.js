@@ -91,6 +91,11 @@ MediaElementPlayer.prototype.init = function(eventEmitter) {
   if (!mediaElementHasSource(self._mediaElement)) {
     return Promise.resolve();
   }
+  else if (self._mediaElement.error &&
+           self._mediaElement.error.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+    // The media element has a source, but the format is not supported.
+    return Promise.reject(self._mediaElement.error);
+  }
 
   return new Promise(function(resolve, reject) {
     function eventHandler(event) {

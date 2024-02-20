@@ -483,6 +483,40 @@ describe('Peaks', function() {
           });
         });
       });
+
+      context('with audio element in error state', function() {
+        let mediaElement;
+
+        beforeEach(function() {
+          mediaElement = document.createElement('audio');
+          mediaElement.id = 'adpcm';
+          mediaElement.src = '/base/test_data/adpcm.wav';
+          mediaElement.muted = true;
+          document.body.appendChild(mediaElement);
+        });
+
+        afterEach(function() {
+          document.body.removeChild(mediaElement);
+        });
+
+        it('should invoke callback with an error', function(done) {
+          Peaks.init({
+            overview: {
+              container: document.getElementById('overview-container')
+            },
+            zoomview: {
+              container: document.getElementById('zoomview-container')
+            },
+            mediaElement: document.getElementById('adpcm'),
+            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          }, function(err, instance) {
+            expect(err).to.be.an.instanceOf(MediaError);
+            expect(err.code).to.equal(MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
+            expect(instance).to.equal(undefined);
+            done();
+          });
+        });
+      });
     });
 
     context('with invalid options', function() {
