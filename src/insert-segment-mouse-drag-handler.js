@@ -38,7 +38,15 @@ InsertSegmentMouseDragHandler.prototype.isDragging = function() {
   return this._mouseDragHandler.isDragging();
 };
 
+InsertSegmentMouseDragHandler.prototype._reset = function() {
+  this._insertSegment = null;
+  this._insertSegmentShape = null;
+  this._segmentIsDraggable = false;
+  this._peaks.segments.setInserting(false);
+};
+
 InsertSegmentMouseDragHandler.prototype._onMouseDown = function(mousePosX, segment) {
+  this._reset();
   this._segment = segment;
 
   if (this._segment) {
