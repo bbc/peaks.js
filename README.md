@@ -12,7 +12,7 @@
 
 ![](https://github.com/bbc/peaks.js/blob/master/peaks.png?raw=1)
 
-Peaks.js uses the HTML canvas element to display the waveform at different zoom levels, and has configuration options to allow you to customize the waveform views. Peaks.js allows users to interact with the waveform views, including zooming and scrolling, and creating point or segment markers that denote content to be clipped or for reference, e.g., distinguishing music from speech or identifying different music tracks.
+Peaks.js is a powerful audio waveform visualization library. It renders waveforms using the HTML canvas, offers multiple zoom levels, lets you customize the waveform appearance, and supports user interactions like zooming, scrolling, and adding markers.
 
 ### Features
 
@@ -25,7 +25,7 @@ Peaks.js uses the HTML canvas element to display the waveform at different zoom 
 * Create point or segment marker annotations
 * Customizable waveform views
 
-You can read more about the project and see a demo [here](https://waveform.prototyping.bbc.co.uk/).
+You can read more about the project and see a demo [on the BBC R&D website](https://waveform.prototyping.bbc.co.uk/).
 
 # Contents
 
