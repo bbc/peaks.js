@@ -28,6 +28,8 @@ Contributions are welcomed and encouraged. If you're thinking of fixing a bug or
 
 * Please follow the existing coding conventions, and ensure that there are no linting errors, using `npm run lint`. The eslint config doesn't specify all our coding conventions, so please try to be consistent.
 
+* Code or documentation contributions produced by generative AI tools are not allowed.
+
 * For commit messages, please follow [these guidelines](https://chris.beams.io/posts/git-commit/), although we're not fussy about use of imperative mood vs past tense. In particular, please don't use [Conventional Commits](https://www.conventionalcommits.org/) style. We may choose to edit your commit messages for consistency when merging.
 
 * Please add test cases for your feature, and ensure all tests are passing, using `npm run test`.
