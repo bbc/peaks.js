@@ -1,5 +1,9 @@
 # Peaks.js
 
+## 3.4.0 (2024/05/24)
+
+* (#529) Added `playheadWidth` option (@chrisn)
+
 ## 3.3.0 (2024/02/21)
 
 * (#524) Fixed `'insert-segment'` waveform drag mode when clicking on an
