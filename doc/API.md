@@ -161,6 +161,9 @@ var options = {
     // Padding around the playhead text (pixels)
     playheadPadding: 2,
 
+    // Width of the playhead (pixels)
+    playheadWidth: 1,
+
     // Tolerance for clicks in the zoomview to be interpreted as
     // dragging the playhead (pixels)
     playheadClickTolerance: 3,

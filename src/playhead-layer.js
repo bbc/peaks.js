@@ -17,23 +17,24 @@ import { Text } from 'konva/lib/shapes/Text';
  * @class
  * @alias PlayheadLayer
  *
+ * @param {Player} player
+ * @param {WaveformOverview|WaveformZoomView} view
  * @param {Object} options
- * @param {Player} options.player
- * @param {WaveformOverview|WaveformZoomView} options.view
  * @param {Boolean} options.showPlayheadTime If <code>true</code> The playback time position
  *   is shown next to the playhead.
  * @param {String} options.playheadColor
  * @param {String} options.playheadTextColor
  * @param {String} options.playheadBackgroundColor
  * @param {Number} options.playheadPadding
+ * @param {Number} options.playheadWidth
  * @param {String} options.playheadFontFamily
  * @param {Number} options.playheadFontSize
  * @param {String} options.playheadFontStyle
  */
 
-function PlayheadLayer(options) {
-  this._player = options.player;
-  this._view = options.view;
+function PlayheadLayer(player, view, options) {
+  this._player = player;
+  this._view = view;
   this._playheadPixel = 0;
   this._playheadLineAnimation = null;
   this._playheadVisible = false;
@@ -41,6 +42,7 @@ function PlayheadLayer(options) {
   this._playheadTextColor = options.playheadTextColor;
   this._playheadBackgroundColor = options.playheadBackgroundColor;
   this._playheadPadding = options.playheadPadding;
+  this._playheadWidth = options.playheadWidth;
 
   this._playheadFontFamily = options.playheadFontFamily;
   this._playheadFontSize = options.playheadFontSize;
@@ -126,7 +128,7 @@ PlayheadLayer.prototype._createPlayhead = function() {
   // Create with default points, the real values are set in fitToView().
   this._playheadLine = new Line({
     stroke:      this._playheadColor,
-    strokeWidth: 1
+    strokeWidth: this._playheadWidth
   });
 
   this._playheadGroup = new Konva.Group({
