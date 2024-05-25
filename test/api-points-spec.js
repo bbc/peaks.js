@@ -14,7 +14,7 @@ describe('Peaks.points', function() {
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
-        arraybuffer: '/base/test_data/sample.dat'
+        arraybuffer: '/base/test/data/sample.dat'
       }
     };
 

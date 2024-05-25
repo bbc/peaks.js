@@ -18,7 +18,7 @@ describe('SegmentShape', function() {
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
-        json: 'base/test_data/sample.json'
+        json: 'base/test/data/sample.json'
       },
       segmentOptions: {}
     };

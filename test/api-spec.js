@@ -3,7 +3,7 @@ import Scrollbar from '../src/scrollbar';
 import WaveformOverview from '../src/waveform-overview';
 import WaveformZoomView from '../src/waveform-zoomview';
 
-import sampleJsonData from '../test_data/sample.json';
+import sampleJsonData from './data/sample.json';
 
 import WaveformData from 'waveform-data';
 import Konva from 'konva';
@@ -43,7 +43,7 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         },
         function(err, instance) {
           expect(err).to.equal(null);
@@ -62,7 +62,7 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         },
         function(err, instance) {
           expect(err).to.equal(null);
@@ -82,7 +82,7 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         },
         function(err, instance) {
           expect(err).to.equal(null);
@@ -105,7 +105,7 @@ describe('Peaks', function() {
               container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -121,7 +121,7 @@ describe('Peaks', function() {
               container: document.getElementById('overview-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -137,7 +137,7 @@ describe('Peaks', function() {
               container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -155,7 +155,7 @@ describe('Peaks', function() {
             overview: {
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.be.an.instanceOf(TypeError);
             expect(err.message).to.match(/must be valid HTML elements/);
@@ -193,7 +193,7 @@ describe('Peaks', function() {
               axisGridlineColor: '#808080'
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -231,7 +231,7 @@ describe('Peaks', function() {
               container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' },
             playheadColor: '#ff0000',
             playheadTextColor: '#00ff00',
             showPlayheadTime: true,
@@ -277,7 +277,7 @@ describe('Peaks', function() {
               container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -318,7 +318,7 @@ describe('Peaks', function() {
               container: document.getElementById('scrollbar-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceof(Peaks);
@@ -338,7 +338,7 @@ describe('Peaks', function() {
               container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('media'),
-            dataUri: { arraybuffer: '/base/test_data/07023003-2channel.dat' }
+            dataUri: { arraybuffer: '/base/test/data/07023003-2channel.dat' }
           }, function(err, instance) {
             expect(err).to.equal(null);
             expect(instance).to.be.an.instanceOf(Peaks);
@@ -374,7 +374,7 @@ describe('Peaks', function() {
 
       context('with valid binary waveform data', function() {
         it('should initialise correctly', function(done) {
-          fetch('/base/test_data/sample.dat')
+          fetch('/base/test/data/sample.dat')
             .then(function(response) {
               return response.arrayBuffer();
             })
@@ -429,7 +429,7 @@ describe('Peaks', function() {
         it('should initialise correctly', function(done) {
           const audioContext = new TestAudioContext();
 
-          fetch('/base/test_data/sample.mp3')
+          fetch('/base/test/data/sample.mp3')
             .then(function(response) {
               return response.arrayBuffer();
             })
@@ -490,7 +490,7 @@ describe('Peaks', function() {
         beforeEach(function() {
           mediaElement = document.createElement('audio');
           mediaElement.id = 'adpcm';
-          mediaElement.src = '/base/test_data/adpcm.wav';
+          mediaElement.src = '/base/test/data/adpcm.wav';
           mediaElement.muted = true;
           document.body.appendChild(mediaElement);
         });
@@ -508,7 +508,7 @@ describe('Peaks', function() {
               container: document.getElementById('zoomview-container')
             },
             mediaElement: document.getElementById('adpcm'),
-            dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+            dataUri: { arraybuffer: '/base/test/data/sample.dat' }
           }, function(err, instance) {
             expect(err).to.be.an.instanceOf(MediaError);
             expect(err.code).to.equal(MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
@@ -537,7 +537,7 @@ describe('Peaks', function() {
           zoomview: {
             container: document.getElementById('zoomview-container')
           },
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
           expect(err.message).to.match(/Missing mediaElement option/);
@@ -555,7 +555,7 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.createElement('div'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(TypeError);
           expect(err.message).to.match(/HTMLMediaElement/);
@@ -573,7 +573,7 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' },
           webAudio: {
             audioContext: new TestAudioContext()
           }
@@ -640,7 +640,7 @@ describe('Peaks', function() {
       });
 
       it('should invoke callback with an error if provided binary waveform data is invalid', function(done) {
-        fetch('/base/test_data/unknown.dat')
+        fetch('/base/test/data/unknown.dat')
           .then(function(response) {
             return response.arrayBuffer();
           })
@@ -667,7 +667,7 @@ describe('Peaks', function() {
       it('should invoke callback with an error if no zoomview or overview options are provided', function(done) {
         Peaks.init({
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         }, function(err, instance) {
           expect(err).to.be.an.instanceOf(Error);
           expect(err.message).to.match(/must be valid HTML elements/);
@@ -686,7 +686,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           },
           logger: 'foo'
         }, function(err, instance) {
@@ -707,7 +707,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           },
           zoomLevels: null
         }, function(err, instance) {
@@ -728,7 +728,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           },
           zoomLevels: []
         }, function(err, instance) {
@@ -749,7 +749,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           },
           zoomLevels: [1024, 512]
         }, function(err, instance) {
@@ -770,7 +770,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         };
 
@@ -792,7 +792,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         };
 
@@ -814,7 +814,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         };
 
@@ -836,7 +836,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         };
 
@@ -857,7 +857,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         };
 
@@ -880,7 +880,7 @@ describe('Peaks', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         };
 
@@ -908,7 +908,7 @@ describe('Peaks', function() {
           container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
-        dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+        dataUri: { arraybuffer: '/base/test/data/sample.dat' },
         zoomLevels: [512, 1024, 2048]
       };
 
@@ -928,9 +928,9 @@ describe('Peaks', function() {
     context('with invalid media url', function() {
       it('should return an error', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/unknown.mp3',
+          mediaUrl: '/base/test/data/unknown.mp3',
           dataUri: {
-            arraybuffer: '/base/test_data/unknown.dat'
+            arraybuffer: '/base/test/data/unknown.dat'
           }
         };
 
@@ -942,9 +942,9 @@ describe('Peaks', function() {
 
       it('should preserve existing event handlers', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/unknown.mp3',
+          mediaUrl: '/base/test/data/unknown.mp3',
           dataUri: {
-            arraybuffer: '/base/test_data/unknown.dat'
+            arraybuffer: '/base/test/data/unknown.dat'
           }
         };
 
@@ -965,7 +965,7 @@ describe('Peaks', function() {
     context('with invalid json waveform data', function() {
       it('should return an error', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/sample.mp3',
+          mediaUrl: '/base/test/data/sample.mp3',
           waveformData: {
             json: { data: 'foo' }
           }
@@ -981,7 +981,7 @@ describe('Peaks', function() {
     context('with valid json waveform data', function() {
       it('should update the waveform', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/sample.mp3',
+          mediaUrl: '/base/test/data/sample.mp3',
           waveformData: {
             json: sampleJsonData
           }
@@ -998,9 +998,9 @@ describe('Peaks', function() {
     context('with waveform data url', function() {
       it('should update the waveform', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/sample.mp3',
+          mediaUrl: '/base/test/data/sample.mp3',
           dataUri: {
-            arraybuffer: '/base/test_data/sample.dat'
+            arraybuffer: '/base/test/data/sample.dat'
           }
         };
 
@@ -1015,7 +1015,7 @@ describe('Peaks', function() {
     context('with audioContext', function() {
       it('should update the waveform', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/sample.mp3',
+          mediaUrl: '/base/test/data/sample.mp3',
           webAudio: {
             audioContext: new TestAudioContext()
           }
@@ -1033,7 +1033,7 @@ describe('Peaks', function() {
       it('should update the waveform', function(done) {
         const audioContext = new TestAudioContext();
 
-        fetch('/base/test_data/sample.mp3')
+        fetch('/base/test/data/sample.mp3')
           .then(function(response) {
             return response.arrayBuffer();
           })
@@ -1042,7 +1042,7 @@ describe('Peaks', function() {
           })
           .then(function(audioBuffer) {
             const options = {
-              mediaUrl: '/base/test_data/sample.mp3',
+              mediaUrl: '/base/test/data/sample.mp3',
               webAudio: {
                 audioBuffer: audioBuffer,
                 multiChannel: true
@@ -1060,13 +1060,13 @@ describe('Peaks', function() {
 
     context('with binary waveform data', function() {
       it('should update the waveform', function(done) {
-        fetch('/base/test_data/sample.dat')
+        fetch('/base/test/data/sample.dat')
           .then(function(response) {
             return response.arrayBuffer();
           })
           .then(function(buffer) {
             const options = {
-              mediaUrl: '/base/test_data/sample.mp3',
+              mediaUrl: '/base/test/data/sample.mp3',
               waveformData: {
                 arraybuffer: buffer
               }
@@ -1083,13 +1083,13 @@ describe('Peaks', function() {
 
     context('with invalid binary waveform data', function() {
       it('should return an error', function(done) {
-        fetch('/base/test_data/unknown.dat')
+        fetch('/base/test/data/unknown.dat')
           .then(function(response) {
             return response.arrayBuffer();
           })
           .then(function(buffer) {
             const options = {
-              mediaUrl: '/base/test_data/sample.mp3',
+              mediaUrl: '/base/test/data/sample.mp3',
               waveformData: {
                 arraybuffer: buffer
               }
@@ -1106,7 +1106,7 @@ describe('Peaks', function() {
     context('with zoom levels', function() {
       it('should update the instance zoom levels', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/sample.mp3',
+          mediaUrl: '/base/test/data/sample.mp3',
           webAudio: {
             audioContext: new TestAudioContext()
           },
@@ -1125,9 +1125,9 @@ describe('Peaks', function() {
     context('with stereo waveform', function() {
       it('should update the waveform', function(done) {
         const options = {
-          mediaUrl: '/base/test_data/07023003.mp3',
+          mediaUrl: '/base/test/data/07023003.mp3',
           dataUri: {
-            arraybuffer: '/base/test_data/07023003-2channel.dat'
+            arraybuffer: '/base/test/data/07023003-2channel.dat'
           },
           zoomLevels: [128, 256]
         };
@@ -1209,7 +1209,7 @@ describe('Peaks', function() {
           container: document.getElementById('scrollbar-container')
         },
         mediaElement: document.getElementById('media'),
-        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        dataUri: { arraybuffer: '/base/test/data/sample.dat' }
       }, function(err, peaks) {
         expect(err).to.equal(null);
 

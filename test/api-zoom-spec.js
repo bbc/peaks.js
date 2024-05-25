@@ -14,7 +14,7 @@ describe('Peaks.zoom', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          json: 'base/test/data/sample.json'
         },
         zoomLevels: [512, 1024]
       };
@@ -106,7 +106,7 @@ describe('Peaks.zoom', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          json: 'base/test/data/sample.json'
         },
         zoomLevels: [512, 1024]
       };

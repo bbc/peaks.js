@@ -11,7 +11,7 @@ function initOptions(view, viewOptions) {
   const options = {
     mediaElement: document.getElementById('media'),
     dataUri: {
-      arraybuffer: 'base/test_data/sample.dat'
+      arraybuffer: 'base/test/data/sample.dat'
     }
   };
 

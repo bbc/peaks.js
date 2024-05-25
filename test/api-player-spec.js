@@ -31,7 +31,7 @@ describe('Player', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          json: 'base/test/data/sample.json'
         },
         logger: logger,
         player: player
@@ -213,7 +213,7 @@ describe('Player', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          json: 'base/test/data/sample.json'
         },
         logger: logger
       };
@@ -373,7 +373,7 @@ describe('Player', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           },
           player: player
         };

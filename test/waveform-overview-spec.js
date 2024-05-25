@@ -13,7 +13,7 @@ describe('WaveformOverview', function() {
             container: container
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
         };
 
         Peaks.init(options, function(err, instance) {
@@ -41,7 +41,7 @@ describe('WaveformOverview', function() {
             container: document.getElementById('overview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test_data/STAT3S3.dat' }
+          dataUri: { arraybuffer: '/base/test/data/STAT3S3.dat' }
         };
 
         Peaks.init(options, function(err, instance) {
@@ -69,7 +69,7 @@ describe('WaveformOverview', function() {
           container: document.getElementById('overview-container')
         },
         mediaElement: document.getElementById('media'),
-        dataUri: { arraybuffer: '/base/test_data/sample.dat' }
+        dataUri: { arraybuffer: '/base/test/data/sample.dat' }
       };
 
       Peaks.init(options, function(err, instance) {

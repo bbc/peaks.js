@@ -19,7 +19,7 @@ beforeEach(function(done) {
 
   const mediaElement = document.createElement('audio');
   mediaElement.id = 'media';
-  mediaElement.src = '/base/test_data/sample.mp3';
+  mediaElement.src = '/base/test/data/sample.mp3';
   mediaElement.muted = true;
   document.body.appendChild(mediaElement);
 

@@ -16,7 +16,7 @@ describe('CueEmitter', function() {
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
-        arraybuffer: 'base/test_data/sample.dat'
+        arraybuffer: 'base/test/data/sample.dat'
       },
       emitCueEvents: false
     };
@@ -56,7 +56,7 @@ describe('CueEmitter', function() {
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
-        arraybuffer: 'base/test_data/sample.dat'
+        arraybuffer: 'base/test/data/sample.dat'
       },
       emitCueEvents: true,
       points: [{ time: 1.0 }],
@@ -82,7 +82,7 @@ describe('CueEmitter', function() {
       },
       mediaElement: document.getElementById('media'),
       dataUri: {
-        arraybuffer: 'base/test_data/sample.dat'
+        arraybuffer: 'base/test/data/sample.dat'
       },
       emitCueEvents: true
     };
@@ -340,7 +340,7 @@ describe('CueEmitter', function() {
           container: document.getElementById('zoomview-container')
         },
         dataUri: {
-          arraybuffer: 'base/test_data/sample.dat'
+          arraybuffer: 'base/test/data/sample.dat'
         },
         player: player,
         emitCueEvents: true

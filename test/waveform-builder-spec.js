@@ -1,5 +1,5 @@
 import WaveformBuilder from '../src/waveform-builder';
-import sampleJsonData from '../test_data/sample.json';
+import sampleJsonData from './data/sample.json';
 
 import WaveformData from 'waveform-data';
 
@@ -11,7 +11,7 @@ describe('WaveformBuilder', function() {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
-          dataUri: 'base/test_data/sample.json'
+          dataUri: 'base/test/data/sample.json'
         }
       };
 
@@ -29,7 +29,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/404-file.json'
+            json: 'base/test/data/404-file.json'
           }
         }
       };
@@ -70,7 +70,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           }
         }
       };
@@ -96,7 +96,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         }
       };
@@ -122,7 +122,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           }
         }
       };
@@ -149,7 +149,7 @@ describe('WaveformBuilder', function() {
           mediaElement: document.getElementById('media'),
           withCredentials: true,
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           }
         }
       };
@@ -175,7 +175,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         }
       };
@@ -201,7 +201,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat'
+            arraybuffer: 'base/test/data/sample.dat'
           }
         }
       };
@@ -279,8 +279,8 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample.dat',
-            json: 'base/test_data/sample.json'
+            arraybuffer: 'base/test/data/sample.dat',
+            json: 'base/test/data/sample.json'
           }
         }
       };
@@ -307,7 +307,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            arraybuffer: 'base/test_data/sample_16bit.dat'
+            arraybuffer: 'base/test/data/sample_16bit.dat'
           }
         }
       };
@@ -351,7 +351,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           }
         }
       };
@@ -397,7 +397,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           }
         }
       };
@@ -418,7 +418,7 @@ describe('WaveformBuilder', function() {
         options: {
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           }
         }
       };

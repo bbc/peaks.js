@@ -20,7 +20,7 @@ describe('WaveformZoomView', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          arraybuffer: 'base/test_data/sample.dat'
+          arraybuffer: 'base/test/data/sample.dat'
         }
       };
 
@@ -94,7 +94,7 @@ describe('WaveformZoomView', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          json: 'base/test/data/sample.json'
         },
         segments: [
           { id: 'segment1', startTime: 1.0,  endTime: 2.0, editable: true },
@@ -321,7 +321,7 @@ describe('WaveformZoomView', function() {
             },
             mediaElement: document.getElementById('media'),
             dataUri: {
-              json: 'base/test_data/sample.json'
+              json: 'base/test/data/sample.json'
             },
             segmentOptions: {
               markers: test.markers,
@@ -1019,7 +1019,7 @@ describe('WaveformZoomView', function() {
           },
           mediaElement: document.getElementById('media'),
           dataUri: {
-            json: 'base/test_data/sample.json'
+            json: 'base/test/data/sample.json'
           },
           points: [
             { id: 'point1', time: 7.0, editable: true }
@@ -1198,7 +1198,7 @@ describe('WaveformZoomView', function() {
           container: document.getElementById('zoomview-container')
         },
         mediaElement: document.getElementById('media'),
-        dataUri: { arraybuffer: '/base/test_data/sample.dat' },
+        dataUri: { arraybuffer: '/base/test/data/sample.dat' },
         segments: [
           { id: 'segment1', startTime: 1.0, endTime: 2.0, editable: true },
           { id: 'segment2', startTime: 3.0, endTime: 4.0, editable: false }
@@ -1353,7 +1353,7 @@ describe('WaveformZoomView', function() {
         },
         mediaElement: document.getElementById('media'),
         dataUri: {
-          json: 'base/test_data/sample.json'
+          json: 'base/test/data/sample.json'
         },
         points: [
           { id: 'point1', time: 7.0, editable: true }
