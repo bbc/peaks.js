@@ -999,6 +999,8 @@ Controls the behaviour of mouse drag operations. Possible values for the `mode` 
 
 When the [segment drag mode](#viewsetsegmentdragmodemode) is either `'no-overlap'` or `'compress'`, clicking on an existing segment in `'insert-segment'` mode will not create a new overlapping segment.
 
+This method applies to the zoomable waveform view only.
+
 ```js
 const view = instance.views.getView('zoomview');
 view.setWaveformDragMode('insert-segment');
