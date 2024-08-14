@@ -306,6 +306,32 @@ Peaks.init(options, function(err, peaksInstance) {
     }
   });
 
+  document.getElementById('enable-seek').addEventListener('change', function(event) {
+    var overview = peaksInstance.views.getView('overview');
+    var zoomview = peaksInstance.views.getView('zoomview');
+
+    zoomview.enableSeek(event.target.checked);
+    overview.enableSeek(event.target.checked);
+  });
+
+  document.getElementById('waveform-drag-mode').addEventListener('change', function(event) {
+    var view = peaksInstance.views.getView('zoomview');
+
+    view.setWaveformDragMode(event.target.value);
+  });
+
+  document.getElementById('enable-segment-dragging').addEventListener('change', function(event) {
+    var zoomview = peaksInstance.views.getView('zoomview');
+
+    zoomview.enableSegmentDragging(event.target.checked);
+  });
+
+  document.getElementById('segment-drag-mode').addEventListener('change', function(event) {
+    var view = peaksInstance.views.getView('zoomview');
+
+    view.setSegmentDragMode(event.target.value);
+  });
+
   // Points mouse events
 
   peaksInstance.on('points.mouseenter', function(event) {

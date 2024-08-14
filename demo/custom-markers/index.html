@@ -53,19 +53,40 @@
       </audio>
 
       <div id="controls">
-        <button data-action="zoom-in">Zoom in</button>
-        <button data-action="zoom-out">Zoom out</button>
-        <button data-action="add-segment">Add Segment</button>
-        <button data-action="add-point">Add Point</button>
-        <button data-action="log-data">Log segments/points</button>
-        <input type="text" id="seek-time" value="0.0">
-        <button data-action="seek">Seek</button>
-        <label for="amplitude-scale">Amplitude scale</label>
-        <input type="range" id="amplitude-scale" min="0" max="10" step="1">
-        <input type="checkbox" id="auto-scroll" checked>
-        <label for="auto-scroll">Auto-scroll</label>
-        <button data-action="resize">Resize</button>
-        <button data-action="destroy">Destroy</button>
+        <div>
+          <button data-action="zoom-in">Zoom in</button>
+          <button data-action="zoom-out">Zoom out</button>
+          <button data-action="add-segment">Add Segment</button>
+          <button data-action="add-point">Add Point</button>
+          <button data-action="log-data">Log segments/points</button>
+          <input type="text" id="seek-time" value="0.0">
+          <button data-action="seek">Seek</button>
+          <label for="amplitude-scale">Amplitude scale</label>
+          <input type="range" id="amplitude-scale" min="0" max="10" step="1">
+          <input type="checkbox" id="auto-scroll" checked>
+          <label for="auto-scroll">Auto-scroll</label>
+          <button data-action="resize">Resize</button>
+          <button data-action="destroy">Destroy</button>
+        </div>
+        <div>
+          <input type="checkbox" id="enable-seek" checked>
+          <label for="enable-seek">Enable click to seek</label>
+          <label for="waveform-drag-mode">Waveform drag mode:</label>
+          <select id="waveform-drag-mode">
+            <option value="scroll">Scroll</option>
+            <option value="insert-segment">Insert segment</option>
+          </select>
+        </div>
+        <div>
+          <input type="checkbox" id="enable-segment-dragging">
+          <label for="enable-segment-dragging">Enable segment dragging</label>
+          <label for="segment-drag-mode">Segment drag mode:</label>
+          <select id="segment-drag-mode">
+            <option value="overlap">Overlap</option>
+            <option value="no-overlap">No overlap</option>
+            <option value="compress">Compress</option>
+          </select>
+        </div>
       </div>
     </div>
 
