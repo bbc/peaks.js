@@ -443,6 +443,10 @@ WaveformZoomView.prototype._resampleData = function(options) {
   this._pixelLength = this._data.length;
 };
 
+WaveformZoomView.prototype.isAutoZoom = function() {
+  return this._zoomLevelAuto;
+};
+
 WaveformZoomView.prototype.setStartTime = function(time) {
   if (time < 0) {
     time = 0;

@@ -92,13 +92,17 @@ ScrollMouseDragHandler.prototype._onMouseMove = function(mousePosX) {
     this._seek(time);
   }
   else {
-    // Moving the mouse to the left increases the time position of the
-    // left-hand edge of the visible waveform.
-    const diff = this._mouseDownX - mousePosX;
-    const newFrameOffset = this._initialFrameOffset + diff;
+    // TODO: Prevent scrolling when zoomed to fit the waveform to the
+    // view width. Sometimes the waveform is a few pixels longer.
+    if (!this._view.isAutoZoom()) {
+      // Moving the mouse to the left increases the time position of the
+      // left-hand edge of the visible waveform.
+      const diff = this._mouseDownX - mousePosX;
+      const newFrameOffset = this._initialFrameOffset + diff;
 
-    if (newFrameOffset !== this._initialFrameOffset) {
-      this._view.updateWaveform(newFrameOffset);
+      if (newFrameOffset !== this._initialFrameOffset) {
+        this._view.updateWaveform(newFrameOffset);
+      }
     }
   }
 };
