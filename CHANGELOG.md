@@ -1,5 +1,12 @@
 # Peaks.js
 
+## 3.4.1 (2024/08/14)
+
+* (#536) Fixed `zoomview.enableAutoScroll()` (@chrisn)
+
+* (#536) Prevent the zoomview from scrolling when set to `auto` zoom level
+  (@chrisn)
+
 ## 3.4.0 (2024/05/24)
 
 * (#529) Added `playheadWidth` option (@chrisn)
