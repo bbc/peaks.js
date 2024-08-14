@@ -531,6 +531,10 @@ WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
 };
 
 WaveformZoomView.prototype.enableAutoScroll = function(enable, options) {
+  if (!options) {
+    options = {};
+  }
+
   this._autoScroll = enable;
 
   if (objectHasProperty(options, 'offset')) {
