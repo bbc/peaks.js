@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 3.4.2 (2024/08/15)
+
+* (#536) Prevent the zoomview from scrolling when set to `auto` zoom level
+  (@chrisn)
+
 ## 3.4.1 (2024/08/14)
 
 * (#536) Fixed `zoomview.enableAutoScroll()` (@chrisn)
