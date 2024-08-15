@@ -281,7 +281,7 @@ WaveformZoomView.prototype.getPlayheadClickTolerance = function() {
 WaveformZoomView.prototype._syncPlayhead = function(time) {
   this._playheadLayer.updatePlayheadTime(time);
 
-  if (this._autoScroll) {
+  if (this._autoScroll && !this._zoomLevelAuto) {
     // Check for the playhead reaching the right-hand side of the window.
 
     const pixelIndex = this.timeToPixels(time);
