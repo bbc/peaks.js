@@ -335,11 +335,8 @@ WaveformZoomView.prototype.setZoom = function(options) {
   let scale;
 
   if (isAutoScale(options)) {
-    const seconds = this._peaks.player.getDuration();
-
-    if (!isValidTime(seconds)) {
-      return false;
-    }
+    // Use waveform duration, to match WaveformOverview
+    const seconds = this._originalWaveformData.duration;
 
     this._zoomLevelAuto = true;
     this._zoomLevelSeconds = null;
