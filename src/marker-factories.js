@@ -103,3 +103,5 @@ export function createSegmentLabel(options) {
 export function createPointMarker(options) {
   return new DefaultPointMarker(options);
 }
+
+export DefaultPointMarker;
