@@ -1,14 +1,15 @@
 /**
  * @file
  *
- * Implementation of {@link Player} adapter based on the HTML5 media element.
+ * Implementation of {@link Player} adapter based on an <code>&lt;audio&gt;</code>
+ * or <code>&lt;video&gt;</code> HTML element.
  *
  * @module mediaelement-player
  */
 
 /**
  * Checks whether the given HTMLMediaElement has either a src attribute
- * or any child <code>&lt;source&gt;</code> nodes
+ * or any child <code>&lt;source&gt;</code> nodes.
  */
 
 function mediaElementHasSource(mediaElement) {
@@ -24,7 +25,7 @@ function mediaElementHasSource(mediaElement) {
 }
 
 /**
- * A wrapper for interfacing with the HTML5 media element API.
+ * A wrapper for interfacing with the HTMLMediaElement API.
  * Initializes the player for a given media element.
  *
  * @class
