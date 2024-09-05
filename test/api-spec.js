@@ -74,6 +74,8 @@ describe('Peaks', function() {
       });
 
       it('should emit a peaks.ready event when initialised', function(done) {
+        const logger = sinon.spy();
+
         Peaks.init({
           overview: {
             container: document.getElementById('overview-container')
@@ -82,16 +84,46 @@ describe('Peaks', function() {
             container: document.getElementById('zoomview-container')
           },
           mediaElement: document.getElementById('media'),
-          dataUri: { arraybuffer: '/base/test/data/sample.dat' }
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' },
+          logger: logger
         },
         function(err, instance) {
           expect(err).to.equal(null);
           expect(instance).to.be.an.instanceOf(Peaks);
 
           instance.on('peaks.ready', function() {
+            expect(logger.callCount).to.equal(1);
+            expect(logger).calledWithMatch(/deprecated/);
             expect(instance.getWaveformData()).to.be.an.instanceOf(WaveformData);
             done();
           });
+        });
+      });
+
+      it('should emit a peaks.ready event when initialised without a callback', function(done) {
+        const logger = sinon.spy();
+
+        const instance = Peaks.init({
+          overview: {
+            container: document.getElementById('overview-container')
+          },
+          zoomview: {
+            container: document.getElementById('zoomview-container')
+          },
+          mediaElement: document.getElementById('media'),
+          dataUri: { arraybuffer: '/base/test/data/sample.dat' },
+          logger: logger
+        });
+
+        expect(instance).to.be.an.instanceOf(Peaks);
+
+        expect(logger.callCount).to.equal(1);
+
+        instance.on('peaks.ready', function() {
+          expect(logger.callCount).to.equal(2);
+          expect(logger.getCall(0).args[0]).to.match(/callback/);
+          expect(logger.getCall(1).args[0]).to.match(/deprecated/);
+          done();
         });
       });
 

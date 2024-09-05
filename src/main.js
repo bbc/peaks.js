@@ -337,6 +337,7 @@ function checkContainerElements(options) {
  * Creates and initialises a new Peaks instance with the given options.
  *
  * @param {Object} opts Configuration options
+ * @param {Function} callback
  *
  * @return {Peaks}
  */
@@ -345,6 +346,10 @@ Peaks.init = function(opts, callback) {
   const instance = new Peaks();
 
   let err = instance._setOptions(opts);
+
+  if (!callback) {
+    instance._logger('Peaks.init(): Missing callback function');
+  }
 
   if (!err) {
     err = checkContainerElements(instance.options);
@@ -448,7 +453,9 @@ Peaks.init = function(opts, callback) {
           instance.emit('peaks.ready');
         }, 0);
 
-        callback(null, instance);
+        if (callback) {
+          callback(null, instance);
+        }
       });
     })
     .catch(function(err) {
@@ -606,6 +613,14 @@ Peaks.prototype.setSource = function(options, callback) {
 
 Peaks.prototype.getWaveformData = function() {
   return this._waveformData;
+};
+
+Peaks.prototype.on = function(type, listener, options) {
+  if (type === 'peaks.ready') {
+    this._logger('Peaks.on(): The peaks.ready event is deprecated');
+  }
+
+  EventEmitter.prototype.on.call(this, type, listener, options);
 };
 
 /**
