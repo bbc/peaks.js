@@ -1523,20 +1523,6 @@ instance.destroy();
 
 The following sections describe the available events.
 
-## Initialization Events
-
-### `peaks.ready`
-
-This event is emitted during [`Peaks.init()`](#peaksinitoptions-callback) after the waveform has been loaded and initially rendered.
-
-```js
-instance.on('peaks.ready', function() {
-  console.log('Intialised');
-});
-```
-
-This event is deprecated. You should pass a callback function to [`Peaks.init()`](#peaksinitoptions-callback) to know when initialization is complete.
-
 ## Player Events
 
 ### `player.canplay`

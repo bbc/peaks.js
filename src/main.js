@@ -343,13 +343,13 @@ function checkContainerElements(options) {
  */
 
 Peaks.init = function(opts, callback) {
+  if (!callback) {
+    throw new Error('Peaks.init(): Missing callback function');
+  }
+
   const instance = new Peaks();
 
   let err = instance._setOptions(opts);
-
-  if (!callback) {
-    instance._logger('Peaks.init(): Missing callback function');
-  }
 
   if (!err) {
     err = checkContainerElements(instance.options);
@@ -399,20 +399,14 @@ Peaks.init = function(opts, callback) {
     .then(function() {
       instance._waveformBuilder.init(instance.options, function(err, waveformData) {
         if (err) {
-          if (callback) {
-            callback(err);
-          }
-
+          callback(err);
           return;
         }
 
         err = checkContainerElements(instance.options);
 
         if (err) {
-          if (callback) {
-            callback(err);
-          }
-
+          callback(err);
           return;
         }
 
@@ -446,22 +440,11 @@ Peaks.init = function(opts, callback) {
           instance._cueEmitter = new CueEmitter(instance);
         }
 
-        // Allow applications to attach event handlers before emitting events,
-        // when initialising with local waveform data.
-
-        setTimeout(function() {
-          instance.emit('peaks.ready');
-        }, 0);
-
-        if (callback) {
-          callback(null, instance);
-        }
+        callback(null, instance);
       });
     })
     .catch(function(err) {
-      if (callback) {
-        callback(err);
-      }
+      callback(err);
     });
 
   return instance;
@@ -613,14 +596,6 @@ Peaks.prototype.setSource = function(options, callback) {
 
 Peaks.prototype.getWaveformData = function() {
   return this._waveformData;
-};
-
-Peaks.prototype.on = function(type, listener, options) {
-  if (type === 'peaks.ready') {
-    this._logger('Peaks.on(): The peaks.ready event is deprecated');
-  }
-
-  EventEmitter.prototype.on.call(this, type, listener, options);
 };
 
 /**
