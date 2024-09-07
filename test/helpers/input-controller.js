@@ -32,7 +32,9 @@ InputController.prototype._dispatchMouseEvent = function(type, pos) {
   const event = new MouseEvent(type, {
     bubbles: true,
     clientX: this._left + pos.x,
-    clientY: this._top  + pos.y
+    clientY: this._top  + pos.y,
+    offsetX: pos.x,
+    offsetY: pos.y
   });
 
   this._target.dispatchEvent(event);

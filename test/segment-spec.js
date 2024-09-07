@@ -406,5 +406,20 @@ describe('Segment', function() {
 
       expect(segment.isVisible(10.0, 20.0)).to.equal(true);
     });
+
+    it('should return true if segment starts at time zero and has zero end time', function() {
+      const peaks = { emit: function() {} };
+      const pid = 0;
+
+      const segment = new Segment(peaks, pid, {
+        id: 'segment.1',
+        labelText: '',
+        editable: true,
+        startTime: 0.0,
+        endTime: 0.0
+      });
+
+      expect(segment.isVisible(0.0, 10.0)).to.equal(true);
+    });
   });
 });

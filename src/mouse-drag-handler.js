@@ -169,7 +169,7 @@ MouseDragHandler.prototype._mouseUp = function(event) {
 MouseDragHandler.prototype._getMousePosX = function(clientX) {
   const containerPos = this._stage.getContainer().getBoundingClientRect();
 
-  return clientX - containerPos.left;
+  return Math.floor(clientX - containerPos.left);
 };
 
 /**

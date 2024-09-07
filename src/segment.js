@@ -220,12 +220,26 @@ Segment.prototype.update = function(options) {
  * @param {Number} startTime The start of the time region, in seconds.
  * @param {Number} endTime The end of the time region, in seconds.
  * @returns {Boolean}
- *
- * @see http://wiki.c2.com/?TestIfDateRangesOverlap
  */
 
 Segment.prototype.isVisible = function(startTime, endTime) {
-  return this.startTime < endTime && startTime < this.endTime;
+  // A special case, where the segment has zero duration
+  // and is at the start of the region.
+  if (this.startTime === this.endTime && this.startTime === startTime) {
+    return true;
+  }
+
+  // Segment ends before start of region.
+  if (this.endTime <= startTime) {
+    return false;
+  }
+
+  // Segment starts after end of region
+  if (this.startTime >= endTime) {
+    return false;
+  }
+
+  return true;
 };
 
 Segment.prototype._setStartTime = function(time) {

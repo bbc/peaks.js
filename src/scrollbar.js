@@ -178,7 +178,7 @@ Scrollbar.prototype._onScrollbarClick = function(event) {
   if (event.target === this._stage) {
     if (this._zoomview) {
       // Centre the scrollbox where the user clicked.
-      let x = Math.floor(event.evt.layerX - this._scrollboxWidth / 2);
+      let x = Math.floor(event.evt.offsetX - this._scrollboxWidth / 2);
 
       if (x < 0) {
         x = 0;

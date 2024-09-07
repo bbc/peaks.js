@@ -347,6 +347,12 @@ WaveformView.prototype._onContextMenu = function(event) {
 };
 
 WaveformView.prototype._clickHandler = function(event, eventName) {
+  let offsetX = event.evt.offsetX;
+
+  if (offsetX < 0) {
+    offsetX = 0;
+  }
+
   let emitViewEvent = true;
 
   if (event.target !== this._stage) {
@@ -387,8 +393,7 @@ WaveformView.prototype._clickHandler = function(event, eventName) {
   }
 
   if (emitViewEvent) {
-    const mousePosX = event.evt.layerX;
-    const time = this.pixelOffsetToTime(mousePosX);
+    const time = this.pixelOffsetToTime(offsetX);
     const viewName = this.getName();
 
     this._peaks.emit(viewName + '.' + eventName, {
