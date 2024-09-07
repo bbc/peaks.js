@@ -601,6 +601,15 @@ WaveformZoomView.prototype.destroy = function() {
   this._peaks.off('keyboard.shift_left', this._onKeyboardShiftLeft);
   this._peaks.off('keyboard.shift_right', this._onKeyboardShiftRight);
 
+  if (this._enableWaveformCache) {
+    this._waveformData.clear();
+    delete this._waveformData;
+    delete this._waveformScales;
+  }
+  else {
+    delete this._data;
+  }
+
   this._mouseDragHandler.destroy();
 
   WaveformView.prototype.destroy.call(this);
