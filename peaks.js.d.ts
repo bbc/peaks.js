@@ -426,7 +426,6 @@ declare module 'peaks.js' {
   }
 
   interface InstanceEvents {
-    'peaks.ready': () => void;
     'points.add': (event: PointsAddEvent) => void;
     'points.click': (event: PointClickEvent) => void;
     'points.dblclick': (event: PointClickEvent) => void;

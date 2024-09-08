@@ -889,7 +889,6 @@ Shows or hides the time axis timestamp labels.
 
 The `options` object can be used to set the the height of the time axis markers on the top and bottom of the waveform.
 
-
 The initial setting is controlled by the `showAxisLabels` configuration option
 (default: `true`) and the `axisTopMarkerHeight` and `axisBottomMarkerHeight` options (default: 10).
 

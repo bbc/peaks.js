@@ -446,8 +446,6 @@ Peaks.init = function(opts, callback) {
     .catch(function(err) {
       callback(err);
     });
-
-  return instance;
 };
 
 Peaks.prototype._setOptions = function(opts) {
