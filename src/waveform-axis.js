@@ -180,7 +180,7 @@ WaveformAxis.prototype._drawAxis = function(context, view) {
       context.stroke();
     }
 
-    if (this._axisBottomMarkerHeight) {
+    if (this._axisBottomMarkerHeight > 0) {
       context.beginPath();
       context.moveTo(x + 0.5, height);
       context.lineTo(x + 0.5, height - this._axisBottomMarkerHeight);
