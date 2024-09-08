@@ -23,15 +23,15 @@ const defaultFontShape = 'normal';
  *
  * @param {Peaks} peaks
  * @param {WaveformOverview|WaveformZoomView} view
- * @param {Boolean} allowEditing
+ * @param {Boolean} enableEditing
  */
 
-function PointsLayer(peaks, view, allowEditing) {
-  this._peaks        = peaks;
-  this._view         = view;
-  this._allowEditing = allowEditing;
-  this._pointMarkers = {};
-  this._layer        = new Konva.Layer();
+function PointsLayer(peaks, view, enableEditing) {
+  this._peaks         = peaks;
+  this._view          = view;
+  this._enableEditing = enableEditing;
+  this._pointMarkers  = {};
+  this._layer         = new Konva.Layer();
 
   this._onPointsDrag = this._onPointsDrag.bind(this);
 
@@ -68,7 +68,7 @@ PointsLayer.prototype.addToStage = function(stage) {
 };
 
 PointsLayer.prototype.enableEditing = function(enable) {
-  this._allowEditing = enable;
+  this._enableEditing = enable;
 };
 
 PointsLayer.prototype.getPointMarker = function(point) {
@@ -143,7 +143,7 @@ PointsLayer.prototype._onPointsRemoveAll = function() {
  */
 
 PointsLayer.prototype._createPointMarker = function(point) {
-  const editable = this._allowEditing && point.editable;
+  const editable = this._enableEditing && point.editable;
 
   const marker = this._peaks.options.createPointMarker({
     point:      point,

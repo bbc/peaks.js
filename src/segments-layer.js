@@ -19,13 +19,13 @@ import Konva from 'konva/lib/Core';
  *
  * @param {Peaks} peaks
  * @param {WaveformOverview|WaveformZoomView} view
- * @param {Boolean} allowEditing
+ * @param {Boolean} enableEditing
  */
 
-function SegmentsLayer(peaks, view, allowEditing) {
+function SegmentsLayer(peaks, view, enableEditing) {
   this._peaks         = peaks;
   this._view          = view;
-  this._allowEditing  = allowEditing;
+  this._enableEditing = enableEditing;
   this._segmentShapes = {};
   this._layer         = new Konva.Layer();
 
@@ -53,11 +53,11 @@ SegmentsLayer.prototype.addToStage = function(stage) {
 };
 
 SegmentsLayer.prototype.enableEditing = function(enable) {
-  this._allowEditing = enable;
+  this._enableEditing = enable;
 };
 
 SegmentsLayer.prototype.isEditingEnabled = function() {
-  return this._allowEditing;
+  return this._enableEditing;
 };
 
 SegmentsLayer.prototype.enableSegmentDragging = function(enable) {
