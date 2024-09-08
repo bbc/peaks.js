@@ -79,12 +79,6 @@
           <button data-action="log-data">Log segments/points</button>
         </div>
         <div>
-          <button data-action="resize">Resize</button>
-          <button data-action="toggle-zoomview">Show/hide zoomable waveform</button>
-          <button data-action="toggle-overview">Show/hide overview waveform</button>
-          <button data-action="destroy">Destroy</button>
-        </div>
-        <div>
           <input type="checkbox" id="enable-seek" checked>
           <label for="enable-seek">Enable click to seek</label>
           <label for="waveform-drag-mode">Waveform drag mode:</label>
@@ -102,6 +96,15 @@
             <option value="no-overlap">No overlap</option>
             <option value="compress">Compress</option>
           </select>
+        </div>
+        <div>
+          <button data-action="resize-width">Resize width</button>
+          <button data-action="resize-height">Resize height</button>
+        </div>
+        <div>
+          <button data-action="toggle-zoomview">Show/hide zoomable waveform</button>
+          <button data-action="toggle-overview">Show/hide overview waveform</button>
+          <button data-action="destroy">Destroy</button>
         </div>
       </div>
     </div>
@@ -447,7 +450,31 @@
             peaksInstance.views.getView('overview').setAmplitudeScale(scale);
           });
 
-          document.querySelector('button[data-action="resize"]').addEventListener('click', function(event) {
+          document.querySelector('button[data-action="resize-width"]').addEventListener('click', function(event) {
+            document.querySelectorAll('.waveform-container').forEach(function(container) {
+              container.style.width = container.offsetWidth === 1000 ? "700px" : "1000px";
+            });
+
+            const zoomview = peaksInstance.views.getView('zoomview');
+
+            if (zoomview) {
+              zoomview.fitToContainer();
+            }
+
+            const scrollbar = peaksInstance.views.getScrollbar();
+
+            if (scrollbar) {
+              scrollbar.fitToContainer();
+            }
+
+            const overview = peaksInstance.views.getView('overview');
+
+            if (overview) {
+              overview.fitToContainer();
+            }
+          });
+
+          document.querySelector('button[data-action="resize-height"]').addEventListener('click', function(event) {
             const zoomviewContainer = document.getElementById('zoomview-container');
             const overviewContainer = document.getElementById('overview-container');
 
