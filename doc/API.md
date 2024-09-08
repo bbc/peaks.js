@@ -77,8 +77,6 @@ This document describes the Peaks.js API, including configuration options, funct
   - [Destruction](#destruction)
     - [instance.destroy()](#instancedestroy)
 - [Events](#events)
-  - [Initialization Events](#initialization-events)
-    - [peaks.ready](#peaksready)
   - [Player Events](#player-events)
     - [player.canplay](#playercanplay)
     - [player.error](#playererror)
