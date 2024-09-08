@@ -199,6 +199,26 @@ describe('Segment', function() {
       }).to.throw(Error);
     });
 
+    it('should not allow the overlay attribute to be updated', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
+
+      const segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({ overlay: false });
+      }).to.throw(TypeError);
+    });
+
+    it('should not allow the markers attribute to be updated', function() {
+      p.segments.add({ startTime: 0, endTime: 10, labelText: 'test' });
+
+      const segment = p.segments.getSegments()[0];
+
+      expect(function() {
+        segment.update({ markers: false });
+      }).to.throw(TypeError);
+    });
+
     it('should allow a user data attribute to be created', function() {
       const peaks = { emit: function() {} };
       const pid = 0;
@@ -246,6 +266,8 @@ describe('Segment', function() {
       '_labelText',
       '_color',
       '_borderColor',
+      '_overlay',
+      '_markers',
       '_editable'
     ].forEach(function(name) {
       it('should not allow an invalid user data attribute name: ' + name, function() {

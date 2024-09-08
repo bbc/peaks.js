@@ -71,7 +71,7 @@ function SegmentShape(segment, peaks, layer, view) {
 
   this._overlayOffset = segmentOptions.overlayOffset;
 
-  if (!segmentOptions.overlay) {
+  if (!segment.overlay) {
     this._waveformShape = new WaveformShape({
       color:   segment.color,
       view:    view,
@@ -79,10 +79,10 @@ function SegmentShape(segment, peaks, layer, view) {
     });
   }
 
-  this._onMouseEnter  = this._onMouseEnter.bind(this);
-  this._onMouseLeave  = this._onMouseLeave.bind(this);
-  this._onMouseDown   = this._onMouseDown.bind(this);
-  this._onMouseUp     = this._onMouseUp.bind(this);
+  this._onMouseEnter = this._onMouseEnter.bind(this);
+  this._onMouseLeave = this._onMouseLeave.bind(this);
+  this._onMouseDown  = this._onMouseDown.bind(this);
+  this._onMouseUp    = this._onMouseUp.bind(this);
 
   this._dragBoundFunc      = this._dragBoundFunc.bind(this);
   this._onSegmentDragStart = this._onSegmentDragStart.bind(this);
@@ -90,6 +90,7 @@ function SegmentShape(segment, peaks, layer, view) {
   this._onSegmentDragEnd   = this._onSegmentDragEnd.bind(this);
 
   // Event handlers for markers
+  this._onSegmentMarkerClick       = this._onSegmentMarkerClick.bind(this);
   this._onSegmentMarkerDragStart   = this._onSegmentMarkerDragStart.bind(this);
   this._onSegmentMarkerDragMove    = this._onSegmentMarkerDragMove.bind(this);
   this._onSegmentMarkerDragEnd     = this._onSegmentMarkerDragEnd.bind(this);
@@ -134,7 +135,7 @@ function SegmentShape(segment, peaks, layer, view) {
 
   let overlayBorderColor, overlayBorderWidth, overlayColor, overlayOpacity, overlayCornerRadius;
 
-  if (segmentOptions.overlay) {
+  if (segment.overlay) {
     overlayBorderColor  = this._borderColor || segmentOptions.overlayBorderColor;
     overlayBorderWidth  = segmentOptions.overlayBorderWidth;
     overlayColor        = this._color || segmentOptions.overlayColor;
@@ -156,7 +157,7 @@ function SegmentShape(segment, peaks, layer, view) {
 
   this._overlay.add(this._overlayRect);
 
-  if (segmentOptions.overlay) {
+  if (segment.overlay) {
     this._overlayText = new Konva.Text({
       x:             0,
       y:             this._overlayOffset,
@@ -201,22 +202,29 @@ SegmentShape.prototype._createMarkers = function() {
   const editable = this._layer.isEditingEnabled() && this._segment.editable;
   const segmentOptions = this._view.getViewOptions().segmentOptions;
 
-  const createSegmentMarker = segmentOptions.markers ?
-    this._peaks.options.createSegmentMarker :
-    createOverlayMarker;
+  let createSegmentMarker, startMarker, endMarker;
 
-  const startMarker = createSegmentMarker({
-    segment:        this._segment,
-    editable:       editable,
-    startMarker:    true,
-    color:          segmentOptions.startMarkerColor,
-    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:       this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
-    layer:          this._layer,
-    view:           this._view.getName(),
-    segmentOptions: this._view.getViewOptions().segmentOptions
-  });
+  if (this._segment.markers) {
+    createSegmentMarker = this._peaks.options.createSegmentMarker;
+  }
+  else if (this._segment.overlay) {
+    createSegmentMarker = createOverlayMarker;
+  }
+
+  if (createSegmentMarker) {
+    startMarker = createSegmentMarker({
+      segment:        this._segment,
+      editable:       editable,
+      startMarker:    true,
+      color:          segmentOptions.startMarkerColor,
+      fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
+      fontSize:       this._peaks.options.fontSize || defaultFontSize,
+      fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+      layer:          this._layer,
+      view:           this._view.getName(),
+      segmentOptions: this._view.getViewOptions().segmentOptions
+    });
+  }
 
   if (startMarker) {
     this._startMarker = new SegmentMarker({
@@ -225,6 +233,7 @@ SegmentShape.prototype._createMarkers = function() {
       editable:      editable,
       startMarker:   true,
       marker:        startMarker,
+      onClick:       this._onSegmentMarkerClick,
       onDragStart:   this._onSegmentMarkerDragStart,
       onDragMove:    this._onSegmentMarkerDragMove,
       onDragEnd:     this._onSegmentMarkerDragEnd,
@@ -232,18 +241,20 @@ SegmentShape.prototype._createMarkers = function() {
     });
   }
 
-  const endMarker = createSegmentMarker({
-    segment:        this._segment,
-    editable:       editable,
-    startMarker:    false,
-    color:          segmentOptions.endMarkerColor,
-    fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:       this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
-    layer:          this._layer,
-    view:           this._view.getName(),
-    segmentOptions: this._view.getViewOptions().segmentOptions
-  });
+  if (createSegmentMarker) {
+    endMarker = createSegmentMarker({
+      segment:        this._segment,
+      editable:       editable,
+      startMarker:    false,
+      color:          segmentOptions.endMarkerColor,
+      fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
+      fontSize:       this._peaks.options.fontSize || defaultFontSize,
+      fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+      layer:          this._layer,
+      view:           this._view.getName(),
+      segmentOptions: this._view.getViewOptions().segmentOptions
+    });
+  }
 
   if (endMarker) {
     this._endMarker = new SegmentMarker({
@@ -252,6 +263,7 @@ SegmentShape.prototype._createMarkers = function() {
       editable:      editable,
       startMarker:   false,
       marker:        endMarker,
+      onClick:       this._onSegmentMarkerClick,
       onDragStart:   this._onSegmentMarkerDragStart,
       onDragMove:    this._onSegmentMarkerDragMove,
       onDragEnd:     this._onSegmentMarkerDragEnd,
@@ -301,9 +313,7 @@ SegmentShape.prototype.update = function(options) {
     this._overlayText.text(this._segment.labelText);
   }
 
-  const segmentOptions = this._view.getViewOptions().segmentOptions;
-
-  if (segmentOptions.overlay) {
+  if (this._segment.overlay) {
     if (this._color) {
       this._overlayRect.fill(this._color);
     }
@@ -939,6 +949,11 @@ SegmentShape.prototype._segmentMarkerDragBoundFunc = function(segmentMarker, pos
     x: pos.x,
     y: segmentMarker.getAbsolutePosition().y
   };
+};
+
+SegmentShape.prototype._onSegmentMarkerClick = function() {
+  // Move this segment to the top of the z-order.
+  this._moveToTop();
 };
 
 SegmentShape.prototype.fitToView = function() {

@@ -12,7 +12,8 @@ import {
 } from './utils';
 
 const segmentOptions = [
-  'id', 'pid', 'startTime', 'endTime', 'labelText', 'color', 'borderColor', 'editable'
+  'id', 'pid', 'startTime', 'endTime', 'labelText', 'color', 'borderColor',
+  'markers', 'overlay', 'editable'
 ];
 
 const invalidOptions = [
@@ -35,6 +36,14 @@ function setDefaultSegmentOptions(options, globalSegmentOptions) {
 
   if (isNullOrUndefined(options.labelText)) {
     options.labelText = '';
+  }
+
+  if (isNullOrUndefined(options.markers)) {
+    options.markers = globalSegmentOptions.markers;
+  }
+
+  if (isNullOrUndefined(options.overlay)) {
+    options.overlay = globalSegmentOptions.overlay;
   }
 
   if (isNullOrUndefined(options.editable)) {
@@ -78,6 +87,22 @@ function validateSegmentOptions(options, updating) {
 
   if (objectHasProperty(options, 'labelText') && !isString(options.labelText)) {
     throw new TypeError('peaks.segments.' + context + ': labelText must be a string');
+  }
+
+  if (updating && objectHasProperty(options, 'markers')) {
+    throw new TypeError('peaks.segments.' + context + ': cannot update markers attribute');
+  }
+
+  if (objectHasProperty(options, 'markers') && !isBoolean(options.markers)) {
+    throw new TypeError('peaks.segments.' + context + ': markers must be true or false');
+  }
+
+  if (updating && objectHasProperty(options, 'overlay')) {
+    throw new TypeError('peaks.segments.' + context + ': cannot update overlay attribute');
+  }
+
+  if (objectHasProperty(options, 'overlay') && !isBoolean(options.overlay)) {
+    throw new TypeError('peaks.segments.' + context + ': overlay must be true or false');
   }
 
   if (objectHasProperty(options, 'editable') && !isBoolean(options.editable)) {
@@ -130,6 +155,8 @@ function Segment(peaks, pid, options) {
   this._color       = options.color;
   this._borderColor = options.borderColor;
   this._editable    = options.editable;
+  this._markers     = options.markers;
+  this._overlay     = options.overlay;
 
   this._setUserData(options);
 }
@@ -188,6 +215,18 @@ Object.defineProperties(Segment.prototype, {
     enumerable: true,
     get: function() {
       return this._borderColor;
+    }
+  },
+  markers: {
+    enumerable: true,
+    get: function() {
+      return this._markers;
+    }
+  },
+  overlay: {
+    enumerable: true,
+    get: function() {
+      return this._overlay;
     }
   },
   editable: {

@@ -601,9 +601,7 @@ The top level `Peaks` object exposes a factory function to create new `Peaks` in
 
 ### `Peaks.init(options, callback)`
 
-Creates a new `Peaks` instance with the [assigned options](#Configuration).
-The callback is invoked after the instance has been created and initialized, or if any errors occur during initialization.
-You can create and manage several `Peaks` instances within a single page with one or several configurations.
+Creates a new `Peaks` instance with the given [options](#Configuration). The callback is invoked after the instance has been created and initialized, or if any errors occur during initialization. You can create and manage several `Peaks` instances within a single page, each with its own configuration.
 
 ```js
 const options = { ... };
@@ -1233,9 +1231,11 @@ Adds a segment to the waveform timeline. Accepts an object containing the follow
 * `startTime`: the segment start time (seconds)
 * `endTime`: the segment end time (seconds)
 * `editable`: (optional) sets whether the segment is user editable (boolean, defaults to `false`)
-* `color`: (optional) the segment color. If not specified, the segment is given a default color (set by the [`segmentoptions.waveformColor` option](#Configuration) for marker-style segments or the [`segmentOptions.overlayColor` option](#Configuration) for overlay-style segments)
-* `borderColor`: (optional) the segment border color. This applies only to overlay style segments. If not specified, the segment is given a default border color (set by the [`segmentOptions.overlayBorderColor` option](#Configuration))
-* `labelText`: (option) a text label which is displayed when the user hovers the mouse pointer over the segment
+* `color`: (optional) the segment color. If not specified, the segment is given a default color set by the [`segmentOptions.overlayColor`](#configuration) option for segments with overlays, or [`segmentoptions.waveformColor`](#configuration) option for segments without overlays
+* `borderColor`: (optional) the segment border color. This applies only to segments with overlays. If not specified, the segment is given a default border color (set by the [`segmentOptions.overlayBorderColor` option](#configuration))
+* `markers`: (optional) sets whether the segment has markers. If not specified, the default is set by the [`segmentOptions.markers`](#configuration) option
+* `overlay`: (optional) sets whether the segment has an overlay. If not specified, the default is set by the [`segmentOptions.overlay`](#configuration) option
+* `labelText`: (optional) a text label which is displayed when the user hovers the mouse pointer over the segment
 * `id`: (optional) the segment identifier. If not specified, the segment is automatically given a unique identifier
 
 ```js

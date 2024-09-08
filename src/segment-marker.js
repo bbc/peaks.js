@@ -37,15 +37,16 @@ import Konva from 'konva/lib/Core';
 function SegmentMarker(options) {
   const self = this;
 
-  self._segment       = options.segment;
-  self._marker        = options.marker;
-  self._segmentShape  = options.segmentShape;
-  self._editable      = options.editable;
-  self._startMarker   = options.startMarker;
+  self._segment      = options.segment;
+  self._marker       = options.marker;
+  self._segmentShape = options.segmentShape;
+  self._editable     = options.editable;
+  self._startMarker  = options.startMarker;
 
-  self._onDragStart   = options.onDragStart;
-  self._onDragMove    = options.onDragMove;
-  self._onDragEnd     = options.onDragEnd;
+  self._onClick      = options.onClick;
+  self._onDragStart  = options.onDragStart;
+  self._onDragMove   = options.onDragMove;
+  self._onDragEnd    = options.onDragEnd;
 
   self._group = new Konva.Group({
     name:          'segment-marker',
@@ -64,6 +65,10 @@ function SegmentMarker(options) {
 
 SegmentMarker.prototype._bindDefaultEventHandlers = function() {
   const self = this;
+
+  self._group.on('click', function(event) {
+    self._onClick(self, event);
+  });
 
   self._group.on('dragstart', function(event) {
     self._onDragStart(self, event);
