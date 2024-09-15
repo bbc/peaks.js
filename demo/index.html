@@ -523,6 +523,7 @@
           });
 
           // Point events
+
           peaksInstance.on('points.add', function(event) {
             console.log('points.add:', event);
           });
@@ -631,6 +632,10 @@
             event.evt.preventDefault();
 
             console.log('zoomview.contextmenu:', event);
+          });
+
+          peaksInstance.on('zoomview.update', function(event) {
+            console.log('zoomview.update:', event);
           });
 
           // Overview waveform events

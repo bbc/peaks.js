@@ -623,6 +623,10 @@
             console.log('zoomview.contextmenu:', event);
           });
 
+          peaksInstance.on('zoomview.update', function(event) {
+            console.log('zoomview.update:', event);
+          });
+
           // Overview waveform events
 
           peaksInstance.on('overview.click', function(event) {

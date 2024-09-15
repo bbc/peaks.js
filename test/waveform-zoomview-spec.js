@@ -64,6 +64,27 @@ describe('WaveformZoomView', function() {
 
         expect(zoomview.getStartTime()).to.equal(0.0);
       });
+
+      it('should emit a zoomview.update event if the start time has changed', function() {
+        const spy = sinon.spy();
+
+        p.on('zoomview.update', spy);
+
+        zoomview.setStartTime(5.0);
+
+        expect(spy.callCount).to.equal(1);
+        expect(spy.getCall(0).args[0].startTime).to.equal(zoomview.pixelsToTime(zoomview.timeToPixels(5.0)));
+      });
+
+      it('should not emit a zoomview.update event if the start time has not changed', function() {
+        const spy = sinon.spy();
+
+        p.on('zoomview.update', spy);
+
+        zoomview.setStartTime(-1.0);
+
+        expect(spy.callCount).to.equal(0);
+      });
     });
 
     context('with auto zoom level', function() {
@@ -75,6 +96,16 @@ describe('WaveformZoomView', function() {
         zoomview.setStartTime(5.0);
 
         expect(zoomview.getStartTime()).to.equal(0.0);
+      });
+
+      it('should not emit a zoomview.update event', function() {
+        const spy = sinon.spy();
+
+        p.on('zoomview.update', spy);
+
+        zoomview.setStartTime(5.0);
+
+        expect(spy.callCount).to.equal(0);
       });
     });
   });
@@ -211,6 +242,10 @@ describe('WaveformZoomView', function() {
         it('should scroll the waveform to the left', function() {
           zoomview.updateWaveform(500);
 
+          const spy = sinon.spy();
+
+          p.on('zoomview.update', spy);
+
           const distance = 100;
 
           inputController.mouseDown({ x: 100, y: 50 });
@@ -221,9 +256,16 @@ describe('WaveformZoomView', function() {
 
           expect(zoomview.getFrameOffset()).to.equal(400);
           expect(zoomview.getStartTime()).to.equal(view.pixelsToTime(400));
+
+          expect(spy.callCount).to.equal(1);
+          expect(spy.getCall(0).args[0].startTime).to.equal(view.pixelsToTime(400));
         });
 
         it('should not scroll beyond the start of the waveform', function() {
+          const spy = sinon.spy();
+
+          p.on('zoomview.update', spy);
+
           const distance = 200;
 
           inputController.mouseDown({ x: 50, y: 50 });
@@ -232,6 +274,8 @@ describe('WaveformZoomView', function() {
 
           expect(zoomview.getFrameOffset()).to.equal(0);
           expect(zoomview.getStartTime()).to.equal(0);
+
+          expect(spy.callCount).to.equal(0);
         });
 
         it('should not scroll beyond the end of the waveform', function() {
@@ -258,6 +302,10 @@ describe('WaveformZoomView', function() {
 
       context('when dragging the waveform view', function() {
         it('should scroll the waveform to the right', function() {
+          const spy = sinon.spy();
+
+          p.on('zoomview.update', spy);
+
           const distance = 100;
 
           inputController.mouseDown({ x: 100, y: 50 });
@@ -268,10 +316,17 @@ describe('WaveformZoomView', function() {
 
           expect(zoomview.getFrameOffset()).to.equal(100);
           expect(zoomview.getStartTime()).to.equal(view.pixelsToTime(distance));
+
+          expect(spy.callCount).to.equal(1);
+          expect(spy.getCall(0).args[0].startTime).to.equal(view.pixelsToTime(distance));
         });
 
         it('should scroll the waveform to the left', function() {
           zoomview.updateWaveform(500);
+
+          const spy = sinon.spy();
+
+          p.on('zoomview.update', spy);
 
           const distance = 100;
 
@@ -283,10 +338,17 @@ describe('WaveformZoomView', function() {
 
           expect(zoomview.getFrameOffset()).to.equal(400);
           expect(zoomview.getStartTime()).to.equal(view.pixelsToTime(400));
+
+          expect(spy.callCount).to.equal(1);
+          expect(spy.getCall(0).args[0].startTime).to.equal(view.pixelsToTime(400));
         });
 
         it('should prevent the start time from becoming less than zero', function() {
           zoomview.updateWaveform(100);
+
+          const spy = sinon.spy();
+
+          p.on('zoomview.update', spy);
 
           const distance = 150;
 
@@ -296,6 +358,9 @@ describe('WaveformZoomView', function() {
 
           expect(zoomview.getFrameOffset()).to.equal(0);
           expect(zoomview.getStartTime()).to.equal(0);
+
+          expect(spy.callCount).to.equal(1);
+          expect(spy.getCall(0).args[0].startTime).to.equal(zoomview.pixelsToTime(0));
         });
       });
     });

@@ -92,6 +92,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [zoomview.click](#zoomviewclick)
     - [zoomview.dblclick](#zoomviewdblclick)
     - [zoomview.contextmenu](#zoomviewcontextmenu)
+    - [zoomview.update](#zoomviewupdate)
     - [zoom.update](#zoomupdate)
   - [Point Events](#point-events)
     - [points.add](#pointsadd)
@@ -1700,6 +1701,23 @@ instance.on('zoomview.contextmenu', function(event) {
 });
 ```
 
+### `zoomview.update`
+
+This event is emitted when the time range visible in the zoomable waveform view changes.
+
+The `event` parameter contains:
+
+* `startTime`: The time at the left edge of the waveform view.
+* `endTime`: The time at the right edge of the waveform view.
+
+Note that `startTime` may not be exactly the same value you set when calling [`view.setStartTime()`](#viewsetstarttimetime). This is because the time is rounded to a number of pixels at the view's zoom level.
+
+```js
+instance.on('zoomview.update', function(event) {
+  console.log(`Start time: ${event.startTime}, end time: ${event.endTime}`);
+});
+```
+
 ### `zoom.update`
 
 This event is emitted when the zoom level in the zoomable waveform view changes.
@@ -1708,12 +1726,6 @@ The `event` parameter contains:
 
 * `currentZoom`: The current zoom level, in samples per pixel
 * `previousZoom`: The previous zoom level, in samples per pixel
-
-```js
-instance.on('zoom.update', function(event) {
-  console.log(`Zoom changed from ${event.previousZoom} to ${event.currentZoom}`);
-});
-```
 
 ## Point Events
 

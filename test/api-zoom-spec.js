@@ -45,13 +45,14 @@ describe('Peaks.zoom', function() {
         expect(p.zoom.getZoom()).to.equal(1);
       });
 
-      it('should emit a zoom.update event with the new zoom level index', function() {
+      it('should emit a zoom.update event with the new zoom level', function() {
         const spy = sinon.spy();
 
         p.on('zoom.update', spy);
         p.zoom.setZoom(1);
 
-        expect(spy).to.have.been.calledWith({ currentZoom: 1024, previousZoom: 512 });
+        expect(spy.callCount).to.equal(1);
+        expect(spy).calledWith({ currentZoom: 1024, previousZoom: 512 });
       });
 
       it('should limit the zoom level index value to the minimum valid index', function() {
@@ -80,6 +81,7 @@ describe('Peaks.zoom', function() {
         p.on('zoom.update', spy);
         p.zoom.zoomOut();
 
+        expect(spy.callCount).to.equal(1);
         expect(spy).to.have.been.calledWith({ currentZoom: 1024, previousZoom: 512 });
       });
     });
@@ -93,7 +95,8 @@ describe('Peaks.zoom', function() {
         p.on('zoom.update', spy);
         p.zoom.zoomIn();
 
-        expect(spy).to.have.been.calledWith({ currentZoom: 512, previousZoom: 1024 });
+        expect(spy.callCount).to.equal(1);
+        expect(spy).calledWith({ currentZoom: 512, previousZoom: 1024 });
       });
     });
   });

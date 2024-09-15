@@ -68,7 +68,10 @@ function WaveformZoomView(waveformData, container, peaks) {
   self._onWheelCaptureVerticalScroll = self._onWheelCaptureVerticalScroll.bind(self);
   self.setWheelMode(self._viewOptions.wheelMode);
 
-  self._peaks.emit('zoomview.displaying', 0, self.getEndTime());
+  self._peaks.emit('zoomview.update', {
+    startTime: 0,
+    endTime: self.getEndTime()
+  });
 }
 
 WaveformZoomView.prototype = Object.create(WaveformView.prototype);
@@ -150,11 +153,11 @@ WaveformZoomView.prototype._onWheel = function(event) {
 
   wheelEvent.preventDefault();
 
-  const newFrameOffset = clamp(
+  const frameOffset = clamp(
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
   );
 
-  this.updateWaveform(newFrameOffset);
+  this.updateWaveform(frameOffset, false);
 };
 
 WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
@@ -165,11 +168,11 @@ WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
 
   wheelEvent.preventDefault();
 
-  const newFrameOffset = clamp(
+  const frameOffset = clamp(
     this._frameOffset + Math.floor(delta), 0, this._pixelLength - this._width
   );
 
-  this.updateWaveform(newFrameOffset);
+  this.updateWaveform(frameOffset, false);
 };
 
 WaveformZoomView.prototype.setWaveformDragMode = function(mode) {
@@ -291,15 +294,17 @@ WaveformZoomView.prototype._syncPlayhead = function(time) {
     // the keyboard)
     const endThreshold = this._frameOffset + this._width - this._autoScrollOffset;
 
-    if (pixelIndex >= endThreshold || pixelIndex < this._frameOffset) {
-      // Put the playhead at 100 pixels from the left edge
-      this._frameOffset = pixelIndex - this._autoScrollOffset;
+    let frameOffset = this._frameOffset;
 
-      if (this._frameOffset < 0) {
-        this._frameOffset = 0;
+    if (pixelIndex >= endThreshold || pixelIndex < frameOffset) {
+      // Put the playhead at 100 pixels from the left edge
+      frameOffset = pixelIndex - this._autoScrollOffset;
+
+      if (frameOffset < 0) {
+        frameOffset = 0;
       }
 
-      this.updateWaveform(this._frameOffset);
+      this.updateWaveform(frameOffset, false);
     }
   }
 };
@@ -387,9 +392,9 @@ WaveformZoomView.prototype.setZoom = function(options) {
 
   const apexPixel = this.timeToPixels(apexTime);
 
-  this._frameOffset = apexPixel - playheadOffsetPixels;
+  const frameOffset = apexPixel - playheadOffsetPixels;
 
-  this.updateWaveform(this._frameOffset);
+  this.updateWaveform(frameOffset, true);
 
   this._playheadLayer.zoomLevelChanged();
 
@@ -453,7 +458,7 @@ WaveformZoomView.prototype.setStartTime = function(time) {
     time = 0;
   }
 
-  this.updateWaveform(this.timeToPixels(time));
+  this.updateWaveform(this.timeToPixels(time), false);
 };
 
 /**
@@ -483,7 +488,7 @@ WaveformZoomView.prototype.scrollWaveform = function(options) {
     throw new TypeError('view.scrollWaveform(): Missing umber of pixels or seconds');
   }
 
-  this.updateWaveform(this._frameOffset + scrollAmount);
+  this.updateWaveform(this._frameOffset + scrollAmount, false);
 };
 
 /**
@@ -492,7 +497,7 @@ WaveformZoomView.prototype.scrollWaveform = function(options) {
  * @param {Number} frameOffset The new frame offset, in pixels.
  */
 
-WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
+WaveformZoomView.prototype.updateWaveform = function(frameOffset, forceUpdate) {
   let upperLimit;
 
   if (this._pixelLength < this._width) {
@@ -506,6 +511,10 @@ WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
   }
 
   frameOffset = clamp(frameOffset, 0, upperLimit);
+
+  if (!forceUpdate && frameOffset === this._frameOffset) {
+    return;
+  }
 
   this._frameOffset = frameOffset;
 
@@ -528,7 +537,10 @@ WaveformZoomView.prototype.updateWaveform = function(frameOffset) {
     this._segmentsLayer.updateSegments(frameStartTime, frameEndTime);
   }
 
-  this._peaks.emit('zoomview.displaying', frameStartTime, frameEndTime);
+  this._peaks.emit('zoomview.update', {
+    startTime: frameStartTime,
+    endTime: frameEndTime
+  });
 };
 
 WaveformZoomView.prototype.enableAutoScroll = function(enable, options) {

@@ -32,7 +32,7 @@ ZoomController.prototype.setZoomLevels = function(zoomLevels) {
  */
 
 ZoomController.prototype.zoomIn = function() {
-  this.setZoom(this._zoomLevelIndex - 1);
+  this.setZoom(this._zoomLevelIndex - 1, false);
 };
 
 /**
@@ -40,7 +40,7 @@ ZoomController.prototype.zoomIn = function() {
  */
 
 ZoomController.prototype.zoomOut = function() {
-  this.setZoom(this._zoomLevelIndex + 1);
+  this.setZoom(this._zoomLevelIndex + 1, false);
 };
 
 /**

@@ -332,7 +332,7 @@ Peaks.init(options, function(err, peaksInstance) {
     view.setSegmentDragMode(event.target.value);
   });
 
-  // Points mouse events
+  // Point events
 
   peaksInstance.on('points.mouseenter', function(event) {
     console.log('points.mouseenter:', event);
@@ -368,7 +368,7 @@ Peaks.init(options, function(err, peaksInstance) {
     console.log('points.dragend:', event);
   });
 
-  // Segments mouse events
+  // Segment events
 
   peaksInstance.on('segments.dragstart', function(event) {
     console.log('segments.dragstart:', event);
@@ -404,6 +404,8 @@ Peaks.init(options, function(err, peaksInstance) {
     console.log('segments.contextmenu:', event);
   });
 
+  // Zoomview waveform events
+
   peaksInstance.on('zoomview.click', function(event) {
     console.log('zoomview.click:', event);
   });
@@ -417,6 +419,12 @@ Peaks.init(options, function(err, peaksInstance) {
 
     console.log('zoomview.contextmenu:', event);
   });
+
+  peaksInstance.on('zoomview.update', function(event) {
+    console.log('zoomview.update:', event);
+  });
+
+  // Overview waveform events
 
   peaksInstance.on('overview.click', function(event) {
     console.log('overview.click:', event);

@@ -30,13 +30,13 @@ function WaveformOverview(waveformData, container, peaks) {
   self._onTimeUpdate = self._onTimeUpdate.bind(self);
   self._onPlaying = self._onPlaying.bind(self);
   self._onPause = self._onPause.bind(self);
-  self._onZoomviewDisplaying = self._onZoomviewDisplaying.bind(self);
+  self._onZoomviewUpdate = self._onZoomviewUpdate.bind(self);
 
   // Register event handlers
   peaks.on('player.timeupdate', self._onTimeUpdate);
   peaks.on('player.playing', self._onPlaying);
   peaks.on('player.pause', self._onPause);
-  peaks.on('zoomview.displaying', self._onZoomviewDisplaying);
+  peaks.on('zoomview.update', self._onZoomviewUpdate);
 
   const time = self._peaks.player.getCurrentTime();
 
@@ -82,8 +82,8 @@ WaveformOverview.prototype._onPause = function(time) {
   this._playheadLayer.stop(time);
 };
 
-WaveformOverview.prototype._onZoomviewDisplaying = function(startTime, endTime) {
-  this.showHighlight(startTime, endTime);
+WaveformOverview.prototype._onZoomviewUpdate = function(event) {
+  this.showHighlight(event.startTime, event.endTime);
 };
 
 WaveformOverview.prototype.showHighlight = function(startTime, endTime) {
@@ -156,7 +156,7 @@ WaveformOverview.prototype.destroy = function() {
   this._peaks.off('player.playing', this._onPlaying);
   this._peaks.off('player.pause', this._onPause);
   this._peaks.off('player.timeupdate', this._onTimeUpdate);
-  this._peaks.off('zoomview.displaying', this._onZoomviewDisplaying);
+  this._peaks.off('zoomview.update', this._onZoomviewUpdate);
 
   this._mouseDragHandler.destroy();
 

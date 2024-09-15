@@ -33,10 +33,10 @@ function Scrollbar(waveformData, container, peaks) {
   this._onScrollboxDragStart = this._onScrollboxDragStart.bind(this);
   this._onScrollboxDragMove = this._onScrollboxDragMove.bind(this);
   this._onScrollboxDragEnd = this._onScrollboxDragEnd.bind(this);
-  this._onZoomviewDisplaying = this._onZoomviewDisplaying.bind(this);
+  this._onZoomviewUpdate = this._onZoomviewUpdate.bind(this);
   this._onScrollbarClick = this._onScrollbarClick.bind(this);
 
-  peaks.on('zoomview.displaying', this._onZoomviewDisplaying);
+  this._peaks.on('zoomview.update', this._onZoomviewUpdate);
 
   this._width = container.clientWidth;
   this._height = container.clientHeight;
@@ -150,7 +150,7 @@ Scrollbar.prototype._onScrollboxDragMove = function() {
   }
 };
 
-Scrollbar.prototype._onZoomviewDisplaying = function(/* startTime , endTime */) {
+Scrollbar.prototype._onZoomviewUpdate = function(/* event */) {
   if (!this._dragging) {
     this._updateScrollbarWidthAndPosition();
   }
@@ -218,6 +218,8 @@ Scrollbar.prototype.fitToContainer = function() {
 };
 
 Scrollbar.prototype.destroy = function() {
+  this._peaks.off('zoomview.update', this._onZoomviewUpdate);
+
   this._layer.destroy();
 
   this._stage.destroy();
