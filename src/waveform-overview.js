@@ -121,7 +121,7 @@ WaveformOverview.prototype.removeHighlightRect = function() {
   this._highlightLayer.removeHighlight();
 };
 
-WaveformOverview.prototype.updateWaveform = function() {
+WaveformOverview.prototype.updateWaveform = function(/* frameOffset, forceUpdate */) {
   this._waveformLayer.draw();
   this._axisLayer.draw();
 

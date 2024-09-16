@@ -495,6 +495,8 @@ WaveformZoomView.prototype.scrollWaveform = function(options) {
  * Updates the region of waveform shown in the view.
  *
  * @param {Number} frameOffset The new frame offset, in pixels.
+ * @param {Boolean} forceUpdate Forces the waveform view to be redrawn, if the
+ *   frameOffset is unchanged.
  */
 
 WaveformZoomView.prototype.updateWaveform = function(frameOffset, forceUpdate) {
@@ -564,8 +566,6 @@ WaveformZoomView.prototype.setMinSegmentDragWidth = function(width) {
 };
 
 WaveformZoomView.prototype.containerWidthChange = function() {
-  let updateWaveform = false;
-
   let resample = false;
   let resampleOptions;
 
@@ -581,14 +581,13 @@ WaveformZoomView.prototype.containerWidthChange = function() {
   if (resample) {
     try {
       this._resampleData(resampleOptions);
-      updateWaveform = true;
     }
     catch (error) {
       // Ignore, and leave this._data as it was
     }
   }
 
-  return updateWaveform;
+  return true;
 };
 
 WaveformZoomView.prototype.containerHeightChange = function() {

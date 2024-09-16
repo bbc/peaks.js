@@ -286,7 +286,31 @@ Peaks.init(options, function(err, peaksInstance) {
     peaksInstance.views.getView('overview').setAmplitudeScale(scale);
   });
 
-  document.querySelector('button[data-action="resize"]').addEventListener('click', function(event) {
+  document.querySelector('button[data-action="resize-width"]').addEventListener('click', function(event) {
+    document.querySelectorAll('.waveform-container').forEach(function(container) {
+      container.style.width = container.offsetWidth === 1000 ? "700px" : "1000px";
+    });
+
+    const zoomview = peaksInstance.views.getView('zoomview');
+
+    if (zoomview) {
+      zoomview.fitToContainer();
+    }
+
+    const scrollbar = peaksInstance.views.getScrollbar();
+
+    if (scrollbar) {
+      scrollbar.fitToContainer();
+    }
+
+    const overview = peaksInstance.views.getView('overview');
+
+    if (overview) {
+      overview.fitToContainer();
+    }
+  });
+
+  document.querySelector('button[data-action="resize-height"]').addEventListener('click', function(event) {
     const zoomviewContainer = document.getElementById('zoomview-container');
     const overviewContainer = document.getElementById('overview-container');
 

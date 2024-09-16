@@ -444,13 +444,24 @@ WaveformView.prototype.fitToContainer = function() {
     updateWaveform = this.containerWidthChange();
   }
 
+  let heightChanged = false;
+
   if (this._container.clientHeight !== this._height) {
     this._height = this._container.clientHeight;
-    this._stage.height(this._height);
+    this._stage.setHeight(this._height);
 
     this._waveformShape.fitToView();
     this._playheadLayer.fitToView();
 
+    this.containerHeightChange();
+
+    heightChanged = true;
+  }
+
+  if (updateWaveform) {
+    this.updateWaveform(this._frameOffset, true);
+  }
+  else if (heightChanged) {
     if (this._segmentsLayer) {
       this._segmentsLayer.fitToView();
     }
@@ -458,12 +469,6 @@ WaveformView.prototype.fitToContainer = function() {
     if (this._pointsLayer) {
       this._pointsLayer.fitToView();
     }
-
-    this.containerHeightChange();
-  }
-
-  if (updateWaveform) {
-    this.updateWaveform(this._frameOffset);
   }
 };
 
