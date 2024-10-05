@@ -92,7 +92,7 @@ MouseDragHandler.prototype._mouseDown = function(event) {
   window.addEventListener('mousemove', this._mouseMove, { capture: false, passive: true });
   window.addEventListener('touchmove', this._mouseMove, { capture: false, passive: true });
   window.addEventListener('mouseup', this._mouseUp, { capture: false, passive: true });
-  window.addEventListener('touchend', this._mouseUp, { capture: false, passive: true });
+  window.addEventListener('touchend', this._mouseUp, { capture: false /* , passive: true */ });
   window.addEventListener('blur', this._mouseUp, { capture: false, passive: true });
 };
 
