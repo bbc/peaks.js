@@ -17,13 +17,11 @@ import { Rect } from 'konva/lib/shapes/Rect';
  * @class
  * @alias Scrollbar
  *
- * @param {WaveformData} waveformData
  * @param {HTMLElement} container
  * @param {Peaks} peaks
  */
 
-function Scrollbar(waveformData, container, peaks) {
-  this._waveformData = waveformData;
+function Scrollbar(container, peaks) {
   this._container = container;
   this._peaks = peaks;
   this._options = peaks.options.scrollbar;

@@ -71,10 +71,7 @@ ViewController.prototype.createZoomview = function(container) {
 };
 
 ViewController.prototype.createScrollbar = function(container) {
-  const waveformData = this._peaks.getWaveformData();
-
   this._scrollbar = new Scrollbar(
-    waveformData,
     container,
     this._peaks
   );
