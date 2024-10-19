@@ -13,10 +13,6 @@ import SegmentMarker from './segment-marker';
 import WaveformShape from './waveform-shape';
 import { clamp } from './utils';
 
-const defaultFontFamily = 'sans-serif';
-const defaultFontSize = 10;
-const defaultFontShape = 'normal';
-
 /**
  * Options that control segments' visual appearance
  *
@@ -67,7 +63,8 @@ function SegmentShape(segment, peaks, layer, view) {
   this._draggable   = this._segment.editable && this._view.isSegmentDraggingEnabled();
   this._dragging    = false;
 
-  const segmentOptions = view.getViewOptions().segmentOptions;
+  const viewOptions = view.getViewOptions();
+  const segmentOptions = viewOptions.segmentOptions;
 
   this._overlayOffset = segmentOptions.overlayOffset;
 
@@ -100,9 +97,9 @@ function SegmentShape(segment, peaks, layer, view) {
     segment:    segment,
     view:       this._view.getName(),
     layer:      this._layer,
-    fontFamily: this._peaks.options.fontFamily,
-    fontSize:   this._peaks.options.fontSize,
-    fontStyle:  this._peaks.options.fontStyle
+    fontFamily: viewOptions.fontFamily,
+    fontSize:   viewOptions.fontSize,
+    fontStyle:  viewOptions.fontStyle
   });
 
   if (this._label) {
@@ -200,7 +197,8 @@ function createOverlayMarker(options) {
 
 SegmentShape.prototype._createMarkers = function() {
   const editable = this._layer.isEditingEnabled() && this._segment.editable;
-  const segmentOptions = this._view.getViewOptions().segmentOptions;
+  const viewOptions = this._view.getViewOptions();
+  const segmentOptions = viewOptions.segmentOptions;
 
   let createSegmentMarker, startMarker, endMarker;
 
@@ -217,9 +215,9 @@ SegmentShape.prototype._createMarkers = function() {
       editable:       editable,
       startMarker:    true,
       color:          segmentOptions.startMarkerColor,
-      fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
-      fontSize:       this._peaks.options.fontSize || defaultFontSize,
-      fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+      fontFamily:     viewOptions.fontFamily,
+      fontSize:       viewOptions.fontSize,
+      fontStyle:      viewOptions.fontStyle,
       layer:          this._layer,
       view:           this._view.getName(),
       segmentOptions: this._view.getViewOptions().segmentOptions
@@ -247,9 +245,9 @@ SegmentShape.prototype._createMarkers = function() {
       editable:       editable,
       startMarker:    false,
       color:          segmentOptions.endMarkerColor,
-      fontFamily:     this._peaks.options.fontFamily || defaultFontFamily,
-      fontSize:       this._peaks.options.fontSize || defaultFontSize,
-      fontStyle:      this._peaks.options.fontStyle || defaultFontShape,
+      fontFamily:     viewOptions.fontFamily,
+      fontSize:       viewOptions.fontSize,
+      fontStyle:      viewOptions.fontStyle,
       layer:          this._layer,
       view:           this._view.getName(),
       segmentOptions: this._view.getViewOptions().segmentOptions

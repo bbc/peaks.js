@@ -10,10 +10,6 @@ import PointMarker from './point-marker';
 import { clamp, objectHasProperty } from './utils';
 import Konva from 'konva/lib/Core';
 
-const defaultFontFamily = 'sans-serif';
-const defaultFontSize = 10;
-const defaultFontShape = 'normal';
-
 /**
  * Creates a Konva.Layer that displays point markers against the audio
  * waveform.
@@ -144,14 +140,15 @@ PointsLayer.prototype._onPointsRemoveAll = function() {
 
 PointsLayer.prototype._createPointMarker = function(point) {
   const editable = this._enableEditing && point.editable;
+  const viewOptions = this._view.getViewOptions();
 
   const marker = this._peaks.options.createPointMarker({
     point:      point,
     editable:   editable,
     color:      point.color,
-    fontFamily: this._peaks.options.fontFamily || defaultFontFamily,
-    fontSize:   this._peaks.options.fontSize || defaultFontSize,
-    fontStyle:  this._peaks.options.fontStyle || defaultFontShape,
+    fontFamily: viewOptions.fontFamily,
+    fontSize:   viewOptions.fontSize,
+    fontStyle:  viewOptions.fontStyle,
     layer:      this,
     view:       this._view.getName()
   });
