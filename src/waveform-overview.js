@@ -47,7 +47,7 @@ function WaveformOverview(waveformData, container, peaks) {
 
 WaveformOverview.prototype = Object.create(WaveformView.prototype);
 
-WaveformOverview.prototype.initWaveform = function() {
+WaveformOverview.prototype.initWaveformData = function() {
   if (this._width !== 0) {
     this._resampleAndSetWaveformData(this._originalWaveformData, this._width);
   }

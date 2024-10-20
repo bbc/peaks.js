@@ -76,7 +76,7 @@ function WaveformZoomView(waveformData, container, peaks) {
 
 WaveformZoomView.prototype = Object.create(WaveformView.prototype);
 
-WaveformZoomView.prototype.initWaveform = function() {
+WaveformZoomView.prototype.initWaveformData = function() {
   this._enableWaveformCache = this._options.waveformCache;
 
   this._initWaveformCache();

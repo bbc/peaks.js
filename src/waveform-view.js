@@ -50,7 +50,7 @@ function WaveformView(waveformData, container, peaks, viewOptions) {
 
   self._enableSeek = true;
 
-  self.initWaveform();
+  self.initWaveformData();
 
   // Disable warning: The stage has 6 layers.
   // Recommended maximum number of layers is 3-5.
