@@ -1,5 +1,38 @@
 # Peaks.js
 
+## 4.0.0-beta.0
+
+* (#548) Added `zoomview.update` event, which is emitted when the time
+  range visible in the zoomable waveform view changes (@chrisn)
+
+* (#545) Fixed error on clicking to insert a segment at the edge of the
+  waveform view (@chrisn)
+
+* (#544) Added segment `markers` and `overlay` options, to individual
+  segments to be created as marker-style or overlay-style (@chrisn)
+
+* (#533) Clicking on a segment marker now brings that marker to the top
+  of the z-order, to allow it to be dragged (@chrisn)
+
+* (#546) The deprecated `peaks.ready` event has now been removed. You must
+  now provide a callback function to `Peaks.init()` (@chrisn)
+
+* (#550) Fixed `touchend` event handling, by registering it as non-passive
+  (@chrisn)
+
+* (#551) Fixed point and segment marker font defaults. These now use the
+  `fontFamily`, `fontSize`, and `fontStyle` options (@chrisn)
+
+* (#553) Fixed `segments.dblclick` events (@chrisn)
+
+* The waveform cache is now cleared on calling `peaks.destroy()` (@chrisn)
+
+* Fixed a bug where points and segments would not be displayed in the
+  zoomable waveform view after the view's width is changed (@chrisn)
+
+* The waveform views now initialise themselves to the correct position if the
+  playhead time is not zero when `Peaks.init()` is called (@chrisn)
+
 ## 3.4.2 (2024/08/15)
 
 * (#536) Prevent the zoomview from scrolling when set to `auto` zoom level
