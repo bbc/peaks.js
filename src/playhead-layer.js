@@ -48,7 +48,7 @@ function PlayheadLayer(player, view, options) {
   this._playheadFontSize = options.playheadFontSize;
   this._playheadFontStyle = options.playheadFontStyle;
 
-  this._playheadLayer = new Konva.Layer();
+  this._playheadLayer = new Konva.Layer({ listening: false });
 
   this._createPlayhead();
 
