@@ -2,6 +2,29 @@
 
 This document describes any breaking changes in the Peaks.js API and provides advice on how to migrate your code to the updated API.
 
+## Peaks.js v4.0.0
+
+The `peaks.ready` event has been removed in Peaks.js v4.0.0. Instead of using this event, applications must now pass a callback function to `Peaks.init()`. This enables error handling, which is only possible using the callback function.
+
+```js
+// Before
+const peaks = Peaks.init(options);
+
+peaks.on('peaks.ready', function() {
+  // etc
+});
+
+// After
+Peaks.init(options, function(err, peaks) {
+  if (err) {
+    // Handle errors here.
+    return;
+  }
+
+  // etc
+});
+```
+
 ## Peaks.js v3.0.0
 
 Peaks.js v3.0.0 introduces a number of changes, described in the following sections.
