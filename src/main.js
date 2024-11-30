@@ -416,12 +416,12 @@ Peaks.init = function(opts, callback) {
         const zoomviewContainer = instance.options.zoomview.container;
         const overviewContainer = instance.options.overview.container;
 
-        if (overviewContainer) {
-          instance.views.createOverview(overviewContainer);
-        }
-
         if (zoomviewContainer) {
           instance.views.createZoomview(zoomviewContainer);
+        }
+
+        if (overviewContainer) {
+          instance.views.createOverview(overviewContainer);
         }
 
         if (scrollbarContainer) {

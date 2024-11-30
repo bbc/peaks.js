@@ -77,7 +77,8 @@ function Scrollbar(container, peaks) {
   this._scrollbox.on('dragend', this._onScrollboxDragEnd);
 
   this._layer.add(this._scrollbox);
-  this._layer.draw();
+
+  this._updateScrollbarWidthAndPosition();
 }
 
 Scrollbar.prototype.setZoomview = function(zoomview) {

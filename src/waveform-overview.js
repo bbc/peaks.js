@@ -43,6 +43,12 @@ function WaveformOverview(waveformData, container, peaks) {
   self._playheadLayer.updatePlayheadTime(time);
 
   self._mouseDragHandler = new SeekMouseDragHandler(peaks, self);
+
+  const zoomview = peaks.views.getView('zoomview');
+
+  if (zoomview) {
+    self._highlightLayer.showHighlight(zoomview.getStartTime(), zoomview.getEndTime());
+  }
 }
 
 WaveformOverview.prototype = Object.create(WaveformView.prototype);

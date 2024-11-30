@@ -80,11 +80,24 @@ describe('SegmentShape', function() {
             expect(call.args[0].segment.endTime).to.equal(10);
             expect(call.args[0].segment.editable).to.equal(test.editable);
             expect(call.args[0].segment.id).to.equal('segment1');
-            expect(call.args[0].editable).to.equal(false);
-            expect(call.args[0]).to.have.property('startMarker');
+            expect(call.args[0].editable).to.equal(test.editable);
+            expect(call.args[0].startMarker).to.equal(true);
             expect(call.args[0].color).to.equal('#aaaaaa');
             expect(call.args[0]).to.have.property('layer');
-            expect(call.args[0].view).to.equal('overview');
+            expect(call.args[0].view).to.equal('zoomview');
+
+            call = spy.getCall(1);
+
+            expect(call.args).to.have.lengthOf(1);
+            expect(call.args[0].segment.startTime).to.equal(0);
+            expect(call.args[0].segment.endTime).to.equal(10);
+            expect(call.args[0].segment.editable).to.equal(test.editable);
+            expect(call.args[0].segment.id).to.equal('segment1');
+            expect(call.args[0].editable).to.equal(test.editable);
+            expect(call.args[0].startMarker).to.equal(false);
+            expect(call.args[0].color).to.equal('#aaaaaa');
+            expect(call.args[0]).to.have.property('layer');
+            expect(call.args[0].view).to.equal('zoomview');
 
             call = spy.getCall(2);
 
@@ -93,11 +106,25 @@ describe('SegmentShape', function() {
             expect(call.args[0].segment.endTime).to.equal(10);
             expect(call.args[0].segment.editable).to.equal(test.editable);
             expect(call.args[0].segment.id).to.equal('segment1');
-            expect(call.args[0].editable).to.equal(test.editable);
-            expect(call.args[0]).to.have.property('startMarker');
+            expect(call.args[0].editable).to.equal(false);
+            expect(call.args[0].startMarker).to.equal(true);
             expect(call.args[0].color).to.equal('#aaaaaa');
             expect(call.args[0]).to.have.property('layer');
-            expect(call.args[0].view).to.equal('zoomview');
+            expect(call.args[0].view).to.equal('overview');
+
+            call = spy.getCall(3);
+
+            expect(call.args).to.have.lengthOf(1);
+            expect(call.args[0].segment.startTime).to.equal(0);
+            expect(call.args[0].segment.endTime).to.equal(10);
+            expect(call.args[0].segment.editable).to.equal(test.editable);
+            expect(call.args[0].segment.id).to.equal('segment1');
+            expect(call.args[0].editable).to.equal(false);
+            expect(call.args[0].startMarker).to.equal(false);
+            expect(call.args[0].color).to.equal('#aaaaaa');
+            expect(call.args[0]).to.have.property('layer');
+            expect(call.args[0].view).to.equal('overview');
+
             done();
           });
         });
