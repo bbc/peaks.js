@@ -292,6 +292,10 @@ declare module 'peaks.js' {
     timeLabelPrecision?: number;
     /** Show or hide the time axis labels */
     showAxisLabels?: boolean;
+    /** Height of the axis markers at the top of the waveform */
+    axisTopMarkerHeight?: number;
+    /** Height of the axis markers at the top of the waveform */
+    axisBottomMarkerHeight?: number;
     /** Returns a string for the axis label timestamps */
     formatAxisTime?: FormatTimeFunction;
     /**
