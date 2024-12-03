@@ -25,6 +25,9 @@ declare module 'peaks.js' {
     endTime: number;
     editable?: boolean;
     color?: WaveformColor;
+    borderColor?: string;
+    markers?: boolean;
+    overlay?: boolean;
     labelText?: string;
     id?: string;
     [userAttributes: string]: unknown;
