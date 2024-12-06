@@ -63,6 +63,10 @@ PointsLayer.prototype.addToStage = function(stage) {
   stage.add(this._layer);
 };
 
+PointsLayer.prototype.setListening = function(listening) {
+  this._layer.listening(listening);
+};
+
 PointsLayer.prototype.enableEditing = function(enable) {
   this._enableEditing = enable;
 };

@@ -430,6 +430,23 @@ WaveformView.prototype.enableMarkerEditing = function(enable) {
   }
 };
 
+/**
+ * Called when the user starts or stops dragging the playhead.
+ * We use this to disable interaction with the points and segments layers,
+ * e.g., so that when the user drags the playhead over a marker, the timestamp
+ * labels don't appear.
+ */
+
+WaveformView.prototype.dragSeek = function(dragging) {
+  if (this._segmentsLayer) {
+    this._segmentsLayer.setListening(!dragging);
+  }
+
+  if (this._pointsLayer) {
+    this._pointsLayer.setListening(!dragging);
+  }
+};
+
 WaveformView.prototype.fitToContainer = function() {
   if (this._container.clientWidth === 0 && this._container.clientHeight === 0) {
     return;

@@ -23,6 +23,12 @@ import { clamp } from './utils';
 function ScrollMouseDragHandler(peaks, view) {
   this._peaks = peaks;
   this._view = view;
+  this._seeking = false;
+  this._firstMove = false;
+  this._segment = null;
+  this._segmentIsDraggable = false;
+  this._initialFrameOffset = 0;
+  this._mouseDownX = 0;
 
   this._onMouseDown = this._onMouseDown.bind(this);
   this._onMouseMove = this._onMouseMove.bind(this);
@@ -41,6 +47,7 @@ ScrollMouseDragHandler.prototype.isDragging = function() {
 
 ScrollMouseDragHandler.prototype._onMouseDown = function(mousePosX, segment) {
   this._seeking = false;
+  this._firstMove = true;
 
   if (segment && !segment.attrs.draggable) {
     this._segment = null;
@@ -85,6 +92,11 @@ ScrollMouseDragHandler.prototype._onMouseMove = function(mousePosX) {
   }
 
   if (this._seeking) {
+    if (this._firstMove) {
+      this._view.dragSeek(true);
+      this._firstMove = false;
+    }
+
     mousePosX = clamp(mousePosX, 0, this._view.getWidth());
 
     const time = this._view.pixelsToTime(mousePosX + this._view.getFrameOffset());
@@ -108,7 +120,10 @@ ScrollMouseDragHandler.prototype._onMouseMove = function(mousePosX) {
 };
 
 ScrollMouseDragHandler.prototype._onMouseUp = function() {
-  if (!this._seeking) {
+  if (this._seeking) {
+    this._view.dragSeek(false);
+  }
+  else {
     // Set playhead position only on click release, when not dragging.
     if (this._view._enableSeek && !this._mouseDragHandler.isDragging()) {
       const time = this._view.pixelOffsetToTime(this._mouseDownX);

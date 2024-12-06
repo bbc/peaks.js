@@ -176,8 +176,9 @@ WaveformZoomView.prototype._onWheelCaptureVerticalScroll = function(event) {
 };
 
 WaveformZoomView.prototype.setWaveformDragMode = function(mode) {
-  if (this._viewOptions.enableSegments) {
+  if (this._segmentsLayer) {
     this._mouseDragHandler.destroy();
+    this.dragSeek(false);
 
     if (mode === 'insert-segment') {
       this._mouseDragHandler = new InsertSegmentMouseDragHandler(this._peaks, this);

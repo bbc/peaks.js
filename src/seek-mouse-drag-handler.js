@@ -23,22 +23,35 @@ import { clamp } from './utils';
 function SeekMouseDragHandler(peaks, view) {
   this._peaks = peaks;
   this._view = view;
+  this._firstMove = false;
 
   this._onMouseDown = this._onMouseDown.bind(this);
   this._onMouseMove = this._onMouseMove.bind(this);
+  this._onMouseUp = this._onMouseUp.bind(this);
 
   this._mouseDragHandler = new MouseDragHandler(view._stage, {
     onMouseDown: this._onMouseDown,
-    onMouseMove: this._onMouseMove
+    onMouseMove: this._onMouseMove,
+    onMouseUp: this._onMouseUp
   });
 }
 
 SeekMouseDragHandler.prototype._onMouseDown = function(mousePosX) {
+  this._firstMove = true;
   this._seek(mousePosX);
 };
 
 SeekMouseDragHandler.prototype._onMouseMove = function(mousePosX) {
+  if (this._firstMove) {
+    this._view.dragSeek(true);
+    this._firstMove = false;
+  }
+
   this._seek(mousePosX);
+};
+
+SeekMouseDragHandler.prototype._onMouseUp = function() {
+  this._view.dragSeek(false);
 };
 
 SeekMouseDragHandler.prototype._seek = function(mousePosX) {

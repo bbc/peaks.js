@@ -52,6 +52,10 @@ SegmentsLayer.prototype.addToStage = function(stage) {
   stage.add(this._layer);
 };
 
+SegmentsLayer.prototype.setListening = function(listening) {
+  this._layer.listening(listening);
+};
+
 SegmentsLayer.prototype.enableEditing = function(enable) {
   this._enableEditing = enable;
 };
