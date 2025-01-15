@@ -38,6 +38,7 @@ function PlayheadLayer(player, view, options) {
   this._playheadPixel = 0;
   this._playheadLineAnimation = null;
   this._playheadVisible = false;
+  this._playheadFixed = options.playheadFixed;
   this._playheadColor = options.playheadColor;
   this._playheadTextColor = options.playheadTextColor;
   this._playheadBackgroundColor = options.playheadBackgroundColor;
@@ -210,7 +211,15 @@ PlayheadLayer.prototype._syncPlayhead = function(time) {
       this._playheadGroup.show();
     }
 
-    this._playheadGroup.setX(playheadX);
+    const limit = width / 2;
+    if (!this._playheadFixed || pixelIndex < limit) {
+      this._playheadGroup.setX(pixelIndex);
+    } else {
+      // Keep the playhead in the center
+      this._playheadGroup.setX(limit);
+      // Move the waveform
+      this._view.updateWaveform(pixelIndex - (width / 2), false);
+    }
 
     if (this._playheadText) {
       const text = this._view.formatTime(time);

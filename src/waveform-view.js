@@ -326,6 +326,10 @@ WaveformView.prototype.getAmplitudeScale = function() {
   return this._amplitudeScale;
 };
 
+WaveformView.prototype.enableFixed = function(enable) {
+  this._playheadLayer._playheadFixed = enable;
+};
+
 WaveformView.prototype.enableSeek = function(enable) {
   this._enableSeek = enable;
 };
