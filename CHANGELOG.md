@@ -1,6 +1,11 @@
 # Peaks.js
 
-## 4.0.0-beta.0
+## 4.0.0-beta.1 (2025/04/29)
+
+* (#561) Added `view.setAxisLabelColor()` and
+  `view.setAxisGridlineColor()` methods (@chrisn)
+
+## 4.0.0-beta.0 (2024/11/30)
 
 * (#548) Added `zoomview.update` event, which is emitted when the time
   range visible in the zoomable waveform view changes (@chrisn)
