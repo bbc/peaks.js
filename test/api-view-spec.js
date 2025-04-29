@@ -124,6 +124,34 @@ describe('WaveformView', function() {
     });
   });
 
+  describe('setAxisLabelColor', function() {
+    ['zoomview', 'overview'].forEach(function(viewName) {
+      describe(viewName, function() {
+        it('should set the color of the waveform axis labels', function() {
+          const view = p.views.getView(viewName);
+
+          view.setAxisLabelColor('#ff0000');
+
+          expect(view._axis._axisLabelColor).to.equal('#ff0000');
+        });
+      });
+    });
+  });
+
+  describe('setAxisGridlineColor', function() {
+    ['zoomview', 'overview'].forEach(function(viewName) {
+      describe(viewName, function() {
+        it('should set the color of the waveform axis gridlines', function() {
+          const view = p.views.getView(viewName);
+
+          view.setAxisGridlineColor('#ff0000');
+
+          expect(view._axis._axisGridlineColor).to.equal('#ff0000');
+        });
+      });
+    });
+  });
+
   describe('scrollWaveform', function() {
     describe('zoomview', function() {
       let zoomview;

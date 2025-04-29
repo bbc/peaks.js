@@ -92,6 +92,14 @@ WaveformAxis.prototype.showAxisLabels = function(show, options) {
   }
 };
 
+WaveformAxis.prototype.setAxisLabelColor = function(color) {
+  this._axisLabelColor = color;
+};
+
+WaveformAxis.prototype.setAxisGridlineColor = function(color) {
+  this._axisGridlineColor = color;
+};
+
 /**
  * Returns number of seconds for each x-axis marker, appropriate for the
  * current zoom level, ensuring that markers are not too close together

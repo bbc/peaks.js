@@ -288,6 +288,16 @@ WaveformView.prototype.showAxisLabels = function(show, options) {
   this._axisLayer.draw();
 };
 
+WaveformView.prototype.setAxisLabelColor = function(color) {
+  this._axis.setAxisLabelColor(color);
+  this._axisLayer.draw();
+};
+
+WaveformView.prototype.setAxisGridlineColor = function(color) {
+  this._axis.setAxisGridlineColor(color);
+  this._axisLayer.draw();
+};
+
 WaveformView.prototype.showPlayheadTime = function(show) {
   this._playheadLayer.showPlayheadTime(show);
 };

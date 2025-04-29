@@ -510,6 +510,8 @@ declare module 'peaks.js' {
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: WaveformColor) => void;
     setPlayedWaveformColor: (color: WaveformColor | null) => void;
+    setAxisLabelColor: (color: string) => void;
+    setAxisGridlineColor: (color: string) => void;
     showPlayheadTime: (show: boolean) => void;
     setTimeLabelPrecision: (precision: number) => void;
     showAxisLabels: (show: boolean, options?: ShowAxisLabelOptions) => void;

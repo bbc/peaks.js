@@ -34,6 +34,8 @@ This document describes the Peaks.js API, including configuration options, funct
     - [view.showPlayheadTime()](#viewshowplayheadtimeshow)
     - [view.setTimeLabelPrecision()](#viewsettimeLabelPrecisionprecision)
     - [view.showAxisLabels()](#viewshowaxislabelsshow-options)
+    - [view.setAxisLabelColor()](#viewsetaxislabelcolorcolor)
+    - [view.setAxisGridlineColor()](#viewsetaxisgridlinecolorcolor)
     - [view.enableAutoScroll()](#viewenableautoscrollenable-options)
     - [view.enableMarkerEditing()](#viewenablemarkereditingenable)
     - [view.enableSegmentDragging()](#viewenablesegmentdraggingenable)
@@ -913,6 +915,28 @@ view.showAxisLabels(true, {
   topMarkerHeight: 10,
   bottomMarkerHeight: 10
 });
+```
+
+### `view.setAxisLabelColor(color)`
+
+Sets the color of waveform axis time labels, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+
+The initial color is controlled by the `axisLabelColor`, `zoomview.axisLabelColor`, and `overview.axisLabelColor` configuration options.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setAxisLabelColor('#800080'); // Purple
+```
+
+### `view.setAxisGridlineColor(color)`
+
+Sets the color of waveform axis gridlines, as a string containing any valid [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+
+The initial color is controlled by the `axisGridlineColor`, `zoomview.axisGridlineColor`, and `overview.axisGridlineColor` configuration options.
+
+```js
+const view = instance.views.getView('zoomview');
+view.setAxisGridlineColor('#800080'); // Purple
 ```
 
 ### `view.enableAutoScroll(enable[, options])`

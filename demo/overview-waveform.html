@@ -67,6 +67,12 @@
           <label for="played-waveform-color">Played waveform color</label>
           <input type="color" id="played-waveform-color" value="#888888">
         </div>
+        <div>
+          <label for="axis-label-color">Axis label color</label>
+          <input type="color" id="axis-label-color" value="#aaaaaa">
+          <label for="axis-gridline-color">Axis gridline color</label>
+          <input type="color" id="axis-gridline-color" value="#cccccc">
+        </div>
       </div>
     </div>
 
@@ -136,6 +142,18 @@
             var view = peaksInstance.views.getView();
 
             view.setPlayedWaveformColor(event.target.value);
+          });
+
+          document.getElementById('axis-label-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView();
+
+            view.setAxisLabelColor(event.target.value);
+          });
+
+          document.getElementById('axis-gridline-color').addEventListener('input', function(event) {
+            var view = peaksInstance.views.getView();
+
+            view.setAxisGridlineColor(event.target.value);
           });
         });
       })(peaks);
