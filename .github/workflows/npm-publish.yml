@@ -10,6 +10,10 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      pull-requests: read
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,6 +32,10 @@ jobs:
       - run: npm run test -- --browsers=${{ matrix.browser }}
 
   publish-npm:
+    permissions:
+      contents: read
+      pull-requests: read
+
     needs: build
     runs-on: ubuntu-latest
     steps:
