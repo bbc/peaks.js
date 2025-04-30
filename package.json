@@ -59,11 +59,11 @@
     "prepack": "npm run build"
   },
   "devDependencies": {
-    "@babel/preset-env": "~7.26.0",
+    "@babel/preset-env": "~7.27.1",
     "@rollup/plugin-babel": "~6.0.4",
-    "@rollup/plugin-commonjs": "~28.0.1",
+    "@rollup/plugin-commonjs": "~28.0.3",
     "@rollup/plugin-json": "~6.1.0",
-    "@rollup/plugin-node-resolve": "~15.3.0",
+    "@rollup/plugin-node-resolve": "~16.0.1",
     "@rollup/plugin-terser": "~0.4.4",
     "babel-plugin-istanbul": "~7.0.0",
     "chai": "~4.3.10",
@@ -80,11 +80,11 @@
     "karma-rollup-preprocessor": "~7.0.8",
     "karma-safari-launcher": "~1.0.0",
     "karma-spec-reporter": "~0.0.36",
-    "mocha": "~10.8.2",
-    "rollup": "~4.27.4",
+    "mocha": "~11.2.2",
+    "rollup": "~4.40.1",
     "rollup-plugin-peer-deps-external": "~2.2.4",
     "serve": "~14.2.3",
-    "sinon": "~19.0.2",
+    "sinon": "~20.0.0",
     "sinon-chai": "~3.7.0",
     "watchify": "~4.0.0"
   },
@@ -93,6 +93,6 @@
   },
   "peerDependencies": {
     "konva": ">= 8.3.14 < 10",
-    "waveform-data": ">= 4.3.0 < 5"
+    "waveform-data": ">= 4.5.1 < 5"
   }
 }
