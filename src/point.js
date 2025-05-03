@@ -38,13 +38,11 @@ function validatePointOptions(options, updating) {
 
   if (!updating || (updating && objectHasProperty(options, 'time'))) {
     if (!isValidTime(options.time)) {
-      // eslint-disable-next-line max-len
       throw new TypeError('peaks.points.' + context + ': time should be a numeric value');
     }
   }
 
   if (options.time < 0) {
-    // eslint-disable-next-line max-len
     throw new RangeError('peaks.points.' + context + ': time should not be negative');
   }
 
@@ -59,7 +57,7 @@ function validatePointOptions(options, updating) {
   if (objectHasProperty(options, 'color') &&
     !isString(options.color) &&
     !isLinearGradientColor(options.color)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     throw new TypeError('peaks.points.' + context + ': color must be a string or a valid linear gradient object');
   }
 

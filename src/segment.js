@@ -55,12 +55,10 @@ function validateSegmentOptions(options, updating) {
   const context = updating ? 'update()' : 'add()';
 
   if (objectHasProperty(options, 'startTime') && !isValidTime(options.startTime)) {
-    // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': startTime should be a valid number');
   }
 
   if (objectHasProperty(options, 'endTime') && !isValidTime(options.endTime)) {
-    // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': endTime should be a valid number');
   }
 
@@ -71,17 +69,15 @@ function validateSegmentOptions(options, updating) {
   }
 
   if (options.startTime < 0) {
-    // eslint-disable-next-line max-len
     throw new RangeError('peaks.segments.' + context + ': startTime should not be negative');
   }
 
   if (options.endTime < 0) {
-    // eslint-disable-next-line max-len
     throw new RangeError('peaks.segments.' + context + ': endTime should not be negative');
   }
 
   if (options.endTime < options.startTime) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     throw new RangeError('peaks.segments.' + context + ': endTime should not be less than startTime');
   }
 
@@ -112,12 +108,11 @@ function validateSegmentOptions(options, updating) {
   if (objectHasProperty(options, 'color') &&
     !isString(options.color) &&
     !isLinearGradientColor(options.color)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     throw new TypeError('peaks.segments.' + context + ': color must be a string or a valid linear gradient object');
   }
 
   if (objectHasProperty(options, 'borderColor') && !isString(options.borderColor)) {
-    // eslint-disable-next-line max-len
     throw new TypeError('peaks.segments.' + context + ': borderColor must be a string');
   }
 

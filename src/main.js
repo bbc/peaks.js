@@ -314,21 +314,21 @@ function checkContainerElements(options) {
 
   if (!isHTMLElement(zoomviewContainer) &&
       !isHTMLElement(overviewContainer)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     return new TypeError('Peaks.init(): The zoomview and/or overview container options must be valid HTML elements');
   }
 
   if (zoomviewContainer &&
       (zoomviewContainer.clientWidth  <= 0 ||
        zoomviewContainer.clientHeight <= 0)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     return new Error('Peaks.init(): The zoomview container must be visible and have non-zero width and height');
   }
 
   if (overviewContainer &&
       (overviewContainer.clientWidth  <= 0 ||
        overviewContainer.clientHeight <= 0)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     return new Error('Peaks.init(): The overview container must be visible and have non-zero width and height');
   }
 }
@@ -366,13 +366,13 @@ Peaks.init = function(opts, callback) {
     scrollbarContainer = instance.options.scrollbar.container;
 
     if (!isHTMLElement(scrollbarContainer)) {
-      // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
       callback(new TypeError('Peaks.init(): The scrollbar container option must be a valid HTML element'));
       return;
     }
 
     if (scrollbarContainer.clientWidth <= 0) {
-      // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
       callback(new TypeError('Peaks.init(): The scrollbar container must be visible and have non-zero width'));
       return;
     }
@@ -459,23 +459,19 @@ Peaks.prototype._setOptions = function(opts) {
     }
 
     if (!(opts.mediaElement instanceof HTMLMediaElement)) {
-      // eslint-disable-next-line max-len
       return new TypeError('Peaks.init(): The mediaElement option should be an HTMLMediaElement');
     }
   }
 
   if (opts.logger && !isFunction(opts.logger)) {
-    // eslint-disable-next-line max-len
     return new TypeError('Peaks.init(): The logger option should be a function');
   }
 
   if (opts.segments && !Array.isArray(opts.segments)) {
-    // eslint-disable-next-line max-len
     return new TypeError('Peaks.init(): options.segments must be an array of segment objects');
   }
 
   if (opts.points && !Array.isArray(opts.points)) {
-    // eslint-disable-next-line max-len
     return new TypeError('Peaks.init(): options.points must be an array of point objects');
   }
 

@@ -940,7 +940,6 @@ SegmentShape.prototype._onSegmentMarkerDragEnd = function(segmentMarker, event) 
   });
 };
 
-// eslint-disable-next-line no-unused-vars
 SegmentShape.prototype._segmentMarkerDragBoundFunc = function(segmentMarker, pos) {
   // Allow the marker to be moved horizontally but not vertically.
   return {

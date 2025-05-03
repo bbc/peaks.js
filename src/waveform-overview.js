@@ -114,7 +114,7 @@ WaveformOverview.prototype._resampleAndSetWaveformData = function(waveformData, 
     this._data = waveformData.resample({ width: width });
     return true;
   }
-  catch (error) {
+  catch (error) { // eslint-disable-line no-unused-vars
     // This error usually indicates that the waveform length
     // is less than the container width. Ignore, and use the
     // given waveform data

@@ -196,7 +196,7 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    !('ArrayBuffer' in window) && it('invoke callback with an error if the only available format is browser incompatible', function(done) {
+    !('ArrayBuffer' in window) && it('should invoke callback with an error if the only available format is browser incompatible', function(done) {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),
@@ -216,7 +216,7 @@ describe('WaveformBuilder', function() {
       });
     });
 
-    ('ArrayBuffer' in window) && it('invoke callback with an error if arraybuffer data is invalid', function(done) {
+    ('ArrayBuffer' in window) && it('should invoke callback with an error if arraybuffer data is invalid', function(done) {
       const peaks = {
         options: {
           mediaElement: document.getElementById('media'),

@@ -88,13 +88,13 @@ WaveformBuilder.prototype.init = function(options, callback) {
   if ((options.dataUri && (options.webAudio || options.audioContext)) ||
       (options.waveformData && (options.webAudio || options.audioContext)) ||
       (options.dataUri && options.waveformData)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     callback(new TypeError('Peaks.init(): You may only pass one source (webAudio, dataUri, or waveformData) to render waveform data.'));
     return;
   }
 
   if (options.audioContext) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     this._peaks._logger('Peaks.init(): The audioContext option is deprecated, please pass a webAudio object instead');
 
     options.webAudio = {
@@ -117,7 +117,7 @@ WaveformBuilder.prototype.init = function(options, callback) {
     }
   }
   else {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     callback(new Error('Peaks.init(): You must pass an audioContext, or dataUri, or waveformData to render waveform data'));
   }
 };
@@ -146,7 +146,7 @@ function hasValidContentRangeHeader(xhr) {
   return false;
 }
 
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/js/max-len */
 
 /**
  * Fetches waveform data, based on the given options.
@@ -165,7 +165,7 @@ function hasValidContentRangeHeader(xhr) {
  *   for details of the binary and JSON waveform data formats.
  */
 
-/* eslint-enable max-len */
+/* eslint-enable @stylistic/js/max-len */
 
 WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
   const self = this;
@@ -192,7 +192,7 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
   });
 
   if (!url) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     callback(new Error('Peaks.init(): Unable to determine a compatible dataUri format for this browser'));
     return;
   }
@@ -238,7 +238,7 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
   self._xhr.send();
 };
 
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/js/max-len */
 
 /**
  * Creates a waveform from given data, based on the given options.
@@ -254,7 +254,7 @@ WaveformBuilder.prototype._getRemoteWaveformData = function(options, callback) {
  *   for details of the binary and JSON waveform data formats.
  */
 
-/* eslint-enable max-len */
+/* eslint-enable @stylistic/js/max-len */
 
 WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callback) {
   let waveformData = null;
@@ -276,7 +276,6 @@ WaveformBuilder.prototype._buildWaveformFromLocalData = function(options, callba
   }
 
   if (!data) {
-    // eslint-disable-next-line max-len
     callback(new Error('Peaks.init(): Unable to determine a compatible waveformData format'));
     return;
   }
@@ -316,7 +315,7 @@ WaveformBuilder.prototype._buildWaveformDataUsingWebAudio = function(options, ca
   const audioContext = window.AudioContext || window.webkitAudioContext;
 
   if (!(options.webAudio.audioContext instanceof audioContext)) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     callback(new TypeError('Peaks.init(): The webAudio.audioContext option must be a valid AudioContext'));
     return;
   }
@@ -455,7 +454,7 @@ WaveformBuilder.prototype._createXHR = function(url, requestType,
     try {
       xhr.responseType = requestType;
     }
-    catch (e) {
+    catch (error) { // eslint-disable-line no-unused-vars
       // Some browsers like Safari 6 do handle XHR2 but not the json
       // response type, doing only a try/catch fails in IE9
     }

@@ -227,7 +227,7 @@ SetSourceHandler.prototype._playerErrorHandler = function(err) {
 
 MediaElementPlayer.prototype.setSource = function(options) {
   if (!options.mediaUrl) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/js/max-len
     return Promise.reject(new Error('peaks.setSource(): options must contain a mediaUrl when using mediaElement'));
   }
 

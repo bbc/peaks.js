@@ -36,7 +36,7 @@
   },
   "license": "LGPL-3.0",
   "engines": {
-    "node": ">= 8.11.2"
+    "node": ">= 20.0.0"
   },
   "browserslist": [
     "last 2 versions",
@@ -48,7 +48,7 @@
     "build": "rollup -c",
     "postbuild": "copyfiles --up 1 dist/peaks.js dist/peaks.js.map dist/peaks.min.js dist/peaks.min.js.map dist/peaks.esm.js dist/peaks.esm.js.map dist/peaks.ext.js dist/peaks.ext.js.map dist/peaks.ext.min.js dist/peaks.ext.min.js.map demo",
     "doc": "jsdoc --private --destination docs --recurse src",
-    "lint": "eslint src/*.js test/*.js test/*.cjs karma.conf.cjs rollup.config.mjs",
+    "lint": "eslint src/*.js test/*.js eslint.config.mjs karma.conf.cjs rollup.config.mjs",
     "pretest": "npm run lint",
     "test": "karma start karma.conf.cjs",
     "test-watch": "npm test -- --auto-watch --no-single-run",
@@ -60,15 +60,20 @@
   },
   "devDependencies": {
     "@babel/preset-env": "~7.27.1",
+    "@eslint/js": "~9.26.0",
+    "@eslint/migrate-config": "^1.5.0",
     "@rollup/plugin-babel": "~6.0.4",
     "@rollup/plugin-commonjs": "~28.0.3",
     "@rollup/plugin-json": "~6.1.0",
     "@rollup/plugin-node-resolve": "~16.0.1",
     "@rollup/plugin-terser": "~0.4.4",
+    "@stylistic/eslint-plugin-js": "~4.2.0",
     "babel-plugin-istanbul": "~7.0.0",
     "chai": "~4.3.10",
     "copyfiles": "~2.4.1",
-    "eslint": "~8.57.0",
+    "eslint": "~9.26.0",
+    "eslint-plugin-mocha": "~11.0.0",
+    "globals": "~16.0.0",
     "jsdoc": "~4.0.3",
     "karma": "~6.4.4",
     "karma-chai-sinon": "~0.1.5",
