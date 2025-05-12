@@ -14,12 +14,12 @@ const commonRules = {
   'func-style': ['error', 'declaration'],
   'guard-for-in': 'error',
   'new-cap': 'error',
-  'newline-after-var': ['error', 'always'],
   'no-alert': 'error',
   'no-caller': 'error',
   'no-cond-assign': ['error', 'except-parens'],
   'no-console': 'warn',
   'no-continue': 'error',
+  'no-debugger': 'warn',
   'no-eval': 'error',
   'no-extra-bind': 'error',
   'no-implicit-coercion': 'error',
@@ -32,7 +32,7 @@ const commonRules = {
   'no-loop-func': 'error',
   'no-multi-str': 'error',
   'no-nested-ternary': 'error',
-  'no-new-object': 'error',
+  'no-object-constructor': 'error',
   'no-return-assign': 'error',
   'no-script-url': 'error',
   'no-self-compare': 'error',
@@ -49,16 +49,15 @@ const commonRules = {
   'no-var': 'error',
   'no-void': 'error',
   'operator-assignment': ['error', 'always'],
-  'padded-blocks': ['warn', 'never'],
   'prefer-const': 'error',
   'radix': 'error',
   'yoda': 'error',
-  '@stylistic/js/array-bracket-spacing': ['error', 'never'],
-  '@stylistic/js/brace-style': ['error', 'stroustrup'],
+  '@stylistic/js/array-bracket-spacing': ['warn', 'never'],
+  '@stylistic/js/brace-style': ['warn', 'stroustrup'],
   '@stylistic/js/comma-dangle': ['warn', 'never'],
   '@stylistic/js/comma-spacing': ['warn', { 'before': false, 'after': true }],
-  '@stylistic/js/comma-style': ['error', 'last'],
-  '@stylistic/js/dot-location': ['error', 'property'],
+  '@stylistic/js/comma-style': ['warn', 'last'],
+  '@stylistic/js/dot-location': ['warn', 'property'],
   '@stylistic/js/indent': [
     'warn',
     2,
@@ -77,31 +76,37 @@ const commonRules = {
       'ArrayExpression': 1
     }
   ],
-  '@stylistic/js/max-len': ['warn', 100],
   '@stylistic/js/key-spacing': [
-    'error',
+    'warn',
     {
       'beforeColon': false,
       'afterColon': true,
       'mode': 'minimum'
     }
   ],
-  '@stylistic/js/keyword-spacing': ['error', { 'before': true }],
-  '@stylistic/js/linebreak-style': ['error', 'unix'],
-  '@stylistic/js/newline-per-chained-call': 'error',
-  '@stylistic/js/no-extra-semi': 'error',
-  '@stylistic/js/no-floating-decimal': 'error',
-  '@stylistic/js/no-tabs': 'warn',
+  '@stylistic/js/keyword-spacing': ['warn', { 'before': true }],
+  '@stylistic/js/linebreak-style': ['warn', 'unix'],
+  '@stylistic/js/max-len': ['warn', 100],
+  '@stylistic/js/newline-per-chained-call': 'warn',
+  '@stylistic/js/no-extra-semi': 'warn',
+  '@stylistic/js/no-floating-decimal': 'warn',
   '@stylistic/js/no-multiple-empty-lines': ['warn', { 'max': 1 }],
+  '@stylistic/js/no-tabs': 'warn',
   '@stylistic/js/no-trailing-spaces': 'warn',
-  '@stylistic/js/object-curly-spacing': ['error', 'always'],
+  '@stylistic/js/object-curly-spacing': ['warn', 'always'],
+  '@stylistic/js/padded-blocks': ['warn', 'never'],
+  '@stylistic/js/padding-line-between-statements': [
+    'warn',
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+    { blankLine: 'any',    prev: ['const', 'let', 'var'], next: ['const', 'let', 'var'] }
+  ],
   '@stylistic/js/quotes': ['warn', 'single', { 'avoidEscape': true }],
-  '@stylistic/js/semi': ['error', 'always'],
+  '@stylistic/js/semi': ['warn', 'always'],
   '@stylistic/js/space-before-blocks': 'warn',
   '@stylistic/js/space-before-function-paren': ['warn', 'never'],
-  '@stylistic/js/space-in-parens': ['error', 'never'],
-  '@stylistic/js/space-infix-ops': 'error',
-  '@stylistic/js/space-unary-ops': 'error',
+  '@stylistic/js/space-in-parens': ['warn', 'never'],
+  '@stylistic/js/space-infix-ops': 'warn',
+  '@stylistic/js/space-unary-ops': 'warn',
   '@stylistic/js/spaced-comment': [
     'warn',
     'always',
@@ -149,11 +154,11 @@ export default defineConfig([
       })
     },
     rules: Object.assign({}, commonRules, { // mochaPlugin.configs.all
-      '@stylistic/js/brace-style': ['error', 'stroustrup', { 'allowSingleLine': true }],
       // Disable no-unused-expressions for chai expectations
       'no-unused-expressions': 'off',
-      'newline-after-var': 'off',
+      '@stylistic/js/brace-style': ['error', 'stroustrup', { 'allowSingleLine': true }],
       '@stylistic/js/max-len': 'off',
+      '@stylistic/js/padding-line-between-statements': 'off',
 
       // TODO: Disable this because it causes an error:
       // TypeError: Cannot read properties of undefined (reading '0')
