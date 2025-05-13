@@ -1,5 +1,10 @@
 # Peaks.js
 
+## 4.0.0-beta.2 (2025/05/13)
+
+* (#562) Fixed TypeScript declarations for `Point.update()` and
+  `Segment.update()` (@chrisn)
+
 ## 4.0.0-beta.1 (2025/04/29)
 
 * (#561) Added `view.setAxisLabelColor()` and
