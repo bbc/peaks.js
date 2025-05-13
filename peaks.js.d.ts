@@ -34,7 +34,7 @@ declare module 'peaks.js' {
   }
 
   interface Segment extends SegmentOptions {
-    update: (options: SegmentOptions) => void;
+    update: (options: Partial<SegmentOptions>) => void;
   }
 
   interface PointOptions {
@@ -47,7 +47,7 @@ declare module 'peaks.js' {
   }
 
   interface Point extends PointOptions {
-    update: (options: PointOptions) => void;
+    update: (options: Partial<PointOptions>) => void;
   }
 
   type LabelHorizontalAlign = 'left' | 'center' | 'right';
@@ -190,34 +190,17 @@ declare module 'peaks.js' {
 
   type AudioOptions = OneOf<RemoteWaveformDataOptions, LocalWaveformDataOptions, WebAudioOptions>;
 
-  export interface PointMarkerUpdateOptions {
-    time?: number;
-    editable?: boolean;
-    color?: string;
-    labelText?: string;
-    [userAttributes: string]: unknown;
-  }
-
   export interface PointMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
-    update?: (options: PointMarkerUpdateOptions) => void;
+    update?: (options: Partial<PointOptions>) => void;
     destroy?: () => void;
-  }
-
-  export interface SegmentMarkerUpdateOptions {
-    startTime?: number;
-    endTime?: number;
-    editable?: boolean;
-    color?: string;
-    labelText?: string;
-    [userAttributes: string]: unknown;
   }
 
   export interface SegmentMarker {
     init: (group: object) => void; // TODO: group: Konva.Group
     fitToView: () => void;
-    update?: (options: SegmentMarkerUpdateOptions) => void;
+    update?: (options: Partial<SegmentOptions>) => void;
     destroy?: () => void;
   }
 
