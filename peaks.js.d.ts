@@ -496,6 +496,8 @@ declare module 'peaks.js' {
   }
 
   interface WaveformView {
+    getStartTime: () => number;
+    getEndTime: () => number;
     setAmplitudeScale: (scale: number) => void;
     setWaveformColor: (color: WaveformColor) => void;
     setPlayedWaveformColor: (color: WaveformColor | null) => void;

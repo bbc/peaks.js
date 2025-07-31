@@ -28,6 +28,7 @@ This document describes the Peaks.js API, including configuration options, funct
     - [instance.views.destroyZoomview()](#instanceviewsdestroyzoomview)
     - [instance.views.destroyOverview()](#instanceviewsdestroyoverview)
   - [View API](#view-api)
+
     - [view.setAmplitudeScale()](#viewsetamplitudescalescale)
     - [view.setWaveformColor()](#viewsetwaveformcolorcolor)
     - [view.setPlayedWaveformColor()](#viewsetplayedwaveformcolorcolor)
@@ -1104,6 +1105,17 @@ view.setZoom({ seconds: 5.0 });
 view.setZoom({ seconds: 'auto' });
 ```
 
+### `view.getStartTime()`
+
+Returns the start time, in seconds, of the overview or zoomable waveform view.
+
+Note that the start time may not be exactly the same value you set when calling [`view.setStartTime()`](#viewsetstarttimetime). This is because the time is rounded to a number of pixels at the view's zoom level.
+
+```js
+const view = instance.views.getView('zoomview');
+const startTime = view.getStartTime(); // seconds
+```
+
 ### `view.setStartTime(time)`
 
 Changes the start time, in seconds, of the zoomable waveform view.
@@ -1113,6 +1125,15 @@ Note that this method is not available on the overview waveform.
 ```js
 const view = instance.views.getView('zoomview');
 view.setStartTime(6.0); // seconds
+```
+
+### `view.getEndTime()`
+
+Returns the end time, in seconds, of the overview or zoomable waveform view.
+
+```js
+const view = instance.views.getView('zoomview');
+const endTime = view.getEndTime(); // seconds
 ```
 
 ### `view.scrollWaveform(options)`
