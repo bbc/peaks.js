@@ -81,7 +81,7 @@ declare module 'peaks.js' {
 
   interface GlobalSegmentDisplayOptions extends SegmentDisplayOptions {
     waveformColor?: WaveformColor;
-    overlayColor?:  string;
+    overlayColor?: string;
   }
 
   type FormatTimeFunction = (time: number) => string;
@@ -108,6 +108,7 @@ declare module 'peaks.js' {
     enablePoints?: boolean;
     enableSegments?: boolean;
     segmentOptions?: SegmentDisplayOptions;
+    filterPoints?: ((p: Point) => boolean) | null;
   }
 
   interface ZoomViewOptions extends ViewOptions {

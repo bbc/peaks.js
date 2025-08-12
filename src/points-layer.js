@@ -22,11 +22,12 @@ import Konva from 'konva/lib/Core';
  * @param {Boolean} enableEditing
  */
 
-function PointsLayer(peaks, view, enableEditing) {
+function PointsLayer(peaks, view, enableEditing, filterPoints) {
   this._peaks         = peaks;
   this._view          = view;
   this._enableEditing = enableEditing;
   this._pointMarkers  = {};
+  this._filterPoints  = filterPoints;
   this._layer         = new Konva.Layer();
 
   this._onPointsDrag = this._onPointsDrag.bind(this);
@@ -38,6 +39,7 @@ function PointsLayer(peaks, view, enableEditing) {
   this._onPointMarkerMouseEnter  = this._onPointMarkerMouseEnter.bind(this);
   this._onPointMarkerMouseLeave  = this._onPointMarkerMouseLeave.bind(this);
 
+  this._isPointVisible    = this._isPointVisible.bind(this);
   this._onPointsUpdate    = this._onPointsUpdate.bind(this);
   this._onPointsAdd       = this._onPointsAdd.bind(this);
   this._onPointsRemove    = this._onPointsRemove.bind(this);
@@ -79,12 +81,17 @@ PointsLayer.prototype.formatTime = function(time) {
   return this._view.formatTime(time);
 };
 
+PointsLayer.prototype._isPointVisible = function(point, startTime, endTime) {
+  const isInFrame = point.isVisible(startTime, endTime);
+
+  return isInFrame && (!this._filterPoints || this._filterPoints(point));
+};
+
 PointsLayer.prototype._onPointsUpdate = function(point, options) {
+  const pointMarker = this.getPointMarker(point);
   const frameStartTime = this._view.getStartTime();
   const frameEndTime   = this._view.getEndTime();
-
-  const pointMarker = this.getPointMarker(point);
-  const isVisible = point.isVisible(frameStartTime, frameEndTime);
+  const isVisible = this._isPointVisible(point, frameStartTime, frameEndTime);
 
   if (pointMarker && !isVisible) {
     // Remove point marker that is no longer visible.
@@ -115,7 +122,9 @@ PointsLayer.prototype._onPointsAdd = function(event) {
   const frameEndTime   = self._view.getEndTime();
 
   event.points.forEach(function(point) {
-    if (point.isVisible(frameStartTime, frameEndTime)) {
+    const isVisible = self._isPointVisible(point, frameStartTime, frameEndTime);
+
+    if (isVisible) {
       self._updatePoint(point);
     }
   });
@@ -331,7 +340,7 @@ PointsLayer.prototype._removeInvisiblePoints = function(startTime, endTime) {
     if (objectHasProperty(this._pointMarkers, pointPid)) {
       const point = this._pointMarkers[pointPid].getPoint();
 
-      if (!point.isVisible(startTime, endTime)) {
+      if (!this._isPointVisible(point, startTime, endTime)) {
         this._removePoint(point);
       }
     }

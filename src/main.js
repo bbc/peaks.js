@@ -82,7 +82,8 @@ const defaultViewOptions = {
   fontStyle:               'normal',
   timeLabelPrecision:      2,
   enablePoints:            true,
-  enableSegments:          true
+  enableSegments:          true,
+  filterPoints:            null
 };
 
 const defaultZoomviewOptions = {
@@ -166,7 +167,8 @@ function getOverviewOptions(opts) {
     'highlightOffset',
     'enablePoints',
     'enableSegments',
-    'enableEditing'
+    'enableEditing',
+    'filterPoints'
   ];
 
   optNames.forEach(function(optName) {
@@ -225,7 +227,8 @@ function getZoomviewOptions(opts) {
     'autoScrollOffset',
     'enablePoints',
     'enableSegments',
-    'enableEditing'
+    'enableEditing',
+    'filterPoints'
   ];
 
   optNames.forEach(function(optName) {
