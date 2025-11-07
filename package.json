@@ -97,7 +97,7 @@
     "eventemitter3": "~5.0.1"
   },
   "peerDependencies": {
-    "konva": ">= 8.3.14 < 10",
+    "konva": ">= 8.3.14 < 11",
     "waveform-data": ">= 4.5.1 < 5"
   }
 }
