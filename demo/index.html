@@ -79,6 +79,10 @@
           <button data-action="log-data">Log segments/points</button>
         </div>
         <div>
+          <input type="checkbox" id="enable-fixed">
+          <label for="enable-fixed">Enable fixed playhead</label>
+        </div>
+        <div>
           <input type="checkbox" id="enable-seek" checked>
           <label for="enable-seek">Enable click to seek</label>
           <label for="waveform-drag-mode">Waveform drag mode:</label>
@@ -388,6 +392,14 @@
 
             zoomview.enableSeek(event.target.checked);
             overview.enableSeek(event.target.checked);
+          });
+
+          document.getElementById('enable-fixed').addEventListener('change', function(event) {
+            var overview = peaksInstance.views.getView('overview');
+            var zoomview = peaksInstance.views.getView('zoomview');
+
+            zoomview.enableFixed(event.target.checked);
+            overview.enableFixed(event.target.checked);
           });
 
           document.getElementById('waveform-drag-mode').addEventListener('change', function(event) {
