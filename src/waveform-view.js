@@ -70,7 +70,8 @@ function WaveformView(waveformData, container, peaks, viewOptions) {
   }
 
   if (self._viewOptions.enablePoints) {
-    self._pointsLayer = new PointsLayer(peaks, self, self._viewOptions.enableEditing);
+    self._pointsLayer = new PointsLayer(peaks, self, self._viewOptions.enableEditing,
+      self._viewOptions.filterPoints);
     self._pointsLayer.addToStage(self._stage);
   }
 
