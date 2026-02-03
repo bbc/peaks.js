@@ -180,6 +180,9 @@ WaveformPoints.prototype.add = function(/* pointOrPoints */) {
 };
 
 WaveformPoints.prototype.updatePointId = function(point, newPointId) {
+  if (point.id === newPointId) {
+    return;
+  }
   if (this._pointsById[point.id]) {
     if (this._pointsById[newPointId]) {
       throw new Error('point.update(): duplicate id');
